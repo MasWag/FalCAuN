@@ -27,5 +27,13 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- LearnLib -->
+        <dependency>
+            <groupId>de.learnlib.distribution</groupId>
+            <artifactId>learnlib-distribution</artifactId>
+            <version>0.14.0</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
 </project>
