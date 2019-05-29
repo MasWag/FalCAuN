@@ -2,10 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULMapperTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkInput.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkOutput.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkInputTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkOutputTest.java" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$USER_HOME$/.gradle/" />
@@ -23,57 +28,49 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkInput.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
-              <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
+            <state relative-caret-position="1364">
+              <caret line="113" column="10" selection-start-line="113" selection-start-column="10" selection-end-line="113" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1722#1723#0" expanded="true" />
-                <element signature="e#1767#1768#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkInputTest.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="528">
-              <caret line="54" column="19" selection-start-line="54" selection-end-line="55" />
+            <state relative-caret-position="885">
+              <caret line="59" column="8" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#2678#2679#0" expanded="true" />
+                <element signature="e#2707#2708#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULMapperTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="24" selection-start-line="24" selection-end-line="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="407">
-              <caret line="106" column="13" lean-forward="true" selection-start-line="106" selection-start-column="13" selection-end-line="106" selection-end-column="13" />
+            <state relative-caret-position="1725">
+              <caret line="115" selection-start-line="115" selection-end-line="115" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1257#1258#0" expanded="true" />
+                <element signature="e#1215#1216#0" expanded="true" />
+                <element signature="e#1243#1244#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -91,26 +88,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="269">
-              <caret line="41" column="54" selection-start-line="41" selection-start-column="54" selection-end-line="41" selection-end-column="54" />
+            <state relative-caret-position="195">
+              <caret line="19" selection-start-line="19" selection-end-line="19" />
               <folding>
-                <element signature="e#720#721#0" expanded="true" />
-                <element signature="e#773#774#0" expanded="true" />
-                <element signature="e#1203#1204#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkOutput.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="572">
-              <caret line="43" column="13" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1695#1696#0" expanded="true" />
-                <element signature="e#1723#1724#0" expanded="true" />
+                <element signature="e#713#714#0" expanded="true" />
+                <element signature="e#766#767#0" expanded="true" />
+                <element signature="e#1196#1197#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -140,20 +123,23 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkOutputTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkInputTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkInput.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkOutput.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkInputMapper.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkInput.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java" />
+        <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULMapperTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="17" />
-    <option name="y" value="40" />
-    <option name="width" value="1406" />
-    <option name="height" value="843" />
+    <option name="x" value="927" />
+    <option name="y" value="55" />
+    <option name="width" value="1440" />
+    <option name="height" value="877" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -258,23 +244,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.SimulinkSULTest.step">
+  <component name="RunManager" selected="JUnit.SimulinkSULMapperTest">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.group_mmm.Main" />
       <module name="CyVeriA" />
       <option name="VM_PARAMETERS" value="-Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SimulinkInputTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CyVeriA" />
-      <option name="PACKAGE_NAME" value="org.group_mmm" />
-      <option name="MAIN_CLASS_NAME" value="org.group_mmm.SimulinkInputTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea " />
-      <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -284,6 +258,18 @@
       <option name="PACKAGE_NAME" value="org.group_mmm" />
       <option name="MAIN_CLASS_NAME" value="org.group_mmm.SimulinkOutputTest" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SimulinkSULMapperTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CyVeriA" />
+      <option name="PACKAGE_NAME" value="org.group_mmm" />
+      <option name="MAIN_CLASS_NAME" value="org.group_mmm.SimulinkSULMapperTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/" />
+      <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -336,19 +322,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.Main" />
-      <item itemvalue="JUnit.SimulinkInputTest" />
       <item itemvalue="JUnit.SimulinkOutputTest" />
       <item itemvalue="JUnit.SimulinkSULTest.fork" />
       <item itemvalue="JUnit.SimulinkSULTest" />
       <item itemvalue="JUnit.SimulinkSULTest.step" />
+      <item itemvalue="JUnit.SimulinkSULMapperTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.SimulinkSULMapperTest" />
         <item itemvalue="JUnit.SimulinkSULTest.step" />
         <item itemvalue="JUnit.SimulinkSULTest" />
         <item itemvalue="JUnit.SimulinkSULTest.fork" />
         <item itemvalue="JUnit.SimulinkOutputTest" />
-        <item itemvalue="JUnit.SimulinkInputTest" />
       </list>
     </recent_temporary>
   </component>
@@ -360,7 +346,7 @@
       <option name="presentableId" value="Default" />
       <updated>1558934191974</updated>
       <workItem from="1558934197196" duration="1575000" />
-      <workItem from="1558935892679" duration="28917000" />
+      <workItem from="1558935892679" duration="38308000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1558953421816</created>
@@ -369,25 +355,24 @@
       <option name="project" value="LOCAL" />
       <updated>1558953421816</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="added SimulinkSUL">
+      <created>1559038568128</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1559038568128</updated>
+    </task>
+    <task id="LOCAL-00003" summary="added SimulinkSUL">
+      <created>1559039318886</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1559039318886</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 18h 03m 45s.xml">
-      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 18h 21m 16s.xml">
-      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 18h 26m 51s.xml">
-      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 18h 34m 31s.xml">
-      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 18h 42m 22s.xml">
-      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="SimulinkSULTest_step - 2019.05.28 at 18h 50m 41s.xml">
       <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
     </history-entry>
@@ -403,22 +388,37 @@
     <history-entry file="SimulinkSULTest_step - 2019.05.28 at 19h 11m 31s.xml">
       <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 19h 16m 13s.xml">
+      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 19h 22m 25s.xml">
+      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 19h 24m 57s.xml">
+      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SimulinkSULTest_step - 2019.05.28 at 19h 27m 40s.xml">
+      <configuration name="SimulinkSULTest.step" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SimulinkSULMapperTest - 2019.05.29 at 14h 47m 26s.xml">
+      <configuration name="SimulinkSULMapperTest" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30492000" />
+    <option name="totallyTimeSpent" value="39883000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="877" extended-state="6" />
+    <frame x="1440" y="-997" width="1200" height="1897" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2532189" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.30569947" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3299363" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32963988" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.1434903" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -427,11 +427,11 @@
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.3299363" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="11" weight="0.3299363" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.3299363" />
+      <window_info anchor="bottom" id="Version Control" order="11" weight="0.32963988" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.32963988" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24956822" />
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="right" id="Maven" order="5" />
@@ -442,22 +442,11 @@
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Initial Commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Initial Commit" />
+    <MESSAGE value="added SimulinkSUL" />
+    <option name="LAST_COMMIT_MESSAGE" value="added SimulinkSUL" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java</url>
-          <line>75</line>
-          <properties />
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
@@ -488,34 +477,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkOutputTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkInputTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="54" column="19" selection-start-line="54" selection-end-line="55" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -549,10 +514,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkInput.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
+        <state relative-caret-position="270">
+          <caret line="18" column="55" selection-start-line="18" selection-start-column="55" selection-end-line="18" selection-end-column="55" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#546#547#0" expanded="true" />
+            <element signature="e#571#572#0" expanded="true" />
+            <element signature="e#618#619#0" expanded="true" />
+            <element signature="e#646#647#0" expanded="true" />
             <element signature="e#1722#1723#0" expanded="true" />
             <element signature="e#1767#1768#0" expanded="true" />
           </folding>
@@ -561,8 +530,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkOutput.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="572">
-          <caret line="43" column="13" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
+        <state relative-caret-position="105">
+          <caret line="7" selection-start-line="7" selection-end-line="9" selection-end-column="57" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1695#1696#0" expanded="true" />
@@ -571,26 +540,87 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkInputMapper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="41" column="54" selection-start-line="41" selection-start-column="54" selection-end-line="41" selection-end-column="54" />
+        <state relative-caret-position="765">
+          <caret line="51" selection-start-line="51" selection-end-line="56" selection-end-column="5" />
           <folding>
-            <element signature="e#720#721#0" expanded="true" />
-            <element signature="e#773#774#0" expanded="true" />
-            <element signature="e#1203#1204#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#421#422#0" expanded="true" />
+            <element signature="e#448#449#0" expanded="true" />
+            <element signature="e#1646#1647#0" expanded="true" />
+            <element signature="e#1678#1679#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="407">
-          <caret line="106" column="13" lean-forward="true" selection-start-line="106" selection-start-column="13" selection-end-line="106" selection-end-column="13" />
+        <state relative-caret-position="1725">
+          <caret line="115" selection-start-line="115" selection-end-line="115" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1257#1258#0" expanded="true" />
+            <element signature="e#1215#1216#0" expanded="true" />
+            <element signature="e#1243#1244#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
+          <folding>
+            <element signature="e#713#714#0" expanded="true" />
+            <element signature="e#766#767#0" expanded="true" />
+            <element signature="e#1196#1197#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkInputTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="48" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkOutputTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="31" column="22" selection-start-line="31" selection-start-column="22" selection-end-line="51" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1364">
+          <caret line="113" column="10" selection-start-line="113" selection-start-column="10" selection-end-line="113" selection-end-column="10" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="885">
+          <caret line="59" column="8" selection-start-line="59" selection-start-column="8" selection-end-line="59" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2678#2679#0" expanded="true" />
+            <element signature="e#2707#2708#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULMapperTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
         </state>
       </provider>
     </entry>
