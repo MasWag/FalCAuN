@@ -76,8 +76,11 @@ public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Do
         return result.toString();
     }
 
-    public Alphabet<ArrayList<Double>> constructAlphabet() {
-        return new SimpleAlphabet<>(this.inputMapper.values());
+    Alphabet<String> constructAbstractAlphabet() {
+        return new SimpleAlphabet<>(this.inputMapper.keySet());
+    }
 
+    Alphabet<ArrayList<Double>> constructConcreteAlphabet() {
+        return new SimpleAlphabet<>(this.inputMapper.values());
     }
 }
