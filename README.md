@@ -6,4 +6,5 @@ Cyber-Physical System Verifier via Automata Learning
 - Java 8
 - Maven
 - LTSMin 3.1.0
-  - This is not released yet!! You have to build by yourself.
+  - This is not officially released yet.
+  - You have to download it from [HERE](https://github.com/Meijuh/ltsmin/releases/tag/v3.1.0).
