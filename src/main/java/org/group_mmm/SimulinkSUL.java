@@ -8,6 +8,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
+/**
+ * The Simulink SUL
+ */
 class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
     private final Double signalStep;
     private MatlabEngine matlab;

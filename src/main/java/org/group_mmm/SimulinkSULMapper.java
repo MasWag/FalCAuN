@@ -9,6 +9,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * I/O Mapper between abstract/concrete Simulink model.
+ *
+ * @todo For now, the abstract alphabet is String for simplicity but later, it can be integers to handle more data.
+ */
 public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Double>, ArrayList<Double>> {
     private Map<String, ArrayList<Double>> inputMapper;
     private ArrayList<Character> largestOutputs;
