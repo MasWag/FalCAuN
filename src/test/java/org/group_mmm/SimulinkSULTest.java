@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SimulinkSULTest {
-    private final String initScript = "cd ./src/test/resources/; initAFC;";
+    private final String initScript = "cd ./src/test/resources/MATLAB; initAFC;";
     private final ArrayList<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
     private final Double signalStep = 10.0;
     private SimulinkSUL sul;
