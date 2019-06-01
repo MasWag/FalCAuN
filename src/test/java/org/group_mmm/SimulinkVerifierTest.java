@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class SimulinkVerifierTest {
     private final String initScript = "cd ./src/test/resources/MATLAB; initAFC;";
@@ -59,6 +59,9 @@ class SimulinkVerifierTest {
 
     @Test
     void run() {
-        assertTrue(verifier.run());
+        assertFalse(verifier.run());
+        System.out.println(verifier.getCexInput());
+        System.out.println(verifier.getCexOutput());
+        verifier.visualize();
     }
 }
