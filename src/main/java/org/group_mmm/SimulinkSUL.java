@@ -3,10 +3,12 @@ package org.group_mmm;
 import com.mathworks.engine.MatlabEngine;
 import de.learnlib.api.SUL;
 import de.learnlib.api.exception.SULException;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The Simulink SUL
@@ -59,7 +61,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         if (inputSignal == null) {
             return null;
         }
-        ArrayList<Double> result = new ArrayList<>();
+        ArrayList<Double> result;
 
         for (int i = 0; i < inputSignal.size(); i++) {
             if (previousInput.size() <= i) {
@@ -104,9 +106,8 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
             // get the simulation result and make the result
             double[][] y = matlab.getVariable("y");
 
-            for (double[] yi : y) {
-                result.add(yi[yi.length - 1]);
-            }
+
+            result = new ArrayList<>(Arrays.asList(ArrayUtils.toObject(y[y.length - 1])));
         } catch (Exception e) {
             throw new SULException(e);
         }

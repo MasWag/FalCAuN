@@ -5,14 +5,15 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SimulinkSULTest {
     private final String initScript = "cd ./src/test/resources/MATLAB; initAFC;";
     private final ArrayList<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
     private final Double signalStep = 10.0;
     private SimulinkSUL sul;
+    // TODO: check what is the content of the three values. (I guess AF, AFref, mode)
+    private int expectedOutputSize = 3;
 
     SimulinkSULTest() throws Exception {
         this.sul = new SimulinkSUL(initScript, paramNames, signalStep);
@@ -38,9 +39,14 @@ class SimulinkSULTest {
     void step() {
         sul.pre();
         ArrayList<Double> input = new ArrayList<>(Arrays.asList(80.0, 900.0));
-        sul.step(input);
+        ArrayList<Double> output = sul.step(input);
+        assertNotNull(output);
+        assertEquals(expectedOutputSize, output.size());
+
         input = new ArrayList<>(Arrays.asList(85.0, 920.0));
-        sul.step(input);
+        output = sul.step(input);
+        assertNotNull(output);
+        assertEquals(expectedOutputSize, output.size());
     }
 
     @Test
