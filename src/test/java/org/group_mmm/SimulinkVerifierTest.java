@@ -60,8 +60,20 @@ class SimulinkVerifierTest {
     @Test
     void run() {
         assertFalse(verifier.run());
-        System.out.println(verifier.getCexInput());
+        System.out.println(verifier.getCexAbstractInput());
         System.out.println(verifier.getCexOutput());
         verifier.visualize();
+    }
+
+    @Test
+    void getCexProperty() {
+    }
+
+    @Test
+    void getCexInput() {
+    }
+
+    @Test
+    void getCexOutput() {
     }
 }
