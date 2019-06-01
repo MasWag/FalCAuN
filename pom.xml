@@ -19,6 +19,15 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>test/resources/MATLAB/</directory>
+                <includes>
+                    <include>**/*.autosave</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
     <dependencies>
         <dependency>

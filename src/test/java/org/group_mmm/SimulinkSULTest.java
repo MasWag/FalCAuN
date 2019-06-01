@@ -12,7 +12,7 @@ class SimulinkSULTest {
     private final ArrayList<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
     private final Double signalStep = 10.0;
     private SimulinkSUL sul;
-    // TODO: check what is the content of the three values. (I guess AF, AFref, mode)
+    // The outputs are, AF, AFref, and mode
     private int expectedOutputSize = 3;
 
     SimulinkSULTest() throws Exception {

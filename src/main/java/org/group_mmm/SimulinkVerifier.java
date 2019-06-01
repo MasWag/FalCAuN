@@ -16,7 +16,6 @@ import de.learnlib.oracle.equivalence.WpMethodEQOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import de.learnlib.util.Experiment;
 import net.automatalib.automata.transducers.MealyMachine;
-import net.automatalib.modelcheckers.ltsmin.monitor.LTSminMonitorIO;
 import net.automatalib.modelcheckers.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
 import net.automatalib.serialization.dot.GraphDOT;
@@ -28,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static net.automatalib.util.automata.Automata.stateCover;
 
@@ -37,21 +37,23 @@ import static net.automatalib.util.automata.Automata.stateCover;
  * @author Masaki Waga <mwaga@nii.ac.jp>
  */
 class SimulinkVerifier {
-    final double multiplier = 1.0;
-    protected MealyMachine<?, String, ?, String> learnedMealy;
-    protected MealyMachine<?, String, ?, String> cexMealy;
-    protected Alphabet<String> abstractInputAlphabet;
-    protected Alphabet<ArrayList<Double>> concreteInputAlphabet;
+    private static final Function<String, String> EDGE_PARSER = s -> s;
+
+    final private double multiplier = 1.0;
+    private MealyMachine<?, String, ?, String> learnedMealy;
+    private MealyMachine<?, String, ?, String> cexMealy;
+    private Alphabet<String> abstractInputAlphabet;
+    private Alphabet<ArrayList<Double>> concreteInputAlphabet;
     protected SUL<ArrayList<Double>, ArrayList<Double>> simulink;
-    protected SUL<ArrayList<Double>, ArrayList<Double>> mappedSimulink;
-    protected SimulinkSULMapper mapper;
-    protected LearningAlgorithm.MealyLearner<String, String> learner;
-    protected EquivalenceOracle.MealyEquivalenceOracle<String, String> eqOracle;
-    LTSminMonitorIO<String, String> ltsminMonitor;
+    private SimulinkSULMapper mapper;
+    private LearningAlgorithm.MealyLearner<String, String> learner;
+    private EquivalenceOracle.MealyEquivalenceOracle<String, String> eqOracle;
     private List<String> properties;
     private Word<String> cexInput;
     private String cexProperty;
     private Word<String> cexOutput;
+    private ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
+
 
 
     /**
@@ -62,28 +64,29 @@ class SimulinkVerifier {
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws Exception It can be thrown from the constrcutor of SimulinkSUL.
      */
-    public SimulinkVerifier(String initScript, ArrayList<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
+    SimulinkVerifier(String initScript, ArrayList<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
         this.properties = properties;
         this.mapper = mapper;
         this.simulink = new SimulinkSUL(initScript, paramName, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
+        this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
 
-        this.simulink = SULCache.createTreeCache(concreteInputAlphabet, this.simulink);
+        this.simulink = SULCache.createTreeCache(this.concreteInputAlphabet, this.simulink);
 
-        MappedSUL<String, String, ArrayList<Double>, ArrayList<Double>> mapperSimulink = new MappedSUL<>(mapper, simulink);
+        MappedSUL<String, String, ArrayList<Double>, ArrayList<Double>> mappedSimulink = new MappedSUL<>(mapper, simulink);
 
         // Since the omega membership query is difficult for Simulink model, we allow only finite property
 
         // create a regular membership oracle
-        MembershipOracle.MealyMembershipOracle<String, String> memOracle = SULCache.createTreeCache(abstractInputAlphabet, mapperSimulink);
+        MembershipOracle.MealyMembershipOracle<String, String> memOracle = SULCache.createTreeCache(abstractInputAlphabet, mappedSimulink);
 
         // create a learner
-        this.learner = new TTTLearnerMealy<>(abstractInputAlphabet, memOracle, AcexAnalyzers.LINEAR_FWD);
+        this.learner = new TTTLearnerMealy<>(this.abstractInputAlphabet, memOracle, AcexAnalyzers.LINEAR_FWD);
 
 
         // Create model checker
-        ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>>
-                modelChecker = new LTSminMonitorIOBuilder<String, String>().create();
+        modelChecker = new LTSminMonitorIOBuilder<String, String>()
+                .withString2Input(EDGE_PARSER).withString2Output(EDGE_PARSER).create();
 
         // create an emptiness oracle, that is used to disprove properties
         EmptinessOracle.MealyEmptinessOracle<String, String>
@@ -125,7 +128,7 @@ class SimulinkVerifier {
         // create an experiment
         Experiment.MealyExperiment<String, String>
                 experiment = new Experiment.MealyExperiment<>(learner, eqOracle, abstractInputAlphabet);
-        learnedMealy = experiment.run();
+        this.learnedMealy = experiment.run();
 
         // run the experiment
         return processMealy();
@@ -135,7 +138,7 @@ class SimulinkVerifier {
      * Wirte the DOT of the found counter example.
      *
      * @param a Write the DOT to {@code a}
-     * @throws IOException
+     * @throws IOException The exception by GraphDOT.write
      */
     void writeDOT(Appendable a) throws IOException {
         GraphDOT.write(cexMealy, abstractInputAlphabet, a);
@@ -153,10 +156,10 @@ class SimulinkVerifier {
      *
      * @return Returns {@code true} if and only if the Simulink model is verified i.e., no counter example is found.
      */
-    protected boolean processMealy() {
+    private boolean processMealy() {
         for (String property : properties) {
             final MealyMachine<?, String, ?, String> cexMealyCandidate =
-                    ltsminMonitor.findCounterExample(learnedMealy, abstractInputAlphabet, property);
+                    modelChecker.findCounterExample(learnedMealy, abstractInputAlphabet, property);
             if (Objects.isNull(cexMealyCandidate)) {
                 continue;
             }
