@@ -3,25 +3,31 @@ package org.group_mmm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class SimulinkVerifierTest {
     private final String initScript = "cd ./src/test/resources/MATLAB; initAFC;";
+    /*
+       The range should be as follows.
+	  - Pedal_Angle: [8.8 90.0]
+      - Engine_Speed: [900.0 1100.0]
+     */
     private final ArrayList<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
     private final Double signalStep = 10.0;
     private SimulinkVerifier verifier;
     private ArrayList<String> properties;
     private SimulinkSULMapper mapper;
+    private ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>();
+
 
     @BeforeEach
     void setUp() {
         // [] (velocity < 30)
-        properties = new ArrayList<>(Arrays.asList("[] (output == \"a\")"));
+        properties = new ArrayList<>(Collections.singletonList("[] (output == \"a00\")"));
 
         // Construct the mapper
         ArrayList<Map<Character, Double>> inputMapper;
@@ -47,7 +53,7 @@ class SimulinkVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
 
         try {
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
@@ -60,13 +66,13 @@ class SimulinkVerifierTest {
     @Test
     void run() {
         assertFalse(verifier.run());
-        System.out.println(verifier.getCexAbstractInput());
-        System.out.println(verifier.getCexOutput());
-        verifier.visualize();
     }
 
     @Test
     void getCexProperty() {
+        assertFalse(verifier.run());
+        String expected = "[] (output == \"a00\")";
+        assertEquals(expected, verifier.getCexProperty());
     }
 
     @Test

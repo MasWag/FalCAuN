@@ -8,21 +8,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * I/O Mapper between abstract/concrete Simulink model.
  *
- * @todo For now, the abstract alphabet is String for simplicity but later, it can be integers to handle more data.
+ * TODO For now, the abstract alphabet is String for simplicity but later, it can be integers to handle more data.
  */
 public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Double>, ArrayList<Double>> {
     private Map<String, ArrayList<Double>> inputMapper;
     private ArrayList<Character> largestOutputs;
+    private ArrayList<Function<ArrayList<Double>, Double>> sigMap;
 
     private ArrayList<ArrayList<Character>> abstractOutputs;
     private ArrayList<ArrayList<Double>> concreteOutputs;
 
     SimulinkSULMapper(ArrayList<Map<Character, Double>> inputMapper,
-                      ArrayList<Character> largestOutputs, ArrayList<Map<Character, Double>> outputMapper) {
+                      ArrayList<Character> largestOutputs, ArrayList<Map<Character, Double>> outputMapper, ArrayList<Function<ArrayList<Double>, Double>> sigMap) {
         Map<String, ArrayList<Double>> tmpMapper = new HashMap<>();
 
         for (Map<Character, Double> map : inputMapper) {
@@ -58,6 +60,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Do
             abstractOutputs.add(cList);
             concreteOutputs.add(dList);
         }
+        this.sigMap = sigMap;
     }
 
     @Override
@@ -69,8 +72,14 @@ public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Do
     public String mapOutput(ArrayList<Double> concreteOutput) {
         StringBuilder result = new StringBuilder(concreteOutput.size());
 
-        for (int i = 0; i < concreteOutput.size(); i++) {
-            int searchResult = Collections.binarySearch(concreteOutputs.get(i), concreteOutput.get(i));
+        for (int i = 0; i < concreteOutputs.size(); i++) {
+            double cOuti;
+            if (i < concreteOutput.size()) {
+                cOuti = concreteOutput.get(i);
+            } else {
+                cOuti = sigMap.get(i - concreteOutput.size()).apply(concreteOutput);
+            }
+            int searchResult = Collections.binarySearch(concreteOutputs.get(i), cOuti);
             int index = searchResult >= 0 ? searchResult : ~searchResult;
             if (index >= abstractOutputs.get(i).size()) {
                 result.append(this.largestOutputs.get(i));

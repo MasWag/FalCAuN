@@ -92,6 +92,12 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
             matlab.eval("set_param(mdl, 'LoadExternalInput', 'on');");
             matlab.eval("set_param(mdl, 'ExternalInput', 'ds');");
             matlab.eval("set_param(mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on');");
+            // Enable fast restart
+            matlab.eval("set_param(mdl,'FastRestart','on');");
+            // Enable accelerator mode
+            matlab.eval("set_param(mdl,'SimulationMode','accelerator')");
+            // Enable classic accelerator mode
+            //matlab.eval("set_param(mdl, 'GlobalUseClassicAccelMode', 'on');");
             if (isInitial) {
                 matlab.eval("set_param(mdl, 'LoadInitialState', 'off');");
                 isInitial = false;
@@ -99,9 +105,9 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
                 matlab.eval("set_param(mdl, 'LoadInitialState', 'on');");
                 matlab.eval("set_param(mdl, 'InitialState', 'myOperPoint');");
             }
-            matlab.eval("simOut = sim(mdl, 'StopTime', '" + (endTime + signalStep) + "', 'SaveOutput', 'on', 'OutputSaveName', 'yOut', 'LimitDataPoints', 'off');");
+            matlab.eval("simOut = sim(mdl, 'StopTime', '" + (endTime + signalStep) + "');");
             matlab.eval("myOperPoint = simOut.get('myOperPoint');");
-            matlab.eval("y = simOut.get('yOut');");
+            matlab.eval("y = simOut.get('yout');");
 
             // get the simulation result and make the result
             double[][] y = matlab.getVariable("y");

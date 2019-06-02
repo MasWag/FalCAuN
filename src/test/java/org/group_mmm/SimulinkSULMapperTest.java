@@ -3,10 +3,8 @@ package org.group_mmm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,6 +14,8 @@ class SimulinkSULMapperTest {
     private ArrayList<Map<Character, Double>> outputMapper;
     private ArrayList<Character> largest;
     private SimulinkSULMapper mapper;
+    private ArrayList<Function<ArrayList<Double>, Double>> sigMap;
+
 
     @Test
     void mapInput() {
@@ -32,20 +32,20 @@ class SimulinkSULMapperTest {
     @Test
     void mapOutput() {
         Map<ArrayList<Double>, String> expected = new HashMap<>();
-        expected.put(new ArrayList<>(Arrays.asList(-100.0, -200.0)), "aa");
-        expected.put(new ArrayList<>(Arrays.asList(-10.0, -20.0)), "ab");
-        expected.put(new ArrayList<>(Arrays.asList(-1.0, 20.0)), "ac");
-        expected.put(new ArrayList<>(Arrays.asList(10.0, 200.0)), "a0");
+        expected.put(new ArrayList<>(Arrays.asList(-100.0, -200.0)), "aap");
+        expected.put(new ArrayList<>(Arrays.asList(-10.0, -20.0)), "abp");
+        expected.put(new ArrayList<>(Arrays.asList(-1.0, 20.0)), "acn");
+        expected.put(new ArrayList<>(Arrays.asList(10.0, 200.0)), "a0n");
 
-        expected.put(new ArrayList<>(Arrays.asList(11.0, -200.0)), "ba");
-        expected.put(new ArrayList<>(Arrays.asList(20.0, 0.0)), "bb");
-        expected.put(new ArrayList<>(Arrays.asList(12.0, 20.0)), "bc");
-        expected.put(new ArrayList<>(Arrays.asList(13.0, 200.0)), "b0");
+        expected.put(new ArrayList<>(Arrays.asList(11.0, -200.0)), "bap");
+        expected.put(new ArrayList<>(Arrays.asList(20.0, 0.0)), "bbp");
+        expected.put(new ArrayList<>(Arrays.asList(12.0, 20.0)), "bcn");
+        expected.put(new ArrayList<>(Arrays.asList(13.0, 200.0)), "b0n");
 
-        expected.put(new ArrayList<>(Arrays.asList(21.0, -100.0)), "0a");
-        expected.put(new ArrayList<>(Arrays.asList(211.0, -20.0)), "0b");
-        expected.put(new ArrayList<>(Arrays.asList(212.0, 100.0)), "0c");
-        expected.put(new ArrayList<>(Arrays.asList(113.0, 200.0)), "00");
+        expected.put(new ArrayList<>(Arrays.asList(21.0, -100.0)), "0ap");
+        expected.put(new ArrayList<>(Arrays.asList(211.0, -20.0)), "0bp");
+        expected.put(new ArrayList<>(Arrays.asList(212.0, 100.0)), "0cp");
+        expected.put(new ArrayList<>(Arrays.asList(113.0, 200.0)), "00n");
 
         for (Map.Entry<ArrayList<Double>, String> test : expected.entrySet()) {
             String result = mapper.mapOutput(test.getKey());
@@ -69,6 +69,8 @@ class SimulinkSULMapperTest {
             mapper2.put('c', 100.0);
             inputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
         }
+        Function<ArrayList<Double>, Double> diff = a -> a.get(0) - a.get(1);
+        sigMap = new ArrayList<>(Collections.singletonList(diff));
         {
             Map<Character, Double> mapper1 = new HashMap<>();
             mapper1.put('a', 10.0);
@@ -77,9 +79,11 @@ class SimulinkSULMapperTest {
             mapper2.put('a', -100.0);
             mapper2.put('b', 0.0);
             mapper2.put('c', 100.0);
-            outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
-            largest = new ArrayList<>(Arrays.asList('0', '0'));
+            Map<Character, Double> mapper3 = new HashMap<>();
+            mapper3.put('n', 0.0);
+            outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
+            largest = new ArrayList<>(Arrays.asList('0', '0', 'p'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
     }
 }
