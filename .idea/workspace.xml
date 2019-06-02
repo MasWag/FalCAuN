@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="added non-primitive signals">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULMapperTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkSULMapperTest.java" afterDir="false" />
+    <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkVerifierTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkVerifierTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -104,8 +99,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkVerifierTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="29" column="90" lean-forward="true" selection-start-line="29" selection-start-column="90" selection-end-line="29" selection-end-column="90" />
+            <state relative-caret-position="492">
+              <caret line="117" column="37" selection-start-line="117" selection-start-column="37" selection-end-line="117" selection-end-column="37" />
               <folding>
                 <element signature="e#2298#2299#0" expanded="true" />
                 <element signature="e#2341#2342#0" expanded="true" />
@@ -396,23 +391,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.SimulinkSULMapperTest.mapOutput">
+  <component name="RunManager" selected="JUnit.SimulinkVerifierTest.runZHA19_AFC1">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.group_mmm.Main" />
       <module name="CyVeriA" />
       <option name="VM_PARAMETERS" value="-Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="BlackBoxVerifierTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="cyveria" />
-      <option name="PACKAGE_NAME" value="org.group_mmm" />
-      <option name="MAIN_CLASS_NAME" value="org.group_mmm.BlackBoxVerifierTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/ -Djava.library.path=/usr/local/MATLAB/R2019a/bin/glnxa64" />
-      <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -477,6 +460,18 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SimulinkVerifierTest.runZHA19_AFC1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="cyveria" />
+      <option name="PACKAGE_NAME" value="org.group_mmm" />
+      <option name="MAIN_CLASS_NAME" value="org.group_mmm.SimulinkVerifierTest" />
+      <option name="METHOD_NAME" value="runZHA19_AFC1" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/ -Djava.library.path=/usr/local/MATLAB/R2019a/bin/glnxa64" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="MAIN_CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
@@ -490,18 +485,18 @@
     <list>
       <item itemvalue="Application.Main" />
       <item itemvalue="JUnit.SimulinkVerifierTest.run" />
-      <item itemvalue="JUnit.BlackBoxVerifierTest" />
       <item itemvalue="JUnit.SimulinkSULTest.step (1)" />
       <item itemvalue="JUnit.SimulinkVerifierTest.getCexProperty" />
       <item itemvalue="JUnit.SimulinkSULMapperTest.mapOutput" />
+      <item itemvalue="JUnit.SimulinkVerifierTest.runZHA19_AFC1" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.SimulinkVerifierTest.runZHA19_AFC1" />
         <item itemvalue="JUnit.SimulinkSULMapperTest.mapOutput" />
         <item itemvalue="JUnit.SimulinkVerifierTest.getCexProperty" />
         <item itemvalue="JUnit.SimulinkVerifierTest.run" />
         <item itemvalue="JUnit.SimulinkSULTest.step (1)" />
-        <item itemvalue="JUnit.BlackBoxVerifierTest" />
       </list>
     </recent_temporary>
   </component>
@@ -557,15 +552,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="SimulinkSULMapperTest_mapOutput - 2019.06.02 at 11h 58m 47s.xml">
-      <configuration name="SimulinkSULMapperTest.mapOutput" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SimulinkSULMapperTest_mapOutput - 2019.06.02 at 12h 00m 33s.xml">
-      <configuration name="SimulinkSULMapperTest.mapOutput" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SimulinkSULMapperTest_mapOutput - 2019.06.02 at 12h 00m 59s.xml">
-      <configuration name="SimulinkSULMapperTest.mapOutput" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="SimulinkSULMapperTest_mapOutput - 2019.06.02 at 12h 02m 02s.xml">
       <configuration name="SimulinkSULMapperTest.mapOutput" configurationId="JUnit" />
     </history-entry>
@@ -587,6 +573,15 @@
     <history-entry file="SimulinkSULMapperTest_mapOutput - 2019.06.02 at 12h 03m 30s.xml">
       <configuration name="SimulinkSULMapperTest.mapOutput" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="SimulinkSULMapperTest_mapOutput - 2019.06.02 at 12h 08m 11s.xml">
+      <configuration name="SimulinkSULMapperTest.mapOutput" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SimulinkVerifierTest_runZHA19_AFC1 - 2019.06.02 at 12h 25m 12s.xml">
+      <configuration name="SimulinkVerifierTest.runZHA19_AFC1" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SimulinkVerifierTest_runZHA19_AFC1 - 2019.06.02 at 13h 06m 49s.xml">
+      <configuration name="SimulinkVerifierTest.runZHA19_AFC1" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="51736000" />
@@ -601,7 +596,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="1" width="1922" height="1084" extended-state="6" />
+    <frame x="-1" y="1" width="1922" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27991453" />
@@ -611,7 +606,7 @@
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32963988" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.20566632" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.21189189" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39979014" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -621,7 +616,7 @@
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.32948583" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5005342" side_tool="true" weight="0.32948583" />
       <window_info anchor="bottom" id="Version Control" order="11" weight="0.32738718" />
-      <window_info active="true" anchor="bottom" id="Messages" order="12" sideWeight="0.49946582" visible="true" weight="0.32633787" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49946582" weight="0.32633787" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24956822" />
@@ -920,8 +915,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkVerifierTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="29" column="90" lean-forward="true" selection-start-line="29" selection-start-column="90" selection-end-line="29" selection-end-column="90" />
+        <state relative-caret-position="492">
+          <caret line="117" column="37" selection-start-line="117" selection-start-column="37" selection-end-line="117" selection-end-column="37" />
           <folding>
             <element signature="e#2298#2299#0" expanded="true" />
             <element signature="e#2341#2342#0" expanded="true" />
