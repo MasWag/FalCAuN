@@ -70,6 +70,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Do
 
     @Override
     public String mapOutput(ArrayList<Double> concreteOutput) {
+        System.out.println("AF: " + concreteOutput.get(0));
         StringBuilder result = new StringBuilder(concreteOutput.size());
 
         for (int i = 0; i < concreteOutputs.size(); i++) {
