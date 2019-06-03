@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import com.mathworks.engine.EngineException;
 import com.mathworks.engine.MatlabEngine;
 import de.learnlib.api.SUL;
 import de.learnlib.api.exception.SULException;
@@ -9,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 /**
  * The Simulink SUL
@@ -19,9 +21,9 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
     private ArrayList<String> paramNames;
     private Double endTime = 0.0;
     private ArrayList<ArrayList<Double>> previousInput;
-    private Boolean isInitial = true;
+    private boolean isInitial = true;
 
-    SimulinkSUL(String initScript, ArrayList<String> paramNames, Double signalStep) throws Exception {
+    SimulinkSUL(String initScript, ArrayList<String> paramNames, Double signalStep) throws InterruptedException, ExecutionException {
         // Load System here
         this.paramNames = paramNames;
         this.signalStep = signalStep;
@@ -58,6 +60,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
     @Nullable
     @Override
     public ArrayList<Double> step(@Nullable ArrayList<Double> inputSignal) throws SULException {
+        assert (isInitial && endTime == 0) || (endTime > 0.0);
         if (inputSignal == null) {
             return null;
         }
@@ -98,6 +101,9 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
             matlab.eval("set_param(mdl,'SimulationMode','accelerator')");
             // Enable classic accelerator mode
             //matlab.eval("set_param(mdl, 'GlobalUseClassicAccelMode', 'on');");
+            // The save format must be an array
+            matlab.eval("set_param(mdl, 'SaveFormat', 'Array');");
+
             if (isInitial) {
                 matlab.eval("set_param(mdl, 'LoadInitialState', 'off');");
                 isInitial = false;
@@ -112,14 +118,17 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
             // get the simulation result and make the result
             double[][] y = matlab.getVariable("y");
 
-
             result = new ArrayList<>(Arrays.asList(ArrayUtils.toObject(y[y.length - 1])));
         } catch (Exception e) {
+            System.out.println(e.getMessage());
+            assert false;
             throw new SULException(e);
         }
 
         // Final internal process
         endTime += signalStep;
+        assert !isInitial;
+        assert endTime > 0.0;
         return result;
     }
 

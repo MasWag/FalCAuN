@@ -26,4 +26,8 @@ hs_err_pid*
 *.slxc
 *mexmaci64
 example/slprj/
-src/test/resources/slprj/
+src/test/resources/MATLAB/slprj/
+*.autosave
+
+# Emacs
+*~

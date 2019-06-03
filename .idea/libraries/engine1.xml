@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="engine1">
-    <CLASSES>
-      <root url="jar:///usr/local/MATLAB/R2019a/extern/engines/java/jar/engine.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

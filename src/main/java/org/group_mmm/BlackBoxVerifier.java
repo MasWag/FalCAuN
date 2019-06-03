@@ -11,7 +11,6 @@ import de.learnlib.oracle.emptiness.MealyBFEmptinessOracle;
 import de.learnlib.oracle.equivalence.CExFirstOracle;
 import de.learnlib.oracle.equivalence.EQOracleChain;
 import de.learnlib.oracle.equivalence.MealyBFInclusionOracle;
-import de.learnlib.oracle.equivalence.WpMethodEQOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import de.learnlib.util.Experiment;
 import net.automatalib.automata.transducers.MealyMachine;
@@ -38,8 +37,8 @@ import static net.automatalib.util.automata.Automata.stateCover;
 class BlackBoxVerifier {
     private static final Function<String, String> EDGE_PARSER = s -> s;
 
-    final private double multiplier = 1.0;
-    private SUL<String, String> verifiedSystem;
+    final private double multiplier = 10.0;
+    MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     private MealyMachine<?, String, ?, String> learnedMealy;
     private MealyMachine<?, String, ?, String> cexMealy;
     private Alphabet<String> inputAlphabet;
@@ -61,12 +60,10 @@ class BlackBoxVerifier {
         this.properties = properties;
         this.inputAlphabet = inputAlphabet;
 
-        this.verifiedSystem = SULCache.createTreeCache(this.inputAlphabet, verifiedSystem);
-
         // Since the omega membership query is difficult for Simulink model, we allow only finite property
 
         // create a regular membership oracle
-        MembershipOracle.MealyMembershipOracle<String, String> memOracle = SULCache.createTreeCache(this.inputAlphabet, this.verifiedSystem);
+        memOracle = SULCache.createTreeCache(this.inputAlphabet, verifiedSystem);
 
         // create a learner
         this.learner = new TTTLearnerMealy<>(this.inputAlphabet, memOracle, AcexAnalyzers.LINEAR_FWD);
@@ -95,9 +92,12 @@ class BlackBoxVerifier {
 
         // create an equivalence oracle, that first searches for a counter example using the ltl properties, and next
         // with the W-method.
+        final int maxDepth = 1;
         this.eqOracle = new EQOracleChain.MealyEQOracleChain<>(
-                new CExFirstOracle.MealyCExFirstOracle<>(ltlFormulas),
-                new WpMethodEQOracle.MealyWpMethodEQOracle<>(memOracle, 3));
+                new CExFirstOracle.MealyCExFirstOracle<>(ltlFormulas));
+
+                /*,
+                new WpMethodEQOracle.MealyWpMethodEQOracle<>(memOracle, maxDepth));*/
     }
 
     String getCexProperty() {
