@@ -1,6 +1,7 @@
 package org.group_mmm;
 
 import de.learnlib.api.SUL;
+import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.filter.cache.sul.SULCache;
 import de.learnlib.mapper.MappedSUL;
 import net.automatalib.words.Alphabet;
@@ -9,6 +10,7 @@ import net.automatalib.words.Word;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -44,8 +46,32 @@ class SimulinkVerifier {
         verifier = new BlackBoxVerifier(mappedSimulink, properties, abstractInputAlphabet);
     }
 
-    public String getCexProperty() {
+    String getCexProperty() {
         return verifier.getCexProperty();
+    }
+
+    void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
+        this.verifier.addEqOracle(eqOracle);
+    }
+
+    void addWpMethodEQOracle(int maxDepth) {
+        this.verifier.addWpMethodEQOracle(maxDepth);
+    }
+
+    void addBFOracle(double multiplier) {
+        this.verifier.addBFOracle(multiplier);
+    }
+
+    void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
+        this.verifier.addRandomWordEQOracle(minLength, maxLength, maxTests, random, batchSize);
+    }
+
+    void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
+        this.verifier.addRandomWalkEQOracle(restartProbability, maxSteps, random);
+    }
+
+    void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
+        this.verifier.addCompleteExplorationEQOracle(minDepth, maxDepth, batchSize);
     }
 
     Word<String> getCexAbstractInput() {
@@ -74,14 +100,31 @@ class SimulinkVerifier {
      * @param a Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    void writeDOT(Appendable a) throws IOException {
-        verifier.writeDOT(a);
+    void writeDOTCex(Appendable a) throws IOException {
+        verifier.writeDOTCex(a);
+    }
+
+    /**
+     * Wirte the DOT of the learned Mealy machine
+     *
+     * @param a Write the DOT to {@code a}
+     * @throws IOException The exception by GraphDOT.write
+     */
+    void writeDOTLearnedMealy(Appendable a) throws IOException {
+        verifier.writeDOTLearnedMealy(a);
     }
 
     /**
      * Visualize the found counter example.
      */
-    void visualize() {
-        verifier.visualize();
+    void visualizeCex() {
+        this.verifier.visualizeCex();
+    }
+
+    /**
+     * Visualize the learned Mealy machine
+     */
+    void visualizeLearnedMealy() {
+        this.verifier.visualizeLearnedMealy();
     }
 }

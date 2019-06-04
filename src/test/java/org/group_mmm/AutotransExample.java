@@ -1,5 +1,7 @@
 package org.group_mmm;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.*;
 import java.util.function.Function;
 
@@ -9,9 +11,15 @@ import java.util.function.Function;
  * The AT model two inputs (throttle and brake) and three outputs (velocity, rotation, gear).
  */
 public class AutotransExample {
-    private final String initScript = "cd ./src/test/resources/MATLAB; initAT;";
+    private final String PWD = System.getenv("PWD");
+    private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAT;";
     private final ArrayList<String> paramNames = new ArrayList<>(Arrays.asList("throttle", "brake"));
-    private final double signalStep;
+    private final int velocityIndex = 0;
+    private final int rotationIndex = 1;
+    private final int gearIndex = 2;
+    private ArrayList<ArrayList<Character>> abstractOutputs = new ArrayList<>();
+    private ArrayList<ArrayList<Double>> concreteOutputs = new ArrayList<>();
+    private double signalStep;
     private ArrayList<Map<Character, Double>> inputMapper;
     private ArrayList<Map<Character, Double>> outputMapper;
     private ArrayList<Character> largest;
@@ -19,21 +27,6 @@ public class AutotransExample {
     private ArrayList<String> properties;
     private SimulinkSULMapper mapper;
     private ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>();
-    ArrayList<ArrayList<Character>> abstractOutputs = new ArrayList<>();
-    ArrayList<ArrayList<Double>> concreteOutputs = new ArrayList<>();
-    private final int velocityIndex = 0;
-    private final int rotationIndex = 1;
-    private final int gearIndex = 2;
-
-    private void setOutputMaps() {
-        for (Map<Character, Double> entry : outputMapper) {
-            ArrayList<Character> cList = new ArrayList<>(entry.keySet());
-            ArrayList<Double> dList = new ArrayList<>(entry.values());
-            assert cList.size() == dList.size();
-            abstractOutputs.add(cList);
-            concreteOutputs.add(dList);
-        }
-    }
 
     AutotransExample(double signalStep) {
         this.signalStep = signalStep;
@@ -61,6 +54,7 @@ public class AutotransExample {
             inputMapper = new ArrayList<>(Arrays.asList(throttleMapper, brakeMapper));
         }
         {
+            //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
             velocityMapper.put('a', 10.0);
             //velocityMapper.put('b', 30.0);
@@ -95,6 +89,47 @@ public class AutotransExample {
         setOutputMaps();
     }
 
+    private void setOutputMaps() {
+        abstractOutputs.clear();
+        concreteOutputs.clear();
+        for (Map<Character, Double> entry : outputMapper) {
+            ArrayList<Character> cList = new ArrayList<>(entry.keySet());
+            ArrayList<Double> dList = new ArrayList<>(entry.values());
+            assert cList.size() == dList.size();
+            abstractOutputs.add(cList);
+            concreteOutputs.add(dList);
+        }
+    }
+
+    public ArrayList<Map<Character, Double>> getInputMapper() {
+        return inputMapper;
+    }
+
+    void setInputMapper(ArrayList<Map<Character, Double>> inputMapper) {
+        this.inputMapper = inputMapper;
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+    }
+
+    ArrayList<Map<Character, Double>> getOutputMapper() {
+        return outputMapper;
+    }
+
+    void setOutputMapper(ArrayList<Map<Character, Double>> outputMapper) {
+        this.outputMapper = outputMapper;
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        setOutputMaps();
+    }
+
+    public ArrayList<Character> getLargest() {
+        return largest;
+    }
+
+    void setLargest(ArrayList<Character> largest) {
+        this.largest = largest;
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        setOutputMaps();
+    }
+
     public String getInitScript() {
         return initScript;
     }
@@ -107,7 +142,7 @@ public class AutotransExample {
         return signalStep;
     }
 
-    public SimulinkVerifier getVerifier() {
+    SimulinkVerifier getVerifier() {
         return verifier;
     }
 
@@ -127,6 +162,11 @@ public class AutotransExample {
         return sigMap;
     }
 
+    public void setSigMap(ArrayList<Function<ArrayList<Double>, Double>> sigMap) {
+        this.sigMap = sigMap;
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, this.sigMap);
+    }
+
     private ArrayList<Character> constructSmallerAPs(int index, double threshold) {
         int bsResult = Collections.binarySearch(concreteOutputs.get(index), threshold);
         int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
@@ -134,6 +174,33 @@ public class AutotransExample {
         if (bsResult < 0 && thresholdIndex == abstractOutputs.size() - 1) {
             resultAPs.add(largest.get(index));
         }
+
+        return resultAPs;
+    }
+
+    private ArrayList<Character> constructLargerAPs(int index, double threshold) {
+        int bsResult = Collections.binarySearch(concreteOutputs.get(index), threshold);
+        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
+        ArrayList<Character> resultAPs = new ArrayList<>(abstractOutputs.get(index).subList(thresholdIndex + 1, abstractOutputs.get(index).size()));
+
+        resultAPs.add(largest.get(index));
+
+
+        return resultAPs;
+    }
+
+    private ArrayList<Character> constructEqAPs(int index, double threshold) {
+        int bsResult = Collections.binarySearch(concreteOutputs.get(index), threshold);
+        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult);
+        ArrayList<Character> resultAPs = new ArrayList<>();
+        if (!abstractOutputs.get(index).isEmpty()) {
+            resultAPs.addAll(abstractOutputs.get(index).subList(thresholdIndex, thresholdIndex + 1));
+        }
+        if (abstractOutputs.get(index).isEmpty() ||
+                (bsResult < 0 && thresholdIndex == abstractOutputs.size() - 1)) {
+            resultAPs.add(largest.get(index));
+        }
+        assert resultAPs.size() == 1;
 
         return resultAPs;
     }
@@ -197,6 +264,177 @@ public class AutotransExample {
         ArrayList<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
 
         builder.append(String.join(" || ", APs));
+        builder.append(")");
+        return builder.toString();
+    }
+
+    /**
+     * Construct the LTL formula for AT3 in HAF14
+     *
+     * @return The constructed LTL formula.
+     */
+    String constructAT3() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[] (");
+
+        ArrayList<Character> velocityAPs = constructAllAPs(velocityIndex);
+        ArrayList<Character> gear1APs = constructEqAPs(gearIndex, 1.0);
+        ArrayList<Character> gear2APs = constructEqAPs(gearIndex, 2.0);
+        ArrayList<Character> rotationAPs = constructAllAPs(rotationIndex);
+
+        String gear1APString = String.join(" || ",
+                constructProductAPs(velocityAPs, rotationAPs, gear1APs));
+        String gear2APString = String.join(" || ",
+                constructProductAPs(velocityAPs, rotationAPs, gear2APs));
+        signalStep = 1.0;
+        builder.append(
+                "( (" + gear2APString + ") && X (" + gear1APString + ") ) -> ("
+                        + "X(!(" + gear2APString + ")) && " + "X(X(!(" + gear2APString + "))) " + ")");
+
+
+        builder.append(")");
+        return builder.toString();
+    }
+
+    /**
+     * Construct the LTL formula for S1 in ZESAH18
+     * <p>
+     * This specification can be easily falsified by hill-climbing.
+     *
+     * @param velocityThreshold The threshold of the velocity. It is 120 in ZHSAH18.
+     * @return The constructed LTL formula.
+     */
+    String constructS1(double velocityThreshold) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[] (");
+
+        ArrayList<Character> velocityAPs = constructSmallerAPs(velocityIndex, velocityThreshold);
+        ArrayList<Character> rotationAPs = constructAllAPs(rotationIndex);
+        ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
+
+        ArrayList<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
+
+        builder.append(String.join(" || ", APs));
+        builder.append(")");
+        return builder.toString();
+    }
+
+    /**
+     * Construct the LTL formula for S2 in ZESAH18
+     * <p>
+     * This is difficult for robustness-guided falsification because of the information loss when gear != 3
+     *
+     * @param velocityThreshold The threshold of the velocity. It is 20 in ZHSAH18.
+     * @return The constructed LTL formula.
+     * <p>
+     * We use (gear == 3 -> v >= 20) iff. (gear != 3 || v >= 20) to make the formula shorter.
+     */
+    String constructS2(double velocityThreshold) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[] (");
+
+        ArrayList<Character> velocityAllAPs = constructAllAPs(velocityIndex);
+        ArrayList<Character> velocityLargerAPs = constructLargerAPs(velocityIndex, velocityThreshold);
+        ArrayList<Character> rotationAPs = constructAllAPs(rotationIndex);
+        ArrayList<Character> gearAllAPs = constructAllAPs(gearIndex);
+        ArrayList<Character> gear3APs = constructEqAPs(gearIndex, 3.0);
+
+        ArrayList<String> allAPStrings = constructProductAPs(velocityAllAPs, rotationAPs, gearAllAPs);
+        ArrayList<String> gear3APStrings = constructProductAPs(velocityAllAPs, rotationAPs, gear3APs);
+        Collection<String> gearN3APStrings = CollectionUtils.subtract(allAPStrings, gear3APStrings);
+
+        ArrayList<String> APs = constructProductAPs(velocityLargerAPs, rotationAPs, gearAllAPs);
+        APs.addAll(gearN3APStrings);
+
+
+        builder.append(String.join(" || ", APs));
+        builder.append(")");
+        return builder.toString();
+    }
+
+    /**
+     * Construct the LTL formula for S4 in ZESAH18
+     * <p>
+     * This is difficult for the falsification algorithm only using hill-climbing.
+     *
+     * @param ltThreshold This is 100.0 in ZHSAH18
+     * @param gtThreshold This is 65.0 in ZHSAH18
+     * @return The constructed LTL formula.
+     */
+    String constructS4(double ltThreshold, double gtThreshold) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(");
+
+        final int numOfSamples = (int) Math.ceil(30.0 / signalStep);
+        ArrayList<Character> velocity100APs = constructSmallerAPs(velocityIndex, ltThreshold);
+        ArrayList<Character> velocity65APs = constructLargerAPs(velocityIndex, gtThreshold);
+
+        ArrayList<Character> rotationAPs = constructAllAPs(rotationIndex);
+        ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
+        String velocity100String = String.join(" || ",
+                constructProductAPs(velocity100APs, rotationAPs, gearAPs));
+        String velocity65String = String.join(" || ",
+                constructProductAPs(velocity65APs, rotationAPs, gearAPs));
+        ArrayList<String> builder100Array = new ArrayList<>();
+        for (int i = 1; i < numOfSamples; i++) {
+            StringBuilder builder100 = new StringBuilder();
+            for (int j = 0; j < i; j++) {
+                builder100.append("(X");
+            }
+            builder100.append(velocity100String);
+            for (int j = 0; j < i; j++) {
+                builder100.append(")");
+            }
+            builder100Array.add(builder100.toString());
+        }
+        builder.append(String.join(" && ", builder100Array));
+        builder.append(") || (");
+        for (int i = 0; i < numOfSamples; i++) {
+            builder.append("(X");
+        }
+        builder.append(velocity65String);
+        for (int i = 0; i < numOfSamples; i++) {
+            builder.append(")");
+        }
+
+
+        builder.append(")");
+        return builder.toString();
+    }
+
+    /**
+     * Construct the LTL formula for S5 in ZESAH18
+     * <p>
+     * This is difficult for the falsification algorithm only using hill-climbing.
+     *
+     * @param ltThreshold This is 4770 in ZHSAH18
+     * @param gtThreshold This is 600 in ZHSAH18
+     * @return The constructed LTL formula.
+     */
+    String constructS5(double ltThreshold, double gtThreshold) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[] (");
+
+        ArrayList<Character> velocityAPs = constructAllAPs(velocityIndex);
+
+        ArrayList<Character> rotation4770APs = constructSmallerAPs(rotationIndex, ltThreshold);
+        ArrayList<Character> rotation600APs = constructLargerAPs(rotationIndex, gtThreshold);
+
+        ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
+
+        String velocity100String = String.join(" || ",
+                constructProductAPs(velocityAPs, rotation4770APs, gearAPs));
+        String velocity65String = String.join(" || ",
+                constructProductAPs(velocityAPs, rotation600APs, gearAPs));
+        ArrayList<String> builder100Array = new ArrayList<>();
+
+        builder.append("(" + rotation4770APs + ")");
+
+        builder.append(" || ");
+
+
+        builder.append("( X(" + rotation600APs + "))");
+
         builder.append(")");
         return builder.toString();
     }

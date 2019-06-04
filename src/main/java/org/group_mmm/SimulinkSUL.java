@@ -1,10 +1,11 @@
 package org.group_mmm;
 
-import com.mathworks.engine.EngineException;
 import com.mathworks.engine.MatlabEngine;
 import de.learnlib.api.SUL;
 import de.learnlib.api.exception.SULException;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,6 +17,7 @@ import java.util.concurrent.ExecutionException;
  * The Simulink SUL
  */
 class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkSUL.class);
     private final Double signalStep;
     private MatlabEngine matlab;
     private ArrayList<String> paramNames;
@@ -55,6 +57,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
 
     @Override
     public void post() {
+        previousInput.clear();
     }
 
     @Nullable
@@ -65,11 +68,13 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
             return null;
         }
         ArrayList<Double> result;
+        LOGGER.trace("Input: " + inputSignal);
 
         for (int i = 0; i < inputSignal.size(); i++) {
             if (previousInput.size() <= i) {
                 previousInput.add(new ArrayList<>());
                 assert previousInput.size() == i + 1;
+                previousInput.get(i).add(inputSignal.get(i));
                 previousInput.get(i).add(inputSignal.get(i));
             } else {
                 previousInput.get(i).add(inputSignal.get(i));
@@ -77,16 +82,15 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         }
         try {
             // Make the input signal
-            int numberOfSamples = (int) (endTime * 1 / signalStep);
-            if (numberOfSamples == 0) {
-                numberOfSamples = 1;
-            }
+            int numberOfSamples = (int) (endTime * 1 / signalStep) + 1;
+
             matlab.putVariable("numberOfSamples", (double) numberOfSamples);
             matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
             matlab.eval("ds = Simulink.SimulationData.Dataset;");
             for (int i = 0; i < inputSignal.size(); i++) {
                 double[] tmp = previousInput.get(i).stream().mapToDouble(Double::doubleValue).toArray();
                 matlab.putVariable("tmp", tmp);
+
                 matlab.eval("input = timeseries(tmp, timeVector);");
                 matlab.eval("ds = ds.addElement(input, '" + paramNames.get(i) + "');");
             }
@@ -97,10 +101,12 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
             matlab.eval("set_param(mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on');");
             // Enable fast restart
             matlab.eval("set_param(mdl,'FastRestart','on');");
+            // Use normal mode
+            matlab.eval("set_param(mdl,'SimulationMode','normal')");
             // Enable accelerator mode
-            matlab.eval("set_param(mdl,'SimulationMode','accelerator')");
+            //matlab.eval("set_param(mdl,'SimulationMode','accelerator')");
             // Enable classic accelerator mode
-            //matlab.eval("set_param(mdl, 'GlobalUseClassicAccelMode', 'on');");
+            //matlab.eval("set_param(0, 'GlobalUseClassicAccelMode', 'on');");
             // The save format must be an array
             matlab.eval("set_param(mdl, 'SaveFormat', 'Array');");
 
@@ -129,6 +135,8 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         endTime += signalStep;
         assert !isInitial;
         assert endTime > 0.0;
+        LOGGER.trace("Output: " + result);
+
         return result;
     }
 

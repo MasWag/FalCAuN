@@ -5,12 +5,14 @@ import de.learnlib.algorithms.ttt.mealy.TTTLearnerMealy;
 import de.learnlib.api.SUL;
 import de.learnlib.api.algorithm.LearningAlgorithm;
 import de.learnlib.api.logging.LoggingPropertyOracle;
-import de.learnlib.api.oracle.*;
+import de.learnlib.api.oracle.EmptinessOracle;
+import de.learnlib.api.oracle.InclusionOracle;
+import de.learnlib.api.oracle.MembershipOracle;
+import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.filter.cache.sul.SULCache;
 import de.learnlib.oracle.emptiness.MealyBFEmptinessOracle;
-import de.learnlib.oracle.equivalence.CExFirstOracle;
-import de.learnlib.oracle.equivalence.EQOracleChain;
-import de.learnlib.oracle.equivalence.MealyBFInclusionOracle;
+import de.learnlib.oracle.equivalence.*;
+import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import de.learnlib.util.Experiment;
 import net.automatalib.automata.transducers.MealyMachine;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.function.Function;
 
 import static net.automatalib.util.automata.Automata.stateCover;
@@ -38,12 +41,12 @@ class BlackBoxVerifier {
     private static final Function<String, String> EDGE_PARSER = s -> s;
 
     final private double multiplier = 10.0;
-    MembershipOracle.MealyMembershipOracle<String, String> memOracle;
+    SULCache<String, String> memOracle;
     private MealyMachine<?, String, ?, String> learnedMealy;
     private MealyMachine<?, String, ?, String> cexMealy;
     private Alphabet<String> inputAlphabet;
     private LearningAlgorithm.MealyLearner<String, String> learner;
-    private EquivalenceOracle.MealyEquivalenceOracle<String, String> eqOracle;
+    private EQOracleChain.MealyEQOracleChain<String, String> eqOracle;
     private List<String> properties;
     private Word<String> cexInput;
     private String cexProperty;
@@ -91,13 +94,38 @@ class BlackBoxVerifier {
         }
 
         // create an equivalence oracle, that first searches for a counter example using the ltl properties, and next
-        // with the W-method.
-        final int maxDepth = 1;
         this.eqOracle = new EQOracleChain.MealyEQOracleChain<>(
                 new CExFirstOracle.MealyCExFirstOracle<>(ltlFormulas));
+    }
 
-                /*,
-                new WpMethodEQOracle.MealyWpMethodEQOracle<>(memOracle, maxDepth));*/
+    public MembershipOracle.MealyMembershipOracle<String, String> getMemOracle() {
+        return memOracle;
+    }
+
+    void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
+        this.eqOracle.addOracle(eqOracle);
+    }
+
+    void addWpMethodEQOracle(int maxDepth) {
+        addEqOracle(new WpMethodEQOracle.MealyWpMethodEQOracle<>(memOracle, maxDepth));
+    }
+
+    void addBFOracle(double multiplier) {
+        addEqOracle(new MealyBFInclusionOracle<>(memOracle, multiplier));
+    }
+
+    void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
+        addEqOracle(new RandomWordsEQOracle.MealyRandomWordsEQOracle<>(
+                memOracle, minLength, maxLength, maxTests, random, batchSize));
+    }
+
+    void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
+        addEqOracle(new RandomWalkEQOracle<>(memOracle, restartProbability, maxSteps, random));
+    }
+
+    void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
+        addEqOracle(new CompleteExplorationEQOracle.MealyCompleteExplorationEQOracle<>(
+                memOracle, minDepth, maxDepth, batchSize));
     }
 
     String getCexProperty() {
@@ -131,15 +159,32 @@ class BlackBoxVerifier {
      * @param a Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    void writeDOT(Appendable a) throws IOException {
+    void writeDOTCex(Appendable a) throws IOException {
+        GraphDOT.write(cexMealy, this.inputAlphabet, a);
+    }
+
+    /**
+     * Wirte the DOT of the learned Mealy machine.
+     *
+     * @param a Write the DOT to {@code a}
+     * @throws IOException The exception by GraphDOT.write
+     */
+    void writeDOTLearnedMealy(Appendable a) throws IOException {
         GraphDOT.write(cexMealy, this.inputAlphabet, a);
     }
 
     /**
      * Visualize the found counter example.
      */
-    void visualize() {
+    void visualizeCex() {
         Visualization.visualize(cexMealy, this.inputAlphabet);
+    }
+
+    /**
+     * Visualize the learned Mealy machine
+     */
+    void visualizeLearnedMealy() {
+        Visualization.visualize(this.learnedMealy, this.inputAlphabet);
     }
 
     /**
