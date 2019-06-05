@@ -18,10 +18,9 @@ import java.util.stream.Collectors;
 public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershipOracle<String, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracle.class);
 
-    private final SimulinkSUL simulink;
-    private final SimulinkSULMapper mapper;
-    //    private final TreeCache<String, String> cache;
-    private final IncrementalMealyTreeBuilder<String, String> cache;
+    protected final SimulinkSUL simulink;
+    protected final SimulinkSULMapper mapper;
+    final IncrementalMealyTreeBuilder<String, String> cache;
 
 
     SimulinkMembershipOracle(SimulinkSUL simulink, SimulinkSULMapper mapper) {

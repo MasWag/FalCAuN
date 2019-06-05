@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * @author Masaki Waga <masaki@gmail.com>
  */
 class SimulinkVerifier {
+    private SimulinkSUL rawSimulink;
     protected SUL<ArrayList<Double>, ArrayList<Double>> simulink;
     private Alphabet<String> abstractInputAlphabet;
     private Alphabet<ArrayList<Double>> concreteInputAlphabet;
@@ -36,7 +38,7 @@ class SimulinkVerifier {
      */
     SimulinkVerifier(String initScript, ArrayList<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
-        SimulinkSUL rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
+        this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
 
@@ -75,6 +77,17 @@ class SimulinkVerifier {
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
         this.verifier.addCompleteExplorationEQOracle(minDepth, maxDepth, batchSize);
+    }
+
+    void addHillClimbingEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
+                                 int length,
+                                 Random random,
+                                 int maxTests,
+                                 int generationSize,
+                                 int childrenSize,
+                                 int changeSize) {
+        this.verifier.addEqOracle(new HillClimbingEQOracle(
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, changeSize));
     }
 
     Word<String> getCexAbstractInput() {
