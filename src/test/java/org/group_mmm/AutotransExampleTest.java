@@ -286,6 +286,9 @@ class AutotransExampleTest {
 
         exampleAT.constructVerifier();
         exampleAT.getVerifier().addRandomWordEQOracle(2, 3, 100, new Random(), 1);
+        // exampleAT.getVerifier().addRandomWordEQOracle(20, 30, 100, new Random(), 1);
+        // exampleAT.getVerifier().addWpMethodEQOracle(30);
+        //exampleAT.getVerifier().addRandomWalkEQOracle(0.1, 100, new Random());
         assertFalse(exampleAT.getVerifier().run());
 
         FileWriter writer = new FileWriter(new File("./runS1Learned.dot"));
@@ -298,7 +301,7 @@ class AutotransExampleTest {
 
     @Test
     void runS2() throws Exception {
-        AutotransExample exampleAT = new AutotransExample(5.0);
+        AutotransExample exampleAT = new AutotransExample(1.0);
 
         // Construct the input mapper
         {
@@ -352,15 +355,40 @@ class AutotransExampleTest {
         exampleAT.getVerifier().addRandomWordEQOracle(5, 7, 100, new Random(), 1);
         System.out.println(exampleAT.getVerifier().run());
 
-        exampleAT.getVerifier().visualizeLearnedMealy();
-
+        FileWriter writer = new FileWriter(new File("./runS2Learned.dot"));
+        exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+        writer.close();
         System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
         System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
     }
 
     @Test
     void runS4() throws Exception {
-        AutotransExample exampleAT = new AutotransExample(10.0);
+        AutotransExample exampleAT = new AutotransExample(1.0);
+
+        // Construct the input mapper
+        {
+            Map<Character, Double> throttleMapper = new HashMap<>();
+            throttleMapper.put('a', 0.0);
+            //throttleMapper.put('b', 20.0);
+            //throttleMapper.put('c', 40.0);
+            throttleMapper.put('c', 50.0);
+            //throttleMapper.put('d', 60.0);
+            //throttleMapper.put('e', 80.0);
+            throttleMapper.put('f', 100.0);
+
+            Map<Character, Double> brakeMapper = new HashMap<>();
+            brakeMapper.put('a', 0.0);
+            //brakeMapper.put('b', 50.0);
+            //brakeMapper.put('c', 100.0);
+            brakeMapper.put('d', 150.0);
+            //brakeMapper.put('e', 200.0);
+            //brakeMapper.put('f', 250.0);
+            //brakeMapper.put('g', 300.0);
+            brakeMapper.put('h', 325.0);
+
+            exampleAT.setInputMapper(new ArrayList<>(Arrays.asList(throttleMapper, brakeMapper)));
+        }
 
         Map<Character, Double> velocityMapper = new HashMap<>();
         velocityMapper.put('a', 50.0);
@@ -386,10 +414,76 @@ class AutotransExampleTest {
                         exampleAT.constructS4(100.0, 65.0))));
 
         exampleAT.constructVerifier();
-        exampleAT.getVerifier().addRandomWordEQOracle(5, 10, 100, new Random(), 1);
+        // exampleAT.getVerifier().addRandomWordEQOracle(10, 30, 100, new Random(), 1);
+        exampleAT.getVerifier().addWpMethodEQOracle(30);
+
         System.out.println(exampleAT.getVerifier().run());
 
         FileWriter writer = new FileWriter(new File("./runS4Learned.dot"));
+        exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+        writer.close();
+
+        System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
+        System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+    }
+
+    @Test
+    void runS5() throws Exception {
+        AutotransExample exampleAT = new AutotransExample(1.0);
+
+        // Construct the input mapper
+        {
+            Map<Character, Double> throttleMapper = new HashMap<>();
+            throttleMapper.put('a', 0.0);
+            //throttleMapper.put('b', 20.0);
+            //throttleMapper.put('c', 40.0);
+            throttleMapper.put('c', 50.0);
+            //throttleMapper.put('d', 60.0);
+            //throttleMapper.put('e', 80.0);
+            throttleMapper.put('f', 100.0);
+
+            Map<Character, Double> brakeMapper = new HashMap<>();
+            brakeMapper.put('a', 0.0);
+            //brakeMapper.put('b', 50.0);
+            //brakeMapper.put('c', 100.0);
+            brakeMapper.put('d', 150.0);
+            //brakeMapper.put('e', 200.0);
+            //brakeMapper.put('f', 250.0);
+            //brakeMapper.put('g', 300.0);
+            brakeMapper.put('h', 325.0);
+
+            exampleAT.setInputMapper(new ArrayList<>(Arrays.asList(throttleMapper, brakeMapper)));
+        }
+
+        Map<Character, Double> velocityMapper = new HashMap<>();
+
+        Map<Character, Double> rotationMapper = new HashMap<>();
+        rotationMapper.put('a', 600.0);
+        rotationMapper.put('b', 2000.0);
+        rotationMapper.put('c', 3000.0);
+        rotationMapper.put('d', 4000.0);
+        rotationMapper.put('e', 4770.0);
+
+        Map<Character, Double> gearMapper = new HashMap<>();
+
+
+        exampleAT.setOutputMapper(new ArrayList<>(
+                Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+        ArrayList<Character> largest = new ArrayList<>(Arrays.asList('X', 'f', 'X'));
+        exampleAT.setLargest(largest);
+
+        exampleAT.setProperties(new ArrayList<>(
+                Collections.singletonList(
+                        exampleAT.constructS5(4770.0, 600.0))));
+
+        exampleAT.constructVerifier();
+        // exampleAT.getVerifier().addRandomWordEQOracle(10, 30, 100, new Random(), 1);
+        exampleAT.getVerifier().addWpMethodEQOracle(30);
+
+        System.out.println(exampleAT.getVerifier().run());
+
+        FileWriter writer = new FileWriter(new File("./runS5Learned.dot"));
         exampleAT.getVerifier().writeDOTLearnedMealy(writer);
         writer.close();
 

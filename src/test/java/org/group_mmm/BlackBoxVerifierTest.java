@@ -44,7 +44,7 @@ class BlackBoxVerifierTest {
                 create();
         this.sul = new MealySimulatorSUL<>(mealy);
         MembershipOracle.MealyMembershipOracle<String, String> memOracle = new SULOracle<>(sul);
-        verifier = new BlackBoxVerifier(memOracle, properties, inputAlphabet);
+        verifier = new BlackBoxVerifier(memOracle, this.sul, properties, inputAlphabet);
     }
 
     @Test

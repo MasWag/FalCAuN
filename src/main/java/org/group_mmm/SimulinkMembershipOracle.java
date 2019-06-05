@@ -2,7 +2,9 @@ package org.group_mmm;
 
 import de.learnlib.api.oracle.MembershipOracle;
 import de.learnlib.api.query.Query;
+import net.automatalib.incremental.mealy.tree.IncrementalMealyTreeBuilder;
 import net.automatalib.words.Word;
+import net.automatalib.words.WordBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,21 +20,25 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
 
     private final SimulinkSUL simulink;
     private final SimulinkSULMapper mapper;
-    private final TreeCache<String, String> cache;
+    //    private final TreeCache<String, String> cache;
+    private final IncrementalMealyTreeBuilder<String, String> cache;
+
 
     SimulinkMembershipOracle(SimulinkSUL simulink, SimulinkSULMapper mapper) {
         this.simulink = simulink;
         this.mapper = mapper;
-        this.cache = new TreeCache<>(mapper.constructAbstractAlphabet());
+        this.cache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
+        //this.cache = new TreeCache<>(mapper.constructAbstractAlphabet());
     }
 
     @Override
     public void processQueries(Collection<? extends Query<String, Word<String>>> queries) {
         for (Query<String, Word<String>> q : queries) {
             final Word<String> abstractInput = q.getInput();
-            Word<String> abstractOutput = cache.get(abstractInput);
+            WordBuilder<String> abstractOutputBuilder = new WordBuilder<>(abstractInput.size());
 
-            if (abstractOutput == null) {
+            if (!cache.lookup(abstractInput, abstractOutputBuilder)) {
+                abstractOutputBuilder.clear();
                 final Word<ArrayList<Double>> concreteInput = Word.fromList(
                         abstractInput.stream().map(mapper::mapInput).collect(Collectors.toList()));
                 assert concreteInput.size() == q.getInput().size();
@@ -45,13 +51,14 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
                     return;
                 }
                 assert concreteOutput.size() == concreteInput.size();
-                abstractOutput = Word.fromList(
+                abstractOutputBuilder.append(
                         concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList()));
-                assert concreteOutput.size() == abstractOutput.size();
-                cache.put(abstractInput, abstractOutput);
+
+                assert concreteOutput.size() == abstractOutputBuilder.toWord().size();
+                cache.insert(abstractInput, abstractOutputBuilder.toWord());
             }
 
-            final Word<String> output = abstractOutput.suffix(q.getSuffix().length());
+            final Word<String> output = abstractOutputBuilder.toWord().suffix(q.getSuffix().length());
             q.answer(output);
         }
     }

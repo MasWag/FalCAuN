@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="implemented TreeCache">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/TreeCache.java" afterDir="false" />
+    <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java" afterDir="false" />
@@ -33,20 +32,19 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkVerifier.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="713">
-              <caret line="48" column="32" selection-start-line="48" selection-start-column="32" selection-end-line="48" selection-end-column="32" />
+            <state relative-caret-position="735">
+              <caret line="49" column="5" selection-start-line="49" selection-start-column="5" selection-end-line="49" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1939#1940#0" expanded="true" />
-                <element signature="e#1987#1988#0" expanded="true" />
-                <element signature="e#2481#2482#0" expanded="true" />
-                <element signature="e#2540#2541#0" expanded="true" />
-                <element signature="e#2583#2584#0" expanded="true" />
-                <element signature="e#2627#2628#0" expanded="true" />
+                <element signature="e#3217#3218#0" expanded="true" />
                 <element signature="e#3262#3263#0" expanded="true" />
+                <element signature="e#3484#3485#0" expanded="true" />
                 <element signature="e#3530#3531#0" expanded="true" />
+                <element signature="e#3684#3685#0" expanded="true" />
                 <element signature="e#3721#3722#0" expanded="true" />
+                <element signature="e#4369#4370#0" expanded="true" />
                 <element signature="e#4413#4414#0" expanded="true" />
+                <element signature="e#4508#4509#0" expanded="true" />
                 <element signature="e#4561#4562#0" expanded="true" />
               </folding>
             </state>
@@ -54,19 +52,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/BlackBoxVerifierTest.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="45" column="75" selection-start-line="45" selection-start-column="75" selection-end-line="45" selection-end-column="75" />
+            <state relative-caret-position="1165">
+              <caret line="119" column="59" selection-start-line="119" selection-start-column="59" selection-end-line="119" selection-end-column="59" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java">
+        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/BlackBoxVerifierTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1169">
-              <caret line="117" column="7" selection-start-line="117" selection-start-column="7" selection-end-line="117" selection-end-column="7" />
+            <state relative-caret-position="405">
+              <caret line="46" column="61" selection-start-line="46" selection-start-column="61" selection-end-line="46" selection-end-column="61" />
             </state>
           </provider>
         </entry>
@@ -74,8 +72,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="825">
-              <caret line="55" column="9" lean-forward="true" selection-start-line="55" selection-start-column="9" selection-end-line="55" selection-end-column="9" />
+            <state relative-caret-position="810">
+              <caret line="54" column="101" selection-start-line="54" selection-start-column="101" selection-end-line="54" selection-end-column="101" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -86,24 +84,29 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/TreeCache.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
+            <state relative-caret-position="900">
+              <caret line="64" column="9" selection-start-line="64" selection-start-column="9" selection-end-line="64" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#660#661#0" expanded="true" />
-                <element signature="e#724#725#0" expanded="true" />
-                <element signature="e#745#746#0" expanded="true" />
-                <element signature="e#776#777#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkAbstractAlphabetDomain.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2152">
-              <caret line="152" column="8" selection-start-line="152" selection-start-column="8" selection-end-line="152" selection-end-column="8" />
+            <state relative-caret-position="-445">
+              <caret line="114" column="44" lean-forward="true" selection-start-line="114" selection-start-column="44" selection-end-line="114" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -112,19 +115,13 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/resources/MATLAB/initAFC.m">
+        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkMembershipOracleTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1020">
-              <caret line="79" column="62" selection-start-line="79" selection-start-column="62" selection-end-line="79" selection-end-column="62" />
+            <state relative-caret-position="1305">
+              <caret line="322" column="26" selection-start-line="322" selection-start-column="26" selection-end-line="322" selection-end-column="26" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -132,25 +129,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="31" selection-start-line="12" selection-start-column="31" selection-end-line="14" selection-end-column="90" />
+            <state relative-caret-position="875">
+              <caret line="409" column="13" selection-start-line="409" selection-start-column="13" selection-end-line="409" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#5274#5275#0" expanded="true" />
-                <element signature="e#5305#5306#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="466">
-              <caret line="41" column="38" selection-start-line="41" selection-start-column="38" selection-end-line="41" selection-end-column="38" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1354#1384#1" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -170,10 +152,10 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>sampleTime</find>
-      <find>simulink</find>
       <find>abstractOutputs</find>
       <find>verifiedSystem</find>
       <find>logger</find>
+      <find>simulink</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -200,13 +182,14 @@
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java" />
         <option value="$PROJECT_DIR$/src/test/resources/MATLAB/initAFC.m" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkMembershipOracleTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/TreeCache.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/MyMealyFinitePropertyOracle.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkVerifier.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/TreeCache.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/BlackBoxVerifierTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java" />
       </list>
     </option>
   </component>
@@ -525,10 +508,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.AutotransExampleTest.runS1" />
-        <item itemvalue="JUnit.SimulinkMembershipOracleTest" />
-        <item itemvalue="JUnit.SimulinkMembershipOracleTest.processQueries" />
         <item itemvalue="JUnit.AutotransExampleTest.runS4" />
         <item itemvalue="JUnit.AutotransExampleTest.runS2" />
+        <item itemvalue="JUnit.SimulinkMembershipOracleTest" />
+        <item itemvalue="JUnit.SimulinkMembershipOracleTest.processQueries" />
       </list>
     </recent_temporary>
   </component>
@@ -544,6 +527,7 @@
       <workItem from="1559114293149" duration="73000" />
       <workItem from="1559118668689" duration="69000" />
       <workItem from="1559267757427" duration="6380000" />
+      <workItem from="1559719159415" duration="9025000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1558953421816</created>
@@ -608,43 +592,50 @@
       <option name="project" value="LOCAL" />
       <updated>1559709297796</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="implemented TreeCache">
+      <created>1559717013324</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1559717013325</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="SimulinkMembershipOracleTest - 2019.06.05 at 13h 31m 19s.xml">
-      <configuration name="SimulinkMembershipOracleTest" configurationId="JUnit" />
+    <history-entry file="AutotransExampleTest_runS4 - 2019.06.05 at 17h 44m 03s.xml">
+      <configuration name="AutotransExampleTest.runS4" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimulinkMembershipOracleTest - 2019.06.05 at 13h 31m 37s.xml">
-      <configuration name="SimulinkMembershipOracleTest" configurationId="JUnit" />
+    <history-entry file="AutotransExampleTest_runS4 - 2019.06.05 at 17h 51m 58s.xml">
+      <configuration name="AutotransExampleTest.runS4" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="SimulinkMembershipOracleTest - 2019.06.05 at 13h 32m 52s.xml">
-      <configuration name="SimulinkMembershipOracleTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SimulinkMembershipOracleTest - 2019.06.05 at 13h 33m 39s.xml">
-      <configuration name="SimulinkMembershipOracleTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 13h 48m 29s.xml">
+    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 17h 56m 47s.xml">
       <configuration name="AutotransExampleTest.runS1" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 14h 53m 17s.xml">
+    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 18h 11m 42s.xml">
       <configuration name="AutotransExampleTest.runS1" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 14h 57m 24s.xml">
+    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 18h 15m 05s.xml">
       <configuration name="AutotransExampleTest.runS1" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 15h 35m 26s.xml">
+    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 18h 17m 16s.xml">
       <configuration name="AutotransExampleTest.runS1" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 15h 38m 52s.xml">
+    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 18h 25m 11s.xml">
       <configuration name="AutotransExampleTest.runS1" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 15h 40m 25s.xml">
+    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 18h 33m 50s.xml">
+      <configuration name="AutotransExampleTest.runS1" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 18h 47m 52s.xml">
+      <configuration name="AutotransExampleTest.runS1" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AutotransExampleTest_runS1 - 2019.06.05 at 18h 49m 28s.xml">
       <configuration name="AutotransExampleTest.runS1" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="118883000" />
+    <option name="totallyTimeSpent" value="129439000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -657,15 +648,16 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1440" y="-997" width="1200" height="1897" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.31865284" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3238342" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32963988" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.14016621" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.14016621" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.21495327" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -675,7 +667,7 @@
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.32866243" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5005342" side_tool="true" weight="0.32948583" />
       <window_info anchor="bottom" id="Version Control" order="11" weight="0.32576177" />
-      <window_info active="true" anchor="bottom" id="Messages" order="12" sideWeight="0.49946582" visible="true" weight="0.32188365" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.49946582" weight="0.32188365" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24956822" />
@@ -796,8 +788,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkOutput.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkInputMapper.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkInputTest.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkOutputTest.java" />
     <entry file="jar:///Applications/MATLAB_R2018b.app/extern/engines/java/jar/engine.jar!/com/mathworks/engine/MatlabEngine.class">
@@ -983,29 +973,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkAbstractAlphabetDomain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="464">
           <caret line="68" column="12" selection-start-line="68" selection-start-column="12" selection-end-line="68" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1440">
-          <caret line="100" selection-start-line="100" selection-end-line="100" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2935#2936#0" expanded="true" />
-            <element signature="e#2976#2977#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1034,14 +1005,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="31" selection-start-line="12" selection-start-column="31" selection-end-line="14" selection-end-column="90" />
+        <state relative-caret-position="990">
+          <caret line="76" column="25" selection-start-line="76" selection-start-column="25" selection-end-line="76" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#5274#5275#0" expanded="true" />
-            <element signature="e#5305#5306#0" expanded="true" />
+            <element signature="e#2935#2936#0" expanded="true" />
+            <element signature="e#2976#2977#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1053,34 +1024,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkVerifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="713">
-          <caret line="48" column="32" selection-start-line="48" selection-start-column="32" selection-end-line="48" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1939#1940#0" expanded="true" />
-            <element signature="e#1987#1988#0" expanded="true" />
-            <element signature="e#2481#2482#0" expanded="true" />
-            <element signature="e#2540#2541#0" expanded="true" />
-            <element signature="e#2583#2584#0" expanded="true" />
-            <element signature="e#2627#2628#0" expanded="true" />
-            <element signature="e#3262#3263#0" expanded="true" />
-            <element signature="e#3530#3531#0" expanded="true" />
-            <element signature="e#3721#3722#0" expanded="true" />
-            <element signature="e#4413#4414#0" expanded="true" />
-            <element signature="e#4561#4562#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1169">
-          <caret line="117" column="7" selection-start-line="117" selection-start-column="7" selection-end-line="117" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkMembershipOracleTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1020">
@@ -1088,54 +1031,106 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/TreeCache.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2152">
-          <caret line="152" column="8" selection-start-line="152" selection-start-column="8" selection-end-line="152" selection-end-column="8" />
+        <state relative-caret-position="900">
+          <caret line="64" column="9" selection-start-line="64" selection-start-column="9" selection-end-line="64" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/MyMealyFinitePropertyOracle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="1" lean-forward="true" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="875">
+          <caret line="409" column="13" selection-start-line="409" selection-start-column="13" selection-end-line="409" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkAbstractAlphabetDomain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1165">
+          <caret line="119" column="59" selection-start-line="119" selection-start-column="59" selection-end-line="119" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkVerifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="735">
+          <caret line="49" column="5" selection-start-line="49" selection-start-column="5" selection-end-line="49" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3217#3218#0" expanded="true" />
+            <element signature="e#3262#3263#0" expanded="true" />
+            <element signature="e#3484#3485#0" expanded="true" />
+            <element signature="e#3530#3531#0" expanded="true" />
+            <element signature="e#3684#3685#0" expanded="true" />
+            <element signature="e#3721#3722#0" expanded="true" />
+            <element signature="e#4369#4370#0" expanded="true" />
+            <element signature="e#4413#4414#0" expanded="true" />
+            <element signature="e#4508#4509#0" expanded="true" />
+            <element signature="e#4561#4562#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/resources/MATLAB/Autotrans_shift.mdl.autosave">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/BlackBoxVerifierTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="46" column="61" selection-start-line="46" selection-start-column="61" selection-end-line="46" selection-end-column="61" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="825">
-          <caret line="55" column="9" lean-forward="true" selection-start-line="55" selection-start-column="9" selection-end-line="55" selection-end-column="9" />
+        <state relative-caret-position="810">
+          <caret line="54" column="101" selection-start-line="54" selection-start-column="101" selection-end-line="54" selection-end-column="101" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/TreeCache.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="19" selection-start-line="27" selection-start-column="19" selection-end-line="27" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#660#661#0" expanded="true" />
-            <element signature="e#724#725#0" expanded="true" />
-            <element signature="e#745#746#0" expanded="true" />
-            <element signature="e#776#777#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/BlackBoxVerifierTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="45" column="75" selection-start-line="45" selection-start-column="75" selection-end-line="45" selection-end-column="75" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="466">
-          <caret line="41" column="38" selection-start-line="41" selection-start-column="38" selection-end-line="41" selection-end-column="38" />
+        <state relative-caret-position="1305">
+          <caret line="322" column="26" selection-start-line="322" selection-start-column="26" selection-end-line="322" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1354#1384#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSUL.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-445">
+          <caret line="114" column="44" lean-forward="true" selection-start-line="114" selection-start-column="44" selection-end-line="114" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

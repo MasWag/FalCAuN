@@ -46,7 +46,7 @@ class SimulinkVerifier {
         this.mappedSimulink = SULCache.createTreeCache(this.abstractInputAlphabet, this.mappedSimulink);
         // create a regular membership oracle
         SimulinkMembershipOracle memOracle = new SimulinkMembershipOracle(rawSimulink, this.mapper);
-        verifier = new BlackBoxVerifier(memOracle, properties, abstractInputAlphabet);
+        verifier = new BlackBoxVerifier(memOracle, mappedSimulink, properties, abstractInputAlphabet);
     }
 
     String getCexProperty() {
@@ -69,9 +69,9 @@ class SimulinkVerifier {
         this.verifier.addRandomWordEQOracle(minLength, maxLength, maxTests, random, batchSize);
     }
 
-    //void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
-    //    this.verifier.addRandomWalkEQOracle(restartProbability, maxSteps, random);
-    //}
+    void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
+        this.verifier.addRandomWalkEQOracle(restartProbability, maxSteps, random);
+    }
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
         this.verifier.addCompleteExplorationEQOracle(minDepth, maxDepth, batchSize);

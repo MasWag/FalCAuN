@@ -93,24 +93,26 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         try {
             // Make the input signal
             int numberOfSamples = (int) (endTime * 1 / signalStep) + 1;
+            StringBuilder builder = new StringBuilder();
+            makeDataSet(numberOfSamples, inputSignal.size(), builder);
 
-            makeDataSet(numberOfSamples, inputSignal.size());
-
-            configureSimulink();
+            configureSimulink(builder);
 
             // Execute the simulation
-            matlab.eval("set_param(mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on');");
+            builder.append("set_param(mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on');");
             if (isInitial) {
-                matlab.eval("set_param(mdl, 'LoadInitialState', 'off');");
+                builder.append("set_param(mdl, 'LoadInitialState', 'off');");
                 isInitial = false;
             } else {
-                matlab.eval("set_param(mdl, 'LoadInitialState', 'on');");
-                matlab.eval("set_param(mdl, 'InitialState', 'myOperPoint');");
+                builder.append("set_param(mdl, 'LoadInitialState', 'on');");
+                builder.append("set_param(mdl, 'InitialState', 'myOperPoint');");
             }
 
-            matlab.eval("simOut = sim(mdl, 'StopTime', '" + (endTime + signalStep) + "');");
-            matlab.eval("myOperPoint = simOut.get('myOperPoint');");
-            matlab.eval("y = simOut.get('yout');");
+            builder.append("simOut = sim(mdl, 'StopTime', '" + (endTime + signalStep) + "');");
+            builder.append("myOperPoint = simOut.get('myOperPoint');");
+            builder.append("y = simOut.get('yout');");
+
+            matlab.eval(builder.toString());
 
             // get the simulation result and make the result
             double[][] y = matlab.getVariable("y");
@@ -131,43 +133,47 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         return result;
     }
 
-    private void makeDataSet(int numberOfSamples, int signalDimension) throws ExecutionException, InterruptedException {
-        matlab.putVariable("numberOfSamples", (double) numberOfSamples);
-        matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
-        matlab.eval("ds = Simulink.SimulationData.Dataset;");
+    private void makeDataSet(int numberOfSamples, int signalDimension, StringBuilder builder) throws ExecutionException, InterruptedException {
+        builder.append("numberOfSamples = " + numberOfSamples + ";");
+        //matlab.putVariable("numberOfSamples", (double) numberOfSamples);
+        builder.append("timeVector = (0:numberOfSamples) * signalStep;");
+        //matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
+        builder.append("ds = Simulink.SimulationData.Dataset;");
+        //matlab.eval("ds = Simulink.SimulationData.Dataset;");
         for (int i = 0; i < signalDimension; i++) {
             double[] tmp = previousInput.get(i).stream().mapToDouble(Double::doubleValue).toArray();
-            matlab.putVariable("tmp", tmp);
-
-            matlab.eval("input = timeseries(tmp, timeVector);");
-            matlab.eval("ds = ds.addElement(input, '" + paramNames.get(i) + "');");
+            matlab.putVariable("tmp" + i, tmp);
+            builder.append("input" + i + " = timeseries(tmp" + i + ", timeVector);");
+            //matlab.eval("input = timeseries(tmp, timeVector);");
+            builder.append("ds = ds.addElement(input" + i + ", '" + paramNames.get(i) + "');");
+            //matlab.eval("ds = ds.addElement(input, '" + paramNames.get(i) + "');");
         }
     }
 
-    private void configureSimulink() throws InterruptedException, ExecutionException {
+    private void configureSimulink(StringBuilder builder) throws InterruptedException, ExecutionException {
         // We use the data in ds
-        matlab.eval("set_param(mdl, 'LoadExternalInput', 'on');");
-        matlab.eval("set_param(mdl, 'ExternalInput', 'ds');");
+        builder.append("set_param(mdl, 'LoadExternalInput', 'on');");
+        builder.append("set_param(mdl, 'ExternalInput', 'ds');");
 
         // Enable fast restart
-        matlab.eval("set_param(mdl,'FastRestart','on');");
+        builder.append("set_param(mdl,'FastRestart','on');");
 
         /// Configuration on the accelerator
         // Use normal mode
-        matlab.eval("set_param(mdl,'SimulationMode','normal')");
+        builder.append("set_param(mdl,'SimulationMode','normal');");
         // Enable accelerator mode
-        //matlab.eval("set_param(mdl,'SimulationMode','accelerator')");
+        //matlab.eval("set_param(mdl,'SimulationMode','accelerator');");
         // Enable classic accelerator mode
         //matlab.eval("set_param(0, 'GlobalUseClassicAccelMode', 'on');");
 
 
         // The save format must be an array
-        matlab.eval("set_param(mdl, 'SaveFormat', 'Array');");
+        builder.append("set_param(mdl, 'SaveFormat', 'Array');");
 
         // Configuration on the decimation
-        matlab.eval("set_param(mdl,  'SolverType', 'Fixed-step');");
-        matlab.eval("set_param(mdl, 'FixedStep', '" + SIMULINK_SIMULATION_STEP + "');");
-        matlab.eval("set_param(mdl, 'Decimation', '" + (signalStep / SIMULINK_SIMULATION_STEP) + "');");
+        builder.append("set_param(mdl,  'SolverType', 'Fixed-step');");
+        builder.append("set_param(mdl, 'FixedStep', '" + SIMULINK_SIMULATION_STEP + "');");
+        builder.append("set_param(mdl, 'Decimation', '" + (signalStep / SIMULINK_SIMULATION_STEP) + "');");
         // matlab.eval("set_param(mdl, 'Decimation', '" + (1) + "');");
     }
 
@@ -187,14 +193,17 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         for (ArrayList<Double> signalStep : inputSignal) {
             appendSignalStep(previousInput, signalStep);
         }
-        makeDataSet(numberOfSamples, signalDimension);
+        StringBuilder builder = new StringBuilder();
 
-        configureSimulink();
+        makeDataSet(numberOfSamples, signalDimension, builder);
+
+        configureSimulink(builder);
 
         // Execute the simulation
-        matlab.eval("set_param(mdl, 'LoadInitialState', 'off');");
-        matlab.eval("simOut = sim(mdl, 'StopTime', '" + (signalStep * numberOfSamples) + "');");
-        matlab.eval("y = simOut.get('yout');");
+        builder.append("set_param(mdl, 'LoadInitialState', 'off');");
+        builder.append("simOut = sim(mdl, 'StopTime', '" + (signalStep * numberOfSamples) + "');");
+        builder.append("y = simOut.get('yout');");
+        matlab.eval(builder.toString());
 
         // get the simulation result and make the result
         double[][] y = matlab.getVariable("y");
