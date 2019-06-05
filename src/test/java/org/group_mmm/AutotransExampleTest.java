@@ -8,6 +8,8 @@ import net.automatalib.words.WordBuilder;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -384,7 +386,9 @@ class AutotransExampleTest {
         exampleAT.getVerifier().addRandomWordEQOracle(5, 10, 100, new Random(), 1);
         System.out.println(exampleAT.getVerifier().run());
 
-        exampleAT.getVerifier().visualizeLearnedMealy();
+        FileWriter writer = new FileWriter(new File("./runS4Learned.dot"));
+        exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+        writer.close();
 
         System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
         System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
