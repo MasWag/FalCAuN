@@ -39,6 +39,7 @@ class AutotransExampleTest {
         // Get MemOracle
         field = verifier.getClass().getDeclaredField("memOracle");
         field.setAccessible(true);
+        @SuppressWarnings("unchecked")
         MembershipOracle.MealyMembershipOracle<String, String> memOracle =
                 (MembershipOracle.MealyMembershipOracle<String, String>) field.get(verifier);
 
@@ -287,7 +288,9 @@ class AutotransExampleTest {
         exampleAT.getVerifier().addRandomWordEQOracle(2, 3, 100, new Random(), 1);
         assertFalse(exampleAT.getVerifier().run());
 
-        // exampleAT.getVerifier().visualizeLearnedMealy();
+        FileWriter writer = new FileWriter(new File("./runS1Learned.dot"));
+        exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+        writer.close();
 
         System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
         System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());

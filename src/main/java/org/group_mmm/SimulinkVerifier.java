@@ -23,7 +23,7 @@ class SimulinkVerifier {
     private Alphabet<String> abstractInputAlphabet;
     private Alphabet<ArrayList<Double>> concreteInputAlphabet;
     private SimulinkSULMapper mapper;
-    private MappedSUL<String, String, ArrayList<Double>, ArrayList<Double>> mappedSimulink;
+    private SUL<String, String> mappedSimulink;
     private BlackBoxVerifier verifier;
 
     /**
@@ -36,14 +36,17 @@ class SimulinkVerifier {
      */
     SimulinkVerifier(String initScript, ArrayList<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
-        this.simulink = new SimulinkSUL(initScript, paramName, signalStep);
+        SimulinkSUL rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
 
-        this.simulink = SULCache.createTreeCache(this.concreteInputAlphabet, this.simulink);
+        this.simulink = SULCache.createTreeCache(this.concreteInputAlphabet, rawSimulink);
 
         this.mappedSimulink = new MappedSUL<>(mapper, simulink);
-        verifier = new BlackBoxVerifier(mappedSimulink, properties, abstractInputAlphabet);
+        this.mappedSimulink = SULCache.createTreeCache(this.abstractInputAlphabet, this.mappedSimulink);
+        // create a regular membership oracle
+        SimulinkMembershipOracle memOracle = new SimulinkMembershipOracle(rawSimulink, this.mapper);
+        verifier = new BlackBoxVerifier(memOracle, properties, abstractInputAlphabet);
     }
 
     String getCexProperty() {
@@ -66,9 +69,9 @@ class SimulinkVerifier {
         this.verifier.addRandomWordEQOracle(minLength, maxLength, maxTests, random, batchSize);
     }
 
-    void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
-        this.verifier.addRandomWalkEQOracle(restartProbability, maxSteps, random);
-    }
+    //void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
+    //    this.verifier.addRandomWalkEQOracle(restartProbability, maxSteps, random);
+    //}
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
         this.verifier.addCompleteExplorationEQOracle(minDepth, maxDepth, batchSize);

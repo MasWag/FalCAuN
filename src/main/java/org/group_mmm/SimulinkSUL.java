@@ -150,7 +150,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         matlab.eval("set_param(mdl, 'ExternalInput', 'ds');");
 
         // Enable fast restart
-        //matlab.eval("set_param(mdl,'FastRestart','on');");
+        matlab.eval("set_param(mdl,'FastRestart','on');");
 
         /// Configuration on the accelerator
         // Use normal mode

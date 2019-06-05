@@ -2,17 +2,14 @@ package org.group_mmm;
 
 import de.learnlib.acex.analyzers.AcexAnalyzers;
 import de.learnlib.algorithms.ttt.mealy.TTTLearnerMealy;
-import de.learnlib.api.SUL;
 import de.learnlib.api.algorithm.LearningAlgorithm;
 import de.learnlib.api.logging.LoggingPropertyOracle;
 import de.learnlib.api.oracle.EmptinessOracle;
 import de.learnlib.api.oracle.InclusionOracle;
 import de.learnlib.api.oracle.MembershipOracle;
 import de.learnlib.api.oracle.PropertyOracle;
-import de.learnlib.filter.cache.sul.SULCache;
 import de.learnlib.oracle.emptiness.MealyBFEmptinessOracle;
 import de.learnlib.oracle.equivalence.*;
-import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import de.learnlib.util.Experiment;
 import net.automatalib.automata.transducers.MealyMachine;
@@ -41,7 +38,7 @@ class BlackBoxVerifier {
     private static final Function<String, String> EDGE_PARSER = s -> s;
 
     final private double multiplier = 10.0;
-    SULCache<String, String> memOracle;
+    MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     private MealyMachine<?, String, ?, String> learnedMealy;
     private MealyMachine<?, String, ?, String> cexMealy;
     private Alphabet<String> inputAlphabet;
@@ -55,18 +52,15 @@ class BlackBoxVerifier {
 
 
     /**
-     * @param verifiedSystem The verified system
+     * @param memOracle The membership oracle
      * @param properties     The LTL properties to be verified. What we verify is the conjunction of the properties.
      * @param inputAlphabet  The input alphabet.
      */
-    BlackBoxVerifier(SUL<String, String> verifiedSystem, List<String> properties, Alphabet<String> inputAlphabet) {
+    BlackBoxVerifier(MembershipOracle.MealyMembershipOracle<String, String> memOracle, List<String> properties, Alphabet<String> inputAlphabet) {
         this.properties = properties;
         this.inputAlphabet = inputAlphabet;
-
+        this.memOracle = memOracle;
         // Since the omega membership query is difficult for Simulink model, we allow only finite property
-
-        // create a regular membership oracle
-        memOracle = SULCache.createTreeCache(this.inputAlphabet, verifiedSystem);
 
         // create a learner
         this.learner = new TTTLearnerMealy<>(this.inputAlphabet, memOracle, AcexAnalyzers.LINEAR_FWD);
@@ -119,9 +113,9 @@ class BlackBoxVerifier {
                 memOracle, minLength, maxLength, maxTests, random, batchSize));
     }
 
-    void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
-        addEqOracle(new RandomWalkEQOracle<>(memOracle, restartProbability, maxSteps, random));
-    }
+//    void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
+//        addEqOracle(new RandomWalkEQOracle<>(memOracle, restartProbability, maxSteps, random));
+//    }
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
         addEqOracle(new CompleteExplorationEQOracle.MealyCompleteExplorationEQOracle<>(

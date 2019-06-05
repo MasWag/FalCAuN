@@ -1,7 +1,9 @@
 package org.group_mmm;
 
 import de.learnlib.api.SUL;
+import de.learnlib.api.oracle.MembershipOracle;
 import de.learnlib.driver.util.MealySimulatorSUL;
+import de.learnlib.oracle.membership.SULOracle;
 import net.automatalib.automata.transducers.impl.compact.CompactMealy;
 import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.util.automata.builders.AutomatonBuilders;
@@ -41,7 +43,8 @@ class BlackBoxVerifierTest {
                 on("a").withOutput("2").to("q0").
                 create();
         this.sul = new MealySimulatorSUL<>(mealy);
-        verifier = new BlackBoxVerifier(sul, properties, inputAlphabet);
+        MembershipOracle.MealyMembershipOracle<String, String> memOracle = new SULOracle<>(sul);
+        verifier = new BlackBoxVerifier(memOracle, properties, inputAlphabet);
     }
 
     @Test
