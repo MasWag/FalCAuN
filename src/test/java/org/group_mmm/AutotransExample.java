@@ -376,12 +376,16 @@ public class AutotransExample {
         String velocity65String = String.join(" || ",
                 constructProductAPs(velocity65APs, rotationAPs, gearAPs));
         ArrayList<String> builder100Array = new ArrayList<>();
-        for (int i = 1; i < numOfSamples; i++) {
+        for (int i = 0; i < numOfSamples - 1; i++) {
             StringBuilder builder100 = new StringBuilder();
             for (int j = 0; j < i; j++) {
                 builder100.append("(X");
             }
+
+            builder100.append("(");
             builder100.append(velocity100String);
+            builder100.append(")");
+
             for (int j = 0; j < i; j++) {
                 builder100.append(")");
             }
@@ -392,7 +396,11 @@ public class AutotransExample {
         for (int i = 0; i < numOfSamples; i++) {
             builder.append("(X");
         }
+
+        builder.append("(");
         builder.append(velocity65String);
+        builder.append(")");
+
         for (int i = 0; i < numOfSamples; i++) {
             builder.append(")");
         }

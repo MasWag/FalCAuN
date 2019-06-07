@@ -451,7 +451,10 @@ class AutotransExampleTest {
 
     @Test
     void runS4() throws Exception {
-        AutotransExample exampleAT = new AutotransExample(1.0);
+        final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+        LOGGER.setLevel(Level.INFO);
+
+        AutotransExample exampleAT = new AutotransExample(2.0);
 
         // Construct the input mapper
         {
@@ -459,7 +462,6 @@ class AutotransExampleTest {
             throttleMapper.put('a', 0.0);
             //throttleMapper.put('b', 20.0);
             //throttleMapper.put('c', 40.0);
-            throttleMapper.put('c', 50.0);
             //throttleMapper.put('d', 60.0);
             //throttleMapper.put('e', 80.0);
             throttleMapper.put('f', 100.0);
@@ -468,7 +470,7 @@ class AutotransExampleTest {
             brakeMapper.put('a', 0.0);
             //brakeMapper.put('b', 50.0);
             //brakeMapper.put('c', 100.0);
-            brakeMapper.put('d', 150.0);
+            //brakeMapper.put('d', 150.0);
             //brakeMapper.put('e', 200.0);
             //brakeMapper.put('f', 250.0);
             //brakeMapper.put('g', 300.0);
@@ -501,8 +503,25 @@ class AutotransExampleTest {
                         exampleAT.constructS4(100.0, 65.0))));
 
         exampleAT.constructVerifier();
-        // exampleAT.getVerifier().addRandomWordEQOracle(10, 30, 100, new Random(), 1);
-        exampleAT.getVerifier().addWpMethodEQOracle(30);
+        boolean useHillClimbing = true;
+        boolean useGA = false;
+        boolean resetWord = false;
+
+        Function<Word<ArrayList<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, true, 120.0));
+
+        if (useHillClimbing) {
+            exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
+                    15,
+                    new Random(),
+                    50000, 5, 15 * 4, resetWord);
+        } else if (useGA) {
+            exampleAT.getVerifier().addGAEQOracle(costFunc,
+                    15,
+                    new Random(),
+                    10000, 3, 3, 2, 0.01, 0.8, resetWord);
+        } else {
+            exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
+        }
 
         System.out.println(exampleAT.getVerifier().run());
 

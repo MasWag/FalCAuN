@@ -17,6 +17,9 @@ public class STLAtomic extends STLCost {
 
     @Override
     public Double apply(Word<ArrayList<Double>> signal) {
+        if (signal.isEmpty()) {
+            return Double.POSITIVE_INFINITY;
+        }
         return lt ? comparator - signal.getSymbol(0).get(sigIndex) :
                 signal.getSymbol(0).get(sigIndex) - comparator;
     }
