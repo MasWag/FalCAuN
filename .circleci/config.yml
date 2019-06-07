@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/CyVeriA
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+    steps:
+      - checkout
+      - run:
+          command: |
+            wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz
+            tar xvf ltsmin-v3.1.0-linux.tgz
+            sudo cp -r v3.1.0/* /usr
+      - restore_cache:
+          key: CyVeriA-{{ checksum "pom.xml" }}
+      - run: sh ignore_matlab.sh
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: CyVeriA-{{ checksum "pom.xml" }}
+      - run: mvn test -Dtest=BlackBoxVerifierTest
+      - store_test_results:
+          path: target/surefire-reports
