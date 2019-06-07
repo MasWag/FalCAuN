@@ -304,7 +304,7 @@ class AutotransExampleTest {
         final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
         LOGGER.setLevel(Level.INFO);
 
-        AutotransExample exampleAT = new AutotransExample(1.0);
+        AutotransExample exampleAT = new AutotransExample(2.0);
 
         // Construct the input mapper
         {
@@ -352,12 +352,26 @@ class AutotransExampleTest {
                         exampleAT.constructS1(120))));
 
         exampleAT.constructVerifier();
-        exampleAT.getVerifier().addHillClimbingEQOracle(
-                word -> word.isEmpty() ? 10000 : word.stream().map(a -> a.get(0)).max(Comparator.comparingDouble(Double::valueOf)).get() - 120.0,
-                30,
-                new Random(),
-                100, 3, 3, 5);
-        // exampleAT.getVerifier().addRandomWordEQOracle(20, 30, 100, new Random(), 1);
+        boolean useHillClimbing = true;
+        boolean useGA = false;
+        boolean resetWord = true;
+
+        if (useHillClimbing) {
+            exampleAT.getVerifier().addHillClimbingEQOracle(
+                    word -> word.isEmpty() ? 10000.0 : word.stream().map(a -> 120.0 - a.get(0)).max(Comparator.comparingDouble(Double::valueOf)).get(),
+                    15,
+                    new Random(),
+                    2000, 1, 15 * 4, resetWord);
+        } else if (useGA) {
+            exampleAT.getVerifier().addGAEQOracle(
+                    word -> word.isEmpty() ? 10000.0 : word.stream().map(a -> 120.0 - a.get(0)).max(Comparator.comparingDouble(Double::valueOf)).get(),
+                    15,
+                    new Random(),
+                    10000, 3, 3, 2, 0.01, 0.8, resetWord);
+        } else {
+            exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
+        }
+
         // exampleAT.getVerifier().addWpMethodEQOracle(30);
         //exampleAT.getVerifier().addRandomWalkEQOracle(0.1, 100, new Random());
         assertFalse(exampleAT.getVerifier().run());

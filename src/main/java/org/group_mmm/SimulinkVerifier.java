@@ -85,9 +85,36 @@ class SimulinkVerifier {
                                  int maxTests,
                                  int generationSize,
                                  int childrenSize,
-                                 int changeSize) {
+                                 boolean resetWord) {
         this.verifier.addEqOracle(new HillClimbingEQOracle(
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, changeSize));
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, resetWord));
+    }
+
+    void addMutateSelectEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
+                                 int length,
+                                 Random random,
+                                 int maxTests,
+                                 int generationSize,
+                                 int childrenSize,
+                                 int changeSize,
+                                 boolean resetWord) {
+        this.verifier.addEqOracle(new MutateSelectEQOracle(
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, changeSize, resetWord));
+    }
+
+    void addGAEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
+                       int length,
+                       Random random,
+                       int maxTests,
+                       int generationSize,
+                       int childrenSize,
+                       int changeSize,
+                       double mutationProb,
+                       double crossoverProb,
+                       boolean resetWord
+    ) {
+        this.verifier.addEqOracle(new GAEQOracle(
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, changeSize, crossoverProb, mutationProb, resetWord));
     }
 
     Word<String> getCexAbstractInput() {
