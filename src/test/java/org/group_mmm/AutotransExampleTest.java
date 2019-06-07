@@ -523,7 +523,7 @@ class AutotransExampleTest {
             exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
         }
 
-        System.out.println(exampleAT.getVerifier().run());
+        assertFalse(exampleAT.getVerifier().run());
 
         FileWriter writer = new FileWriter(new File("./runS4Learned.dot"));
         exampleAT.getVerifier().writeDOTLearnedMealy(writer);
