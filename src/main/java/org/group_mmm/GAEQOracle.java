@@ -11,7 +11,7 @@ class GAEQOracle extends MutateSelectEQOracle {
     private double mutationProb;
 
     GAEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, int changeSize, double crossoverProb, double mutationProb, boolean resetWord) {
-        super(memOracle, length, random, maxTests, generationSize, childrenSize, changeSize, resetWord);
+        super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize);
         this.crossoverProb = crossoverProb;
         this.mutationProb = mutationProb;
     }

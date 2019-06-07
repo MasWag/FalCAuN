@@ -99,7 +99,7 @@ class SimulinkVerifier {
                                  int changeSize,
                                  boolean resetWord) {
         this.verifier.addEqOracle(new MutateSelectEQOracle(
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, changeSize, resetWord));
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
     }
 
     void addGAEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,

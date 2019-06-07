@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class HillClimbingEQOracle extends MutateSelectEQOracle {
+public class HillClimbingEQOracle extends AbstractSelectEQOracle {
     HillClimbingEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord) {
-        super(memOracle, length, random, maxTests, generationSize, childrenSize, 0, resetWord);
+        super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord);
     }
 
     @Override
