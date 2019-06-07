@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import de.learnlib.api.oracle.MembershipOracle;
 import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
+import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -354,17 +356,17 @@ class AutotransExampleTest {
         exampleAT.constructVerifier();
         boolean useHillClimbing = true;
         boolean useGA = false;
-        boolean resetWord = true;
+        boolean resetWord = false;
+
+        Function<Word<ArrayList<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, true, 120.0));
 
         if (useHillClimbing) {
-            exampleAT.getVerifier().addHillClimbingEQOracle(
-                    word -> word.isEmpty() ? 10000.0 : word.stream().map(a -> 120.0 - a.get(0)).max(Comparator.comparingDouble(Double::valueOf)).get(),
+            exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
                     15,
                     new Random(),
-                    2000, 1, 15 * 4, resetWord);
+                    50000, 5, 15 * 4, resetWord);
         } else if (useGA) {
-            exampleAT.getVerifier().addGAEQOracle(
-                    word -> word.isEmpty() ? 10000.0 : word.stream().map(a -> 120.0 - a.get(0)).max(Comparator.comparingDouble(Double::valueOf)).get(),
+            exampleAT.getVerifier().addGAEQOracle(costFunc,
                     15,
                     new Random(),
                     10000, 3, 3, 2, 0.01, 0.8, resetWord);

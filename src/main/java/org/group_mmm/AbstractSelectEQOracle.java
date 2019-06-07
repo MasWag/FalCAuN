@@ -44,6 +44,14 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
         this.resetWord = resetWord;
     }
 
+    private void resetSamples() {
+        currentSamples.clear();
+
+        for (int i = 0; i < generationSize; i++) {
+            currentSamples.add(generateTestWord(symbolList));
+        }
+    }
+
     @Nullable
     @ParametersAreNonnullByDefault
     @Override
@@ -57,10 +65,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
         symbolList = CollectionsUtil.randomAccessList(inputs);
 
         if (resetWord || currentSamples.isEmpty()) {
-            // Create the first generation
-            for (int i = 0; i < generationSize; i++) {
-                currentSamples.add(generateTestWord(symbolList));
-            }
+            resetSamples();
         }
 
         do {
@@ -80,10 +85,17 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
                 map.put(result, sample);
             }
 
+            map.entries().stream().limit(30).forEach(System.out::println);
+
             List<Word<String>> goodSamples = map.entries().stream().limit(generationSize).map(Map.Entry::getValue).collect(Collectors.toList());
 
             // Construct next generation
-            currentSamples = createNextGeneration(goodSamples);
+            List<Word<String>> nextSamples = createNextGeneration(goodSamples);
+            if (Objects.equals(nextSamples, currentSamples)) {
+                resetSamples();
+            } else {
+                currentSamples = nextSamples;
+            }
         } while (testSize < maxTests);
 
         return null;
