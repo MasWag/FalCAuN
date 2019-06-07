@@ -1,0 +1,9 @@
+[aws]
+13.230.139.215
+
+[aws:vars]
+ansible_ssh_user=mwaga
+ansible_ssh_private_key_file=~/.ssh/id_ecdsa
+
+[all:vars]
+ansible_ssh_port=22

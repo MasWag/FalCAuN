@@ -1,0 +1,61 @@
+- hosts: aws
+  user: mwaga
+  tasks:
+    - name: install Java environment
+      apt:     
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - maven
+          - openjdk-8-jdk-headless
+      become: yes
+
+    - name: check LTSmin install
+      shell: etf2lts-mc --version | grep v3.1.0
+      ignore_errors: True
+      register: findLTSmin
+
+    - name: expand LTSmin binary
+      unarchive:
+        src: https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz
+        dest: /tmp/
+        remote_src: yes
+      when: findLTSmin is failed
+
+    - name: install LTSmin
+      copy:
+        src: /tmp/v3.1.0/share
+        dest: /usr/share
+        remote_src: yes
+      become: yes
+      when: findLTSmin is failed
+
+    - name: install LTSmin
+      copy:
+        src: /tmp/v3.1.0/include
+        dest: /usr/include
+        remote_src: yes
+      become: yes
+      when: findLTSmin is failed
+
+    - name: install LTSmin
+      copy:
+        src: /tmp/v3.1.0/bin
+        dest: /usr/bin
+        mode: 755
+        remote_src: yes
+      become: yes
+      when: findLTSmin is failed
+
+    - name: clone CyVeriA
+      git:
+        repo: 'git@github.com:MasWag/CyVeriA.git'
+        dest: /home/mwaga/CyVeriA
+        force: yes
+      register: CyVeriA_git_result
+
+    # - name: clean CyVeriA
+    #   shell: cd /home/mwaga/CyVeriA && bash -lc 'mvn clean'
+
+    # - name: test CyVeriA
+    #   shell: cd /home/mwaga/CyVeriA && bash -lc 'mvn test "-Dtest=!AutotransExampleTest"'
