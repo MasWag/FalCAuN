@@ -19,8 +19,13 @@ public class STLAtomic extends STLCost {
 
     @Override
     public Double apply(Word<ArrayList<Double>> signal) {
-        ArrayList<Double> currentValue = signal.getSymbol(0);
-        if (signal.isEmpty() || currentValue == null) {
+        ArrayList<Double> currentValue;
+
+        if (signal.isEmpty()) {
+            return Double.POSITIVE_INFINITY;
+        }
+        currentValue = signal.getSymbol(0);
+        if (currentValue == null) {
             return Double.POSITIVE_INFINITY;
         }
         switch (op) {
