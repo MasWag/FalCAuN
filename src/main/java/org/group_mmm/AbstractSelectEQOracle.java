@@ -61,7 +61,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
      *
      * @return whether the property is disproved.
      */
-    boolean isDisproved() {
+    private boolean isDisproved() {
         return minCost < 0;
     }
 
@@ -69,6 +69,9 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     @ParametersAreNonnullByDefault
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> inputs) {
+        if (isDisproved()) {
+            return null;
+        }
         // Fail fast on empty inputs
         if (inputs.isEmpty()) {
             LOGGER.warn("Passed empty set of inputs to equivalence oracle; no counterexample can be found!");
