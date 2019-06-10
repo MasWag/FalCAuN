@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class STLGlobal extends STLCost {
-    private STLCost subFml;
-
+public class STLGlobal extends STLTemporalOp {
     STLGlobal(STLCost subFml) {
-        this.subFml = subFml;
+        super(subFml);
     }
 
     @Override

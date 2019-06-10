@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 
-public class STLEventually extends STLCost {
-    private STLCost subFml;
-
-    public STLEventually(STLCost subFml) {
-        this.subFml = subFml;
+public class STLEventually extends STLTemporalOp {
+    STLEventually(STLCost subFml) {
+        super(subFml);
     }
 
     @Override

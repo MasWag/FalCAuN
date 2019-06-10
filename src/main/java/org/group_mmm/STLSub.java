@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public class STLSub extends STLCost {
     private final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
 
-    private STLCost subFml;
+    private STLTemporalOp subFml;
     private int from, to;
 
-    STLSub(STLCost subFml, int from, int to) {
+    STLSub(STLTemporalOp subFml, int from, int to) {
         this.subFml = subFml;
         this.from = from;
         this.to = to;
