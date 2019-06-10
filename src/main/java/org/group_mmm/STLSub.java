@@ -1,15 +1,20 @@
 package org.group_mmm;
 
+import ch.qos.logback.classic.Logger;
 import com.sun.istack.internal.NotNull;
+import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.words.Word;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
 public class STLSub extends STLCost {
+    private final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+
     private STLCost subFml;
     private int from, to;
 
-    public STLSub(STLCost subFml, int from, int to) {
+    STLSub(STLCost subFml, int from, int to) {
         this.subFml = subFml;
         this.from = from;
         this.to = to;
@@ -19,7 +24,15 @@ public class STLSub extends STLCost {
     @NotNull
     public Double apply(Word<ArrayList<Double>> signal) {
         if (from >= signal.size()) {
-            return null;
+            switch (subFml.getClass().toString()) {
+                case "class org.group_mmm.STLEventually":
+                    return Double.NEGATIVE_INFINITY;
+                case "class org.group_mmm.STLGlobal":
+                    return Double.POSITIVE_INFINITY;
+                default:
+                    LOGGER.error("Unknown class {}", subFml.getClass());
+                    return null;
+            }
         }
         return subFml.apply(signal.subWord(from, Math.min(to, signal.size() - 1)));
     }

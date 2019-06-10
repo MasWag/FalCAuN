@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="Fixed the S4 property">
+    <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/java/org/group_mmm/STLSubTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$USER_HOME$/.gradle/" />
@@ -24,24 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="744">
-              <caret line="460" column="9" lean-forward="true" selection-start-line="460" selection-start-column="9" selection-end-line="460" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1503#1533#1" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
+            <state relative-caret-position="330">
+              <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -52,7 +40,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLAtomic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
+            <state relative-caret-position="360">
               <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -62,10 +50,35 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLCost.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/AbstractSelectEQOracle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" selection-start-line="7" selection-end-line="7" />
+            <state relative-caret-position="434">
+              <caret line="63" column="4" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="4" />
+              <folding>
+                <element signature="e#2093#2094#0" expanded="true" />
+                <element signature="e#2143#2144#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="131">
+              <caret line="244" column="38" selection-start-line="244" selection-end-line="245" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLOr.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" selection-start-line="6" selection-end-line="6" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -98,19 +111,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/net/automatalib/automata-api/0.8.0/automata-api-0.8.0.jar!/net/automatalib/words/Word.class">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2446">
-              <caret line="272" column="5" selection-start-line="272" selection-start-column="5" selection-end-line="272" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLOr.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="5" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+            <state relative-caret-position="435">
+              <caret line="29" column="36" selection-start-line="29" selection-start-column="36" selection-end-line="29" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -118,23 +122,24 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLNext.java">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/STLSubTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+            <state relative-caret-position="240">
+              <caret line="20" column="19" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="19" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#254#255#0" expanded="true" />
+                <element signature="e#293#294#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/HillClimbingEQOracle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-52">
-              <caret line="334" selection-start-line="334" selection-end-line="334" />
+            <state relative-caret-position="420">
+              <caret line="28" column="20" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -148,8 +153,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="JUnit5 Test Class" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -161,6 +166,7 @@
       <find>logger</find>
       <find>simulink</find>
       <find>re</find>
+      <find>getLogger</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -197,17 +203,18 @@
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/HillClimbingEQOracle.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/GAEQOracle.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkVerifier.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/AbstractSelectEQOracle.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLNext.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLCost.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLEventually.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLOr.java" />
-        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLGlobal.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLAtomic.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/AbstractSelectEQOracle.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java" />
+        <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/STLSubTest.java" />
       </list>
     </option>
   </component>
@@ -222,7 +229,7 @@
     <option name="x" value="1440" />
     <option name="y" value="-997" />
     <option name="width" value="1200" />
-    <option name="height" value="1897" />
+    <option name="height" value="948" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -436,11 +443,23 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.AutotransExampleTest$S1AT.runS5">
+  <component name="RunManager" selected="JUnit.STLSubTest">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.group_mmm.Main" />
       <module name="CyVeriA" />
       <option name="VM_PARAMETERS" value="-Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AutotransExampleTest$S1AT.runS4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CyVeriA" />
+      <option name="PACKAGE_NAME" value="org.group_mmm" />
+      <option name="MAIN_CLASS_NAME" value="org.group_mmm.AutotransExampleTest$S1AT" />
+      <option name="METHOD_NAME" value="runS4" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/:/usr/local/MATLAB/R2019a/bin/glnxa64" />
+      <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -450,18 +469,6 @@
       <option name="PACKAGE_NAME" value="org.group_mmm" />
       <option name="MAIN_CLASS_NAME" value="org.group_mmm.AutotransExampleTest$S1AT" />
       <option name="METHOD_NAME" value="runS5" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/:/usr/local/MATLAB/R2019a/bin/glnxa64" />
-      <option name="PARAMETERS" value="" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AutotransExampleTest.runS1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CyVeriA" />
-      <option name="PACKAGE_NAME" value="org.group_mmm" />
-      <option name="MAIN_CLASS_NAME" value="org.group_mmm.AutotransExampleTest" />
-      <option name="METHOD_NAME" value="runS1" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/:/usr/local/MATLAB/R2019a/bin/glnxa64" />
       <option name="PARAMETERS" value="" />
@@ -481,11 +488,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AutotransExampleTest.runS2" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="AutotransExampleTest.runS4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="CyVeriA" />
       <option name="PACKAGE_NAME" value="org.group_mmm" />
       <option name="MAIN_CLASS_NAME" value="org.group_mmm.AutotransExampleTest" />
-      <option name="METHOD_NAME" value="runS2" />
+      <option name="METHOD_NAME" value="runS4" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/:/usr/local/MATLAB/R2019a/bin/glnxa64" />
       <option name="PARAMETERS" value="" />
@@ -493,12 +500,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="AutotransExampleTest.runS4" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="STLSubTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="CyVeriA" />
       <option name="PACKAGE_NAME" value="org.group_mmm" />
-      <option name="MAIN_CLASS_NAME" value="org.group_mmm.AutotransExampleTest" />
-      <option name="METHOD_NAME" value="runS4" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" value="org.group_mmm.STLSubTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/:/usr/local/MATLAB/R2019a/bin/glnxa64" />
       <option name="PARAMETERS" value="" />
       <method v="2">
@@ -517,19 +524,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.Main" />
-      <item itemvalue="JUnit.AutotransExampleTest.runS1" />
-      <item itemvalue="JUnit.AutotransExampleTest.runS2" />
       <item itemvalue="JUnit.AutotransExampleTest.runS4" />
       <item itemvalue="JUnit.AutotransExampleTest.runS1Hill" />
       <item itemvalue="JUnit.AutotransExampleTest$S1AT.runS5" />
+      <item itemvalue="JUnit.AutotransExampleTest$S1AT.runS4" />
+      <item itemvalue="JUnit.STLSubTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.STLSubTest" />
+        <item itemvalue="JUnit.AutotransExampleTest$S1AT.runS4" />
         <item itemvalue="JUnit.AutotransExampleTest$S1AT.runS5" />
         <item itemvalue="JUnit.AutotransExampleTest.runS4" />
         <item itemvalue="JUnit.AutotransExampleTest.runS1Hill" />
-        <item itemvalue="JUnit.AutotransExampleTest.runS1" />
-        <item itemvalue="JUnit.AutotransExampleTest.runS2" />
       </list>
     </recent_temporary>
   </component>
@@ -653,25 +660,31 @@
       <option name="project" value="LOCAL" />
       <updated>1559900625132</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="added costFunc for S5">
+      <created>1560133844433</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1560133844433</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Fixed S4 costFunc">
+      <created>1560134841805</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1560134841805</updated>
+    </task>
+    <task id="LOCAL-00018" summary="ignore EqQ once it finds a counter example">
+      <created>1560134900073</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1560134900073</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="AutotransExampleTest_runS1Hill - 2019.06.07 at 12h 20m 46s.xml">
-      <configuration name="AutotransExampleTest.runS1Hill" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="AutotransExampleTest_runS1Hill - 2019.06.07 at 13h 10m 14s.xml">
-      <configuration name="AutotransExampleTest.runS1Hill" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="AutotransExampleTest_runS1Hill - 2019.06.07 at 14h 02m 12s.xml">
-      <configuration name="AutotransExampleTest.runS1Hill" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="AutotransExampleTest_runS1Hill - 2019.06.07 at 14h 36m 42s.xml">
-      <configuration name="AutotransExampleTest.runS1Hill" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="AutotransExampleTest_runS1Hill - 2019.06.07 at 16h 36m 43s.xml">
-      <configuration name="AutotransExampleTest.runS1Hill" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="AutotransExampleTest_runS1Hill - 2019.06.07 at 18h 09m 08s.xml">
       <configuration name="AutotransExampleTest.runS1Hill" configurationId="JUnit" />
     </history-entry>
@@ -687,9 +700,24 @@
     <history-entry file="AutotransExampleTest_runS4 - 2019.06.07 at 23h 34m 05s.xml">
       <configuration name="AutotransExampleTest.runS4" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="AutotransExampleTest$S1AT_runS5 - 2019.06.10 at 11h 33m 28s.xml">
+      <configuration name="AutotransExampleTest$S1AT.runS5" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AutotransExampleTest$S1AT_runS4 - 2019.06.10 at 11h 44m 48s.xml">
+      <configuration name="AutotransExampleTest$S1AT.runS4" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AutotransExampleTest$S1AT_runS4 - 2019.06.10 at 11h 50m 12s.xml">
+      <configuration name="AutotransExampleTest$S1AT.runS4" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AutotransExampleTest$S1AT_runS4 - 2019.06.10 at 11h 54m 46s.xml">
+      <configuration name="AutotransExampleTest$S1AT.runS4" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AutotransExampleTest$S1AT_runS4 - 2019.06.10 at 12h 02m 04s.xml">
+      <configuration name="AutotransExampleTest$S1AT.runS4" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="174293000" />
+    <option name="totallyTimeSpent" value="176375000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -704,15 +732,15 @@
     <frame x="1440" y="-997" width="1200" height="1897" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18998273" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18998273" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32963988" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.12022161" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.21440443" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.22105263" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4521028" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32866243" />
@@ -780,7 +808,10 @@
     <MESSAGE value="implemented AbstractSelectEQOracle" />
     <MESSAGE value="S1Hil worked!!" />
     <MESSAGE value="Fixed the S4 property" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed the S4 property" />
+    <MESSAGE value="added costFunc for S5" />
+    <MESSAGE value="Fixed S4 costFunc" />
+    <MESSAGE value="ignore EqQ once it finds a counter example" />
+    <option name="LAST_COMMIT_MESSAGE" value="ignore EqQ once it finds a counter example" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -824,13 +855,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/net/automatalib/automata-serialization-core/0.8.0/automata-serialization-core-0.8.0.jar!/net/automatalib/serialization/ModelDeserializer.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
-          <caret line="51" selection-start-line="51" selection-end-line="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/net/automatalib/automata-modelchecking-ltsmin/0.8.0/automata-modelchecking-ltsmin-0.8.0.jar!/net/automatalib/modelcheckers/ltsmin/LTSminIO.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -984,60 +1008,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1290">
-          <caret line="119" column="59" selection-start-line="119" selection-start-column="59" selection-end-line="119" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracleCost.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkAbstractAlphabetDomain.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="990">
-          <caret line="76" column="25" selection-start-line="76" selection-start-column="25" selection-end-line="76" selection-end-column="25" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2935#2936#0" expanded="true" />
-            <element signature="e#2976#2977#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkVerifierTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="40" column="22" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
-          <folding>
-            <element signature="e#2760#2761#0" expanded="true" />
-            <element signature="e#2803#2804#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1070,57 +1044,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/MutateSelectEQOracle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1065">
           <caret line="71" column="23" selection-start-line="71" selection-start-column="23" selection-end-line="71" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/HillClimbingEQOracle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="20" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkVerifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1171">
-          <caret line="137" column="5" selection-start-line="137" selection-start-column="5" selection-end-line="137" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/AbstractSelectEQOracle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="83" column="17" selection-start-line="83" selection-start-column="17" selection-end-line="83" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLAtomic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1134,50 +1061,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLGlobal.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLEventually.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="12" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/net/automatalib/automata-api/0.8.0/automata-api-0.8.0.jar!/net/automatalib/words/Word.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2446">
           <caret line="272" column="5" selection-start-line="272" selection-start-column="5" selection-end-line="272" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLOr.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="5" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1201,13 +1088,164 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/SimulinkVerifierTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="744">
-          <caret line="460" column="9" lean-forward="true" selection-start-line="460" selection-start-column="9" selection-end-line="460" selection-end-column="9" />
+        <state relative-caret-position="480">
+          <caret line="40" column="22" selection-start-line="40" selection-start-column="22" selection-end-line="40" selection-end-column="22" />
+          <folding>
+            <element signature="e#2760#2761#0" expanded="true" />
+            <element signature="e#2803#2804#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/BlackBoxVerifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="880">
+          <caret line="118" column="33" selection-start-line="118" selection-start-column="33" selection-end-line="118" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/MutateSelectEQOracle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1503#1533#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkVerifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1171">
+          <caret line="137" column="5" selection-start-line="137" selection-start-column="5" selection-end-line="137" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkSULMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1140">
+          <caret line="76" column="25" selection-start-line="76" selection-start-column="25" selection-end-line="76" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2935#2936#0" expanded="true" />
+            <element signature="e#2976#2977#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracleCost.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/SimulinkMembershipOracle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLAtomic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/HillClimbingEQOracle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="28" column="20" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/AbstractSelectEQOracle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="434">
+          <caret line="63" column="4" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="4" />
+          <folding>
+            <element signature="e#2093#2094#0" expanded="true" />
+            <element signature="e#2143#2144#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLOr.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLEventually.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="12" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLGlobal.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="244" column="38" selection-start-line="244" selection-end-line="245" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="36" selection-start-line="29" selection-start-column="36" selection-end-line="29" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/STLSubTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="20" column="19" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="19" />
+          <folding>
+            <element signature="e#254#255#0" expanded="true" />
+            <element signature="e#293#294#0" expanded="true" />
           </folding>
         </state>
       </provider>
