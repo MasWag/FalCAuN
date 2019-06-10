@@ -16,6 +16,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.google.common.primitives.Doubles.min;
+
 public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSelectEQOracle.class);
     Random random;
@@ -52,6 +54,17 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
         }
     }
 
+    private double minCost = Double.POSITIVE_INFINITY;
+
+    /**
+     * Returns whether the property is disproved i.e., whether it observed such an input that the cost function < 0.
+     *
+     * @return whether the property is disproved.
+     */
+    boolean isDisproved() {
+        return minCost < 0;
+    }
+
     @Nullable
     @ParametersAreNonnullByDefault
     @Override
@@ -76,6 +89,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
                 DefaultQuery<String, Word<String>> query = new DefaultQuery<>(sample);
                 Double result = memOracle.processQueryWithCost(query);
                 Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
+                minCost = min(result, minCost);
                 if (!Objects.equals(hypOutput, query.getOutput())) {
                     return query;
                 }
@@ -84,8 +98,6 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
                 }
                 map.put(result, sample);
             }
-
-            map.entries().stream().limit(30).forEach(System.out::println);
 
             List<Word<String>> goodSamples = map.entries().stream().limit(generationSize).map(Map.Entry::getValue).collect(Collectors.toList());
 
