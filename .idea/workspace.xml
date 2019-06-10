@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="S1Hil worked!!">
+    <list default="true" id="78abf439-6369-40d6-b0f2-56eb946995ec" name="Default Changelist" comment="Fixed the S4 property">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/STLAtomic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/STLAtomic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/group_mmm/STLGlobal.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/group_mmm/STLGlobal.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -27,14 +24,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="579">
-              <caret line="477" selection-start-line="477" selection-end-line="477" />
+            <state relative-caret-position="744">
+              <caret line="460" column="9" lean-forward="true" selection-start-line="460" selection-start-column="9" selection-end-line="460" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1425#1455#1" expanded="true" />
+                <element signature="e#1503#1533#1" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -133,11 +130,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="514">
-              <caret line="401" column="25" selection-start-line="401" selection-start-column="25" selection-end-line="401" selection-end-column="25" />
+            <state relative-caret-position="-52">
+              <caret line="334" selection-start-line="334" selection-end-line="334" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -209,8 +206,8 @@
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLGlobal.java" />
         <option value="$PROJECT_DIR$/src/main/java/org/group_mmm/STLAtomic.java" />
-        <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java" />
+        <option value="$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java" />
       </list>
     </option>
   </component>
@@ -439,11 +436,23 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.AutotransExampleTest.runS4">
+  <component name="RunManager" selected="JUnit.AutotransExampleTest$S1AT.runS5">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.group_mmm.Main" />
       <module name="CyVeriA" />
       <option name="VM_PARAMETERS" value="-Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AutotransExampleTest$S1AT.runS5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CyVeriA" />
+      <option name="PACKAGE_NAME" value="org.group_mmm" />
+      <option name="MAIN_CLASS_NAME" value="org.group_mmm.AutotransExampleTest$S1AT" />
+      <option name="METHOD_NAME" value="runS5" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/:/usr/local/MATLAB/R2019a/bin/glnxa64" />
+      <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -496,18 +505,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SimulinkMembershipOracleTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CyVeriA" />
-      <option name="PACKAGE_NAME" value="org.group_mmm" />
-      <option name="MAIN_CLASS_NAME" value="org.group_mmm.SimulinkMembershipOracleTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=/Applications/MATLAB_R2018b.app/bin/maci64/:/usr/local/MATLAB/R2019a/bin/glnxa64" />
-      <option name="PARAMETERS" value="" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="MAIN_CLASS_NAME" value="" />
       <option name="METHOD_NAME" value="" />
@@ -523,16 +520,16 @@
       <item itemvalue="JUnit.AutotransExampleTest.runS1" />
       <item itemvalue="JUnit.AutotransExampleTest.runS2" />
       <item itemvalue="JUnit.AutotransExampleTest.runS4" />
-      <item itemvalue="JUnit.SimulinkMembershipOracleTest" />
       <item itemvalue="JUnit.AutotransExampleTest.runS1Hill" />
+      <item itemvalue="JUnit.AutotransExampleTest$S1AT.runS5" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AutotransExampleTest$S1AT.runS5" />
         <item itemvalue="JUnit.AutotransExampleTest.runS4" />
         <item itemvalue="JUnit.AutotransExampleTest.runS1Hill" />
         <item itemvalue="JUnit.AutotransExampleTest.runS1" />
         <item itemvalue="JUnit.AutotransExampleTest.runS2" />
-        <item itemvalue="JUnit.SimulinkMembershipOracleTest" />
       </list>
     </recent_temporary>
   </component>
@@ -649,13 +646,17 @@
       <option name="project" value="LOCAL" />
       <updated>1559874436558</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Fixed the S4 property">
+      <created>1559900625132</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1559900625132</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="AutotransExampleTest_runS1Hill - 2019.06.07 at 11h 51m 54s.xml">
-      <configuration name="AutotransExampleTest.runS1Hill" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="AutotransExampleTest_runS1Hill - 2019.06.07 at 12h 20m 46s.xml">
       <configuration name="AutotransExampleTest.runS1Hill" configurationId="JUnit" />
     </history-entry>
@@ -683,9 +684,12 @@
     <history-entry file="AutotransExampleTest_runS4 - 2019.06.07 at 18h 38m 14s.xml">
       <configuration name="AutotransExampleTest.runS4" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="AutotransExampleTest_runS4 - 2019.06.07 at 23h 34m 05s.xml">
+      <configuration name="AutotransExampleTest.runS4" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="170650000" />
+    <option name="totallyTimeSpent" value="174293000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -708,7 +712,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32963988" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.12022161" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.21440443" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.21440443" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32866243" />
@@ -775,7 +779,8 @@
     <MESSAGE value="implemented hill climbing" />
     <MESSAGE value="implemented AbstractSelectEQOracle" />
     <MESSAGE value="S1Hil worked!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="S1Hil worked!!" />
+    <MESSAGE value="Fixed the S4 property" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed the S4 property" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -1156,17 +1161,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="579">
-          <caret line="477" selection-start-line="477" selection-end-line="477" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1425#1455#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/group_mmm/STLSub.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
@@ -1199,10 +1193,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExample.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="514">
-          <caret line="401" column="25" selection-start-line="401" selection-start-column="25" selection-end-line="401" selection-end-column="25" />
+        <state relative-caret-position="-52">
+          <caret line="334" selection-start-line="334" selection-end-line="334" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/org/group_mmm/AutotransExampleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="744">
+          <caret line="460" column="9" lean-forward="true" selection-start-line="460" selection-start-column="9" selection-end-line="460" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1503#1533#1" expanded="true" />
           </folding>
         </state>
       </provider>
