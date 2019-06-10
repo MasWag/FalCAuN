@@ -51,7 +51,7 @@ class BlackBoxVerifier {
     private String cexProperty;
     private Word<String> cexOutput;
     private ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
-
+    private ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> ltlFormulas;
 
     /**
      * @param memOracle     The membership oracle
@@ -82,7 +82,7 @@ class BlackBoxVerifier {
                 inclusionOracle = new MealyBFInclusionOracle<>(memOracle, multiplier);
 
         // create an LTL property oracle, that also logs stuff
-        ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> ltlFormulas = new ArrayList<>();
+        this.ltlFormulas = new ArrayList<>();
         for (String property : properties) {
             PropertyOracle.MealyPropertyOracle<String, String, String> ltl =
                     new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
@@ -93,6 +93,10 @@ class BlackBoxVerifier {
         // create an equivalence oracle, that first searches for a counter example using the ltl properties, and next
         this.eqOracle = new EQOracleChain.MealyEQOracleChain<>(
                 new CExFirstOracle.MealyCExFirstOracle<>(ltlFormulas));
+    }
+
+    ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
+        return ltlFormulas;
     }
 
     public MembershipOracle.MealyMembershipOracle<String, String> getMemOracle() {

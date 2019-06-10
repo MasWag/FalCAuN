@@ -34,7 +34,7 @@ public class STLAtomic extends STLCost {
             case gt:
                 return currentValue.get(sigIndex) - comparator;
             case eq:
-                return abs(currentValue.get(sigIndex) - comparator);
+                return -abs(currentValue.get(sigIndex) - comparator);
             default:
                 return null;
         }

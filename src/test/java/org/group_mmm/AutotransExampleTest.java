@@ -248,7 +248,7 @@ class AutotransExampleTest {
             final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
             LOGGER.setLevel(Level.INFO);
 
-            exampleAT = new AutotransExample(1.0);
+            exampleAT = new AutotransExample(2.0);
 
             // Construct the input mapper
             {
@@ -409,7 +409,7 @@ class AutotransExampleTest {
                 exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
                         15,
                         new Random(),
-                        50000, 5, 15 * 4, resetWord);
+                        50000, 5, 15 * 4, resetWord, exampleAT.getVerifier().getLtlFormulas().get(0));
             } else if (useGA) {
                 exampleAT.getVerifier().addGAEQOracle(costFunc,
                         15,

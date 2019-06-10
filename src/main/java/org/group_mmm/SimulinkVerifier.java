@@ -101,6 +101,31 @@ class SimulinkVerifier {
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
 
+    void addHillClimbingEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
+                                 int length,
+                                 Random random,
+                                 int maxTests,
+                                 int generationSize,
+                                 int childrenSize,
+                                 boolean resetWord,
+                                 PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+        SimulinkMembershipOracleCost oracle =
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
+        oracle.setCache(this.memOracle.getCache());
+        if (costCache == null) {
+            costCache = oracle.getCostCache();
+        } else {
+            oracle.setCostCache(costCache);
+        }
+
+        this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
+    }
+
+
+    ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
+        return verifier.getLtlFormulas();
+    }
+
     void addMutateSelectEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
                                  int length,
                                  Random random,

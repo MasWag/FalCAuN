@@ -351,7 +351,7 @@ public class AutotransExample {
         ArrayList<String> gear3APStrings = constructProductAPs(velocityAllAPs, rotationAPs, gear3APs);
         Collection<String> gearN3APStrings = CollectionUtils.subtract(allAPStrings, gear3APStrings);
 
-        ArrayList<String> APs = constructProductAPs(velocityLargerAPs, rotationAPs, gearAllAPs);
+        Set<String> APs = new HashSet<>(constructProductAPs(velocityLargerAPs, rotationAPs, gearAllAPs));
         APs.addAll(gearN3APStrings);
 
 

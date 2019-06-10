@@ -3,6 +3,7 @@ package org.group_mmm;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
 import de.learnlib.api.oracle.EquivalenceOracle;
+import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.api.query.DefaultQuery;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.commons.util.collections.CollectionsUtil;
@@ -29,6 +30,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     private int maxTests;
     private boolean resetWord;
     private List<Word<String>> currentSamples = new ArrayList<>(generationSize);
+    private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
 
     AbstractSelectEQOracle(SimulinkMembershipOracleCost memOracle,
                            int length,
@@ -44,6 +46,24 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
         this.generationSize = generationSize;
         this.childrenSize = childrenSize;
         this.resetWord = resetWord;
+    }
+
+    AbstractSelectEQOracle(SimulinkMembershipOracleCost memOracle,
+                           int length,
+                           Random random,
+                           int maxTests,
+                           int generationSize,
+                           int childrenSize,
+                           boolean resetWord,
+                           PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+        this.memOracle = memOracle;
+        this.length = length;
+        this.random = random;
+        this.maxTests = maxTests;
+        this.generationSize = generationSize;
+        this.childrenSize = childrenSize;
+        this.resetWord = resetWord;
+        this.ltlOracle = ltlOracle;
     }
 
     private void resetSamples() {
@@ -62,7 +82,11 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
      * @return whether the property is disproved.
      */
     private boolean isDisproved() {
-        return minCost < 0;
+        if (ltlOracle != null) {
+            return ltlOracle.isDisproved();
+        } else {
+            return minCost < 0;
+        }
     }
 
     @Nullable

@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import de.learnlib.api.oracle.PropertyOracle;
 import net.automatalib.words.Word;
 
 import java.util.List;
@@ -11,6 +12,10 @@ import java.util.stream.Stream;
 public class HillClimbingEQOracle extends AbstractSelectEQOracle {
     HillClimbingEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord);
+    }
+
+    HillClimbingEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+        super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle);
     }
 
     @Override
