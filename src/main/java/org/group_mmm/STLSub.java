@@ -1,7 +1,7 @@
 package org.group_mmm;
 
 import ch.qos.logback.classic.Logger;
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.words.Word;
 import org.slf4j.LoggerFactory;
