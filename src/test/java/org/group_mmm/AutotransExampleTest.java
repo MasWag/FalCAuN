@@ -314,6 +314,35 @@ class AutotransExampleTest {
         }
 
         @Test
+        void constructS1() {
+            Map<Character, Double> velocityMapper = new HashMap<>();
+            velocityMapper.put('a', 80.0);
+            velocityMapper.put('b', 100.0);
+            velocityMapper.put('c', 120.0);
+
+            Map<Character, Double> rotationMapper = new HashMap<>();
+
+            Map<Character, Double> gearMapper = new HashMap<>();
+
+            exampleAT.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
+            exampleAT.setLargest(largest);
+
+            String expected = "[]((output==\"aXX\")||(output==\"cXX\")||(output==\"bXX\"))";
+            STLAtomic atomic = new STLAtomic(0, STLAtomic.Operation.lt, 120.0);
+            atomic.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            atomic.setLargest(largest);
+            STLCost costFunc = new STLGlobal(atomic);
+
+            String costFormula = costFunc.toAbstractString().replaceAll(" ", "");
+
+            assertEquals(expected, costFormula);
+        }
+
+        @Test
         void runS1Hill() throws Exception {
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
@@ -422,6 +451,72 @@ class AutotransExampleTest {
             assertFalse(exampleAT.getVerifier().run());
 
             FileWriter writer = new FileWriter(new File("./runS2Learned.dot"));
+            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+            writer.close();
+
+            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
+            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+        }
+
+        @Test
+        void runS1andS2() throws Exception {
+            Map<Character, Double> velocityMapper = new HashMap<>();
+            velocityMapper.put('a', 10.0);
+            velocityMapper.put('b', 20.0);
+            velocityMapper.put('c', 80.0);
+            velocityMapper.put('d', 100.0);
+            velocityMapper.put('e', 120.0);
+
+            Map<Character, Double> rotationMapper = new HashMap<>();
+
+            Map<Character, Double> gearMapper = new HashMap<>();
+            gearMapper.put('1', 1.0);
+            gearMapper.put('2', 2.0);
+            gearMapper.put('3', 3.0);
+
+
+            exampleAT.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', '4'));
+            exampleAT.setLargest(largest);
+
+            exampleAT.setProperties(new ArrayList<>(Arrays.asList(
+                    exampleAT.constructS1(120),
+                    exampleAT.constructS2(20))));
+
+            exampleAT.constructVerifier();
+            boolean useHillClimbing = true;
+            boolean useGA = false;
+            boolean resetWord = false;
+
+            Function<Word<ArrayList<Double>>, Double> costFuncS1 = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
+
+            Function<Word<ArrayList<Double>>, Double> costFuncS2 =
+                    new STLGlobal(new STLImply(new STLAtomic(2, STLAtomic.Operation.eq, 3),
+                            new STLAtomic(0, STLAtomic.Operation.gt, 20)));
+
+            if (useHillClimbing) {
+                exampleAT.getVerifier().addHillClimbingEQOracle(costFuncS1,
+                        15,
+                        new Random(),
+                        50000, 5, 15 * 4, resetWord, exampleAT.getVerifier().getLtlFormulas().get(0));
+                exampleAT.getVerifier().addHillClimbingEQOracle(costFuncS2,
+                        15,
+                        new Random(),
+                        50000, 5, 15 * 4, resetWord, exampleAT.getVerifier().getLtlFormulas().get(1));
+            } else if (useGA) {
+                exampleAT.getVerifier().addGAEQOracle(costFuncS1,
+                        15,
+                        new Random(),
+                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
+            } else {
+                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
+            }
+
+            assertFalse(exampleAT.getVerifier().run());
+
+            FileWriter writer = new FileWriter(new File("./runS1-S2Learned.dot"));
             exampleAT.getVerifier().writeDOTLearnedMealy(writer);
             writer.close();
 

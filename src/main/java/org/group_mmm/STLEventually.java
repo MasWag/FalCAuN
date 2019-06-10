@@ -15,5 +15,15 @@ public class STLEventually extends STLTemporalOp {
     public Double apply(Word<ArrayList<Double>> signal) {
         return signal.suffixes(true).stream().map(subFml).max(Comparator.comparingDouble(Double::valueOf)).orElse(null);
     }
+
+    @Override
+    public String toString() {
+        return String.format("<> ( %s )", subFml.toString());
+    }
+
+    @Override
+    String toAbstractString() {
+        return String.format("<> ( %s )", subFml.toAbstractString());
+    }
 }
 

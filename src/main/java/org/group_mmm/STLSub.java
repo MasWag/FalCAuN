@@ -1,12 +1,13 @@
 package org.group_mmm;
 
 import ch.qos.logback.classic.Logger;
-import org.jetbrains.annotations.NotNull;
 import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.words.Word;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class STLSub extends STLCost {
     private final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
@@ -18,6 +19,7 @@ public class STLSub extends STLCost {
         this.subFml = subFml;
         this.from = from;
         this.to = to;
+        this.nonTemporal = false;
     }
 
     @Override
@@ -31,9 +33,49 @@ public class STLSub extends STLCost {
                     return Double.POSITIVE_INFINITY;
                 default:
                     LOGGER.error("Unknown class {}", subFml.getClass());
-                    return null;
             }
         }
         return subFml.apply(signal.subWord(from, Math.min(to, signal.size() - 1)));
+    }
+
+    @Override
+    protected Set<String> getAllAPs() {
+        return subFml.getAllAPs();
+    }
+
+    @Override
+    public String toString() {
+        final String op = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " || " : " && ";
+
+        ArrayList<String> subFmls = new ArrayList<>();
+        for (int i = this.from; i <= this.to; i++) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("( ");
+
+            for (int j = 0; j < i; j++) {
+                builder.append("X (");
+            }
+
+            builder.append(subFml.subFml.toString());
+
+            for (int j = 0; j < i; j++) {
+                builder.append(" )");
+            }
+            builder.append(" )");
+
+            subFmls.add(builder.toString());
+        }
+
+        return String.join(op, subFmls);
+    }
+
+    @Override
+    protected void constructAtomicStrings() {
+        this.atomicStrings = null;
+    }
+
+    @Override
+    String toAbstractString() {
+        return toString();
     }
 }
