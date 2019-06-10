@@ -236,8 +236,11 @@ class AutotransExampleTest {
         System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
     }
 
+    /**
+     * The tests for ATs in ZESAH18
+     */
     @Nested
-    class S1AT {
+    class ZESAH18_AT {
         private AutotransExample exampleAT;
 
         @BeforeEach
@@ -436,7 +439,7 @@ class AutotransExampleTest {
 
             Function<Word<ArrayList<Double>>, Double> costFunc =
                     new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, true, 100)), 0, 13),
-                            new STLSub(new STLAtomic(0, false, 65.0), 14, 14));
+                            new STLSub(new STLGlobal(new STLAtomic(0, false, 65.0)), 14, 14));
 
             if (useHillClimbing) {
                 exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
