@@ -402,8 +402,8 @@ class AutotransExampleTest {
             boolean resetWord = false;
 
             Function<Word<ArrayList<Double>>, Double> costFunc =
-                    new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
-                            new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14));
+                    new STLGlobal(new STLImply(new STLAtomic(2, STLAtomic.Operation.eq, 3),
+                            new STLAtomic(0, STLAtomic.Operation.gt, 20)));
 
             if (useHillClimbing) {
                 exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
