@@ -4,23 +4,40 @@ import net.automatalib.words.Word;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.abs;
+
 public class STLAtomic extends STLCost {
+    private Operation op;
     private int sigIndex;
     private double comparator;
-    private boolean lt;
 
-    STLAtomic(int sigIndex, boolean lt, double comparator) {
+    STLAtomic(int sigIndex, Operation op, double comparator) {
         this.sigIndex = sigIndex;
         this.comparator = comparator;
-        this.lt = lt;
+        this.op = op;
     }
 
     @Override
     public Double apply(Word<ArrayList<Double>> signal) {
-        if (signal.isEmpty()) {
+        ArrayList<Double> currentValue = signal.getSymbol(0);
+        if (signal.isEmpty() || currentValue == null) {
             return Double.POSITIVE_INFINITY;
         }
-        return lt ? comparator - signal.getSymbol(0).get(sigIndex) :
-                signal.getSymbol(0).get(sigIndex) - comparator;
+        switch (op) {
+            case lt:
+                return comparator - currentValue.get(sigIndex);
+            case gt:
+                return currentValue.get(sigIndex) - comparator;
+            case eq:
+                return abs(currentValue.get(sigIndex) - comparator);
+            default:
+                return null;
+        }
+    }
+
+    enum Operation {
+        lt,
+        eq,
+        gt
     }
 }

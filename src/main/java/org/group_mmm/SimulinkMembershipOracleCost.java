@@ -13,8 +13,16 @@ import java.util.stream.Collectors;
 
 class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracleCost.class);
-    private final IncrementalMealyTreeBuilder<String, Double> costCache;
+    private IncrementalMealyTreeBuilder<String, Double> costCache;
     private Function<Word<ArrayList<Double>>, Double> costFunc;
+
+    IncrementalMealyTreeBuilder<String, Double> getCostCache() {
+        return costCache;
+    }
+
+    void setCostCache(IncrementalMealyTreeBuilder<String, Double> costCache) {
+        this.costCache = costCache;
+    }
 
     SimulinkMembershipOracleCost(SimulinkSUL simulink, SimulinkSULMapper mapper, Function<Word<ArrayList<Double>>, Double> costFunc) {
         super(simulink, mapper);

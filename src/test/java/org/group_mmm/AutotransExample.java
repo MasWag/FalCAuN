@@ -287,9 +287,17 @@ public class AutotransExample {
         String gear2APString = String.join(" || ",
                 constructProductAPs(velocityAPs, rotationAPs, gear2APs));
         signalStep = 1.0;
-        builder.append(
-                "( (" + gear2APString + ") && X (" + gear1APString + ") ) -> ("
-                        + "X(!(" + gear2APString + ")) && " + "X(X(!(" + gear2APString + "))) " + ")");
+        builder.append("( (");
+        builder.append(gear2APString);
+        builder.append(") && X (");
+        builder.append(gear1APString);
+        builder.append(") ) -> (");
+        builder.append("X(!(");
+        builder.append(gear2APString);
+        builder.append(")) && ");
+        builder.append("X(X(!(");
+        builder.append(gear2APString);
+        builder.append("))) " + ")");
 
 
         builder.append(")");
@@ -430,18 +438,22 @@ public class AutotransExample {
 
         ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
 
-        String velocity100String = String.join(" || ",
+        String rotation4770Strings = String.join(" || ",
                 constructProductAPs(velocityAPs, rotation4770APs, gearAPs));
-        String velocity65String = String.join(" || ",
+        String rotation600Strings = String.join(" || ",
                 constructProductAPs(velocityAPs, rotation600APs, gearAPs));
         ArrayList<String> builder100Array = new ArrayList<>();
 
-        builder.append("(" + rotation4770APs + ")");
+        builder.append("(");
+        builder.append(rotation4770Strings);
+        builder.append(")");
 
         builder.append(" || ");
 
 
-        builder.append("( X(" + rotation600APs + "))");
+        builder.append("( X(");
+        builder.append(rotation600Strings);
+        builder.append("))");
 
         builder.append(")");
         return builder.toString();

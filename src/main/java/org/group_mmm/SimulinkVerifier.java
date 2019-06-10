@@ -4,6 +4,7 @@ import de.learnlib.api.SUL;
 import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.filter.cache.sul.SULCache;
 import de.learnlib.mapper.MappedSUL;
+import net.automatalib.incremental.mealy.tree.IncrementalMealyTreeBuilder;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
 
@@ -27,6 +28,8 @@ class SimulinkVerifier {
     private SimulinkSULMapper mapper;
     private SUL<String, String> mappedSimulink;
     private BlackBoxVerifier verifier;
+    private SimulinkMembershipOracle memOracle;
+    private IncrementalMealyTreeBuilder<String, Double> costCache;
 
     /**
      * @param initScript The MATLAB script called at first. You have to define mdl in the script.
@@ -47,8 +50,8 @@ class SimulinkVerifier {
         this.mappedSimulink = new MappedSUL<>(mapper, simulink);
         this.mappedSimulink = SULCache.createTreeCache(this.abstractInputAlphabet, this.mappedSimulink);
         // create a regular membership oracle
-        SimulinkMembershipOracle memOracle = new SimulinkMembershipOracle(rawSimulink, this.mapper);
-        verifier = new BlackBoxVerifier(memOracle, mappedSimulink, properties, abstractInputAlphabet);
+        this.memOracle = new SimulinkMembershipOracle(rawSimulink, this.mapper);
+        verifier = new BlackBoxVerifier(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
     }
 
     String getCexProperty() {
@@ -86,8 +89,16 @@ class SimulinkVerifier {
                                  int generationSize,
                                  int childrenSize,
                                  boolean resetWord) {
-        this.verifier.addEqOracle(new HillClimbingEQOracle(
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, resetWord));
+        SimulinkMembershipOracleCost oracle =
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
+        oracle.setCache(this.memOracle.getCache());
+        if (costCache == null) {
+            costCache = oracle.getCostCache();
+        } else {
+            oracle.setCostCache(costCache);
+        }
+
+        this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
 
     void addMutateSelectEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
@@ -98,8 +109,15 @@ class SimulinkVerifier {
                                  int childrenSize,
                                  int changeSize,
                                  boolean resetWord) {
-        this.verifier.addEqOracle(new MutateSelectEQOracle(
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
+        SimulinkMembershipOracleCost oracle =
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
+        oracle.setCache(this.memOracle.getCache());
+        if (costCache == null) {
+            costCache = oracle.getCostCache();
+        } else {
+            oracle.setCostCache(costCache);
+        }
+        this.verifier.addEqOracle(new MutateSelectEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
     }
 
     void addGAEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
@@ -113,8 +131,16 @@ class SimulinkVerifier {
                        double crossoverProb,
                        boolean resetWord
     ) {
-        this.verifier.addEqOracle(new GAEQOracle(
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc), length, random, maxTests, generationSize, childrenSize, changeSize, crossoverProb, mutationProb, resetWord));
+        SimulinkMembershipOracleCost oracle =
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
+        oracle.setCache(this.memOracle.getCache());
+        if (costCache == null) {
+            costCache = oracle.getCostCache();
+        } else {
+            oracle.setCostCache(costCache);
+        }
+
+        this.verifier.addEqOracle(new GAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, changeSize, crossoverProb, mutationProb, resetWord));
     }
 
     Word<String> getCexAbstractInput() {

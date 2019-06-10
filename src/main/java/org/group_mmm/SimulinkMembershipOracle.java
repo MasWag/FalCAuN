@@ -20,8 +20,15 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
 
     protected final SimulinkSUL simulink;
     protected final SimulinkSULMapper mapper;
-    final IncrementalMealyTreeBuilder<String, String> cache;
+    IncrementalMealyTreeBuilder<String, String> cache;
 
+    IncrementalMealyTreeBuilder<String, String> getCache() {
+        return cache;
+    }
+
+    void setCache(IncrementalMealyTreeBuilder<String, String> cache) {
+        this.cache = cache;
+    }
 
     SimulinkMembershipOracle(SimulinkSUL simulink, SimulinkSULMapper mapper) {
         this.simulink = simulink;

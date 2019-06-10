@@ -342,7 +342,7 @@ class AutotransExampleTest {
             boolean useGA = false;
             boolean resetWord = false;
 
-            Function<Word<ArrayList<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, true, 120.0));
+            Function<Word<ArrayList<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
 
             if (useHillClimbing) {
                 exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
@@ -438,8 +438,8 @@ class AutotransExampleTest {
             boolean resetWord = false;
 
             Function<Word<ArrayList<Double>>, Double> costFunc =
-                    new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, true, 100)), 0, 13),
-                            new STLSub(new STLGlobal(new STLAtomic(0, false, 65.0)), 14, 14));
+                    new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
+                            new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14));
 
             if (useHillClimbing) {
                 exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
@@ -496,8 +496,8 @@ class AutotransExampleTest {
 
             Function<Word<ArrayList<Double>>, Double> costFunc = new STLGlobal(
                     new STLOr(
-                            new STLAtomic(1, true, 4770),
-                            new STLNext(new STLAtomic(1, false, 600.0))
+                            new STLAtomic(1, STLAtomic.Operation.lt, 4770),
+                            new STLNext(new STLAtomic(1, STLAtomic.Operation.gt, 600.0), true)
                     ));
 
 
