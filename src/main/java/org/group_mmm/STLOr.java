@@ -51,7 +51,7 @@ public class STLOr extends STLCost {
             return this.atomicStrings.stream().map(
                     s -> "( " + s + " )").collect(Collectors.joining(" || "));
         } else {
-            return this.subFmls.stream().map(
+            return this.subFmls.stream().map(STLCost::toAbstractString).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" || "));
         }
     }

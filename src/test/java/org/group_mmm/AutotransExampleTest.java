@@ -20,7 +20,7 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AutotransExampleTest {
-    static void executeRun(AutotransExample exampleAT, STLCost costFunc, boolean useHillClimbing, boolean useGA, boolean resetWord, String dotName) throws Exception {
+    static void executeRun(AutotransExample exampleAT, Function<Word<ArrayList<Double>>, Double> costFunc, boolean useHillClimbing, boolean useGA, boolean resetWord, String dotName) throws Exception {
         exampleAT.constructVerifier();
 
         if (useHillClimbing) {
@@ -328,34 +328,11 @@ class AutotransExampleTest {
 
             exampleAT.setProperties(new ArrayList<>(Collections.singletonList(costFunc.toAbstractString())));
 
-            exampleAT.constructVerifier();
             boolean useHillClimbing = true;
             boolean useGA = false;
             boolean resetWord = false;
 
-            if (useHillClimbing) {
-                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        50000, 5, 15 * 4, resetWord,
-                        exampleAT.getVerifier().getLtlFormulas().get(0));
-            } else if (useGA) {
-                exampleAT.getVerifier().addGAEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
-            } else {
-                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
-            }
-
-            assertFalse(exampleAT.getVerifier().run());
-
-            FileWriter writer = new FileWriter(new File("./runAT1Learned.dot"));
-            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
-            writer.close();
-
-            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
-            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runAT1Learned.dot");
         }
     }
 
@@ -489,37 +466,13 @@ class AutotransExampleTest {
                     Collections.singletonList(
                             exampleAT.constructS1(120))));
 
-            exampleAT.constructVerifier();
             boolean useHillClimbing = true;
             boolean useGA = false;
             boolean resetWord = false;
 
             Function<Word<ArrayList<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
 
-            if (useHillClimbing) {
-                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        50000, 5, 15 * 4, resetWord);
-            } else if (useGA) {
-                exampleAT.getVerifier().addGAEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
-            } else {
-                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
-            }
-
-            // exampleAT.getVerifier().addWpMethodEQOracle(30);
-            //exampleAT.getVerifier().addRandomWalkEQOracle(0.1, 100, new Random());
-            assertFalse(exampleAT.getVerifier().run());
-
-            FileWriter writer = new FileWriter(new File("./runS1Learned.dot"));
-            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
-            writer.close();
-
-            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
-            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS1Learned.dot");
         }
 
         @Test
@@ -548,7 +501,6 @@ class AutotransExampleTest {
                     Collections.singletonList(
                             exampleAT.constructS2(20))));
 
-            exampleAT.constructVerifier();
             boolean useHillClimbing = true;
             boolean useGA = false;
             boolean resetWord = false;
@@ -557,28 +509,7 @@ class AutotransExampleTest {
                     new STLGlobal(new STLImply(new STLAtomic(2, STLAtomic.Operation.eq, 3),
                             new STLAtomic(0, STLAtomic.Operation.gt, 20)));
 
-            if (useHillClimbing) {
-                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        50000, 5, 15 * 4, resetWord, exampleAT.getVerifier().getLtlFormulas().get(0));
-            } else if (useGA) {
-                exampleAT.getVerifier().addGAEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
-            } else {
-                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
-            }
-
-            assertFalse(exampleAT.getVerifier().run());
-
-            FileWriter writer = new FileWriter(new File("./runS2Learned.dot"));
-            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
-            writer.close();
-
-            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
-            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS2Learned.dot");
         }
 
         @Test
@@ -672,37 +603,15 @@ class AutotransExampleTest {
                     Collections.singletonList(
                             exampleAT.constructS4(100.0, 65.0))));
 
-            exampleAT.constructVerifier();
             boolean useHillClimbing = true;
             boolean useGA = false;
             boolean resetWord = false;
 
-            Function<Word<ArrayList<Double>>, Double> costFunc =
+            STLCost costFunc =
                     new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
                             new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14));
 
-            if (useHillClimbing) {
-                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        50000, 5, 15 * 4, resetWord);
-            } else if (useGA) {
-                exampleAT.getVerifier().addGAEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
-            } else {
-                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
-            }
-
-            assertFalse(exampleAT.getVerifier().run());
-
-            FileWriter writer = new FileWriter(new File("./runS4Learned.dot"));
-            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
-            writer.close();
-
-            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
-            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS4Learned.dot");
         }
 
         @Test
@@ -732,37 +641,14 @@ class AutotransExampleTest {
             boolean useHillClimbing = true;
             boolean useGA = false;
             boolean resetWord = false;
-            exampleAT.constructVerifier();
 
-            Function<Word<ArrayList<Double>>, Double> costFunc = new STLGlobal(
+            STLCost costFunc = new STLGlobal(
                     new STLOr(
                             new STLAtomic(1, STLAtomic.Operation.lt, 4770),
                             new STLNext(new STLAtomic(1, STLAtomic.Operation.gt, 600.0), true)
                     ));
 
-
-            if (useHillClimbing) {
-                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        50000, 5, 15 * 4, resetWord);
-            } else if (useGA) {
-                exampleAT.getVerifier().addGAEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
-            } else {
-                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
-            }
-
-            assertFalse(exampleAT.getVerifier().run());
-
-            FileWriter writer = new FileWriter(new File("./runS5Learned.dot"));
-            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
-            writer.close();
-
-            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
-            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS5Learned.dot");
         }
     }
 
@@ -776,7 +662,7 @@ class AutotransExampleTest {
         @BeforeEach
         void setUp() {
             final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
-            LOGGER.setLevel(Level.DEBUG);
+            LOGGER.setLevel(Level.INFO);
 
             exampleAT = new AutotransExample(2.0);
 
