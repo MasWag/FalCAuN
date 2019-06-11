@@ -60,7 +60,7 @@ class AutotransExampleTest {
     @Test
     void runAT1() throws Exception {
         final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
-        LOGGER.setLevel(Level.DEBUG);
+        LOGGER.setLevel(Level.INFO);
 
         AutotransExample exampleAT1 = new AutotransExample(10.0);
         exampleAT1.setProperties(new ArrayList<>(
@@ -234,6 +234,102 @@ class AutotransExampleTest {
 
         System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
         System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+    }
+
+    /**
+     * The tests for ATs in HAF14
+     */
+    @Nested
+    class HAF14_AT {
+        private AutotransExample exampleAT;
+
+        @BeforeEach
+        void setUp() {
+            final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+            LOGGER.setLevel(Level.INFO);
+
+            exampleAT = new AutotransExample(2.0);
+
+            // Construct the input mapper
+            {
+                Map<Character, Double> throttleMapper = new HashMap<>();
+                throttleMapper.put('a', 0.0);
+                //throttleMapper.put('b', 20.0);
+                //throttleMapper.put('c', 40.0);
+                //throttleMapper.put('d', 60.0);
+                //throttleMapper.put('e', 80.0);
+                throttleMapper.put('f', 100.0);
+
+                Map<Character, Double> brakeMapper = new HashMap<>();
+                brakeMapper.put('a', 0.0);
+                //brakeMapper.put('b', 50.0);
+                //brakeMapper.put('c', 100.0);
+                //brakeMapper.put('d', 150.0);
+                //brakeMapper.put('e', 200.0);
+                //brakeMapper.put('f', 250.0);
+                //brakeMapper.put('g', 300.0);
+                brakeMapper.put('h', 325.0);
+
+                exampleAT.setInputMapper(new ArrayList<>(Arrays.asList(throttleMapper, brakeMapper)));
+            }
+        }
+
+        @Test
+        void runAT1() throws Exception {
+            Map<Character, Double> velocityMapper = new HashMap<>();
+
+            Map<Character, Double> rotationMapper = new HashMap<>();
+            rotationMapper.put('a', 4000.0);
+            rotationMapper.put('b', 4500.0);
+
+
+            Map<Character, Double> gearMapper = new HashMap<>();
+
+            exampleAT.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', 'X'));
+            exampleAT.setLargest(largest);
+
+            STLAtomic atomic = new STLAtomic(1, STLAtomic.Operation.lt, 4500.0);
+
+            atomic.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            atomic.setLargest(largest);
+
+            STLCost costFunc = new STLGlobal(atomic);
+
+            exampleAT.setProperties(new ArrayList<>(Collections.singletonList(costFunc.toAbstractString())));
+
+            exampleAT.constructVerifier();
+            boolean useHillClimbing = true;
+            boolean useGA = false;
+            boolean resetWord = false;
+
+            if (useHillClimbing) {
+                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
+                        15,
+                        new Random(),
+                        50000, 5, 15 * 4, resetWord,
+                        exampleAT.getVerifier().getLtlFormulas().get(0));
+            } else if (useGA) {
+                exampleAT.getVerifier().addGAEQOracle(costFunc,
+                        15,
+                        new Random(),
+                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
+            } else {
+                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
+            }
+
+            assertFalse(exampleAT.getVerifier().run());
+
+            FileWriter writer = new FileWriter(new File("./runAT1Learned.dot"));
+            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+            writer.close();
+
+            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
+            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+        }
     }
 
     /**
@@ -461,16 +557,16 @@ class AutotransExampleTest {
         @Test
         void runS1andS2() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
-            velocityMapper.put('a', 10.0);
+            //velocityMapper.put('a', 10.0);
             velocityMapper.put('b', 20.0);
-            velocityMapper.put('c', 80.0);
-            velocityMapper.put('d', 100.0);
+            //velocityMapper.put('c', 80.0);
+            //velocityMapper.put('d', 100.0);
             velocityMapper.put('e', 120.0);
 
             Map<Character, Double> rotationMapper = new HashMap<>();
 
             Map<Character, Double> gearMapper = new HashMap<>();
-            gearMapper.put('1', 1.0);
+            // gearMapper.put('1', 1.0);
             gearMapper.put('2', 2.0);
             gearMapper.put('3', 3.0);
 
@@ -635,6 +731,119 @@ class AutotransExampleTest {
             assertFalse(exampleAT.getVerifier().run());
 
             FileWriter writer = new FileWriter(new File("./runS5Learned.dot"));
+            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+            writer.close();
+
+            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
+            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+        }
+    }
+
+    /**
+     * The original tests for ATs
+     */
+    @Nested
+    class Original {
+        private AutotransExample exampleAT;
+
+        @BeforeEach
+        void setUp() {
+            final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+            LOGGER.setLevel(Level.DEBUG);
+
+            exampleAT = new AutotransExample(2.0);
+
+            // Construct the input mapper
+            {
+                Map<Character, Double> throttleMapper = new HashMap<>();
+                throttleMapper.put('a', 0.0);
+                //throttleMapper.put('b', 20.0);
+                //throttleMapper.put('c', 40.0);
+                //throttleMapper.put('d', 60.0);
+                //throttleMapper.put('e', 80.0);
+                throttleMapper.put('f', 100.0);
+
+                Map<Character, Double> brakeMapper = new HashMap<>();
+                brakeMapper.put('a', 0.0);
+                //brakeMapper.put('b', 50.0);
+                //brakeMapper.put('c', 100.0);
+                //brakeMapper.put('d', 150.0);
+                //brakeMapper.put('e', 200.0);
+                //brakeMapper.put('f', 250.0);
+                //brakeMapper.put('g', 300.0);
+                brakeMapper.put('h', 325.0);
+
+                exampleAT.setInputMapper(new ArrayList<>(Arrays.asList(throttleMapper, brakeMapper)));
+            }
+        }
+
+        @Test
+        void runM1() throws Exception {
+            //{120, 160, 170, 200}.
+            Map<Character, Double> velocityMapper = new HashMap<>();
+            velocityMapper.put('a', 80.0);
+            velocityMapper.put('b', 100.0);
+            velocityMapper.put('c', 120.0);
+
+
+            //{4500, 5000, 5200, 5500}.
+            Map<Character, Double> rotationMapper = new HashMap<>();
+
+            Map<Character, Double> gearMapper = new HashMap<>();
+
+            exampleAT.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
+            exampleAT.setLargest(largest);
+
+            STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 90.0);
+            STLAtomic lowVelocity = new STLAtomic(0, STLAtomic.Operation.gt, 30.0);
+
+            highVelocity.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            highVelocity.setLargest(largest);
+
+            lowVelocity.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            lowVelocity.setLargest(largest);
+
+            STLCost costFunc = new STLOr(new STLOr(
+                    new STLOr(new STLSub(new STLGlobal(highVelocity), 0, 2),
+                            new STLSub(new STLGlobal(lowVelocity), 3, 5)),
+                    new STLOr(new STLSub(new STLGlobal(highVelocity), 6, 8),
+                            new STLSub(new STLGlobal(lowVelocity), 9, 11))),
+                    new STLSub(new STLGlobal(highVelocity), 12, 14));
+
+
+            exampleAT.setProperties(new ArrayList<>(
+                    Collections.singletonList(costFunc.toAbstractString())));
+
+            exampleAT.constructVerifier();
+            boolean useHillClimbing = true;
+            boolean useGA = false;
+            boolean resetWord = false;
+
+            if (useHillClimbing) {
+                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
+                        15,
+                        new Random(),
+                        50000, 5, 15 * 4, resetWord,
+                        exampleAT.getVerifier().getLtlFormulas().get(0));
+            } else if (useGA) {
+                exampleAT.getVerifier().addGAEQOracle(costFunc,
+                        15,
+                        new Random(),
+                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
+            } else {
+                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
+            }
+
+            // exampleAT.getVerifier().addWpMethodEQOracle(30);
+            //exampleAT.getVerifier().addRandomWalkEQOracle(0.1, 100, new Random());
+            assertFalse(exampleAT.getVerifier().run());
+
+            FileWriter writer = new FileWriter(new File("./runM1Learned.dot"));
             exampleAT.getVerifier().writeDOTLearnedMealy(writer);
             writer.close();
 

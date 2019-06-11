@@ -4,7 +4,6 @@ import de.learnlib.api.SUL;
 import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.filter.cache.sul.SULCache;
 import de.learnlib.mapper.MappedSUL;
-import net.automatalib.incremental.mealy.tree.IncrementalMealyTreeBuilder;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
 
@@ -29,7 +28,6 @@ class SimulinkVerifier {
     private SUL<String, String> mappedSimulink;
     private BlackBoxVerifier verifier;
     private SimulinkMembershipOracle memOracle;
-    private IncrementalMealyTreeBuilder<String, Double> costCache;
 
     /**
      * @param initScript The MATLAB script called at first. You have to define mdl in the script.
@@ -92,11 +90,6 @@ class SimulinkVerifier {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
-        if (costCache == null) {
-            costCache = oracle.getCostCache();
-        } else {
-            oracle.setCostCache(costCache);
-        }
 
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
@@ -112,11 +105,6 @@ class SimulinkVerifier {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
-        if (costCache == null) {
-            costCache = oracle.getCostCache();
-        } else {
-            oracle.setCostCache(costCache);
-        }
 
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
@@ -137,11 +125,7 @@ class SimulinkVerifier {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
-        if (costCache == null) {
-            costCache = oracle.getCostCache();
-        } else {
-            oracle.setCostCache(costCache);
-        }
+
         this.verifier.addEqOracle(new MutateSelectEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
     }
 
@@ -159,11 +143,6 @@ class SimulinkVerifier {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
-        if (costCache == null) {
-            costCache = oracle.getCostCache();
-        } else {
-            oracle.setCostCache(costCache);
-        }
 
         this.verifier.addEqOracle(new GAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, changeSize, crossoverProb, mutationProb, resetWord));
     }

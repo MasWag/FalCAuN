@@ -16,14 +16,6 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
     private IncrementalMealyTreeBuilder<String, Double> costCache;
     private Function<Word<ArrayList<Double>>, Double> costFunc;
 
-    IncrementalMealyTreeBuilder<String, Double> getCostCache() {
-        return costCache;
-    }
-
-    void setCostCache(IncrementalMealyTreeBuilder<String, Double> costCache) {
-        this.costCache = costCache;
-    }
-
     SimulinkMembershipOracleCost(SimulinkSUL simulink, SimulinkSULMapper mapper, Function<Word<ArrayList<Double>>, Double> costFunc) {
         super(simulink, mapper);
         this.costFunc = costFunc;
@@ -36,7 +28,7 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
         WordBuilder<String> abstractOutputBuilder = new WordBuilder<>(abstractInput.size());
         WordBuilder<Double> costBuilder = new WordBuilder<>(abstractInput.size());
 
-        if (!cache.lookup(abstractInput, abstractOutputBuilder)) {
+        if (!cache.lookup(abstractInput, abstractOutputBuilder) || !costCache.lookup(abstractInput, costBuilder)) {
             abstractOutputBuilder.clear();
             costBuilder.clear();
 
@@ -59,6 +51,7 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
                     concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList()));
 
             assert concreteOutput.size() == abstractOutputBuilder.toWord().size();
+
             cache.insert(abstractInput, abstractOutputBuilder.toWord());
             costCache.insert(abstractInput, costBuilder.toWord());
         } else {

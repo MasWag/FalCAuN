@@ -46,7 +46,7 @@ public class STLImply extends STLCost {
             return this.atomicStrings.stream().map(
                     s -> "( " + s + " )").collect(Collectors.joining(" || "));
         } else {
-            return toString();
+            return String.format("( %s ) -> ( %s )", subFml1.toAbstractString(), subFml2.toAbstractString());
         }
     }
 
