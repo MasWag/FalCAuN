@@ -20,6 +20,33 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AutotransExampleTest {
+    static void executeRun(AutotransExample exampleAT, STLCost costFunc, boolean useHillClimbing, boolean useGA, boolean resetWord, String dotName) throws Exception {
+        exampleAT.constructVerifier();
+
+        if (useHillClimbing) {
+            exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
+                    15,
+                    new Random(),
+                    50000, 5, 15 * 4, resetWord,
+                    exampleAT.getVerifier().getLtlFormulas().get(0));
+        } else if (useGA) {
+            exampleAT.getVerifier().addGAEQOracle(costFunc,
+                    15,
+                    new Random(),
+                    10000, 3, 3, 2, 0.01, 0.8, resetWord);
+        } else {
+            exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
+        }
+
+        assertFalse(exampleAT.getVerifier().run());
+
+        FileWriter writer = new FileWriter(new File(dotName));
+        exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+        writer.close();
+
+        System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
+        System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+    }
 
     @Test
     void constructAT1() {
@@ -781,9 +808,8 @@ class AutotransExampleTest {
         void runM1() throws Exception {
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
-            velocityMapper.put('a', 80.0);
-            velocityMapper.put('b', 100.0);
-            velocityMapper.put('c', 120.0);
+            velocityMapper.put('a', 30.0);
+            velocityMapper.put('b', 90.0);
 
 
             //{4500, 5000, 5200, 5500}.
@@ -794,7 +820,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', 'X'));
             exampleAT.setLargest(largest);
 
             STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 90.0);
@@ -808,47 +834,66 @@ class AutotransExampleTest {
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
             lowVelocity.setLargest(largest);
 
-            STLCost costFunc = new STLOr(new STLOr(
-                    new STLOr(new STLSub(new STLGlobal(highVelocity), 0, 2),
-                            new STLSub(new STLGlobal(lowVelocity), 3, 5)),
-                    new STLOr(new STLSub(new STLGlobal(highVelocity), 6, 8),
-                            new STLSub(new STLGlobal(lowVelocity), 9, 11))),
-                    new STLSub(new STLGlobal(highVelocity), 12, 14));
-
+            STLCost costFunc = new STLOr(Arrays.asList(
+                    new STLSub(new STLGlobal(highVelocity), 0, 2),
+                    new STLSub(new STLGlobal(lowVelocity), 3, 5),
+                    new STLSub(new STLGlobal(highVelocity), 6, 8),
+                    new STLSub(new STLGlobal(lowVelocity), 9, 11),
+                    new STLSub(new STLGlobal(highVelocity), 12, 14)));
 
             exampleAT.setProperties(new ArrayList<>(
                     Collections.singletonList(costFunc.toAbstractString())));
 
-            exampleAT.constructVerifier();
             boolean useHillClimbing = true;
             boolean useGA = false;
             boolean resetWord = false;
 
-            if (useHillClimbing) {
-                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        50000, 5, 15 * 4, resetWord,
-                        exampleAT.getVerifier().getLtlFormulas().get(0));
-            } else if (useGA) {
-                exampleAT.getVerifier().addGAEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
-            } else {
-                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
-            }
+            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runM1Learned.dot");
+        }
 
-            // exampleAT.getVerifier().addWpMethodEQOracle(30);
-            //exampleAT.getVerifier().addRandomWalkEQOracle(0.1, 100, new Random());
-            assertFalse(exampleAT.getVerifier().run());
+        @Test
+        void runM2() throws Exception {
+            //{120, 160, 170, 200}.
+            Map<Character, Double> velocityMapper = new HashMap<>();
+            velocityMapper.put('a', 30.0);
+            velocityMapper.put('b', 90.0);
 
-            FileWriter writer = new FileWriter(new File("./runM1Learned.dot"));
-            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
-            writer.close();
 
-            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
-            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+            //{4500, 5000, 5200, 5500}.
+            Map<Character, Double> rotationMapper = new HashMap<>();
+
+            Map<Character, Double> gearMapper = new HashMap<>();
+
+            exampleAT.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', 'X'));
+            exampleAT.setLargest(largest);
+
+            STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 90.0);
+            STLAtomic lowVelocity = new STLAtomic(0, STLAtomic.Operation.gt, 30.0);
+
+            highVelocity.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            highVelocity.setLargest(largest);
+
+            lowVelocity.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            lowVelocity.setLargest(largest);
+
+            STLCost costFunc = new STLOr(Arrays.asList(
+                    new STLSub(new STLGlobal(highVelocity), 0, 4),
+                    new STLSub(new STLGlobal(lowVelocity), 5, 9),
+                    new STLSub(new STLGlobal(highVelocity), 10, 14)));
+
+            exampleAT.setProperties(new ArrayList<>(
+                    Collections.singletonList(costFunc.toAbstractString())));
+
+            boolean useHillClimbing = true;
+            boolean useGA = false;
+            boolean resetWord = false;
+
+            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runM2Learned.dot");
         }
     }
 }

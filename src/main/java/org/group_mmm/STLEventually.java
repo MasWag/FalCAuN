@@ -13,7 +13,7 @@ public class STLEventually extends STLTemporalOp {
 
     @Override
     public Double apply(Word<ArrayList<Double>> signal) {
-        return signal.suffixes(true).stream().map(subFml).max(Comparator.comparingDouble(Double::valueOf)).orElse(null);
+        return signal.suffixes(true).stream().map(subFml).max(Comparator.comparingDouble(Double::valueOf)).orElse(Double.NEGATIVE_INFINITY);
     }
 
     @Override
