@@ -1,0 +1,364 @@
+18:04:00.106 [main] DEBUG net.automatalib.modelcheckers.ltsmin.LTSminVersion - Found version 'v3.1.0'
+18:04:00.114 [main] DEBUG net.automatalib.modelcheckers.ltsmin.LTSminVersion - Parsed as 'v3.1.0'
+18:04:00.127 [main] DEBUG net.automatalib.modelcheckers.ltsmin.LTSminVersion - Found version 'v3.1.0'
+18:04:00.127 [main] DEBUG net.automatalib.modelcheckers.ltsmin.LTSminVersion - Parsed as 'v3.1.0'
+18:04:00.174 [main] INFO de.learnlib.util.Experiment - Starting round 1
+18:04:00.175 [main] INFO de.learnlib.util.Experiment - Learning
+18:04:44.994 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:04:46.484 [main] INFO de.learnlib.util.Experiment - fa aa ah fh ah aa fh aa fa ah fa fa fa fh fa
+18:04:46.485 [main] INFO de.learnlib.util.Experiment - Starting round 2
+18:04:46.485 [main] INFO de.learnlib.util.Experiment - Learning
+18:07:36.296 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:07:37.103 [main] INFO de.learnlib.util.Experiment - ah fa fh ah ah aa fa aa fa ah fa aa aa ah fh
+18:07:37.104 [main] INFO de.learnlib.util.Experiment - Starting round 3
+18:07:37.104 [main] INFO de.learnlib.util.Experiment - Learning
+18:07:56.943 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:07:57.707 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa aa ah fh fa ah ah fh fa ah ah
+18:07:57.707 [main] INFO de.learnlib.util.Experiment - Starting round 4
+18:07:57.707 [main] INFO de.learnlib.util.Experiment - Learning
+18:08:04.635 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:08:05.352 [main] INFO de.learnlib.util.Experiment - fh ah ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:08:05.352 [main] INFO de.learnlib.util.Experiment - Starting round 5
+18:08:05.352 [main] INFO de.learnlib.util.Experiment - Learning
+18:08:11.484 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:08:15.718 [main] INFO de.learnlib.util.Experiment - fa ah aa fh ah ah ah fa ah ah fh aa aa fa fa
+18:08:15.718 [main] INFO de.learnlib.util.Experiment - Starting round 6
+18:08:15.718 [main] INFO de.learnlib.util.Experiment - Learning
+18:08:24.455 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:08:29.733 [main] INFO de.learnlib.util.Experiment - fa fa aa fh fa ah ah fa ah ah fh aa aa fa fa
+18:08:29.733 [main] INFO de.learnlib.util.Experiment - Starting round 7
+18:08:29.734 [main] INFO de.learnlib.util.Experiment - Learning
+18:09:36.947 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:09:38.902 [main] INFO de.learnlib.util.Experiment - fa fa aa fh ah fa ah fa ah ah fh aa aa fa fa
+18:09:38.902 [main] INFO de.learnlib.util.Experiment - Starting round 8
+18:09:38.902 [main] INFO de.learnlib.util.Experiment - Learning
+18:10:04.475 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:10:15.051 [main] INFO de.learnlib.util.Experiment - fa fa aa fh ah ah ah fa ah ah fh fa aa fa fa
+18:10:15.051 [main] INFO de.learnlib.util.Experiment - Starting round 9
+18:10:15.051 [main] INFO de.learnlib.util.Experiment - Learning
+18:10:29.774 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:10:43.552 [main] INFO de.learnlib.util.Experiment - fh fh ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:10:43.554 [main] INFO de.learnlib.util.Experiment - Starting round 10
+18:10:43.554 [main] INFO de.learnlib.util.Experiment - Learning
+18:11:03.666 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:11:03.918 [main] INFO de.learnlib.util.Experiment - fh fa aa fh ah ah ah fa ah ah fh aa aa fa fa
+18:11:03.919 [main] INFO de.learnlib.util.Experiment - Starting round 11
+18:11:03.919 [main] INFO de.learnlib.util.Experiment - Learning
+18:11:24.982 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:11:25.208 [main] INFO de.learnlib.util.Experiment - fa aa aa fh ah ah ah fa ah ah fh aa aa fa fa
+18:11:25.209 [main] INFO de.learnlib.util.Experiment - Starting round 12
+18:11:25.209 [main] INFO de.learnlib.util.Experiment - Learning
+18:11:36.732 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:11:36.982 [main] INFO de.learnlib.util.Experiment - fa fa aa ah ah ah ah fa ah ah fh aa aa fa fa
+18:11:36.983 [main] INFO de.learnlib.util.Experiment - Starting round 13
+18:11:36.983 [main] INFO de.learnlib.util.Experiment - Learning
+18:11:52.831 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:11:53.077 [main] INFO de.learnlib.util.Experiment - fa fa aa fh ah ah ah fa fh ah fh aa aa fa fa
+18:11:53.077 [main] INFO de.learnlib.util.Experiment - Starting round 14
+18:11:53.077 [main] INFO de.learnlib.util.Experiment - Learning
+18:12:20.667 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:12:21.845 [main] INFO de.learnlib.util.Experiment - fh fa ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:12:21.845 [main] INFO de.learnlib.util.Experiment - Starting round 15
+18:12:21.845 [main] INFO de.learnlib.util.Experiment - Learning
+18:13:08.448 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:13:08.647 [main] INFO de.learnlib.util.Experiment - fh fh ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:13:08.648 [main] INFO de.learnlib.util.Experiment - Starting round 16
+18:13:08.648 [main] INFO de.learnlib.util.Experiment - Learning
+18:13:27.741 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:13:30.605 [main] INFO de.learnlib.util.Experiment - fh ah ah aa ah fa ah fh fa aa aa aa fa aa ah
+18:13:30.605 [main] INFO de.learnlib.util.Experiment - Starting round 17
+18:13:30.605 [main] INFO de.learnlib.util.Experiment - Learning
+18:13:44.472 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:14:04.699 [main] INFO de.learnlib.util.Experiment - fh ah ah fh ah fa ah fh fa fh aa aa fa aa ah
+18:14:04.700 [main] INFO de.learnlib.util.Experiment - Starting round 18
+18:14:04.700 [main] INFO de.learnlib.util.Experiment - Learning
+18:14:28.703 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:14:28.891 [main] INFO de.learnlib.util.Experiment - fh fh ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:14:28.891 [main] INFO de.learnlib.util.Experiment - Starting round 19
+18:14:28.891 [main] INFO de.learnlib.util.Experiment - Learning
+18:15:14.336 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:15:14.476 [main] INFO de.learnlib.util.Experiment - fh ah ah fh ah fa fa fh fa aa aa aa fa aa ah
+18:15:14.476 [main] INFO de.learnlib.util.Experiment - Starting round 20
+18:15:14.476 [main] INFO de.learnlib.util.Experiment - Learning
+18:16:16.335 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:16:17.621 [main] INFO de.learnlib.util.Experiment - fh ah ah fh ah fa ah fh fa fa aa aa fa aa ah
+18:16:17.622 [main] INFO de.learnlib.util.Experiment - Starting round 21
+18:16:17.622 [main] INFO de.learnlib.util.Experiment - Learning
+18:16:41.974 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:16:43.904 [main] INFO de.learnlib.util.Experiment - fh ah ah fh ah fa ah fh fa aa fa aa fa aa ah
+18:16:43.904 [main] INFO de.learnlib.util.Experiment - Starting round 22
+18:16:43.904 [main] INFO de.learnlib.util.Experiment - Learning
+18:16:55.509 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:17:04.024 [main] INFO de.learnlib.util.Experiment - aa aa ah fh ah aa fh aa fa ah fa fa fa fh fa
+18:17:04.024 [main] INFO de.learnlib.util.Experiment - Starting round 23
+18:17:04.024 [main] INFO de.learnlib.util.Experiment - Learning
+18:17:36.397 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:17:39.988 [main] INFO de.learnlib.util.Experiment - fa ah ah fh ah aa fh aa fa ah fa fa fa fh fa
+18:17:39.989 [main] INFO de.learnlib.util.Experiment - Starting round 24
+18:17:39.989 [main] INFO de.learnlib.util.Experiment - Learning
+18:17:48.762 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:17:48.864 [main] INFO de.learnlib.util.Experiment - aa ah ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:17:48.864 [main] INFO de.learnlib.util.Experiment - Starting round 25
+18:17:48.864 [main] INFO de.learnlib.util.Experiment - Learning
+18:18:20.209 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:18:20.977 [main] INFO de.learnlib.util.Experiment - fa fa ah fh ah aa fh aa fa ah fa fa fa fh fa
+18:18:20.978 [main] INFO de.learnlib.util.Experiment - Starting round 26
+18:18:20.978 [main] INFO de.learnlib.util.Experiment - Learning
+18:19:55.509 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:19:59.563 [main] INFO de.learnlib.util.Experiment - fa aa fa fh ah aa fh aa fa ah fa fa fa fh fa
+18:19:59.563 [main] INFO de.learnlib.util.Experiment - Starting round 27
+18:19:59.563 [main] INFO de.learnlib.util.Experiment - Learning
+18:21:13.203 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:21:17.719 [main] INFO de.learnlib.util.Experiment - fa aa ah fh fh aa fh aa fa ah fa fa fa fh fa
+18:21:17.719 [main] INFO de.learnlib.util.Experiment - Starting round 28
+18:21:17.719 [main] INFO de.learnlib.util.Experiment - Learning
+18:21:35.323 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:21:44.180 [main] INFO de.learnlib.util.Experiment - fa aa ah fh ah aa fh fh fa ah fa fa fa fh fa
+18:21:44.180 [main] INFO de.learnlib.util.Experiment - Starting round 29
+18:21:44.180 [main] INFO de.learnlib.util.Experiment - Learning
+18:22:01.920 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:22:23.326 [main] INFO de.learnlib.util.Experiment - aa fa fh ah ah aa fa aa fa ah fa aa aa ah fh
+18:22:23.326 [main] INFO de.learnlib.util.Experiment - Starting round 30
+18:22:23.326 [main] INFO de.learnlib.util.Experiment - Learning
+18:22:49.677 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:22:54.742 [main] INFO de.learnlib.util.Experiment - ah aa fh ah ah aa fa aa fa ah fa aa aa ah fh
+18:22:54.743 [main] INFO de.learnlib.util.Experiment - Starting round 31
+18:22:54.743 [main] INFO de.learnlib.util.Experiment - Learning
+18:23:06.098 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:23:08.029 [main] INFO de.learnlib.util.Experiment - ah fa aa ah ah aa fa aa fa ah fa aa aa ah fh
+18:23:08.029 [main] INFO de.learnlib.util.Experiment - Starting round 32
+18:23:08.029 [main] INFO de.learnlib.util.Experiment - Learning
+18:23:25.247 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:23:26.074 [main] INFO de.learnlib.util.Experiment - ah fa ah ah ah aa fa aa fa ah fa aa aa ah fh
+18:23:26.074 [main] INFO de.learnlib.util.Experiment - Starting round 33
+18:23:26.074 [main] INFO de.learnlib.util.Experiment - Learning
+18:24:37.246 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:24:37.540 [main] INFO de.learnlib.util.Experiment - fa aa ah fh ah aa ah aa fa ah fa fa fa fh fa
+18:24:37.540 [main] INFO de.learnlib.util.Experiment - Starting round 34
+18:24:37.540 [main] INFO de.learnlib.util.Experiment - Learning
+18:24:57.603 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:25:04.258 [main] INFO de.learnlib.util.Experiment - ah fa fh fa ah aa fa aa fa ah fa aa aa ah fh
+18:25:04.258 [main] INFO de.learnlib.util.Experiment - Starting round 35
+18:25:04.258 [main] INFO de.learnlib.util.Experiment - Learning
+18:25:19.608 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:25:34.296 [main] INFO de.learnlib.util.Experiment - ah fa fh ah ah aa aa aa fa ah fa aa aa ah fh
+18:25:34.299 [main] INFO de.learnlib.util.Experiment - Starting round 36
+18:25:34.299 [main] INFO de.learnlib.util.Experiment - Learning
+18:26:05.320 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:26:07.452 [main] INFO de.learnlib.util.Experiment - ah fa fh ah ah aa fa fh fa ah fa aa aa ah fh
+18:26:07.452 [main] INFO de.learnlib.util.Experiment - Starting round 37
+18:26:07.452 [main] INFO de.learnlib.util.Experiment - Learning
+18:26:44.875 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:26:44.999 [main] INFO de.learnlib.util.Experiment - ah fa fh fa ah aa fa aa fa ah fa aa aa ah fh
+18:26:44.999 [main] INFO de.learnlib.util.Experiment - Starting round 38
+18:26:44.999 [main] INFO de.learnlib.util.Experiment - Learning
+18:27:03.271 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:27:04.668 [main] INFO de.learnlib.util.Experiment - ah fa fh ah ah aa fa fa fa ah fa aa aa ah fh
+18:27:04.668 [main] INFO de.learnlib.util.Experiment - Starting round 39
+18:27:04.668 [main] INFO de.learnlib.util.Experiment - Learning
+18:27:27.012 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:27:28.673 [main] INFO de.learnlib.util.Experiment - ah fa fh ah ah aa fa aa aa ah fa aa aa ah fh
+18:27:28.673 [main] INFO de.learnlib.util.Experiment - Starting round 40
+18:27:28.673 [main] INFO de.learnlib.util.Experiment - Learning
+18:27:41.324 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:28:03.947 [main] INFO de.learnlib.util.Experiment - fa ah fh ah fa aa ah fh fa ah ah fh fa ah ah
+18:28:03.947 [main] INFO de.learnlib.util.Experiment - Starting round 41
+18:28:03.947 [main] INFO de.learnlib.util.Experiment - Learning
+18:29:17.582 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:29:23.521 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa ah ah fh fa ah ah fh fa ah ah
+18:29:23.521 [main] INFO de.learnlib.util.Experiment - Starting round 42
+18:29:23.521 [main] INFO de.learnlib.util.Experiment - Learning
+18:29:32.776 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:29:32.940 [main] INFO de.learnlib.util.Experiment - fh aa ah fh ah aa fh aa fa ah fa fa fa fh fa
+18:29:32.940 [main] INFO de.learnlib.util.Experiment - Starting round 43
+18:29:32.940 [main] INFO de.learnlib.util.Experiment - Learning
+18:29:56.550 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:29:56.668 [main] INFO de.learnlib.util.Experiment - fa aa aa fh ah ah ah fa ah ah fh aa aa fa fa
+18:29:56.668 [main] INFO de.learnlib.util.Experiment - Starting round 44
+18:29:56.668 [main] INFO de.learnlib.util.Experiment - Learning
+18:30:12.403 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:30:13.879 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa fa ah fh fa ah ah fh fa ah ah
+18:30:13.879 [main] INFO de.learnlib.util.Experiment - Starting round 45
+18:30:13.879 [main] INFO de.learnlib.util.Experiment - Learning
+18:31:08.439 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:31:14.979 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa aa ah ah fa ah ah fh fa ah ah
+18:31:14.979 [main] INFO de.learnlib.util.Experiment - Starting round 46
+18:31:14.979 [main] INFO de.learnlib.util.Experiment - Learning
+18:31:35.694 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:31:37.388 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa aa ah fh aa ah ah fh fa ah ah
+18:31:37.388 [main] INFO de.learnlib.util.Experiment - Starting round 47
+18:31:37.389 [main] INFO de.learnlib.util.Experiment - Learning
+18:32:04.761 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:32:05.719 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa aa ah fh fh ah ah fh fa ah ah
+18:32:05.719 [main] INFO de.learnlib.util.Experiment - Starting round 48
+18:32:05.719 [main] INFO de.learnlib.util.Experiment - Learning
+18:32:28.753 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:33:01.404 [main] INFO de.learnlib.util.Experiment - aa aa ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:33:01.405 [main] INFO de.learnlib.util.Experiment - Starting round 49
+18:33:01.405 [main] INFO de.learnlib.util.Experiment - Learning
+18:37:20.767 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:37:21.225 [main] INFO de.learnlib.api.logging.LoggingPropertyOracle - Property violated: '[] (((output == "XaX") || (output == "XbX") || (output == "XcX") || (output == "XdX") || (output == "XeX")) || ( X((output == "XbX") || (output == "XcX") || (output == "XdX") || (output == "XeX") || (output == "XfX"))))'
+18:37:21.226 [main] INFO de.learnlib.api.logging.LoggingPropertyOracle - Counter example for property: Query[ε|aa ah fh ah fa ah fh fa ah aa / XaX XaX XbX XdX XbX XdX XbX XdX XfX XaX]
+18:37:23.769 [main] INFO de.learnlib.util.Experiment - aa fh ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:37:23.769 [main] INFO de.learnlib.util.Experiment - Starting round 50
+18:37:23.769 [main] INFO de.learnlib.util.Experiment - Learning
+18:37:45.374 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:37:49.336 [main] INFO de.learnlib.util.Experiment - aa ah ah aa ah fa ah fh fa aa aa aa fa aa ah
+18:37:49.336 [main] INFO de.learnlib.util.Experiment - Starting round 51
+18:37:49.336 [main] INFO de.learnlib.util.Experiment - Learning
+18:38:05.831 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:38:11.567 [main] INFO de.learnlib.util.Experiment - aa ah ah fh fh fa ah fh fa aa aa aa fa aa ah
+18:38:11.567 [main] INFO de.learnlib.util.Experiment - Starting round 52
+18:38:11.567 [main] INFO de.learnlib.util.Experiment - Learning
+18:39:12.818 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:39:15.029 [main] INFO de.learnlib.util.Experiment - aa ah ah fh ah aa ah fh fa aa aa aa fa aa ah
+18:39:15.029 [main] INFO de.learnlib.util.Experiment - Starting round 53
+18:39:15.029 [main] INFO de.learnlib.util.Experiment - Learning
+18:39:52.252 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:40:22.371 [main] INFO de.learnlib.util.Experiment - fa fh ah fh fh aa fh aa fa ah fa fa fa fh fa
+18:40:22.371 [main] INFO de.learnlib.util.Experiment - Starting round 54
+18:40:22.371 [main] INFO de.learnlib.util.Experiment - Learning
+18:40:55.691 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:40:56.440 [main] INFO de.learnlib.util.Experiment - fa ah ah fh fh aa fh aa fa ah fa fa fa fh fa
+18:40:56.441 [main] INFO de.learnlib.util.Experiment - Starting round 55
+18:40:56.441 [main] INFO de.learnlib.util.Experiment - Learning
+18:41:45.049 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:41:48.184 [main] INFO de.learnlib.util.Experiment - fa aa fa fh fh aa fh aa fa ah fa fa fa fh fa
+18:41:48.184 [main] INFO de.learnlib.util.Experiment - Starting round 56
+18:41:48.184 [main] INFO de.learnlib.util.Experiment - Learning
+18:42:18.019 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:42:18.020 [main] INFO de.learnlib.util.Experiment - fa fa ah fh fh aa fh aa fa ah fa fa fa fh fa
+18:42:18.020 [main] INFO de.learnlib.util.Experiment - Starting round 57
+18:42:18.020 [main] INFO de.learnlib.util.Experiment - Learning
+18:42:33.192 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:42:36.665 [main] INFO de.learnlib.util.Experiment - fa aa ah fa fh aa fh aa fa ah fa fa fa fh fa
+18:42:36.665 [main] INFO de.learnlib.util.Experiment - Starting round 58
+18:42:36.665 [main] INFO de.learnlib.util.Experiment - Learning
+18:42:58.890 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:43:01.203 [main] INFO de.learnlib.util.Experiment - fa aa ah fh fh fa fh aa fa ah fa fa fa fh fa
+18:43:01.203 [main] INFO de.learnlib.util.Experiment - Starting round 59
+18:43:01.203 [main] INFO de.learnlib.util.Experiment - Learning
+18:44:19.599 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:44:30.458 [main] INFO de.learnlib.util.Experiment - fa aa ah fh fh aa fh fh fa ah fa fa fa fh fa
+18:44:30.458 [main] INFO de.learnlib.util.Experiment - Starting round 60
+18:44:30.458 [main] INFO de.learnlib.util.Experiment - Learning
+18:44:48.082 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:44:49.422 [main] INFO de.learnlib.util.Experiment - fa aa ah fh fh aa fh fa fa ah fa fa fa fh fa
+18:44:49.422 [main] INFO de.learnlib.util.Experiment - Starting round 61
+18:44:49.422 [main] INFO de.learnlib.util.Experiment - Learning
+18:46:05.829 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:46:05.830 [main] INFO de.learnlib.util.Experiment - fa aa ah fh ah aa fh aa fa ah fa fa fa fh fa
+18:46:05.830 [main] INFO de.learnlib.util.Experiment - Starting round 62
+18:46:05.830 [main] INFO de.learnlib.util.Experiment - Learning
+18:46:16.663 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:46:17.340 [main] INFO de.learnlib.util.Experiment - fa aa ah fh fh aa fh aa aa ah fa fa fa fh fa
+18:46:17.340 [main] INFO de.learnlib.util.Experiment - Starting round 63
+18:46:17.340 [main] INFO de.learnlib.util.Experiment - Learning
+18:46:47.924 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:46:54.128 [main] INFO de.learnlib.util.Experiment - fa aa ah fh fh aa fh aa fa ah fa fh fa fh fa
+18:46:54.128 [main] INFO de.learnlib.util.Experiment - Starting round 64
+18:46:54.128 [main] INFO de.learnlib.util.Experiment - Learning
+18:47:21.697 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:47:21.697 [main] INFO de.learnlib.util.Experiment - fa fh ah fh fh aa fh aa fa ah fa fa fa fh fa
+18:47:21.698 [main] INFO de.learnlib.util.Experiment - Starting round 65
+18:47:21.698 [main] INFO de.learnlib.util.Experiment - Learning
+18:47:42.116 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:47:53.313 [main] INFO de.learnlib.util.Experiment - fa fa ah ah fa fa ah fh fa ah ah fh fa ah ah
+18:47:53.313 [main] INFO de.learnlib.util.Experiment - Starting round 66
+18:47:53.313 [main] INFO de.learnlib.util.Experiment - Learning
+18:48:29.684 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:48:29.685 [main] INFO de.learnlib.util.Experiment - fa fh ah ah fa fa ah fh fa ah ah fh fa ah ah
+18:48:29.685 [main] INFO de.learnlib.util.Experiment - Starting round 67
+18:48:29.685 [main] INFO de.learnlib.util.Experiment - Learning
+18:48:48.407 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:49:04.490 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa fa ah fh fa ah fa fh fa ah ah
+18:49:04.490 [main] INFO de.learnlib.util.Experiment - Starting round 68
+18:49:04.490 [main] INFO de.learnlib.util.Experiment - Learning
+18:49:25.678 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:49:25.679 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa fa ah fh fa ah fh fh fa ah ah
+18:49:25.679 [main] INFO de.learnlib.util.Experiment - Starting round 69
+18:49:25.679 [main] INFO de.learnlib.util.Experiment - Learning
+18:49:40.130 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:50:25.258 [main] INFO de.learnlib.util.Experiment - fh ah ah ah ah fa fh fh fa aa aa aa fa aa ah
+18:50:25.258 [main] INFO de.learnlib.util.Experiment - Starting round 70
+18:50:25.258 [main] INFO de.learnlib.util.Experiment - Learning
+18:50:34.899 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:50:51.844 [main] INFO de.learnlib.util.Experiment - fa aa ah fh ah fa ah fh fa aa aa aa fa aa ah
+18:50:51.844 [main] INFO de.learnlib.util.Experiment - Starting round 71
+18:50:51.844 [main] INFO de.learnlib.util.Experiment - Learning
+18:51:16.349 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:51:29.675 [main] INFO de.learnlib.util.Experiment - ah aa ah fh ah fa ah fh fa fh aa aa fa aa ah
+18:51:29.675 [main] INFO de.learnlib.util.Experiment - Starting round 72
+18:51:29.676 [main] INFO de.learnlib.util.Experiment - Learning
+18:52:38.880 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:52:38.880 [main] INFO de.learnlib.util.Experiment - ah aa ah fh ah fa ah fh ah aa aa aa fa aa ah
+18:52:38.880 [main] INFO de.learnlib.util.Experiment - Starting round 73
+18:52:38.880 [main] INFO de.learnlib.util.Experiment - Learning
+18:52:59.165 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:53:34.165 [main] INFO de.learnlib.util.Experiment - aa aa ah fh fh ah fh aa fa ah fa fa fa fh fa
+18:53:34.165 [main] INFO de.learnlib.util.Experiment - Starting round 74
+18:53:34.165 [main] INFO de.learnlib.util.Experiment - Learning
+18:54:14.018 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:54:20.093 [main] INFO de.learnlib.util.Experiment - fa aa ah ah fh ah fh aa fa ah fa fa fa fh fa
+18:54:20.093 [main] INFO de.learnlib.util.Experiment - Starting round 75
+18:54:20.093 [main] INFO de.learnlib.util.Experiment - Learning
+18:54:34.526 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:54:36.649 [main] INFO de.learnlib.util.Experiment - fa aa ah fh fa ah fh aa fa ah fa fa fa fh fa
+18:54:36.649 [main] INFO de.learnlib.util.Experiment - Starting round 76
+18:54:36.649 [main] INFO de.learnlib.util.Experiment - Learning
+18:54:51.872 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:55:09.404 [main] INFO de.learnlib.util.Experiment - fh ah ah ah fa fa aa fh fa ah ah fh fa ah ah
+18:55:09.404 [main] INFO de.learnlib.util.Experiment - Starting round 77
+18:55:09.404 [main] INFO de.learnlib.util.Experiment - Learning
+18:55:22.600 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:55:28.185 [main] INFO de.learnlib.util.Experiment - fa ah ah fh fa fa aa fh fa ah ah fh fa ah ah
+18:55:28.186 [main] INFO de.learnlib.util.Experiment - Starting round 78
+18:55:28.186 [main] INFO de.learnlib.util.Experiment - Learning
+18:55:41.218 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:55:49.861 [main] INFO de.learnlib.util.Experiment - fa ah ah ah fa fa aa fh fa aa ah fh fa ah ah
+18:55:49.861 [main] INFO de.learnlib.util.Experiment - Starting round 79
+18:55:49.861 [main] INFO de.learnlib.util.Experiment - Learning
+18:56:06.271 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:57:05.779 [main] INFO de.learnlib.util.Experiment - fh aa ah fh ah fa ah fh fa ah fh aa fa aa ah
+18:57:05.779 [main] INFO de.learnlib.util.Experiment - Starting round 80
+18:57:05.779 [main] INFO de.learnlib.util.Experiment - Learning
+18:57:41.720 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:57:52.181 [main] INFO de.learnlib.util.Experiment - ah aa ah fh ah fa aa fh fa ah fh aa fa aa ah
+18:57:52.181 [main] INFO de.learnlib.util.Experiment - Starting round 81
+18:57:52.181 [main] INFO de.learnlib.util.Experiment - Learning
+18:58:08.364 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:58:11.699 [main] INFO de.learnlib.util.Experiment - ah aa ah fh ah fa ah fa fa ah fh aa fa aa ah
+18:58:11.700 [main] INFO de.learnlib.util.Experiment - Starting round 82
+18:58:11.700 [main] INFO de.learnlib.util.Experiment - Learning
+18:58:46.861 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+18:58:46.861 [main] INFO de.learnlib.util.Experiment - ah aa ah fh ah fa aa fh fa ah fh aa fa aa ah
+18:58:46.861 [main] INFO de.learnlib.util.Experiment - Starting round 83
+18:58:46.861 [main] INFO de.learnlib.util.Experiment - Learning
+19:00:10.502 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+19:00:20.894 [main] INFO de.learnlib.util.Experiment - fh aa ah fh ah fa ah fh fa aa fa aa fa aa ah
+19:00:20.894 [main] INFO de.learnlib.util.Experiment - Starting round 84
+19:00:20.894 [main] INFO de.learnlib.util.Experiment - Learning
+19:00:34.803 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+19:01:07.611 [main] INFO de.learnlib.util.Experiment - ah aa ah fh fh fa ah fh fa ah fa aa fa aa ah
+19:01:07.611 [main] INFO de.learnlib.util.Experiment - Starting round 85
+19:01:07.611 [main] INFO de.learnlib.util.Experiment - Learning
+19:01:46.530 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+19:02:00.046 [main] INFO de.learnlib.util.Experiment - ah aa ah fh fh fa ah fh fa aa fh aa fa aa ah
+19:02:00.046 [main] INFO de.learnlib.util.Experiment - Starting round 86
+19:02:00.046 [main] INFO de.learnlib.util.Experiment - Learning
+19:02:14.669 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+19:02:14.669 [main] INFO de.learnlib.util.Experiment - ah aa ah fh fh fa ah fh fa ah fa aa fa aa ah
+19:02:14.669 [main] INFO de.learnlib.util.Experiment - Starting round 87
+19:02:14.669 [main] INFO de.learnlib.util.Experiment - Learning
+19:02:27.988 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+19:02:27.988 [main] INFO de.learnlib.util.Experiment - fa aa ah fh ah fa ah fh fa ah fa aa fa aa ah
+19:02:27.989 [main] INFO de.learnlib.util.Experiment - Starting round 88
+19:02:27.989 [main] INFO de.learnlib.util.Experiment - Learning
+19:02:43.110 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+19:02:43.113 [main] INFO de.learnlib.util.Experiment - ah aa ah fh fh ah fh aa fa ah fa fa fa fh fa
+19:02:43.113 [main] INFO de.learnlib.util.Experiment - Starting round 89
+19:02:43.113 [main] INFO de.learnlib.util.Experiment - Learning
+19:02:56.118 [main] INFO de.learnlib.util.Experiment - Searching for counterexample
+false
+CexInput: aa ah fh ah fa ah fh fa ah aa
+CexOutput: XaX XaX XbX XdX XbX XdX XbX XdX XfX XaX
