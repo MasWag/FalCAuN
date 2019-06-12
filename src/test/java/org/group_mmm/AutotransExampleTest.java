@@ -581,11 +581,11 @@ class AutotransExampleTest {
         @Test
         void runS4() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
-            velocityMapper.put('a', 50.0);
+            //velocityMapper.put('a', 50.0);
             velocityMapper.put('b', 65.0);
-            velocityMapper.put('c', 80.0);
+            //velocityMapper.put('c', 80.0);
             velocityMapper.put('d', 100.0);
-            velocityMapper.put('e', 120.0);
+            //velocityMapper.put('e', 120.0);
 
             //{4500, 5000, 5200, 5500}.
             Map<Character, Double> rotationMapper = new HashMap<>();
@@ -620,9 +620,9 @@ class AutotransExampleTest {
 
             Map<Character, Double> rotationMapper = new HashMap<>();
             rotationMapper.put('a', 600.0);
-            rotationMapper.put('b', 2000.0);
-            rotationMapper.put('c', 3000.0);
-            rotationMapper.put('d', 4000.0);
+            //rotationMapper.put('b', 2000.0);
+            //rotationMapper.put('c', 3000.0);
+            //rotationMapper.put('d', 4000.0);
             rotationMapper.put('e', 4770.0);
 
             Map<Character, Double> gearMapper = new HashMap<>();
@@ -721,11 +721,11 @@ class AutotransExampleTest {
             lowVelocity.setLargest(largest);
 
             STLCost costFunc = new STLOr(Arrays.asList(
-                    new STLSub(new STLGlobal(highVelocity), 0, 2),
-                    new STLSub(new STLGlobal(lowVelocity), 3, 5),
-                    new STLSub(new STLGlobal(highVelocity), 6, 8),
-                    new STLSub(new STLGlobal(lowVelocity), 9, 11),
-                    new STLSub(new STLGlobal(highVelocity), 12, 14)));
+                    new STLSub(new STLGlobal(lowVelocity), 0, 2),
+                    new STLSub(new STLGlobal(highVelocity), 3, 5),
+                    new STLSub(new STLGlobal(lowVelocity), 6, 8),
+                    new STLSub(new STLGlobal(highVelocity), 9, 11),
+                    new STLSub(new STLGlobal(lowVelocity), 12, 14)));
 
             exampleAT.setProperties(new ArrayList<>(
                     Collections.singletonList(costFunc.toAbstractString())));
@@ -768,9 +768,9 @@ class AutotransExampleTest {
             lowVelocity.setLargest(largest);
 
             STLCost costFunc = new STLOr(Arrays.asList(
-                    new STLSub(new STLGlobal(highVelocity), 0, 4),
-                    new STLSub(new STLGlobal(lowVelocity), 5, 9),
-                    new STLSub(new STLGlobal(highVelocity), 10, 14)));
+                    new STLSub(new STLGlobal(lowVelocity), 0, 4),
+                    new STLSub(new STLGlobal(highVelocity), 5, 9),
+                    new STLSub(new STLGlobal(lowVelocity), 10, 14)));
 
             exampleAT.setProperties(new ArrayList<>(
                     Collections.singletonList(costFunc.toAbstractString())));
@@ -780,6 +780,52 @@ class AutotransExampleTest {
             boolean resetWord = false;
 
             executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runM2Learned.dot");
+        }
+
+        @Test
+        void runRevS4() throws Exception {
+            Map<Character, Double> velocityMapper = new HashMap<>();
+            velocityMapper.put('a', 50.0);
+            velocityMapper.put('b', 65.0);
+            velocityMapper.put('c', 80.0);
+            velocityMapper.put('d', 100.0);
+            velocityMapper.put('e', 120.0);
+
+            //{4500, 5000, 5200, 5500}.
+            Map<Character, Double> rotationMapper = new HashMap<>();
+
+            Map<Character, Double> gearMapper = new HashMap<>();
+
+
+            exampleAT.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', 'X'));
+            exampleAT.setLargest(largest);
+
+            STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 100.0);
+            STLAtomic lowVelocity = new STLAtomic(0, STLAtomic.Operation.gt, 65.0);
+
+            highVelocity.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            highVelocity.setLargest(largest);
+
+            lowVelocity.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            lowVelocity.setLargest(largest);
+
+            STLCost costFunc =
+                    new STLOr(new STLSub(new STLGlobal(highVelocity), 1, 13),
+                            new STLSub(new STLGlobal(lowVelocity), 14, 14));
+
+            exampleAT.setProperties(new ArrayList<>(
+                    Collections.singletonList(costFunc.toAbstractString())));
+
+            boolean useHillClimbing = true;
+            boolean useGA = false;
+            boolean resetWord = false;
+
+            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runRevS4Learned.dot");
         }
     }
 }
