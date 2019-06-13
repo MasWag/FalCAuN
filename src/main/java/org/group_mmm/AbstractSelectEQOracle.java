@@ -94,7 +94,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> inputs) {
         if (isDisproved()) {
-            LOGGER.info("A counterexample is already found!!");
+            LOGGER.debug("A counterexample is already found!!");
             return null;
         }
         // Fail fast on empty inputs

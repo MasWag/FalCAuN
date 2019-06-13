@@ -52,7 +52,7 @@ class SimulinkVerifier {
         verifier = new BlackBoxVerifier(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
     }
 
-    String getCexProperty() {
+    List<String> getCexProperty() {
         return verifier.getCexProperty();
     }
 
@@ -147,16 +147,18 @@ class SimulinkVerifier {
         this.verifier.addEqOracle(new GAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, changeSize, crossoverProb, mutationProb, resetWord));
     }
 
-    Word<String> getCexAbstractInput() {
+    List<Word<String>> getCexAbstractInput() {
         return verifier.getCexInput();
     }
 
-    public Word<ArrayList<Double>> getCexConcreteInput() {
-        return Word.fromList(getCexAbstractInput().stream().map(s -> mapper.mapInput(s)).collect(Collectors.toList()));
+    public List<Word<ArrayList<Double>>> getCexConcreteInput() {
+        return getCexAbstractInput().stream().map(
+                word -> Word.fromList(word.stream().map(
+                        s -> mapper.mapInput(s)).collect(Collectors.toList()))).collect(Collectors.toList());
     }
 
 
-    Word<String> getCexOutput() {
+    List<Word<String>> getCexOutput() {
         return verifier.getCexOutput();
     }
 
@@ -173,8 +175,8 @@ class SimulinkVerifier {
      * @param a Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    void writeDOTCex(Appendable a) throws IOException {
-        verifier.writeDOTCex(a);
+    void writeDOTCex(int index, Appendable a) throws IOException {
+        verifier.writeDOTCex(index, a);
     }
 
     /**
@@ -190,8 +192,8 @@ class SimulinkVerifier {
     /**
      * Visualize the found counter example.
      */
-    void visualizeCex() {
-        this.verifier.visualizeCex();
+    void visualizeCex(int index) {
+        this.verifier.visualizeCex(index);
     }
 
     /**

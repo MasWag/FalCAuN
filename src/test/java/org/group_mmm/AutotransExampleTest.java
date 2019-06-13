@@ -650,6 +650,68 @@ class AutotransExampleTest {
 
             executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS5Learned.dot");
         }
+
+        @Test
+        void runS4andS5() throws Exception {
+            Map<Character, Double> velocityMapper = new HashMap<>();
+            //velocityMapper.put('a', 50.0);
+            velocityMapper.put('b', 65.0);
+            //velocityMapper.put('c', 80.0);
+            velocityMapper.put('d', 100.0);
+            //velocityMapper.put('e', 120.0);
+
+            //{4500, 5000, 5200, 5500}.
+            Map<Character, Double> rotationMapper = new HashMap<>();
+            rotationMapper.put('a', 600.0);
+            //rotationMapper.put('b', 2000.0);
+            //rotationMapper.put('c', 3000.0);
+            //rotationMapper.put('d', 4000.0);
+            rotationMapper.put('e', 4770.0);
+
+            Map<Character, Double> gearMapper = new HashMap<>();
+
+
+            exampleAT.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('f', 'f', 'X'));
+            exampleAT.setLargest(largest);
+
+            exampleAT.setProperties(new ArrayList<>(
+                    Arrays.asList(
+                            exampleAT.constructS4(100.0, 65.0),
+                            exampleAT.constructS5(4770.0, 600.0))));
+
+            List<STLCost> costFuncList = Arrays.asList(
+                    new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
+                            new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14)),
+                    new STLGlobal(
+                            new STLOr(
+                                    new STLAtomic(1, STLAtomic.Operation.lt, 4770),
+                                    new STLNext(new STLAtomic(1, STLAtomic.Operation.gt, 600.0), true))));
+
+
+            exampleAT.constructVerifier();
+
+            for (int i = 0; i < costFuncList.size(); i++) {
+                exampleAT.getVerifier().addHillClimbingEQOracle(costFuncList.get(i),
+                        15,
+                        new Random(),
+                        50000, 5, 15 * 4, false,
+                        exampleAT.getVerifier().getLtlFormulas().get(i));
+            }
+
+
+            assertFalse(exampleAT.getVerifier().run());
+
+            FileWriter writer = new FileWriter(new File("./runS4andS5Learned.dot"));
+            exampleAT.getVerifier().writeDOTLearnedMealy(writer);
+            writer.close();
+
+            System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
+            System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+        }
+
     }
 
     /**
@@ -739,9 +801,33 @@ class AutotransExampleTest {
 
         @Test
         void runM2() throws Exception {
+            // Construct the input mapper
+            {
+                Map<Character, Double> throttleMapper = new HashMap<>();
+                throttleMapper.put('a', 0.0);
+                //throttleMapper.put('b', 20.0);
+                throttleMapper.put('c', 40.0);
+                //throttleMapper.put('d', 60.0);
+                //throttleMapper.put('e', 80.0);
+                throttleMapper.put('f', 100.0);
+
+                Map<Character, Double> brakeMapper = new HashMap<>();
+                brakeMapper.put('a', 0.0);
+                //brakeMapper.put('b', 50.0);
+                //brakeMapper.put('c', 100.0);
+                brakeMapper.put('d', 150.0);
+                //brakeMapper.put('e', 200.0);
+                //brakeMapper.put('f', 250.0);
+                //brakeMapper.put('g', 300.0);
+                brakeMapper.put('h', 325.0);
+
+                exampleAT.setInputMapper(new ArrayList<>(Arrays.asList(throttleMapper, brakeMapper)));
+            }
+
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
             velocityMapper.put('a', 30.0);
+            velocityMapper.put('b', 60.0);
             velocityMapper.put('b', 90.0);
 
 

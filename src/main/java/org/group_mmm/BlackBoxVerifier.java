@@ -42,14 +42,14 @@ class BlackBoxVerifier {
     private SUL<String, String> verifiedSystem;
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     private MealyMachine<?, String, ?, String> learnedMealy;
-    private MealyMachine<?, String, ?, String> cexMealy;
+    private List<MealyMachine<?, String, ?, String>> cexMealy;
     private Alphabet<String> inputAlphabet;
     private LearningAlgorithm.MealyLearner<String, String> learner;
     private EQOracleChain.MealyEQOracleChain<String, String> eqOracle;
     private List<String> properties;
-    private Word<String> cexInput;
-    private String cexProperty;
-    private Word<String> cexOutput;
+    private List<Word<String>> cexInput;
+    private List<String> cexProperty;
+    private List<Word<String>> cexOutput;
     private ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
     private ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> ltlFormulas;
 
@@ -129,15 +129,15 @@ class BlackBoxVerifier {
                 memOracle, minDepth, maxDepth, batchSize));
     }
 
-    String getCexProperty() {
+    List<String> getCexProperty() {
         return cexProperty;
     }
 
-    Word<String> getCexInput() {
+    List<Word<String>> getCexInput() {
         return cexInput;
     }
 
-    Word<String> getCexOutput() {
+    List<Word<String>> getCexOutput() {
         return cexOutput;
     }
 
@@ -160,8 +160,8 @@ class BlackBoxVerifier {
      * @param a Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    void writeDOTCex(Appendable a) throws IOException {
-        GraphDOT.write(cexMealy, this.inputAlphabet, a);
+    void writeDOTCex(int index, Appendable a) throws IOException {
+        GraphDOT.write(cexMealy.get(index), this.inputAlphabet, a);
     }
 
     /**
@@ -177,8 +177,8 @@ class BlackBoxVerifier {
     /**
      * Visualize the found counter example.
      */
-    void visualizeCex() {
-        Visualization.visualize(cexMealy, this.inputAlphabet);
+    void visualizeCex(int index) {
+        Visualization.visualize(cexMealy.get(index), this.inputAlphabet);
     }
 
     /**
@@ -191,28 +191,35 @@ class BlackBoxVerifier {
     /**
      * Set the counter example input/output.
      *
-     * @return Returns {@code true} if and only if the black-box system is verified i.e., no counter example is found.
+     * @return Returns {@code true} if and only if the black-box system is verified i.e., no counter example is found for any system.
      */
     private boolean processMealy() {
+        cexMealy = new ArrayList<>();
+        cexProperty = new ArrayList<>();
+        cexInput = new ArrayList<>();
+        cexOutput = new ArrayList<>();
+        boolean isVerified = true;
         for (String property : properties) {
+            cexProperty.add(property);
+
             final MealyMachine<?, String, ?, String> cexMealyCandidate =
                     modelChecker.findCounterExample(learnedMealy, this.inputAlphabet, property);
-            if (Objects.isNull(cexMealyCandidate)) {
-                continue;
+            if (!Objects.isNull(cexMealyCandidate)) {
+                // We found the counter example Mealy machine.
+                cexMealy.add(cexMealyCandidate);
+                List<Word<String>> cexInputs = stateCover(cexMealyCandidate, this.inputAlphabet);
+                Word<String> currentInput = cexInputs.get(cexInputs.size() - 1);
+                cexInput.add(currentInput);
+                cexOutput.add(cexMealyCandidate.computeOutput(currentInput));
+            } else {
+                // We could not find the counter example Mealy machine.
+                cexMealy.add(null);
+                cexInput.add(null);
+                cexOutput.add(null);
+                isVerified = false;
             }
-            // We found the counter example Mealy machine.
-            cexMealy = cexMealyCandidate;
-            cexProperty = property;
-            List<Word<String>> cexInputs = stateCover(cexMealy, this.inputAlphabet);
-            cexInput = cexInputs.get(cexInputs.size() - 1);
-            cexOutput = cexMealy.computeOutput(cexInput);
-
-            return false;
         }
-        cexMealy = null;
-        cexProperty = null;
-        cexInput = null;
-        cexOutput = null;
-        return true;
+
+        return isVerified;
     }
 }
