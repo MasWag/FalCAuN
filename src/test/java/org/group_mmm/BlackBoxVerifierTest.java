@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -55,7 +56,7 @@ class BlackBoxVerifierTest {
     @Test
     void getCexProperty() {
         assertFalse(verifier.run());
-        assertEquals("X X output == \"2\"", verifier.getCexProperty());
+        assertEquals(properties, verifier.getCexProperty());
     }
 
     @Test
@@ -66,7 +67,8 @@ class BlackBoxVerifierTest {
         expected.add("a");
 
         assertFalse(verifier.run());
-        assertEquals(expected.toWord(), verifier.getCexInput());
+        System.out.println(verifier.getCexInput());
+        assertEquals(expected.toWord(), verifier.getCexInput().stream().filter(Objects::nonNull).findFirst().orElse(null));
     }
 
     @Test
@@ -77,6 +79,6 @@ class BlackBoxVerifierTest {
         expected.add("1");
 
         assertFalse(verifier.run());
-        assertEquals(expected.toWord(), verifier.getCexOutput());
+        assertEquals(expected.toWord(), verifier.getCexOutput().stream().filter(Objects::nonNull).findFirst().orElse(null));
     }
 }
