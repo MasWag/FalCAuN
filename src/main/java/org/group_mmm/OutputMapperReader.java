@@ -3,15 +3,15 @@ package org.group_mmm;
 import com.google.common.primitives.Chars;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-class OutputMapperReader {
+class OutputMapperReader extends AbstractMapperReader {
     private String filename;
-    private List<List<Double>> parsedData;
     private ArrayList<Character> largest;
+    private List<List<Double>> parsedData;
     private ArrayList<Map<Character, Double>> outputMapper;
 
     OutputMapperReader(String filename) {
@@ -19,25 +19,11 @@ class OutputMapperReader {
     }
 
     void parse() throws IOException {
-        parsedData = Files.lines(FileSystems.getDefault().getPath(filename)).map(
-                s -> Arrays.stream(s.split("\\s+"))).map(
-                stream -> stream.map(str -> str.equals("inf") ? null : Double.parseDouble(str)).collect(Collectors.toList())).collect(Collectors.toList());
+        parsedData = rawParse(filename);
         char[] charList = new char[parsedData.size()];
         Arrays.fill(charList, 'a');
 
-        outputMapper = new ArrayList<>(parsedData.size());
-
-        for (int i = 0; i < parsedData.size(); i++) {
-            Map<Character, Double> currentMap = new HashMap<>();
-
-            for (int j = 0; j < parsedData.get(i).size(); j++) {
-                if (parsedData.get(i).get(j) != null) {
-                    currentMap.put(charList[i]++, parsedData.get(i).get(j));
-                }
-            }
-
-            outputMapper.add(currentMap);
-        }
+        outputMapper = assignCharacters(parsedData, charList);
 
         largest = new ArrayList<>(Chars.asList(charList));
     }

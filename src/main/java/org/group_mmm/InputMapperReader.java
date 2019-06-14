@@ -1,16 +1,17 @@
 package org.group_mmm;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
 
-class InputMapperReader {
-    static ArrayList<ArrayList<Double>> parse(String filename) throws IOException {
-        return Files.lines(FileSystems.getDefault().getPath(filename)).map(
-                s -> Arrays.stream(s.split("\\s+"))).map(
-                stream -> stream.map(Double::parseDouble).collect(Collectors.toCollection(ArrayList::new))).collect(Collectors.toCollection(ArrayList::new));
+class InputMapperReader extends AbstractMapperReader {
+    static ArrayList<Map<Character, Double>> parse(String filename) throws IOException {
+        List<List<Double>> parsedData = rawParse(filename);
+        char[] charList = new char[parsedData.size()];
+        Arrays.fill(charList, 'a');
+
+        return assignCharacters(parsedData, charList);
     }
 }
