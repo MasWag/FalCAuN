@@ -23,6 +23,8 @@ Usage
 **-O** *file*, **--output-mapper** *file* Read the output mapper configuration from *file*. <br />
 **-E** *algorithm*, **--equiv** *algorithm* Specify the equivalence query algorithm. See below for the detail. <br />
 **-o** *file*, **--output** *file* Write the learned Mealy machine to *file* in DOT format. <br />
+**-s** *step-time*, **--step-time** *step-time* Specify the step time of the sampling.
+**-l** *length*, **--signal-length** *length* Specify the length of the sampled signals.
 
 Algorithms for equivalence query
 --------------------------------

@@ -54,6 +54,13 @@ class ArgParserTest {
         args.add("-E=HC");
     }
 
+    private void addLength() {
+        args.add("-l=15");
+    }
+
+    private void addStepTime() {
+        args.add("-s=2.0");
+    }
 
     private void addRandom() {
         args.add("-E=random");
@@ -73,25 +80,11 @@ class ArgParserTest {
     }
 
     @Test
-    void help() {
-        addHelp();
-        parse();
-        quitExpect = true;
-        verboseExpected = false;
-    }
-
-    @Test
-    void version() {
-        addVersion();
-        parse();
-        quitExpect = true;
-        verboseExpected = false;
-    }
-
-    @Test
     void missingSTL() {
         addInputMapper();
         addOutputMapper();
+        addLength();
+        addStepTime();
         addWP();
         addVerbose();
         assertThrows(IllegalArgumentException.class, this::parse);
@@ -102,6 +95,8 @@ class ArgParserTest {
         addSTLFile();
         addOutputMapper();
         addWP();
+        addLength();
+        addStepTime();
         addVerbose();
         assertThrows(IllegalArgumentException.class, this::parse);
     }
@@ -111,6 +106,29 @@ class ArgParserTest {
         addSTLFile();
         addInputMapper();
         addWP();
+        addLength();
+        addStepTime();
+        addVerbose();
+        assertThrows(IllegalArgumentException.class, this::parse);
+    }
+
+    @Test
+    void missingLength() {
+        addInputMapper();
+        addOutputMapper();
+        addWP();
+        addSTLString();
+        addStepTime();
+        addVerbose();
+        assertThrows(IllegalArgumentException.class, this::parse);
+    }
+
+    @Test
+    void missingStepTime() {
+        addSTLFile();
+        addOutputMapper();
+        addLength();
+        addWP();
         addVerbose();
         assertThrows(IllegalArgumentException.class, this::parse);
     }
@@ -118,63 +136,95 @@ class ArgParserTest {
     @Nested
     class Success {
 
+        @Test
+        void help() {
+            addHelp();
+            parse();
+            quitExpect = true;
+            verboseExpected = false;
+        }
+
+        @Test
+        void version() {
+            addVersion();
+            parse();
+            quitExpect = true;
+            verboseExpected = false;
+        }
+
         @AfterEach
         void tearDown() {
             assertEquals(quitExpect, argParser.isQuit());
             assertEquals(verboseExpected, argParser.isVerbose());
         }
 
-        @Test
-        void stlString() {
-            addSTLString();
-            addInputMapper();
-            addOutputMapper();
-            addHC();
-            parse();
-            quitExpect = false;
-            verboseExpected = false;
-            assertNull(argParser.getDotFile());
-            assertEquals("input.mapper.txt", argParser.getInputMapperFile());
-            assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
-            assertEquals(ArgParser.EquivType.HC, argParser.getEquiv());
-            assertEquals("[] (signal(0) > 100)", argParser.getStlFormula());
-            assertNull(argParser.getStlFile());
-        }
+        @Nested
+        class NonQuit {
 
-        @Test
-        void stlFile() {
-            addSTLFile();
-            addInputMapper();
-            addOutputMapper();
-            addRandom();
-            addDot();
-            parse();
-            quitExpect = false;
-            verboseExpected = false;
-            assertEquals("result.dot", argParser.getDotFile());
-            assertEquals("input.mapper.txt", argParser.getInputMapperFile());
-            assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
-            assertEquals(ArgParser.EquivType.RANDOM, argParser.getEquiv());
-            assertEquals("stl.txt", argParser.getStlFile());
-            assertNull(argParser.getStlFormula());
-        }
+            @AfterEach
+            void tearDown() {
+                assertEquals(2.0, argParser.getStepTime());
+                assertEquals(15, argParser.getLength());
+            }
 
-        @Test
-        void wp() {
-            addSTLFile();
-            addInputMapper();
-            addOutputMapper();
-            addWP();
-            addVerbose();
-            parse();
-            quitExpect = false;
-            verboseExpected = true;
-            assertNull(argParser.getDotFile());
-            assertEquals("input.mapper.txt", argParser.getInputMapperFile());
-            assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
-            assertEquals(ArgParser.EquivType.WP, argParser.getEquiv());
-            assertEquals("stl.txt", argParser.getStlFile());
-            assertNull(argParser.getStlFormula());
+            @Test
+            void stlString() {
+                addSTLString();
+                addInputMapper();
+                addOutputMapper();
+                addHC();
+                addLength();
+                addStepTime();
+                parse();
+                quitExpect = false;
+                verboseExpected = false;
+                assertNull(argParser.getDotFile());
+                assertEquals("input.mapper.txt", argParser.getInputMapperFile());
+                assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
+                assertEquals(ArgParser.EquivType.HC, argParser.getEquiv());
+                assertEquals("[] (signal(0) > 100)", argParser.getStlFormula());
+                assertNull(argParser.getStlFile());
+            }
+
+            @Test
+            void stlFile() {
+                addSTLFile();
+                addInputMapper();
+                addOutputMapper();
+                addRandom();
+                addLength();
+                addStepTime();
+                addDot();
+                parse();
+                quitExpect = false;
+                verboseExpected = false;
+                assertEquals("result.dot", argParser.getDotFile());
+                assertEquals("input.mapper.txt", argParser.getInputMapperFile());
+                assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
+                assertEquals(ArgParser.EquivType.RANDOM, argParser.getEquiv());
+                assertEquals("stl.txt", argParser.getStlFile());
+                assertNull(argParser.getStlFormula());
+            }
+
+            @Test
+            void wp() {
+                addSTLFile();
+                addInputMapper();
+                addOutputMapper();
+                addLength();
+                addStepTime();
+                addWP();
+                addVerbose();
+                parse();
+                quitExpect = false;
+                verboseExpected = true;
+                assertNull(argParser.getDotFile());
+                assertEquals("input.mapper.txt", argParser.getInputMapperFile());
+                assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
+                assertEquals(ArgParser.EquivType.WP, argParser.getEquiv());
+                assertEquals("stl.txt", argParser.getStlFile());
+                assertNull(argParser.getStlFormula());
+            }
         }
     }
 }

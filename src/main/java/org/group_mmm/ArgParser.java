@@ -13,6 +13,8 @@ class ArgParser {
     private String outputMapperFile;
     private EquivType equiv;
     private String dotFile;
+    private double stepTime;
+    private int length;
 
     ArgParser(String[] args) {
         options.addOption("h", "help", false, "Print a help message");
@@ -24,6 +26,8 @@ class ArgParser {
         options.addOption("O", "output-mapper", true, "Read the output mapper configuration from file");
         options.addOption("E", "equiv", true, "Specify the equivalence query algorithm");
         options.addOption("o", "output", true, "Write the learned Mealy machine to file in DOT format");
+        options.addOption("s", "step-time", true, "The step time of the sampling");
+        options.addOption("l", "signal-length", true, "The length of the signals used in the equivalence queries");
         DefaultParser parser = new DefaultParser();
         CommandLine cl;
 
@@ -68,6 +72,18 @@ class ArgParser {
             throw new IllegalArgumentException("output-mapper must be specified");
         }
 
+        if (cl.hasOption('l')) {
+            length = Integer.parseInt(cl.getOptionValue('l'));
+        } else {
+            throw new IllegalArgumentException("signal-length must be specified");
+        }
+
+        if (cl.hasOption('s')) {
+            stepTime = Double.parseDouble(cl.getOptionValue('s'));
+        } else {
+            throw new IllegalArgumentException("step-time must be specified");
+        }
+
         if (cl.hasOption('E')) {
             switch (cl.getOptionValue('E').toLowerCase()) {
                 case "hc":
@@ -91,6 +107,14 @@ class ArgParser {
         } else {
             dotFile = null;
         }
+    }
+
+    double getStepTime() {
+        return stepTime;
+    }
+
+    int getLength() {
+        return length;
     }
 
     boolean isQuit() {
