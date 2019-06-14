@@ -5,15 +5,12 @@ import de.learnlib.api.oracle.MembershipOracle;
 import de.learnlib.driver.util.MealySimulatorSUL;
 import de.learnlib.oracle.membership.SULOracle;
 import net.automatalib.automata.transducers.impl.compact.CompactMealy;
-import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.util.automata.builders.AutomatonBuilders;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.WordBuilder;
 import net.automatalib.words.impl.ArrayAlphabet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class BlackBoxVerifierTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractLTSmin.class);
     private final Alphabet<String> inputAlphabet = new ArrayAlphabet<>("a");
     private List<String> properties;
     private SUL<String, String> sul;

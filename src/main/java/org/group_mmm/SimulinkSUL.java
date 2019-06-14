@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -24,12 +25,12 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
     // The simulation step of Simulink.
     private final double SIMULINK_SIMULATION_STEP = 0.0025;
     private MatlabEngine matlab;
-    private ArrayList<String> paramNames;
+    private List<String> paramNames;
     private Double endTime = 0.0;
     private ArrayList<ArrayList<Double>> previousInput;
     private boolean isInitial = true;
 
-    SimulinkSUL(String initScript, ArrayList<String> paramNames, Double signalStep) throws InterruptedException, ExecutionException {
+    SimulinkSUL(String initScript, List<String> paramNames, Double signalStep) throws InterruptedException, ExecutionException {
         // Load System here
         this.paramNames = paramNames;
         this.signalStep = signalStep;
@@ -150,7 +151,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         }
     }
 
-    private void configureSimulink(StringBuilder builder) throws InterruptedException, ExecutionException {
+    private void configureSimulink(StringBuilder builder) {
         // We use the data in ds
         builder.append("set_param(mdl, 'LoadExternalInput', 'on');");
         builder.append("set_param(mdl, 'ExternalInput', 'ds');");

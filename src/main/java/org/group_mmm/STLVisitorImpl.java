@@ -4,11 +4,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.AbstractMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.group_mmm.STLAtomic.Operation.*;
 
 public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(STLVisitorImpl.class);
+    private List<Map<Character, Double>> outputMapper;
+    private List<Character> largest;
+
+
+    STLVisitorImpl() {
+        this.outputMapper = null;
+        this.largest = null;
+    }
+
+    STLVisitorImpl(List<Map<Character, Double>> outputMapper, List<Character> largest) {
+        this.outputMapper = outputMapper;
+        this.largest = largest;
+    }
 
     @Override
     public Object visitInterval(org.group_mmm.STLParser.IntervalContext ctx) {
@@ -99,6 +114,12 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
 
         double comparator = Double.valueOf(ctx.value().getText());
 
-        return new STLAtomic(sigIndex, op, comparator);
+        STLAtomic result = new STLAtomic(sigIndex, op, comparator);
+        if (this.outputMapper != null && this.largest != null) {
+            result.setOutputMapper(outputMapper);
+            result.setLargest(largest);
+        }
+
+        return result;
     }
 }

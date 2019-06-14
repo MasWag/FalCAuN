@@ -1,15 +1,11 @@
 package org.group_mmm;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import de.learnlib.api.oracle.MembershipOracle;
-import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -86,9 +82,6 @@ class AutotransExampleTest {
      */
     @Test
     void runAT1() throws Exception {
-        final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
-        LOGGER.setLevel(Level.INFO);
-
         AutotransExample exampleAT1 = new AutotransExample(10.0);
         exampleAT1.setProperties(new ArrayList<>(
                 Collections.singletonList(
@@ -272,9 +265,6 @@ class AutotransExampleTest {
 
         @BeforeEach
         void setUp() {
-            final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
-            LOGGER.setLevel(Level.INFO);
-
             exampleAT = new AutotransExample(2.0);
 
             // Construct the input mapper
@@ -345,9 +335,6 @@ class AutotransExampleTest {
 
         @BeforeEach
         void setUp() {
-            final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
-            LOGGER.setLevel(Level.INFO);
-
             exampleAT = new AutotransExample(2.0);
 
             // Construct the input mapper
@@ -585,7 +572,7 @@ class AutotransExampleTest {
             velocityMapper.put('b', 65.0);
             //velocityMapper.put('c', 80.0);
             velocityMapper.put('d', 100.0);
-            //velocityMapper.put('e', 120.0);
+            velocityMapper.put('e', 120.0);
 
             //{4500, 5000, 5200, 5500}.
             Map<Character, Double> rotationMapper = new HashMap<>();
@@ -620,9 +607,9 @@ class AutotransExampleTest {
 
             Map<Character, Double> rotationMapper = new HashMap<>();
             rotationMapper.put('a', 600.0);
-            //rotationMapper.put('b', 2000.0);
-            //rotationMapper.put('c', 3000.0);
-            //rotationMapper.put('d', 4000.0);
+            rotationMapper.put('b', 2000.0);
+            rotationMapper.put('c', 3000.0);
+            rotationMapper.put('d', 4000.0);
             rotationMapper.put('e', 4770.0);
 
             Map<Character, Double> gearMapper = new HashMap<>();
@@ -723,9 +710,6 @@ class AutotransExampleTest {
 
         @BeforeEach
         void setUp() {
-            final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
-            LOGGER.setLevel(Level.INFO);
-
             exampleAT = new AutotransExample(2.0);
 
             // Construct the input mapper
@@ -828,7 +812,7 @@ class AutotransExampleTest {
             Map<Character, Double> velocityMapper = new HashMap<>();
             velocityMapper.put('a', 30.0);
             velocityMapper.put('b', 60.0);
-            velocityMapper.put('b', 90.0);
+            velocityMapper.put('c', 90.0);
 
 
             //{4500, 5000, 5200, 5500}.
@@ -839,7 +823,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', 'X'));
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
             exampleAT.setLargest(largest);
 
             STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 90.0);

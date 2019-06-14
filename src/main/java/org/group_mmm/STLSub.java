@@ -1,7 +1,6 @@
 package org.group_mmm;
 
 import ch.qos.logback.classic.Logger;
-import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.words.Word;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class STLSub extends STLCost {
-    private final Logger LOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+    private final Logger LOGGER = (Logger) LoggerFactory.getLogger(STLSub.class);
 
     private STLTemporalOp subFml;
     private int from, to;

@@ -10,7 +10,7 @@ Usage
 
 ### Symopsis
 
-    cyveria [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
+     java -Djava.library.path=$MATLAB_HOME/bin/maci64 -jar ./target/cyveria-1.0-SNAPSHOT-jar-with-dependencies.jar [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
 
 ### Options
 
@@ -25,6 +25,8 @@ Usage
 **-o** *file*, **--output** *file* Write the learned Mealy machine to *file* in DOT format. <br />
 **-s** *step-time*, **--step-time** *step-time* Specify the step time of the sampling.
 **-l** *length*, **--signal-length** *length* Specify the length of the sampled signals.
+**-i** *script*, **--init** *script* The initial script of MATLAB
+**-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink model
 
 Algorithms for equivalence query
 --------------------------------
@@ -78,6 +80,5 @@ Installation
 ```sh
 export MATLAB_HOME=<path/to/matlab/home>
 mvn clean
-mvn install
+mvn install -DskipTests=true
 ```
-

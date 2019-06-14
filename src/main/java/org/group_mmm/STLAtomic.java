@@ -14,9 +14,9 @@ public class STLAtomic extends STLCost {
     private double comparator;
     private ArrayList<ArrayList<Character>> abstractOutputs = new ArrayList<>();
     private ArrayList<ArrayList<Double>> concreteOutputs = new ArrayList<>();
-    private ArrayList<Character> largest = new ArrayList<>();
+    private List<Character> largest = new ArrayList<>();
     private Set<String> allAPs;
-    private ArrayList<Map<Character, Double>> outputMapper;
+    private List<Map<Character, Double>> outputMapper;
 
     STLAtomic(int sigIndex, Operation op, double comparator) {
         this.sigIndex = sigIndex;
@@ -50,12 +50,12 @@ public class STLAtomic extends STLCost {
         }
     }
 
-    void setOutputMapper(ArrayList<Map<Character, Double>> outputMapper) {
+    void setOutputMapper(List<Map<Character, Double>> outputMapper) {
         this.outputMapper = outputMapper;
         setOutputMaps();
     }
 
-    void setLargest(ArrayList<Character> largest) {
+    void setLargest(List<Character> largest) {
         this.largest = largest;
         setOutputMaps();
     }
@@ -101,6 +101,7 @@ public class STLAtomic extends STLCost {
         if (this.atomicStrings != null) {
             return;
         }
+
         List<Set<Character>> APList = new ArrayList<>(abstractOutputs.size());
         for (int i = 0; i < abstractOutputs.size(); i++) {
             if (i == sigIndex) {
@@ -121,6 +122,14 @@ public class STLAtomic extends STLCost {
         }
 
         this.atomicStrings = constructProductAPs(APList);
+    }
+
+    @Override
+    Set<String> getAtomicStrings() {
+        if (atomicStrings == null) {
+            constructAtomicStrings();
+        }
+        return atomicStrings;
     }
 
     @Override

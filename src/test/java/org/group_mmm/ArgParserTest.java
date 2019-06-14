@@ -1,11 +1,13 @@
 package org.group_mmm;
 
+import org.apache.commons.cli.MissingOptionException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,6 +64,14 @@ class ArgParserTest {
         args.add("-s=2.0");
     }
 
+    private void addInitScript() {
+        args.add("--init=initAT");
+    }
+
+    private void addParamNames() {
+        args.add("--param-names=throttle    brake");
+    }
+
     private void addRandom() {
         args.add("-E=random");
     }
@@ -75,7 +85,7 @@ class ArgParserTest {
         args.add("-o=result.dot");
     }
 
-    private void parse() {
+    private void parse() throws MissingOptionException {
         argParser = new ArgParser(args.toArray(new String[0]));
     }
 
@@ -87,7 +97,9 @@ class ArgParserTest {
         addStepTime();
         addWP();
         addVerbose();
-        assertThrows(IllegalArgumentException.class, this::parse);
+        addParamNames();
+        addInitScript();
+        assertThrows(MissingOptionException.class, this::parse);
     }
 
     @Test
@@ -98,7 +110,9 @@ class ArgParserTest {
         addLength();
         addStepTime();
         addVerbose();
-        assertThrows(IllegalArgumentException.class, this::parse);
+        addParamNames();
+        addInitScript();
+        assertThrows(MissingOptionException.class, this::parse);
     }
 
     @Test
@@ -109,7 +123,9 @@ class ArgParserTest {
         addLength();
         addStepTime();
         addVerbose();
-        assertThrows(IllegalArgumentException.class, this::parse);
+        addParamNames();
+        addInitScript();
+        assertThrows(MissingOptionException.class, this::parse);
     }
 
     @Test
@@ -120,7 +136,9 @@ class ArgParserTest {
         addSTLString();
         addStepTime();
         addVerbose();
-        assertThrows(IllegalArgumentException.class, this::parse);
+        addParamNames();
+        addInitScript();
+        assertThrows(MissingOptionException.class, this::parse);
     }
 
     @Test
@@ -130,14 +148,39 @@ class ArgParserTest {
         addLength();
         addWP();
         addVerbose();
-        assertThrows(IllegalArgumentException.class, this::parse);
+        addParamNames();
+        addInitScript();
+        assertThrows(MissingOptionException.class, this::parse);
+    }
+
+    @Test
+    void missingInitScript() {
+        addSTLFile();
+        addOutputMapper();
+        addLength();
+        addWP();
+        addVerbose();
+        addStepTime();
+        assertThrows(MissingOptionException.class, this::parse);
+    }
+
+    @Test
+    void missingParamNames() {
+        addSTLFile();
+        addOutputMapper();
+        addLength();
+        addWP();
+        addVerbose();
+        addInitScript();
+        addStepTime();
+        assertThrows(MissingOptionException.class, this::parse);
     }
 
     @Nested
     class Success {
 
         @Test
-        void help() {
+        void help() throws MissingOptionException {
             addHelp();
             parse();
             quitExpect = true;
@@ -145,7 +188,7 @@ class ArgParserTest {
         }
 
         @Test
-        void version() {
+        void version() throws MissingOptionException {
             addVersion();
             parse();
             quitExpect = true;
@@ -168,17 +211,21 @@ class ArgParserTest {
             }
 
             @Test
-            void stlString() {
+            void stlString() throws MissingOptionException {
                 addSTLString();
                 addInputMapper();
                 addOutputMapper();
                 addHC();
                 addLength();
                 addStepTime();
+                addParamNames();
+                addInitScript();
                 parse();
                 quitExpect = false;
                 verboseExpected = false;
                 assertNull(argParser.getDotFile());
+                assertEquals("initAT", argParser.getInitScript());
+                assertEquals(Arrays.asList("throttle", "brake"), argParser.getParamNames());
                 assertEquals("input.mapper.txt", argParser.getInputMapperFile());
                 assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
                 assertEquals(ArgParser.EquivType.HC, argParser.getEquiv());
@@ -187,7 +234,7 @@ class ArgParserTest {
             }
 
             @Test
-            void stlFile() {
+            void stlFile() throws MissingOptionException {
                 addSTLFile();
                 addInputMapper();
                 addOutputMapper();
@@ -195,10 +242,14 @@ class ArgParserTest {
                 addLength();
                 addStepTime();
                 addDot();
+                addParamNames();
+                addInitScript();
                 parse();
                 quitExpect = false;
                 verboseExpected = false;
                 assertEquals("result.dot", argParser.getDotFile());
+                assertEquals("initAT", argParser.getInitScript());
+                assertEquals(Arrays.asList("throttle", "brake"), argParser.getParamNames());
                 assertEquals("input.mapper.txt", argParser.getInputMapperFile());
                 assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
                 assertEquals(ArgParser.EquivType.RANDOM, argParser.getEquiv());
@@ -207,7 +258,7 @@ class ArgParserTest {
             }
 
             @Test
-            void wp() {
+            void wp() throws MissingOptionException {
                 addSTLFile();
                 addInputMapper();
                 addOutputMapper();
@@ -215,10 +266,14 @@ class ArgParserTest {
                 addStepTime();
                 addWP();
                 addVerbose();
+                addParamNames();
+                addInitScript();
                 parse();
                 quitExpect = false;
                 verboseExpected = true;
                 assertNull(argParser.getDotFile());
+                assertEquals("initAT", argParser.getInitScript());
+                assertEquals(Arrays.asList("throttle", "brake"), argParser.getParamNames());
                 assertEquals("input.mapper.txt", argParser.getInputMapperFile());
                 assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
                 assertEquals(ArgParser.EquivType.WP, argParser.getEquiv());

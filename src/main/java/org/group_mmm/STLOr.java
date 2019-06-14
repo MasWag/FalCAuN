@@ -33,7 +33,9 @@ public class STLOr extends STLCost {
     protected void constructAtomicStrings() {
         if (this.nonTemporal) {
             this.atomicStrings = new HashSet<>();
-            subFmls.stream().map(STLCost::getAtomicStrings).forEach(c -> this.atomicStrings.addAll(c));
+            for (STLCost subFml : subFmls) {
+                this.atomicStrings.add(subFml.toAbstractString());
+            }
         } else {
             this.atomicStrings = null;
         }
@@ -49,7 +51,7 @@ public class STLOr extends STLCost {
         if (nonTemporal) {
             constructAtomicStrings();
             return this.atomicStrings.stream().map(
-                    s -> "( " + s + " )").collect(Collectors.joining(" || "));
+                    s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
         } else {
             return this.subFmls.stream().map(STLCost::toAbstractString).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" || "));

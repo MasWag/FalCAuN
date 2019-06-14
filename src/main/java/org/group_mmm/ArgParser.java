@@ -1,6 +1,14 @@
 package org.group_mmm;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
+import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
 import org.apache.commons.cli.*;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.List;
 
 class ArgParser {
     private Options options = new Options();
@@ -15,8 +23,10 @@ class ArgParser {
     private String dotFile;
     private double stepTime;
     private int length;
+    private String initScript;
+    private List<String> paramNames;
 
-    ArgParser(String[] args) {
+    ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
         options.addOption("v", "verbose", false, "Outputs extra information, mainly for debugging");
         options.addOption("V", "version", false, "Print the version");
@@ -28,13 +38,18 @@ class ArgParser {
         options.addOption("o", "output", true, "Write the learned Mealy machine to file in DOT format");
         options.addOption("s", "step-time", true, "The step time of the sampling");
         options.addOption("l", "signal-length", true, "The length of the signals used in the equivalence queries");
+        options.addOption("i", "init", true, "The initial script of MATLAB");
+        options.addOption("p", "param-names", true, "The parameter names of the Simulink model");
+
+
         DefaultParser parser = new DefaultParser();
         CommandLine cl;
 
         try {
             cl = parser.parse(options, args);
-        } catch (ParseException ignore) {
+        } catch (ParseException error) {
             System.out.println("error parsing the argument");
+            System.out.println(error.getMessage());
             showHelp();
             quit = true;
             return;
@@ -51,37 +66,58 @@ class ArgParser {
         }
 
         verbose = cl.hasOption('v');
+        if (verbose) {
+            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
+        } else {
+            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO");
+            Logger LTSminVersionLogger = (Logger) LoggerFactory.getLogger(LTSminVersion.class);
+            LTSminVersionLogger.setLevel(Level.INFO);
+            Logger AbstractLTSminLogger = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+            AbstractLTSminLogger.setLevel(Level.INFO);
+        }
 
         if (cl.hasOption('f')) {
             stlFile = cl.getOptionValue('f');
         } else if (cl.hasOption('e')) {
             stlFormula = cl.getOptionValue('e');
         } else {
-            throw new IllegalArgumentException("either stl-file or stl must give given!!");
+            throw new MissingOptionException("either stl-file or stl must give given!!");
         }
 
         if (cl.hasOption('I')) {
             inputMapperFile = cl.getOptionValue('I');
         } else {
-            throw new IllegalArgumentException("input-mapper must be specified");
+            throw new MissingOptionException("input-mapper must be specified");
         }
 
         if (cl.hasOption('O')) {
             outputMapperFile = cl.getOptionValue('O');
         } else {
-            throw new IllegalArgumentException("output-mapper must be specified");
+            throw new MissingOptionException("output-mapper must be specified");
         }
 
         if (cl.hasOption('l')) {
             length = Integer.parseInt(cl.getOptionValue('l'));
         } else {
-            throw new IllegalArgumentException("signal-length must be specified");
+            throw new MissingOptionException("signal-length must be specified");
         }
 
         if (cl.hasOption('s')) {
             stepTime = Double.parseDouble(cl.getOptionValue('s'));
         } else {
-            throw new IllegalArgumentException("step-time must be specified");
+            throw new MissingOptionException("step-time must be specified");
+        }
+
+        if (cl.hasOption('i')) {
+            initScript = cl.getOptionValue('i');
+        } else {
+            throw new MissingOptionException("init must be specified");
+        }
+
+        if (cl.hasOption('p')) {
+            paramNames = Arrays.asList(cl.getOptionValue('p').split("\\s+"));
+        } else {
+            throw new MissingOptionException("param-names must be specified");
         }
 
         if (cl.hasOption('E')) {
@@ -99,7 +135,7 @@ class ArgParser {
                     throw new IllegalArgumentException("unknown equiv. algorithm: " + cl.getOptionValue('E'));
             }
         } else {
-            throw new IllegalArgumentException("equiv must be specified");
+            throw new MissingOptionException("equiv must be specified");
         }
 
         if (cl.hasOption('o')) {
@@ -107,6 +143,14 @@ class ArgParser {
         } else {
             dotFile = null;
         }
+    }
+
+    String getInitScript() {
+        return initScript;
+    }
+
+    List<String> getParamNames() {
+        return paramNames;
     }
 
     double getStepTime() {

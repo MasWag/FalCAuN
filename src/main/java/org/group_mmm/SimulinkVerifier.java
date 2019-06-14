@@ -37,7 +37,7 @@ class SimulinkVerifier {
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws Exception It can be thrown from the constrcutor of SimulinkSUL.
      */
-    SimulinkVerifier(String initScript, ArrayList<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
+    SimulinkVerifier(String initScript, List<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
         this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
@@ -151,7 +151,7 @@ class SimulinkVerifier {
         return verifier.getCexInput();
     }
 
-    public List<Word<ArrayList<Double>>> getCexConcreteInput() {
+    List<Word<ArrayList<Double>>> getCexConcreteInput() {
         return getCexAbstractInput().stream().map(
                 word -> Word.fromList(word.stream().map(
                         s -> mapper.mapInput(s)).collect(Collectors.toList()))).collect(Collectors.toList());
