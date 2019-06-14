@@ -7,6 +7,7 @@ mv $TMPFILE pom.xml
 
 # remove matlab related files
 rm -f ./src/main/java/org/group_mmm/Simulink*
+rm -f ./src/main/java/org/group_mmm/Main.java
 rm -f ./src/main/java/org/group_mmm/*Oracle*
 
 rm -f ./src/test/java/org/group_mmm/Simulink*

@@ -19,6 +19,6 @@ jobs:
           paths:
             - ~/.m2
           key: CyVeriA-{{ checksum "pom.xml" }}
-      - run: mvn test -Dtest=BlackBoxVerifierTest
+      - run: mvn test -Dtest=BlackBoxVerifierTest,ArgParserTest,InputMapperReaderTest,OutputMapperReaderTest,STLAtomicTest,STLCostTest,STLParserTest,STLSubTest
       - store_test_results:
           path: target/surefire-reports

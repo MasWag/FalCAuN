@@ -198,7 +198,7 @@ class ArgParser {
     }
 
     private void showVersion() {
-        System.out.println(Main.class.getPackage().getImplementationTitle() + " version " + Main.class.getPackage().getImplementationVersion());
+        System.out.println(ArgParser.class.getPackage().getImplementationTitle() + " version " + ArgParser.class.getPackage().getImplementationVersion());
     }
 
     enum EquivType {
