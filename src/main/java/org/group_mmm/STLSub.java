@@ -49,28 +49,11 @@ public class STLSub extends STLCost {
 
     @Override
     public String toString() {
-        final String op = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " || " : " && ";
+        String result = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " <>" : " []";
+        result += "_[" + (from) + " ," + (to) + "]";
+        result += " ( " + (subFml.subFml.toString()) + " )";
 
-        ArrayList<String> subFmls = new ArrayList<>();
-        for (int i = this.from; i <= this.to; i++) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("( ");
-
-            for (int j = 0; j < i; j++) {
-                builder.append("X (");
-            }
-
-            builder.append(subFml.subFml.toString());
-
-            for (int j = 0; j < i; j++) {
-                builder.append(" )");
-            }
-            builder.append(" )");
-
-            subFmls.add(builder.toString());
-        }
-
-        return String.join(op, subFmls);
+        return result;
     }
 
     @Override
