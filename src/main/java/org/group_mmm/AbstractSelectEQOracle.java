@@ -126,6 +126,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
                 }
                 map.put(result, sample);
             }
+            LOGGER.debug("Test size: {}", testSize);
 
             List<Word<String>> goodSamples = map.entries().stream().limit(generationSize).map(Map.Entry::getValue).collect(Collectors.toList());
 

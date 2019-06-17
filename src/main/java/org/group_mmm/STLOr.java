@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class STLOr extends STLCost {
-    private STLCost subFml1, subFml2;
     private List<STLCost> subFmls;
 
     STLOr(STLCost subFml1, STLCost subFml2) {

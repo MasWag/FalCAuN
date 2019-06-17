@@ -47,13 +47,12 @@ public class Main {
         } else {
             throw new MissingOptionException("STL formula is not given");
         }
-
+        List<String> ltlString = new ArrayList<>(stl.size());
+        for (STLCost fml : stl) {
+            ltlString.add(fml.toAbstractString());
+        }
         if (argParser.isVerbose()) {
             System.out.println("STL formulas: " + stl);
-            List<String> ltlString = new ArrayList<>(stl.size());
-            for (STLCost fml : stl) {
-                ltlString.add(fml.toAbstractString());
-            }
             System.out.println("LTL formulas: " + ltlString);
         }
 
@@ -61,7 +60,7 @@ public class Main {
                 argParser.getInitScript(),
                 argParser.getParamNames(),
                 argParser.getStepTime(),
-                stl.stream().map(STLCost::toAbstractString).collect(Collectors.toList()),
+                ltlString,
                 sulMapper);
 
 /*
@@ -88,12 +87,25 @@ public class Main {
                 }
                 if (argParser.isVerbose()) {
                     System.out.println("Hill Climing is used");
+                    System.out.println("STL size: " + stl.size());
+                    System.out.println("Length: " + argParser.getLength());
+                    System.out.println("maxTest: " + maxTest);
+                    System.out.println("Generation size: " + generationSize);
+                    System.out.println("Children size:" + childrenSize);
+                    System.out.println("Reset word: " + resetWord);
                 }
                 break;
             case WP:
                 throw new UnsupportedOperationException("Wp is not implemented yet!!");
             case RANDOM:
-                throw new UnsupportedOperationException("random is not implemented yet!!");
+                verifier.addRandomWordEQOracle(argParser.getLength(), argParser.getLength(), maxTest, new Random(), 1);
+                if (argParser.isVerbose()) {
+                    System.out.println("Random Test is used");
+                    System.out.println("STL size: " + stl.size());
+                    System.out.println("Min length: " + argParser.getLength());
+                    System.out.println("Max length: " + argParser.getLength());
+                    System.out.println("maxTest: " + maxTest);
+                }
         }
 
         System.out.println("BBC started");

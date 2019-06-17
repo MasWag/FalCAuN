@@ -14,6 +14,11 @@ public class STLSub extends STLCost {
     private STLTemporalOp subFml;
     private int from, to;
 
+    /**
+     * @param subFml the subformula
+     * @param from   the first index, inclusive
+     * @param to     the last index, inclusive.
+     */
     STLSub(STLTemporalOp subFml, int from, int to) {
         this.subFml = subFml;
         this.from = from;
@@ -34,7 +39,7 @@ public class STLSub extends STLCost {
                     LOGGER.error("Unknown class {}", subFml.getClass());
             }
         }
-        return subFml.apply(signal.subWord(from, Math.min(to, signal.size() - 1)));
+        return subFml.apply(signal.subWord(from, Math.min(to + 1, signal.size())));
     }
 
     @Override

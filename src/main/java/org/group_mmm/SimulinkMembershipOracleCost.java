@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -43,9 +44,8 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
                 return null;
             }
             assert concreteOutput.size() == concreteInput.size();
-            costBuilder.append(
-                    concreteOutput.prefixes(false).
-                            stream().map(costFunc).collect(Collectors.toList()));
+            List<Double> robustness = concreteOutput.prefixes(false).stream().map(costFunc).collect(Collectors.toList());
+            costBuilder.append(robustness);
 
             abstractOutputBuilder.append(
                     concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList()));
