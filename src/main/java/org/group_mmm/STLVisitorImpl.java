@@ -108,6 +108,9 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
             case ">":
                 op = gt;
                 break;
+            case "!=":
+                op = ne;
+                break;
             default:
                 throw new UnsupportedOperationException();
         }

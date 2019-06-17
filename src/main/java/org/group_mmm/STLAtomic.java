@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import static java.lang.Math.abs;
 
 public class STLAtomic extends STLCost {
-    private final int gearIndex = 2;
     private Operation op;
     private int sigIndex;
     private double comparator;
@@ -78,6 +77,8 @@ public class STLAtomic extends STLCost {
                 return currentValue.get(sigIndex) - comparator;
             case eq:
                 return -abs(currentValue.get(sigIndex) - comparator);
+            case ne:
+                return abs(currentValue.get(sigIndex) - comparator);
             default:
                 return null;
         }
@@ -92,6 +93,8 @@ public class STLAtomic extends STLCost {
                 return String.format("signal(%d) == %f", sigIndex, comparator);
             case gt:
                 return String.format("signal(%d) > %f", sigIndex, comparator);
+            case ne:
+                return String.format("signal(%d) != %f", sigIndex, comparator);
         }
         return null;
     }
@@ -115,6 +118,10 @@ public class STLAtomic extends STLCost {
                     case gt:
                         APList.add(constructLargerAPs(i, comparator));
                         break;
+                    case ne:
+                        Set<Character> newAPs = constructAllAPs(i);
+                        newAPs.removeAll(constructEqAPs(i, comparator));
+                        APList.add(newAPs);
                 }
             } else {
                 APList.add(constructAllAPs(i));
@@ -205,6 +212,7 @@ public class STLAtomic extends STLCost {
     enum Operation {
         lt,
         eq,
-        gt
+        gt,
+        ne
     }
 }

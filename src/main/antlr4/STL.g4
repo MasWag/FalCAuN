@@ -30,6 +30,7 @@ atomic
        : SIGNAL LPAREN signalID=NATURAL RPAREN operator=EQ value
        | SIGNAL LPAREN signalID=NATURAL RPAREN operator=LT value
        | SIGNAL LPAREN signalID=NATURAL RPAREN operator=GT value
+       | SIGNAL LPAREN signalID=NATURAL RPAREN operator=NE value
        ;
 
 value
@@ -62,6 +63,7 @@ AND :  '&&';
 IMPLY :  '->';
 NOT :  '!';
 EQ :  '==';
+NE :  '!=';
 LT :  '<';
 GT :  '>';
 NATURAL  : [1-9][0-9]* | '0';

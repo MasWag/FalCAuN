@@ -96,10 +96,12 @@ class STLParserTest {
         List<String> inputs = Arrays.asList(
                 "signal(0) < 10.0",
                 "signal(10) > 4.2",
+                "signal(2) != -0.2",
                 "signal(1) == -20");
         List<STLAtomic> expectedList = Arrays.asList(
                 new STLAtomic(0, lt, 10.0),
                 new STLAtomic(10, gt, 4.2),
+                new STLAtomic(2, ne, -0.2),
                 new STLAtomic(1, eq, -20));
 
         assert inputs.size() == expectedList.size();
