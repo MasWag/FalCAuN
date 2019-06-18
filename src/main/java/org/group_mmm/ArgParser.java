@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 class ArgParser {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ArgParser.class);
+
     private Options options = new Options();
     private HelpFormatter help = new HelpFormatter();
     private boolean quit = false;
@@ -25,6 +27,7 @@ class ArgParser {
     private int length;
     private String initScript;
     private List<String> paramNames;
+    private int maxTest = 50000;
 
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
@@ -40,6 +43,7 @@ class ArgParser {
         options.addOption("l", "signal-length", true, "The length of the signals used in the equivalence queries");
         options.addOption("i", "init", true, "The initial script of MATLAB");
         options.addOption("p", "param-names", true, "The parameter names of the Simulink model");
+        options.addOption("M", "max-test", true, "The maximum test size");
 
 
         DefaultParser parser = new DefaultParser();
@@ -120,6 +124,12 @@ class ArgParser {
             throw new MissingOptionException("param-names must be specified");
         }
 
+        if (cl.hasOption('M')) {
+            maxTest = Integer.parseInt(cl.getOptionValue('M'));
+        } else {
+            LOGGER.debug("We use the default value {} for maxTest", maxTest);
+        }
+
         if (cl.hasOption('E')) {
             switch (cl.getOptionValue('E').toLowerCase()) {
                 case "hc":
@@ -143,6 +153,10 @@ class ArgParser {
         } else {
             dotFile = null;
         }
+    }
+
+    int getMaxTest() {
+        return maxTest;
     }
 
     String getInitScript() {

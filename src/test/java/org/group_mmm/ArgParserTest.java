@@ -17,11 +17,13 @@ class ArgParserTest {
     private ArgParser argParser;
     private List<String> args;
     private boolean verboseExpected;
+    private int maxTestExpected;
 
     @BeforeEach
     void setUp() {
         args = new ArrayList<>();
         args.add("cyveria");
+        maxTestExpected = 50000;
     }
 
     private void addHelp() {
@@ -62,6 +64,10 @@ class ArgParserTest {
 
     private void addStepTime() {
         args.add("-s=2.0");
+    }
+
+    private void addMaxTest() {
+        args.add("-M=100");
     }
 
     private void addInitScript() {
@@ -208,6 +214,7 @@ class ArgParserTest {
             void tearDown() {
                 assertEquals(2.0, argParser.getStepTime());
                 assertEquals(15, argParser.getLength());
+                assertEquals(maxTestExpected, argParser.getMaxTest());
             }
 
             @Test
@@ -265,12 +272,14 @@ class ArgParserTest {
                 addLength();
                 addStepTime();
                 addWP();
+                addMaxTest();
                 addVerbose();
                 addParamNames();
                 addInitScript();
                 parse();
                 quitExpect = false;
                 verboseExpected = true;
+                maxTestExpected = 100;
                 assertNull(argParser.getDotFile());
                 assertEquals("initAT", argParser.getInitScript());
                 assertEquals(Arrays.asList("throttle", "brake"), argParser.getParamNames());

@@ -1,4 +1,4 @@
-CyVeriA
+`CyVeriA
 =======
 
 [![CircleCI](https://circleci.com/gh/MasWag/CyVeriA.svg?style=svg&circle-token=529c89869f5a7b6e9f957ee656ffc55349d050ca)](https://circleci.com/gh/MasWag/CyVeriA)
@@ -27,6 +27,8 @@ Usage
 **-l** *length*, **--signal-length** *length* Specify the length of the sampled signals.
 **-i** *script*, **--init** *script* The initial script of MATLAB
 **-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink model
+**-M** *test-size*, **--max-test** *test-size* The maximum test size
+
 
 Algorithms for equivalence query
 --------------------------------
