@@ -16,7 +16,6 @@ public class Main {
     private static int childrenSize = 15 * 4;
     private static boolean resetWord = false;
     private static ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>(Collections.emptyList());
-    private static int maxTest = 50000;
 
     public static void main(String[] args) throws Exception {
         ArgParser argParser = new ArgParser(args);
@@ -83,28 +82,29 @@ public class Main {
             case HC:
                 for (int i = 0; i < stl.size(); i++) {
                     PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
-                    verifier.addHillClimbingEQOracle(stl.get(i), argParser.getLength(), new Random(), maxTest, generationSize, childrenSize, resetWord, ltlOracle);
+                    verifier.addHillClimbingEQOracle(stl.get(i), argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord, ltlOracle);
                 }
                 if (argParser.isVerbose()) {
                     System.out.println("Hill Climing is used");
                     System.out.println("STL size: " + stl.size());
                     System.out.println("Length: " + argParser.getLength());
-                    System.out.println("maxTest: " + maxTest);
+                    System.out.println("maxTest: " + argParser.getMaxTest());
                     System.out.println("Generation size: " + generationSize);
                     System.out.println("Children size:" + childrenSize);
                     System.out.println("Reset word: " + resetWord);
                 }
                 break;
             case WP:
+                // verifier.addWpMethodEQOracle(30);
                 throw new UnsupportedOperationException("Wp is not implemented yet!!");
             case RANDOM:
-                verifier.addRandomWordEQOracle(argParser.getLength(), argParser.getLength(), maxTest, new Random(), 1);
+                verifier.addRandomWordEQOracle(argParser.getLength(), argParser.getLength(), argParser.getMaxTest(), new Random(), 1);
                 if (argParser.isVerbose()) {
                     System.out.println("Random Test is used");
                     System.out.println("STL size: " + stl.size());
                     System.out.println("Min length: " + argParser.getLength());
                     System.out.println("Max length: " + argParser.getLength());
-                    System.out.println("maxTest: " + maxTest);
+                    System.out.println("maxTest: " + argParser.getMaxTest());
                 }
         }
 
