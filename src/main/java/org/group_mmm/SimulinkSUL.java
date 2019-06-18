@@ -98,6 +98,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
             makeDataSet(numberOfSamples, inputSignal.size(), builder);
 
             configureSimulink(builder);
+            preventHugeTempFile(builder);
 
             // Execute the simulation
             builder.append("set_param(mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on');");
@@ -109,7 +110,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
                 builder.append("set_param(mdl, 'InitialState', 'myOperPoint');");
             }
 
-            builder.append("simOut = sim(mdl, 'StopTime', '" + (endTime + signalStep) + "');");
+            builder.append("simOut = sim(mdl, 'StopTime', '").append(endTime + signalStep).append("');");
             builder.append("myOperPoint = simOut.get('myOperPoint');");
             builder.append("y = simOut.get('yout');");
 
@@ -135,7 +136,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
     }
 
     private void makeDataSet(int numberOfSamples, int signalDimension, StringBuilder builder) throws ExecutionException, InterruptedException {
-        builder.append("numberOfSamples = " + numberOfSamples + ";");
+        builder.append("numberOfSamples = ").append(numberOfSamples).append(";");
         //matlab.putVariable("numberOfSamples", (double) numberOfSamples);
         builder.append("timeVector = (0:numberOfSamples) * signalStep;");
         //matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
@@ -144,9 +145,9 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         for (int i = 0; i < signalDimension; i++) {
             double[] tmp = previousInput.get(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
-            builder.append("input" + i + " = timeseries(tmp" + i + ", timeVector);");
+            builder.append("input").append(i).append(" = timeseries(tmp").append(i).append(", timeVector);");
             //matlab.eval("input = timeseries(tmp, timeVector);");
-            builder.append("ds = ds.addElement(input" + i + ", '" + paramNames.get(i) + "');");
+            builder.append("ds = ds.addElement(input").append(i).append(", '").append(paramNames.get(i)).append("');");
             //matlab.eval("ds = ds.addElement(input, '" + paramNames.get(i) + "');");
         }
     }
@@ -174,8 +175,13 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         // Configuration on the decimation
         builder.append("set_param(mdl,  'SolverType', 'Fixed-step');");
         builder.append("set_param(mdl, 'FixedStep', '" + SIMULINK_SIMULATION_STEP + "');");
-        builder.append("set_param(mdl, 'Decimation', '" + (signalStep / SIMULINK_SIMULATION_STEP) + "');");
+        builder.append("set_param(mdl, 'Decimation', '").append(signalStep / SIMULINK_SIMULATION_STEP).append("');");
         // matlab.eval("set_param(mdl, 'Decimation', '" + (1) + "');");
+    }
+
+    private void preventHugeTempFile(StringBuilder builder) {
+        builder.append("Simulink.sdi.setAutoArchiveMode(false);");
+        builder.append("Simulink.sdi.setArchiveRunLimit(0);");
     }
 
     /**
@@ -200,9 +206,11 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
 
         configureSimulink(builder);
 
+        preventHugeTempFile(builder);
+
         // Execute the simulation
         builder.append("set_param(mdl, 'LoadInitialState', 'off');");
-        builder.append("simOut = sim(mdl, 'StopTime', '" + (signalStep * numberOfSamples) + "');");
+        builder.append("simOut = sim(mdl, 'StopTime', '").append(signalStep * numberOfSamples).append("');");
         builder.append("y = simOut.get('yout');");
         matlab.eval(builder.toString());
 
