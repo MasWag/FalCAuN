@@ -8,9 +8,7 @@ import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -20,14 +18,15 @@ import java.util.stream.Collectors;
  * @author Masaki Waga <masaki@gmail.com>
  */
 class SimulinkVerifier {
+    protected SUL<List<Double>, List<Double>> simulink;
     private SimulinkSUL rawSimulink;
-    protected SUL<ArrayList<Double>, ArrayList<Double>> simulink;
     private Alphabet<String> abstractInputAlphabet;
-    private Alphabet<ArrayList<Double>> concreteInputAlphabet;
+    private Alphabet<List<Double>> concreteInputAlphabet;
     private SimulinkSULMapper mapper;
     private SUL<String, String> mappedSimulink;
     private BlackBoxVerifier verifier;
     private SimulinkMembershipOracle memOracle;
+    private List<SimulinkMembershipOracleCost> memOracleCosts = new ArrayList<>();
 
     /**
      * @param initScript The MATLAB script called at first. You have to define mdl in the script.
@@ -80,7 +79,7 @@ class SimulinkVerifier {
         this.verifier.addCompleteExplorationEQOracle(minDepth, maxDepth, batchSize);
     }
 
-    void addHillClimbingEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
+    void addHillClimbingEQOracle(Function<Word<List<Double>>, Double> costFunc,
                                  int length,
                                  Random random,
                                  int maxTests,
@@ -90,11 +89,12 @@ class SimulinkVerifier {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
+        memOracleCosts.add(oracle);
 
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
 
-    void addHillClimbingEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
+    void addHillClimbingEQOracle(Function<Word<List<Double>>, Double> costFunc,
                                  int length,
                                  Random random,
                                  int maxTests,
@@ -105,6 +105,7 @@ class SimulinkVerifier {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
+        memOracleCosts.add(oracle);
 
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
@@ -114,7 +115,7 @@ class SimulinkVerifier {
         return verifier.getLtlFormulas();
     }
 
-    void addMutateSelectEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
+    void addMutateSelectEQOracle(Function<Word<List<Double>>, Double> costFunc,
                                  int length,
                                  Random random,
                                  int maxTests,
@@ -125,11 +126,12 @@ class SimulinkVerifier {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
+        memOracleCosts.add(oracle);
 
         this.verifier.addEqOracle(new MutateSelectEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
     }
 
-    void addGAEQOracle(Function<Word<ArrayList<Double>>, Double> costFunc,
+    void addGAEQOracle(Function<Word<List<Double>>, Double> costFunc,
                        int length,
                        Random random,
                        int maxTests,
@@ -143,6 +145,7 @@ class SimulinkVerifier {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
+        memOracleCosts.add(oracle);
 
         this.verifier.addEqOracle(new GAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, changeSize, crossoverProb, mutationProb, resetWord));
     }
@@ -151,7 +154,7 @@ class SimulinkVerifier {
         return verifier.getCexInput();
     }
 
-    List<Word<ArrayList<Double>>> getCexConcreteInput() {
+    List<Word<List<Double>>> getCexConcreteInput() {
         return getCexAbstractInput().stream().map(
                 word -> Word.fromList(word.stream().map(
                         s -> mapper.mapInput(s)).collect(Collectors.toList()))).collect(Collectors.toList());
@@ -166,6 +169,12 @@ class SimulinkVerifier {
      * @return Returns {@code true} if and only if the Simulink model is verified i.e., no counter example is found.
      */
     boolean run() {
+        Set<SimulinkMembershipOracleCost> tmp = new HashSet<>(memOracleCosts);
+        for (SimulinkMembershipOracleCost memOracleCost : memOracleCosts) {
+            tmp.remove(memOracleCost);
+            memOracleCost.addNotifiedAll(tmp);
+        }
+
         return verifier.run();
     }
 

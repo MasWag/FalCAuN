@@ -7,7 +7,10 @@ import net.automatalib.words.WordBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -15,12 +18,12 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracleCost.class);
     private IncrementalMealyTreeBuilder<String, Double> costCache;
     private Function<Word<List<Double>>, Double> costFunc;
+    private Set<SimulinkMembershipOracleCost> notifiedSet = new HashSet<>();
 
     SimulinkMembershipOracleCost(SimulinkSUL simulink, SimulinkSULMapper mapper, Function<Word<List<Double>>, Double> costFunc) {
         super(simulink, mapper);
         this.costFunc = costFunc;
         this.costCache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
-
     }
 
     Double processQueryWithCost(Query<String, Word<String>> q) {
@@ -53,6 +56,9 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
 
             cache.insert(abstractInput, abstractOutputBuilder.toWord());
             costCache.insert(abstractInput, costBuilder.toWord());
+            for (SimulinkMembershipOracleCost notified : notifiedSet) {
+                notified.cacheInsert(abstractInput, concreteOutput, abstractOutputBuilder.toWord());
+            }
         } else {
             costCache.lookup(abstractInput, costBuilder);
         }
@@ -62,7 +68,19 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
         return costBuilder.toWord().lastSymbol();
     }
 
-    void update(Word<String> abstractInput, Word<List<Double>> concreteOutput, Word<String> abstractOutput) {
+    private void cacheInsert(Word<String> abstractInput, Word<List<Double>> concreteOutput, Word<String> abstractOutput) {
+        super.cacheInsert(abstractInput, abstractOutput);
+        WordBuilder<Double> costBuilder = new WordBuilder<>(abstractInput.size());
+        List<Double> robustness = concreteOutput.prefixes(false).stream().map(costFunc).collect(Collectors.toList());
+        costBuilder.append(robustness);
+        costCache.insert(abstractInput, costBuilder.toWord());
+    }
 
+    boolean addNotified(SimulinkMembershipOracleCost notified) {
+        return notifiedSet.add(notified);
+    }
+
+    boolean addNotifiedAll(Collection<SimulinkMembershipOracleCost> notified) {
+        return notifiedSet.addAll(notified);
     }
 }

@@ -68,5 +68,9 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
             q.answer(output);
         }
     }
+
+    void cacheInsert(Word<String> abstractInput, Word<String> abstractOutput) {
+        cache.insert(abstractInput, abstractOutput);
+    }
 }
 
