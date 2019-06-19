@@ -120,7 +120,8 @@ public class Main {
             System.out.println("The following properties are falsified");
             for (int i = 0; i < verifier.getCexAbstractInput().size(); i++) {
                 if (verifier.getCexAbstractInput().get(i) != null) {
-                    System.out.println("Property: " + verifier.getCexProperty().get(i));
+                    System.out.println("Property STL: " + stl.get(i));
+                    System.out.println("Property LTL: " + verifier.getCexProperty().get(i));
                     System.out.println("Concrete Input: " + verifier.getCexConcreteInput().get(i));
                     System.out.println("Abstract Input: " + verifier.getCexAbstractInput().get(i));
                     System.out.println("Output: " + verifier.getCexOutput().get(i));
