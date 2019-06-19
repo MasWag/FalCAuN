@@ -21,16 +21,16 @@ class SimulinkMembershipOracleTest {
 	  - Pedal_Angle: [8.8 90.0]
       - Engine_Speed: [900.0 1100.0]
      */
-    private final ArrayList<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
+    private final List<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
     private final Double signalStep = 10.0;
-    private ArrayList<String> properties;
+    private List<String> properties;
     private SimulinkSULMapper mapper;
-    private ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>();
+    private List<Function<List<Double>, Double>> sigMap = new ArrayList<>();
     private SimulinkSUL simulink;
-    private MappedSUL<String, String, ArrayList<Double>, ArrayList<Double>> mappedSimulink;
+    private MappedSUL<String, String, List<Double>, List<Double>> mappedSimulink;
     private MembershipOracle.MealyMembershipOracle<String, String> sulOracle, directOracle;
     private Alphabet<String> abstractInputAlphabet;
-    private Alphabet<ArrayList<Double>> concreteInputAlphabet;
+    private Alphabet<List<Double>> concreteInputAlphabet;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -38,9 +38,9 @@ class SimulinkMembershipOracleTest {
         properties = new ArrayList<>(Collections.singletonList("[] (output == \"a00\")"));
 
         // Construct the mapper
-        ArrayList<Map<Character, Double>> inputMapper;
-        ArrayList<Map<Character, Double>> outputMapper;
-        ArrayList<Character> largest;
+        List<Map<Character, Double>> inputMapper;
+        List<Map<Character, Double>> outputMapper;
+        List<Character> largest;
 
         {
             Map<Character, Double> mapper1 = new HashMap<>();

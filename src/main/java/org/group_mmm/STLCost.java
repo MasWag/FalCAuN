@@ -6,13 +6,12 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-abstract class STLCost implements Function<Word<ArrayList<Double>>, Double> {
+abstract class STLCost implements Function<Word<List<Double>>, Double> {
     boolean nonTemporal;
     Set<String> atomicStrings;
 

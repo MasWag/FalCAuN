@@ -19,7 +19,7 @@ public class STLOr extends STLCost {
     }
 
     @Override
-    public Double apply(Word<ArrayList<Double>> signal) {
+    public Double apply(Word<List<Double>> signal) {
         return subFmls.stream().map(subFml -> subFml.apply(signal)).filter(Objects::nonNull).max(Comparator.comparingDouble(Double::valueOf)).orElse(Double.NEGATIVE_INFINITY);
     }
 

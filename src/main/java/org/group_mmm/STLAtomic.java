@@ -60,8 +60,8 @@ public class STLAtomic extends STLCost {
     }
 
     @Override
-    public Double apply(Word<ArrayList<Double>> signal) {
-        ArrayList<Double> currentValue;
+    public Double apply(Word<List<Double>> signal) {
+        List<Double> currentValue;
 
         if (signal.isEmpty()) {
             return Double.POSITIVE_INFINITY;

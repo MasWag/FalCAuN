@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,8 +39,8 @@ class SimulinkSULTest {
     @Test
     void step() {
         sul.pre();
-        ArrayList<Double> input = new ArrayList<>(Arrays.asList(80.0, 900.0));
-        ArrayList<Double> output = sul.step(input);
+        List<Double> input = new ArrayList<>(Arrays.asList(80.0, 900.0));
+        List<Double> output = sul.step(input);
         assertNotNull(output);
         assertEquals(expectedOutputSize, output.size());
 

@@ -2,7 +2,7 @@ package org.group_mmm;
 
 import net.automatalib.words.Word;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class STLNext extends STLCost {
@@ -16,7 +16,7 @@ public class STLNext extends STLCost {
     }
 
     @Override
-    public Double apply(Word<ArrayList<Double>> signal) {
+    public Double apply(Word<List<Double>> signal) {
         if (signal.size() <= 1) {
             return this.nullPositive ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
         }

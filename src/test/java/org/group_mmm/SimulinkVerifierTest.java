@@ -17,13 +17,13 @@ class SimulinkVerifierTest {
 	  - Pedal_Angle: [8.8 90.0]
       - Engine_Speed: [900.0 1100.0]
      */
-    private final ArrayList<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
+    private final List<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
     private final Double signalStep = 10.0;
     private SimulinkVerifier verifier;
-    private ArrayList<String> properties;
+    private List<String> properties;
     private SimulinkSULMapper mapper;
-    private ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>();
-    private ArrayList<String> propertyZHA19_AFC1 = new ArrayList<>(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
+    private List<Function<List<Double>, Double>> sigMap = new ArrayList<>();
+    private List<String> propertyZHA19_AFC1 = new ArrayList<>(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
 
 
     @BeforeEach
@@ -32,9 +32,9 @@ class SimulinkVerifierTest {
         properties = new ArrayList<>(Collections.singletonList("[] (output == \"a00\")"));
 
         // Construct the mapper
-        ArrayList<Map<Character, Double>> inputMapper;
-        ArrayList<Map<Character, Double>> outputMapper;
-        ArrayList<Character> largest;
+        List<Map<Character, Double>> inputMapper;
+        List<Map<Character, Double>> outputMapper;
+        List<Character> largest;
 
         {
             Map<Character, Double> mapper1 = new HashMap<>();
@@ -74,9 +74,9 @@ class SimulinkVerifierTest {
     void runZHA19_AFC1() {
         // Try AFC1 in ZHA19 (https://arxiv.org/pdf/1905.07549.pdf)
         // Construct the mapper
-        ArrayList<Map<Character, Double>> inputMapper;
-        ArrayList<Map<Character, Double>> outputMapper;
-        ArrayList<Character> largest;
+        List<Map<Character, Double>> inputMapper;
+        List<Map<Character, Double>> outputMapper;
+        List<Character> largest;
 
         {
     /*
@@ -109,8 +109,8 @@ class SimulinkVerifierTest {
             engineSpeedMapper.put('k', 1100.0);
             inputMapper = new ArrayList<>(Arrays.asList(pedalAngleMapper, engineSpeedMapper));
         }
-        Function<ArrayList<Double>, Double> mu = a -> abs(a.get(0) - a.get(1)) / a.get(1);
-        ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
+        Function<List<Double>, Double> mu = a -> abs(a.get(0) - a.get(1)) / a.get(1);
+        List<Function<List<Double>, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
         {
             Map<Character, Double> afMapper = new HashMap<>();
             afMapper.put('a', 10.0);
@@ -156,9 +156,9 @@ class SimulinkVerifierTest {
     void runHAF14_AT4() {
         // Try AT4 in HAF14 (https://easychair.org/publications/open/4bfq)
         // Construct the mapper
-        ArrayList<Map<Character, Double>> inputMapper;
-        ArrayList<Map<Character, Double>> outputMapper;
-        ArrayList<Character> largest;
+        List<Map<Character, Double>> inputMapper;
+        List<Map<Character, Double>> outputMapper;
+        List<Character> largest;
 
         {
     /*
@@ -191,8 +191,8 @@ class SimulinkVerifierTest {
             engineSpeedMapper.put('k', 1100.0);
             inputMapper = new ArrayList<>(Arrays.asList(pedalAngleMapper, engineSpeedMapper));
         }
-        Function<ArrayList<Double>, Double> mu = a -> abs(a.get(0) - a.get(1)) / a.get(1);
-        ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
+        Function<List<Double>, Double> mu = a -> abs(a.get(0) - a.get(1)) / a.get(1);
+        List<Function<List<Double>, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
         {
             Map<Character, Double> afMapper = new HashMap<>();
             afMapper.put('a', 10.0);
@@ -237,7 +237,7 @@ class SimulinkVerifierTest {
     @Test
     void getCexProperty() {
         assertFalse(verifier.run());
-        String expected = "[] (output == \"a00\")";
+        List<String> expected = Collections.singletonList("[] (output == \"a00\")");
         assertEquals(expected, verifier.getCexProperty());
     }
 

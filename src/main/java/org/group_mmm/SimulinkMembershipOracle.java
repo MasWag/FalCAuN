@@ -8,8 +8,8 @@ import net.automatalib.words.WordBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -45,11 +45,11 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
 
             if (!cache.lookup(abstractInput, abstractOutputBuilder)) {
                 abstractOutputBuilder.clear();
-                final Word<ArrayList<Double>> concreteInput = Word.fromList(
+                final Word<List<Double>> concreteInput = Word.fromList(
                         abstractInput.stream().map(mapper::mapInput).collect(Collectors.toList()));
                 assert concreteInput.size() == q.getInput().size();
 
-                final Word<ArrayList<Double>> concreteOutput;
+                final Word<List<Double>> concreteOutput;
                 try {
                     concreteOutput = simulink.execute(concreteInput);
                 } catch (Exception e) {

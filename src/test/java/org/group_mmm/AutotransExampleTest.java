@@ -16,7 +16,7 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AutotransExampleTest {
-    static void executeRun(AutotransExample exampleAT, Function<Word<ArrayList<Double>>, Double> costFunc, boolean useHillClimbing, boolean useGA, boolean resetWord, String dotName) throws Exception {
+    static void executeRun(AutotransExample exampleAT, Function<Word<List<Double>>, Double> costFunc, boolean useHillClimbing, boolean useGA, boolean resetWord, String dotName) throws Exception {
         exampleAT.constructVerifier();
 
         if (useHillClimbing) {
@@ -53,9 +53,8 @@ class AutotransExampleTest {
     @Test
     void memOracleBB() throws Exception {
         AutotransExample exampleAT = new AutotransExample(10.0);
-        exampleAT.setProperties(new ArrayList<>(
-                Collections.singletonList(
-                        exampleAT.constructAT1(4500.0))));
+        exampleAT.setProperties(Collections.singletonList(
+                exampleAT.constructAT1(4500.0)));
         exampleAT.constructVerifier();
 
         // Get BlackBoxVerifier
@@ -116,7 +115,7 @@ class AutotransExampleTest {
     @Test
     void runAT2_1() throws Exception {
         AutotransExample exampleAT2 = new AutotransExample(10.0);
-        ArrayList<Map<Character, Double>> outputMapper = exampleAT2.getOutputMapper();
+        List<Map<Character, Double>> outputMapper = exampleAT2.getOutputMapper();
 
         // Construct the input mapper
         {
@@ -411,10 +410,9 @@ class AutotransExampleTest {
 
             Map<Character, Double> gearMapper = new HashMap<>();
 
-            exampleAT.setOutputMapper(new ArrayList<>(
-                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            exampleAT.setOutputMapper(Arrays.asList(velocityMapper, rotationMapper, gearMapper));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
             exampleAT.setLargest(largest);
 
             String expected = "[]((output==\"aXX\")||(output==\"cXX\")||(output==\"bXX\"))";
@@ -446,18 +444,17 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
             exampleAT.setLargest(largest);
 
-            exampleAT.setProperties(new ArrayList<>(
-                    Collections.singletonList(
-                            exampleAT.constructS1(120))));
+            exampleAT.setProperties(Collections.singletonList(
+                    exampleAT.constructS1(120)));
 
             boolean useHillClimbing = true;
             boolean useGA = false;
             boolean resetWord = false;
 
-            Function<Word<ArrayList<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
+            Function<Word<List<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
 
             executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS1Learned.dot");
         }
@@ -481,7 +478,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', '4'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', '4'));
             exampleAT.setLargest(largest);
 
             exampleAT.setProperties(new ArrayList<>(
@@ -492,7 +489,7 @@ class AutotransExampleTest {
             boolean useGA = false;
             boolean resetWord = false;
 
-            Function<Word<ArrayList<Double>>, Double> costFunc =
+            Function<Word<List<Double>>, Double> costFunc =
                     new STLGlobal(new STLImply(new STLAtomic(2, STLAtomic.Operation.eq, 3),
                             new STLAtomic(0, STLAtomic.Operation.gt, 20)));
 
@@ -519,7 +516,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', '4'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', '4'));
             exampleAT.setLargest(largest);
 
             exampleAT.setProperties(new ArrayList<>(Arrays.asList(
@@ -531,9 +528,9 @@ class AutotransExampleTest {
             boolean useGA = false;
             boolean resetWord = false;
 
-            Function<Word<ArrayList<Double>>, Double> costFuncS1 = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
+            Function<Word<List<Double>>, Double> costFuncS1 = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
 
-            Function<Word<ArrayList<Double>>, Double> costFuncS2 =
+            Function<Word<List<Double>>, Double> costFuncS2 =
                     new STLGlobal(new STLImply(new STLAtomic(2, STLAtomic.Operation.eq, 3),
                             new STLAtomic(0, STLAtomic.Operation.gt, 20)));
 
@@ -580,10 +577,9 @@ class AutotransExampleTest {
             Map<Character, Double> gearMapper = new HashMap<>();
 
 
-            exampleAT.setOutputMapper(new ArrayList<>(
-                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+            exampleAT.setOutputMapper(Arrays.asList(velocityMapper, rotationMapper, gearMapper));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', 'X'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', 'X'));
             exampleAT.setLargest(largest);
 
             exampleAT.setProperties(new ArrayList<>(
@@ -618,7 +614,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('X', 'f', 'X'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('X', 'f', 'X'));
             exampleAT.setLargest(largest);
 
             exampleAT.setProperties(new ArrayList<>(
@@ -661,7 +657,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('f', 'f', 'X'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('f', 'f', 'X'));
             exampleAT.setLargest(largest);
 
             exampleAT.setProperties(new ArrayList<>(
@@ -752,7 +748,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', 'X'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', 'X'));
             exampleAT.setLargest(largest);
 
             STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 90.0);
@@ -823,7 +819,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
             exampleAT.setLargest(largest);
 
             STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 90.0);
@@ -870,7 +866,7 @@ class AutotransExampleTest {
             exampleAT.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
 
-            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', 'X'));
+            List<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', 'X'));
             exampleAT.setLargest(largest);
 
             STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 100.0);
@@ -888,8 +884,7 @@ class AutotransExampleTest {
                     new STLOr(new STLSub(new STLGlobal(highVelocity), 1, 13),
                             new STLSub(new STLGlobal(lowVelocity), 14, 14));
 
-            exampleAT.setProperties(new ArrayList<>(
-                    Collections.singletonList(costFunc.toAbstractString())));
+            exampleAT.setProperties(Collections.singletonList(costFunc.toAbstractString()));
 
             boolean useHillClimbing = true;
             boolean useGA = false;

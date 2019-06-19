@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * The Simulink SUL
  */
-class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
+class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkSUL.class);
     private final Double signalStep;
     // The simulation step of Simulink.
@@ -27,7 +27,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
     private MatlabEngine matlab;
     private List<String> paramNames;
     private Double endTime = 0.0;
-    private ArrayList<ArrayList<Double>> previousInput;
+    private List<List<Double>> previousInput;
     private boolean isInitial = true;
 
     SimulinkSUL(String initScript, List<String> paramNames, Double signalStep) throws InterruptedException, ExecutionException {
@@ -48,7 +48,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         matlab.eval(initScript);
     }
 
-    static private void appendSignalStep(ArrayList<ArrayList<Double>> previousInput, ArrayList<Double> signalStep) {
+    static private void appendSignalStep(List<List<Double>> previousInput, List<Double> signalStep) {
         for (int i = 0; i < signalStep.size(); i++) {
             if (previousInput.size() <= i) {
                 previousInput.add(new ArrayList<>());
@@ -82,12 +82,12 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
 
     @Nullable
     @Override
-    public ArrayList<Double> step(@Nullable ArrayList<Double> inputSignal) throws SULException {
+    public List<Double> step(@Nullable List<Double> inputSignal) throws SULException {
         assert (isInitial && endTime == 0) || (endTime > 0.0);
         if (inputSignal == null) {
             return null;
         }
-        ArrayList<Double> result;
+        List<Double> result;
         LOGGER.trace("Input: " + inputSignal);
 
         appendSignalStep(previousInput, inputSignal);
@@ -188,7 +188,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
      */
-    Word<ArrayList<Double>> execute(Word<ArrayList<Double>> inputSignal) throws InterruptedException, ExecutionException {
+    Word<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
         assert (isInitial && endTime == 0) || (endTime > 0.0);
         if (inputSignal == null) {
             return null;
@@ -197,7 +197,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         pre();
         final int numberOfSamples = inputSignal.length();
         final int signalDimension = paramNames.size();
-        for (ArrayList<Double> signalStep : inputSignal) {
+        for (List<Double> signalStep : inputSignal) {
             appendSignalStep(previousInput, signalStep);
         }
         StringBuilder builder = new StringBuilder();
@@ -218,10 +218,10 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
         double[][] y = matlab.getVariable("y");
 
         //convert double[][] to Word<ArrayList<Double>
-        WordBuilder<ArrayList<Double>> result = new WordBuilder<>();
+        WordBuilder<List<Double>> result = new WordBuilder<>();
 
         for (double[] outputStep : ArrayUtils.subarray(y, 1, y.length)) {
-            result.append(new ArrayList<>(Arrays.asList(ArrayUtils.toObject(outputStep))));
+            result.append(Arrays.asList(ArrayUtils.toObject(outputStep)));
         }
 
         post();
@@ -232,7 +232,7 @@ class SimulinkSUL implements SUL<ArrayList<Double>, ArrayList<Double>> {
 
     @Nonnull
     @Override
-    public SUL<ArrayList<Double>, ArrayList<Double>> fork() throws UnsupportedOperationException {
+    public SUL<List<Double>, List<Double>> fork() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 

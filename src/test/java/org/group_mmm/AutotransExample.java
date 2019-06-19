@@ -13,20 +13,20 @@ import java.util.function.Function;
 public class AutotransExample {
     private final String PWD = System.getenv("PWD");
     private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAT;";
-    private final ArrayList<String> paramNames = new ArrayList<>(Arrays.asList("throttle", "brake"));
+    private final List<String> paramNames = Arrays.asList("throttle", "brake");
     private final int velocityIndex = 0;
     private final int rotationIndex = 1;
     private final int gearIndex = 2;
-    private ArrayList<ArrayList<Character>> abstractOutputs = new ArrayList<>();
-    private ArrayList<ArrayList<Double>> concreteOutputs = new ArrayList<>();
+    private List<List<Character>> abstractOutputs = new ArrayList<>();
+    private List<List<Double>> concreteOutputs = new ArrayList<>();
     private double signalStep;
-    private ArrayList<Map<Character, Double>> inputMapper;
-    private ArrayList<Map<Character, Double>> outputMapper;
-    private ArrayList<Character> largest;
+    private List<Map<Character, Double>> inputMapper;
+    private List<Map<Character, Double>> outputMapper;
+    private List<Character> largest;
     private SimulinkVerifier verifier;
-    private ArrayList<String> properties;
+    private List<String> properties;
     private SimulinkSULMapper mapper;
-    private ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>();
+    private List<Function<List<Double>, Double>> sigMap = new ArrayList<>();
 
     AutotransExample(double signalStep) {
         this.signalStep = signalStep;
@@ -101,30 +101,30 @@ public class AutotransExample {
         }
     }
 
-    public ArrayList<Map<Character, Double>> getInputMapper() {
+    public List<Map<Character, Double>> getInputMapper() {
         return inputMapper;
     }
 
-    void setInputMapper(ArrayList<Map<Character, Double>> inputMapper) {
+    void setInputMapper(List<Map<Character, Double>> inputMapper) {
         this.inputMapper = inputMapper;
         mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
     }
 
-    ArrayList<Map<Character, Double>> getOutputMapper() {
+    List<Map<Character, Double>> getOutputMapper() {
         return outputMapper;
     }
 
-    void setOutputMapper(ArrayList<Map<Character, Double>> outputMapper) {
+    void setOutputMapper(List<Map<Character, Double>> outputMapper) {
         this.outputMapper = outputMapper;
         mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
         setOutputMaps();
     }
 
-    public ArrayList<Character> getLargest() {
+    public List<Character> getLargest() {
         return largest;
     }
 
-    void setLargest(ArrayList<Character> largest) {
+    void setLargest(List<Character> largest) {
         this.largest = largest;
         mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
         setOutputMaps();
@@ -134,7 +134,7 @@ public class AutotransExample {
         return initScript;
     }
 
-    public ArrayList<String> getParamNames() {
+    public List<String> getParamNames() {
         return paramNames;
     }
 
@@ -146,11 +146,11 @@ public class AutotransExample {
         return verifier;
     }
 
-    public ArrayList<String> getProperties() {
+    public List<String> getProperties() {
         return properties;
     }
 
-    void setProperties(ArrayList<String> properties) {
+    void setProperties(List<String> properties) {
         this.properties = properties;
     }
 
@@ -158,16 +158,16 @@ public class AutotransExample {
         return mapper;
     }
 
-    public ArrayList<Function<ArrayList<Double>, Double>> getSigMap() {
+    public List<Function<List<Double>, Double>> getSigMap() {
         return sigMap;
     }
 
-    public void setSigMap(ArrayList<Function<ArrayList<Double>, Double>> sigMap) {
+    public void setSigMap(List<Function<List<Double>, Double>> sigMap) {
         this.sigMap = sigMap;
         mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, this.sigMap);
     }
 
-    private ArrayList<Character> constructSmallerAPs(int index, double threshold) {
+    private List<Character> constructSmallerAPs(int index, double threshold) {
         int bsResult = Collections.binarySearch(concreteOutputs.get(index), threshold);
         int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
         ArrayList<Character> resultAPs = new ArrayList<>(abstractOutputs.get(index).subList(0, thresholdIndex + 1));
@@ -178,7 +178,7 @@ public class AutotransExample {
         return resultAPs;
     }
 
-    private ArrayList<Character> constructLargerAPs(int index, double threshold) {
+    private List<Character> constructLargerAPs(int index, double threshold) {
         int bsResult = Collections.binarySearch(concreteOutputs.get(index), threshold);
         int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
         ArrayList<Character> resultAPs = new ArrayList<>(abstractOutputs.get(index).subList(thresholdIndex + 1, abstractOutputs.get(index).size()));
@@ -205,15 +205,15 @@ public class AutotransExample {
         return resultAPs;
     }
 
-    private ArrayList<Character> constructAllAPs(int index) {
+    private List<Character> constructAllAPs(int index) {
         ArrayList<Character> resultAPs = new ArrayList<>(abstractOutputs.get(index));
         resultAPs.add(largest.get(index));
         return resultAPs;
     }
 
-    private ArrayList<String> constructProductAPs(ArrayList<Character> velocityAPs,
-                                                  ArrayList<Character> rotationAPs,
-                                                  ArrayList<Character> gearAPs) {
+    private List<String> constructProductAPs(List<Character> velocityAPs,
+                                             List<Character> rotationAPs,
+                                             List<Character> gearAPs) {
         ArrayList<String> APs = new ArrayList<>();
         for (Character velocityAP : velocityAPs) {
             for (Character rotationAP : rotationAPs) {
@@ -235,11 +235,11 @@ public class AutotransExample {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
-        ArrayList<Character> velocityAPs = constructAllAPs(velocityIndex);
-        ArrayList<Character> rotationAPs = constructSmallerAPs(rotationIndex, rotationThreshold);
-        ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
+        List<Character> velocityAPs = constructAllAPs(velocityIndex);
+        List<Character> rotationAPs = constructSmallerAPs(rotationIndex, rotationThreshold);
+        List<Character> gearAPs = constructAllAPs(gearIndex);
 
-        ArrayList<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
+        List<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
 
         builder.append(String.join(" || ", APs));
         builder.append(")");
@@ -257,11 +257,11 @@ public class AutotransExample {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
-        ArrayList<Character> velocityAPs = constructSmallerAPs(velocityIndex, velocityThreshold);
-        ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
-        ArrayList<Character> rotationAPs = constructSmallerAPs(rotationIndex, rotationThreshold);
+        List<Character> velocityAPs = constructSmallerAPs(velocityIndex, velocityThreshold);
+        List<Character> gearAPs = constructAllAPs(gearIndex);
+        List<Character> rotationAPs = constructSmallerAPs(rotationIndex, rotationThreshold);
 
-        ArrayList<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
+        List<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
 
         builder.append(String.join(" || ", APs));
         builder.append(")");
@@ -277,10 +277,10 @@ public class AutotransExample {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
-        ArrayList<Character> velocityAPs = constructAllAPs(velocityIndex);
-        ArrayList<Character> gear1APs = constructEqAPs(gearIndex, 1.0);
-        ArrayList<Character> gear2APs = constructEqAPs(gearIndex, 2.0);
-        ArrayList<Character> rotationAPs = constructAllAPs(rotationIndex);
+        List<Character> velocityAPs = constructAllAPs(velocityIndex);
+        List<Character> gear1APs = constructEqAPs(gearIndex, 1.0);
+        List<Character> gear2APs = constructEqAPs(gearIndex, 2.0);
+        List<Character> rotationAPs = constructAllAPs(rotationIndex);
 
         String gear1APString = String.join(" || ",
                 constructProductAPs(velocityAPs, rotationAPs, gear1APs));
@@ -316,11 +316,11 @@ public class AutotransExample {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
-        ArrayList<Character> velocityAPs = constructSmallerAPs(velocityIndex, velocityThreshold);
-        ArrayList<Character> rotationAPs = constructAllAPs(rotationIndex);
-        ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
+        List<Character> velocityAPs = constructSmallerAPs(velocityIndex, velocityThreshold);
+        List<Character> rotationAPs = constructAllAPs(rotationIndex);
+        List<Character> gearAPs = constructAllAPs(gearIndex);
 
-        ArrayList<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
+        List<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
 
         builder.append(String.join(" || ", APs));
         builder.append(")");
@@ -341,14 +341,14 @@ public class AutotransExample {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
-        ArrayList<Character> velocityAllAPs = constructAllAPs(velocityIndex);
-        ArrayList<Character> velocityLargerAPs = constructLargerAPs(velocityIndex, velocityThreshold);
-        ArrayList<Character> rotationAPs = constructAllAPs(rotationIndex);
-        ArrayList<Character> gearAllAPs = constructAllAPs(gearIndex);
-        ArrayList<Character> gear3APs = constructEqAPs(gearIndex, 3.0);
+        List<Character> velocityAllAPs = constructAllAPs(velocityIndex);
+        List<Character> velocityLargerAPs = constructLargerAPs(velocityIndex, velocityThreshold);
+        List<Character> rotationAPs = constructAllAPs(rotationIndex);
+        List<Character> gearAllAPs = constructAllAPs(gearIndex);
+        List<Character> gear3APs = constructEqAPs(gearIndex, 3.0);
 
-        ArrayList<String> allAPStrings = constructProductAPs(velocityAllAPs, rotationAPs, gearAllAPs);
-        ArrayList<String> gear3APStrings = constructProductAPs(velocityAllAPs, rotationAPs, gear3APs);
+        List<String> allAPStrings = constructProductAPs(velocityAllAPs, rotationAPs, gearAllAPs);
+        List<String> gear3APStrings = constructProductAPs(velocityAllAPs, rotationAPs, gear3APs);
         Collection<String> gearN3APStrings = CollectionUtils.subtract(allAPStrings, gear3APStrings);
 
         Set<String> APs = new HashSet<>(constructProductAPs(velocityLargerAPs, rotationAPs, gearAllAPs));
@@ -374,16 +374,16 @@ public class AutotransExample {
         builder.append("(");
 
         final int numOfSamples = (int) Math.ceil(30.0 / signalStep);
-        ArrayList<Character> velocity100APs = constructSmallerAPs(velocityIndex, ltThreshold);
-        ArrayList<Character> velocity65APs = constructLargerAPs(velocityIndex, gtThreshold);
+        List<Character> velocity100APs = constructSmallerAPs(velocityIndex, ltThreshold);
+        List<Character> velocity65APs = constructLargerAPs(velocityIndex, gtThreshold);
 
-        ArrayList<Character> rotationAPs = constructAllAPs(rotationIndex);
-        ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
+        List<Character> rotationAPs = constructAllAPs(rotationIndex);
+        List<Character> gearAPs = constructAllAPs(gearIndex);
         String velocity100String = String.join(" || ",
                 constructProductAPs(velocity100APs, rotationAPs, gearAPs));
         String velocity65String = String.join(" || ",
                 constructProductAPs(velocity65APs, rotationAPs, gearAPs));
-        ArrayList<String> builder100Array = new ArrayList<>();
+        List<String> builder100Array = new ArrayList<>();
         for (int i = 0; i < numOfSamples - 1; i++) {
             StringBuilder builder100 = new StringBuilder();
             for (int j = 0; j < i; j++) {
@@ -431,18 +431,18 @@ public class AutotransExample {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
-        ArrayList<Character> velocityAPs = constructAllAPs(velocityIndex);
+        List<Character> velocityAPs = constructAllAPs(velocityIndex);
 
-        ArrayList<Character> rotation4770APs = constructSmallerAPs(rotationIndex, ltThreshold);
-        ArrayList<Character> rotation600APs = constructLargerAPs(rotationIndex, gtThreshold);
+        List<Character> rotation4770APs = constructSmallerAPs(rotationIndex, ltThreshold);
+        List<Character> rotation600APs = constructLargerAPs(rotationIndex, gtThreshold);
 
-        ArrayList<Character> gearAPs = constructAllAPs(gearIndex);
+        List<Character> gearAPs = constructAllAPs(gearIndex);
 
         String rotation4770Strings = String.join(" || ",
                 constructProductAPs(velocityAPs, rotation4770APs, gearAPs));
         String rotation600Strings = String.join(" || ",
                 constructProductAPs(velocityAPs, rotation600APs, gearAPs));
-        ArrayList<String> builder100Array = new ArrayList<>();
+        List<String> builder100Array = new ArrayList<>();
 
         builder.append("(");
         builder.append(rotation4770Strings);

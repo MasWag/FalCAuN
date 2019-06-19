@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class STLSub extends STLCost {
@@ -28,7 +29,7 @@ public class STLSub extends STLCost {
 
     @Override
     @NotNull
-    public Double apply(Word<ArrayList<Double>> signal) {
+    public Double apply(Word<List<Double>> signal) {
         if (from >= signal.size()) {
             switch (subFml.getClass().toString()) {
                 case "class org.group_mmm.STLEventually":

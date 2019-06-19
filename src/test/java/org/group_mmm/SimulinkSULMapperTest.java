@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SimulinkSULMapperTest {
 
-    private ArrayList<Map<Character, Double>> inputMapper;
-    private ArrayList<Map<Character, Double>> outputMapper;
-    private ArrayList<Character> largest;
+    private List<Map<Character, Double>> inputMapper;
+    private List<Map<Character, Double>> outputMapper;
+    private List<Character> largest;
     private SimulinkSULMapper mapper;
-    private ArrayList<Function<ArrayList<Double>, Double>> sigMap;
+    private List<Function<List<Double>, Double>> sigMap;
 
 
     @Test
@@ -22,8 +22,8 @@ class SimulinkSULMapperTest {
         for (Map.Entry<Character, Double> c1 : inputMapper.get(0).entrySet()) {
             for (Map.Entry<Character, Double> c2 : inputMapper.get(1).entrySet()) {
                 String abstractInput = String.valueOf(c1.getKey()) + c2.getKey();
-                ArrayList<Double> expected = new ArrayList<>(Arrays.asList(c1.getValue(), c2.getValue()));
-                ArrayList<Double> result = mapper.mapInput(abstractInput);
+                List<Double> expected = new ArrayList<>(Arrays.asList(c1.getValue(), c2.getValue()));
+                List<Double> result = mapper.mapInput(abstractInput);
                 assertEquals(expected, result);
             }
         }
@@ -31,7 +31,7 @@ class SimulinkSULMapperTest {
 
     @Test
     void mapOutput() {
-        Map<ArrayList<Double>, String> expected = new HashMap<>();
+        Map<List<Double>, String> expected = new HashMap<>();
         expected.put(new ArrayList<>(Arrays.asList(-100.0, -200.0)), "aap");
         expected.put(new ArrayList<>(Arrays.asList(-10.0, -20.0)), "abp");
         expected.put(new ArrayList<>(Arrays.asList(-1.0, 20.0)), "acn");
@@ -47,7 +47,7 @@ class SimulinkSULMapperTest {
         expected.put(new ArrayList<>(Arrays.asList(212.0, 100.0)), "0cp");
         expected.put(new ArrayList<>(Arrays.asList(113.0, 200.0)), "00n");
 
-        for (Map.Entry<ArrayList<Double>, String> test : expected.entrySet()) {
+        for (Map.Entry<List<Double>, String> test : expected.entrySet()) {
             String result = mapper.mapOutput(test.getKey());
             assertEquals(test.getValue(), result);
         }
@@ -69,7 +69,7 @@ class SimulinkSULMapperTest {
             mapper2.put('c', 100.0);
             inputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
         }
-        Function<ArrayList<Double>, Double> diff = a -> a.get(0) - a.get(1);
+        Function<List<Double>, Double> diff = a -> a.get(0) - a.get(1);
         sigMap = new ArrayList<>(Collections.singletonList(diff));
         {
             Map<Character, Double> mapper1 = new HashMap<>();

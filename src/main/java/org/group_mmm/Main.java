@@ -15,7 +15,7 @@ public class Main {
     private static int generationSize = 5;
     private static int childrenSize = 15 * 4;
     private static boolean resetWord = false;
-    private static ArrayList<Function<ArrayList<Double>, Double>> sigMap = new ArrayList<>(Collections.emptyList());
+    private static List<Function<List<Double>, Double>> sigMap = Collections.emptyList();
 
     public static void main(String[] args) throws Exception {
         ArgParser argParser = new ArgParser(args);
@@ -24,11 +24,11 @@ public class Main {
         }
 
         // Parse Simulink mapper
-        ArrayList<Map<Character, Double>> inputMapper = InputMapperReader.parse(argParser.getInputMapperFile());
+        List<Map<Character, Double>> inputMapper = InputMapperReader.parse(argParser.getInputMapperFile());
         OutputMapperReader outputMapperReader = new OutputMapperReader(argParser.getOutputMapperFile());
         outputMapperReader.parse();
-        ArrayList<Character> largest = outputMapperReader.getLargest();
-        ArrayList<Map<Character, Double>> outputMapper = outputMapperReader.getOutputMapper();
+        List<Character> largest = outputMapperReader.getLargest();
+        List<Map<Character, Double>> outputMapper = outputMapperReader.getOutputMapper();
         if (argParser.isVerbose()) {
             System.out.println("InputMapper: " + inputMapper);
             System.out.println("OutputMapper: " + outputMapper);

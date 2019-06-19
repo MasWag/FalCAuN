@@ -4,12 +4,12 @@ import net.automatalib.words.Word;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class STLSubTest {
-    private Word<ArrayList<Double>> signal;
+    private Word<List<Double>> signal;
 
     @BeforeEach
     void setUp() {

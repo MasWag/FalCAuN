@@ -4,10 +4,7 @@ import de.learnlib.mapper.api.SULMapper;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.impl.SimpleAlphabet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -15,17 +12,17 @@ import java.util.function.Function;
  *
  * TODO For now, the abstract alphabet is String for simplicity but later, it can be integers to handle more data.
  */
-public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Double>, ArrayList<Double>> {
-    private Map<String, ArrayList<Double>> inputMapper;
-    private ArrayList<Character> largestOutputs;
-    private ArrayList<Function<ArrayList<Double>, Double>> sigMap;
+public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, List<Double>> {
+    private Map<String, List<Double>> inputMapper;
+    private List<Character> largestOutputs;
+    private List<Function<List<Double>, Double>> sigMap;
 
-    private ArrayList<ArrayList<Character>> abstractOutputs;
-    private ArrayList<ArrayList<Double>> concreteOutputs;
+    private List<List<Character>> abstractOutputs;
+    private List<List<Double>> concreteOutputs;
 
-    SimulinkSULMapper(ArrayList<Map<Character, Double>> inputMapper,
-                      ArrayList<Character> largestOutputs, ArrayList<Map<Character, Double>> outputMapper, ArrayList<Function<ArrayList<Double>, Double>> sigMap) {
-        Map<String, ArrayList<Double>> tmpMapper = new HashMap<>();
+    SimulinkSULMapper(List<Map<Character, Double>> inputMapper,
+                      List<Character> largestOutputs, List<Map<Character, Double>> outputMapper, List<Function<List<Double>, Double>> sigMap) {
+        Map<String, List<Double>> tmpMapper = new HashMap<>();
 
         for (Map<Character, Double> map : inputMapper) {
             if (tmpMapper.isEmpty()) {
@@ -35,8 +32,8 @@ public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Do
                 }
             } else {
                 // When this is not the first iteration, we append the new elements to the current inputMapper.
-                Map<String, ArrayList<Double>> nextMapper = new HashMap<>();
-                for (Map.Entry<String, ArrayList<Double>> tElem : tmpMapper.entrySet()) {
+                Map<String, List<Double>> nextMapper = new HashMap<>();
+                for (Map.Entry<String, List<Double>> tElem : tmpMapper.entrySet()) {
                     for (Map.Entry<Character, Double> cElem : map.entrySet()) {
                         ArrayList<Double> tmpValue = new ArrayList<>(tElem.getValue());
                         tmpValue.add(cElem.getValue());
@@ -64,12 +61,12 @@ public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Do
     }
 
     @Override
-    public ArrayList<Double> mapInput(String s) {
+    public List<Double> mapInput(String s) {
         return inputMapper.get(s);
     }
 
     @Override
-    public String mapOutput(ArrayList<Double> concreteOutput) {
+    public String mapOutput(List<Double> concreteOutput) {
         // System.out.println("AF: " + concreteOutput.get(0));
         StringBuilder result = new StringBuilder(concreteOutput.size());
 
@@ -95,7 +92,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, ArrayList<Do
         return new SimpleAlphabet<>(this.inputMapper.keySet());
     }
 
-    Alphabet<ArrayList<Double>> constructConcreteAlphabet() {
+    Alphabet<List<Double>> constructConcreteAlphabet() {
         return new SimpleAlphabet<>(this.inputMapper.values());
     }
 }

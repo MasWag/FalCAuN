@@ -7,7 +7,6 @@ import net.automatalib.words.WordBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -15,9 +14,9 @@ import java.util.stream.Collectors;
 class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracleCost.class);
     private IncrementalMealyTreeBuilder<String, Double> costCache;
-    private Function<Word<ArrayList<Double>>, Double> costFunc;
+    private Function<Word<List<Double>>, Double> costFunc;
 
-    SimulinkMembershipOracleCost(SimulinkSUL simulink, SimulinkSULMapper mapper, Function<Word<ArrayList<Double>>, Double> costFunc) {
+    SimulinkMembershipOracleCost(SimulinkSUL simulink, SimulinkSULMapper mapper, Function<Word<List<Double>>, Double> costFunc) {
         super(simulink, mapper);
         this.costFunc = costFunc;
         this.costCache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
@@ -33,10 +32,10 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
             abstractOutputBuilder.clear();
             costBuilder.clear();
 
-            final Word<ArrayList<Double>> concreteInput = Word.fromList(
+            final Word<List<Double>> concreteInput = Word.fromList(
                     abstractInput.stream().map(mapper::mapInput).collect(Collectors.toList()));
 
-            final Word<ArrayList<Double>> concreteOutput;
+            final Word<List<Double>> concreteOutput;
             try {
                 concreteOutput = simulink.execute(concreteInput);
             } catch (Exception e) {
@@ -61,5 +60,9 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
         final Word<String> output = abstractOutputBuilder.toWord().suffix(q.getSuffix().length());
         q.answer(output);
         return costBuilder.toWord().lastSymbol();
+    }
+
+    void update(Word<String> abstractInput, Word<List<Double>> concreteOutput, Word<String> abstractOutput) {
+
     }
 }

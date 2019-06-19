@@ -32,11 +32,11 @@ class OutputMapperReader extends AbstractMapperReader {
         return parsedData;
     }
 
-    ArrayList<Character> getLargest() {
+    List<Character> getLargest() {
         return largest;
     }
 
-    ArrayList<Map<Character, Double>> getOutputMapper() {
+    List<Map<Character, Double>> getOutputMapper() {
         return outputMapper;
     }
 }

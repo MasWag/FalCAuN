@@ -43,11 +43,11 @@ class STLCostTest {
 
     @Nested
     class Bug201906171356 {
-        Word<ArrayList<Double>> input;
+        Word<List<Double>> input;
 
         @BeforeEach
         void setUp() {
-            WordBuilder<ArrayList<Double>> builder = new WordBuilder<>();
+            WordBuilder<List<Double>> builder = new WordBuilder<>();
             builder.append(new ArrayList<>(Arrays.asList(31.659005778016194, 3735.3257077648086, 1.0)));
             builder.append(new ArrayList<>(Arrays.asList(49.710367875876926, 3605.836356859281, 2.0)));
             builder.append(new ArrayList<>(Arrays.asList(49.26918040521577, 603.7208189546687, 4.0)));

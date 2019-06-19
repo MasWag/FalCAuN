@@ -2,8 +2,8 @@ package org.group_mmm;
 
 import net.automatalib.words.Word;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,7 +17,7 @@ public class STLImply extends STLCost {
     }
 
     @Override
-    public Double apply(Word<ArrayList<Double>> signal) {
+    public Double apply(Word<List<Double>> signal) {
         return Math.max(-subFml1.apply(signal), subFml2.apply(signal));
     }
 

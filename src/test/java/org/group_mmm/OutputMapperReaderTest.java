@@ -30,14 +30,14 @@ class OutputMapperReaderTest {
 
     @Test
     void getOutputMapper() {
-        ArrayList<Map<Character, Double>> result = reader.getOutputMapper();
+        List<Map<Character, Double>> result = reader.getOutputMapper();
         Map<Character, Double> velocityMap = new HashMap<>();
         velocityMap.put('a', 65.0);
         velocityMap.put('b', 100.0);
         Map<Character, Double> rotationMap = new HashMap<>();
         Map<Character, Double> gearMap = new HashMap<>();
 
-        ArrayList<Map<Character, Double>> expected = new ArrayList<>(Arrays.asList(
+        List<Map<Character, Double>> expected = new ArrayList<>(Arrays.asList(
                 velocityMap, rotationMap, gearMap));
 
         assertEquals(expected, result);
@@ -45,8 +45,8 @@ class OutputMapperReaderTest {
 
     @Test
     void getLargest() {
-        ArrayList<Character> result = reader.getLargest();
-        ArrayList<Character> expected = new ArrayList<>(Arrays.asList('c', 'a', 'a'));
+        List<Character> result = reader.getLargest();
+        List<Character> expected = new ArrayList<>(Arrays.asList('c', 'a', 'a'));
         assertEquals(expected, result);
     }
 }

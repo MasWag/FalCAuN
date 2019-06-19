@@ -2,8 +2,8 @@ package org.group_mmm;
 
 import net.automatalib.words.Word;
 
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 
 public class STLEventually extends STLTemporalOp {
@@ -12,7 +12,7 @@ public class STLEventually extends STLTemporalOp {
     }
 
     @Override
-    public Double apply(Word<ArrayList<Double>> signal) {
+    public Double apply(Word<List<Double>> signal) {
         return signal.suffixes(true).stream().map(subFml).max(Comparator.comparingDouble(Double::valueOf)).orElse(Double.NEGATIVE_INFINITY);
     }
 
