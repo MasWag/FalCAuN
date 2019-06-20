@@ -2,6 +2,7 @@ CyVeriA
 =======
 
 [![CircleCI](https://circleci.com/gh/MasWag/CyVeriA.svg?style=svg&circle-token=529c89869f5a7b6e9f957ee656ffc55349d050ca)](https://circleci.com/gh/MasWag/CyVeriA)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
 
 This is the source code repository for CyVeriA ---  Cyber-Physical System Verifier via Automata Learning.
 
