@@ -36,7 +36,8 @@ class STLParserTest {
                     "[] (signal(1) == -20)",
                     "<> (signal(1) == -20)",
                     "alw_[0,2] (signal(1) == -20)",
-                    "ev_[10,20] (signal(1) == -20)"
+                    "ev_[10,20] (signal(1) == -20)",
+                    "[] ((signal(2) != 4 && X (signal(2) == 4)) -> []_[0,1] (signal(2) == 4))"
             );
             expectedList = Arrays.asList(
                     new STLAtomic(0, lt, 10.0),
@@ -52,7 +53,12 @@ class STLParserTest {
                     new STLSub(
                             new STLGlobal(new STLAtomic(1, eq, -20)), 0, 2),
                     new STLSub(
-                            new STLEventually(new STLAtomic(1, eq, -20)), 10, 20)
+                            new STLEventually(new STLAtomic(1, eq, -20)), 10, 20),
+                    new STLGlobal(new STLImply(
+                            new STLAnd(
+                                    new STLAtomic(2, ne, 4.0),
+                                    new STLNext(new STLAtomic(2, eq, 4.0), false)),
+                            new STLSub(new STLGlobal(new STLAtomic(2, eq, 4.0)), 0, 1)))
             );
 
             assert inputs.size() == expectedList.size();

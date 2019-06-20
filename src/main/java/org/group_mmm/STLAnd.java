@@ -5,35 +5,35 @@ import net.automatalib.words.Word;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class STLOr extends STLCost {
+class STLAnd extends STLCost {
     private List<STLCost> subFmls;
 
-    STLOr(STLCost subFml1, STLCost subFml2) {
+    STLAnd(STLCost subFml1, STLCost subFml2) {
         this.subFmls = Arrays.asList(subFml1, subFml2);
         this.nonTemporal = subFml1.nonTemporal && subFml2.nonTemporal;
     }
 
-    STLOr(List<STLCost> subFmls) {
+    STLAnd(List<STLCost> subFmls) {
         this.subFmls = subFmls;
         this.nonTemporal = subFmls.stream().map(STLCost::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
     }
 
     @Override
     public Double apply(Word<List<Double>> signal) {
-        return subFmls.stream().map(subFml -> subFml.apply(signal)).filter(Objects::nonNull).max(Comparator.comparingDouble(Double::valueOf)).orElse(Double.NEGATIVE_INFINITY);
+        return subFmls.stream().map(subFml -> subFml.apply(signal)).filter(Objects::nonNull).min(Comparator.comparingDouble(Double::valueOf)).orElse(Double.POSITIVE_INFINITY);
     }
 
     @Override
     public String toString() {
-        return subFmls.stream().map(STLCost::toString).collect(Collectors.joining(" || "));
+        return subFmls.stream().map(STLCost::toString).collect(Collectors.joining(" && "));
     }
 
     @Override
     protected void constructAtomicStrings() {
         if (this.nonTemporal) {
-            this.atomicStrings = new HashSet<>();
+            this.atomicStrings = new HashSet<>(getAllAPs());
             for (STLCost subFml : subFmls) {
-                this.atomicStrings.addAll(subFml.getAtomicStrings());
+                this.atomicStrings.retainAll(subFml.getAtomicStrings());
             }
         } else {
             this.atomicStrings = null;
@@ -53,7 +53,8 @@ public class STLOr extends STLCost {
                     s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
         } else {
             return this.subFmls.stream().map(STLCost::toAbstractString).map(
-                    s -> "( " + s + " )").collect(Collectors.joining(" || "));
+                    s -> "( " + s + " )").collect(Collectors.joining(" && "));
         }
     }
+
 }

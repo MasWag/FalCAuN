@@ -58,6 +58,11 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
             LOGGER.trace("or");
             assert ctx.expr().size() == 2;
             return new STLOr((STLCost) visitExpr(ctx.expr(0)), (STLCost) visitExpr(ctx.expr(1)));
+        } else if (ctx.AND() != null) {
+            // and
+            LOGGER.trace("and");
+            assert ctx.expr().size() == 2;
+            return new STLAnd((STLCost) visitExpr(ctx.expr(0)), (STLCost) visitExpr(ctx.expr(1)));
         } else if (ctx.IMPLY() != null) {
             // imply
             LOGGER.trace("imply");

@@ -28,6 +28,7 @@ class ArgParser {
     private String initScript;
     private List<String> paramNames;
     private int maxTest = 50000;
+    private String etfFile = "/tmp/out.etf";
 
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
