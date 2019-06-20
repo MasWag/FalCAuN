@@ -2,14 +2,16 @@ package org.group_mmm;
 
 import de.learnlib.mapper.api.SULMapper;
 import net.automatalib.words.Alphabet;
+import net.automatalib.words.Word;
 import net.automatalib.words.impl.SimpleAlphabet;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * I/O Mapper between abstract/concrete Simulink model.
- *
+ * <p>
  * TODO For now, the abstract alphabet is String for simplicity but later, it can be integers to handle more data.
  */
 public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, List<Double>> {
@@ -62,7 +64,13 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
 
     @Override
     public List<Double> mapInput(String s) {
-        return inputMapper.get(s);
+        return (s == null) ? null : inputMapper.get(s);
+    }
+
+    List<Word<List<Double>>> mapInputs(List<Word<String>> abstractInputs) {
+        return abstractInputs.stream().map(
+                word -> (word == null) ? null : Word.fromList(word.stream().map(this::mapInput).collect(Collectors.toList()))
+        ).collect(Collectors.toList());
     }
 
     @Override

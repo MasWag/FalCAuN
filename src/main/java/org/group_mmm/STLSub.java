@@ -51,7 +51,7 @@ public class STLSub extends STLCost {
     @Override
     public String toString() {
         String result = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " <>" : " []";
-        result += "_[" + (from) + " ," + (to) + "]";
+        result += "_[" + (from) + ", " + (to) + "]";
         result += " ( " + (subFml.subFml.toString()) + " )";
 
         return result;

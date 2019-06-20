@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import net.automatalib.words.Word;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +28,25 @@ class SimulinkSULMapperTest {
                 assertEquals(expected, result);
             }
         }
+    }
+
+    @Test
+    void mapInputs() {
+        List<Word<String>> input = Arrays.asList(
+                Word.fromLetter("ab"),
+                Word.fromLetter("bc"),
+                null,
+                Word.fromList(Arrays.asList("aa", "bb")));
+        List<Word<List<Double>>> expected = Arrays.asList(
+                Word.fromLetter(Arrays.asList(10.0, 0.0)),
+                Word.fromLetter(Arrays.asList(20.0, 100.0)),
+                null,
+                Word.fromList(Arrays.asList(
+                        Arrays.asList(10.0, -100.0),
+                        Arrays.asList(20.0, 0.0))));
+
+        List<Word<List<Double>>> result = mapper.mapInputs(input);
+        assertEquals(expected, result);
     }
 
     @Test

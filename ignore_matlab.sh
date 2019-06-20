@@ -6,7 +6,10 @@ awk '/BEGIN MATLAB/{ignore=1}ignore==0;/END MATLAB/{ignore=0}' pom.xml > $TMPFIL
 mv $TMPFILE pom.xml
 
 # remove matlab related files
-rm -f ./src/main/java/org/group_mmm/Simulink*
+rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracle.java 
+rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracleCost.java 
+rm -f ./src/main/java/org/group_mmm/SimulinkSUL.java 
+rm -f ./src/main/java/org/group_mmm/SimulinkVerifier.java 
 rm -f ./src/main/java/org/group_mmm/Main.java
 rm -f ./src/main/java/org/group_mmm/*Oracle*
 

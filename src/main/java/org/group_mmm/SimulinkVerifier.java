@@ -10,7 +10,6 @@ import net.automatalib.words.Word;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Verifier of a Simulink model
@@ -155,9 +154,7 @@ class SimulinkVerifier {
     }
 
     List<Word<List<Double>>> getCexConcreteInput() {
-        return getCexAbstractInput().stream().map(
-                word -> Word.fromList(word.stream().map(
-                        s -> mapper.mapInput(s)).collect(Collectors.toList()))).collect(Collectors.toList());
+        return this.mapper.mapInputs(getCexAbstractInput());
     }
 
 
