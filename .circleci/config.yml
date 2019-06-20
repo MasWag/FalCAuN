@@ -15,6 +15,8 @@ jobs:
           key: CyVeriA-{{ checksum "pom.xml" }}
       - run: sh ignore_matlab.sh
       - run: mvn dependency:go-offline
+      - store_artifacts:
+          path:  target
       - save_cache:
           paths:
             - ~/.m2
