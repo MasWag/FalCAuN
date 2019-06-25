@@ -34,7 +34,6 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
         this.simulink = simulink;
         this.mapper = mapper;
         this.cache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
-        //this.cache = new TreeCache<>(mapper.constructAbstractAlphabet());
     }
 
     @Override
