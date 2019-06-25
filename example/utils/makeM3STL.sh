@@ -14,6 +14,11 @@
 #  ./makeM3.sh 30,40,50 90,80,70,60 3,4,5
 #******
 
+if (($# < 3)); then
+    echo "usage: ./makeM3.sh <P1> <P2> <P3>"
+    exit 0
+fi
+
 readonly P1Params=${1//,/ }
 readonly P2Params=${2//,/ }
 readonly P3Params=${3//,/ }
