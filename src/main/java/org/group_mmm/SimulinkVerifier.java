@@ -8,6 +8,7 @@ import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.function.Function;
 
@@ -193,6 +194,15 @@ class SimulinkVerifier {
      */
     void writeDOTLearnedMealy(Appendable a) throws IOException {
         verifier.writeDOTLearnedMealy(a);
+    }
+
+    /**
+     * Write the ETF of the learned Mealy machine.
+     *
+     * @param os Write the ETF to {@code os}
+     */
+    void writeETFLearnedMealy(OutputStream os) {
+        verifier.writeETFLearnedMealy(os);
     }
 
     /**

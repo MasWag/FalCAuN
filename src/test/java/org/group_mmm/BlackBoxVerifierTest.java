@@ -12,6 +12,7 @@ import net.automatalib.words.impl.ArrayAlphabet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -76,5 +77,38 @@ class BlackBoxVerifierTest {
 
         assertFalse(verifier.run());
         assertEquals(expected.toWord(), verifier.getCexOutput().stream().filter(Objects::nonNull).findFirst().orElse(null));
+    }
+
+    @Test
+    void writeETFLearnedMealy() {
+        assertFalse(verifier.run());
+        String expected = "begin state\n" +
+                "id:id\n" +
+                "end state\n" +
+                "begin edge\n" +
+                "input:input\n" +
+                "output:output\n" +
+                "end edge\n" +
+                "begin init\n" +
+                "0\n" +
+                "end init\n" +
+                "begin sort id\n" +
+                "\"s0\"\n" +
+                "\"s1\"\n" +
+                "end sort\n" +
+                "begin trans\n" +
+                "0/1 0 0\n" +
+                "1/0 0 1\n" +
+                "end trans\n" +
+                "begin sort input\n" +
+                "\"a\"\n" +
+                "end sort\n" +
+                "begin sort output\n" +
+                "\"1\"\n" +
+                "\"2\"\n" +
+                "end sort\n";
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        verifier.writeETFLearnedMealy(stream);
+        assertEquals(expected, stream.toString());
     }
 }

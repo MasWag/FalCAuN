@@ -18,11 +18,13 @@ import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.modelcheckers.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
 import net.automatalib.serialization.dot.GraphDOT;
+import net.automatalib.serialization.etf.writer.Mealy2ETFWriterIO;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -186,6 +188,16 @@ class BlackBoxVerifier {
      */
     void visualizeLearnedMealy() {
         Visualization.visualize(this.learnedMealy, this.inputAlphabet);
+    }
+
+    /**
+     * Write the ETF of the learned Mealy machine.
+     *
+     * @param os Write the ETF to {@code os}
+     */
+    void writeETFLearnedMealy(OutputStream os) {
+        Mealy2ETFWriterIO<String, String> writer = Mealy2ETFWriterIO.getInstance();
+        writer.writeModel(os, learnedMealy, this.inputAlphabet);
     }
 
     /**
