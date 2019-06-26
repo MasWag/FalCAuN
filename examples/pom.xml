@@ -9,12 +9,9 @@
         <junit.jupiter.version>5.3.1</junit.jupiter.version>
         <cyveria.version>1.0-SNAPSHOT</cyveria.version>
     </properties>
-    <parent>
-        <groupId>org.group_mmm</groupId>
-        <artifactId>cyveria</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+
+    <groupId>org.group_mmm</groupId>
+    <version>1.0-SNAPSHOT</version>
     <artifactId>cyveria-examples</artifactId>
     <name>CyVeriA :: Examples</name>
     <description>
@@ -31,8 +28,43 @@
                 </includes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.group_mmm.examples.ATS1ETF</mainClass>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-
     <dependencies>
         <dependency>
             <groupId>org.group_mmm</groupId>

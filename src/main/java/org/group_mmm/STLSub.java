@@ -63,7 +63,7 @@ public class STLSub extends STLCost {
     }
 
     @Override
-    String toAbstractString() {
+    public String toAbstractString() {
         final String op = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " || " : " && ";
 
         ArrayList<String> subFmls = new ArrayList<>();

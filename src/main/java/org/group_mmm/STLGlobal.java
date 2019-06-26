@@ -17,7 +17,7 @@ public class STLGlobal extends STLTemporalOp {
     }
 
     @Override
-    String toAbstractString() {
+    public String toAbstractString() {
         return String.format("[] ( %s )", subFml.toAbstractString());
     }
 

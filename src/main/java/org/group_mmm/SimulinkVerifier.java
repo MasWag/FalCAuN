@@ -17,7 +17,7 @@ import java.util.function.Function;
  *
  * @author Masaki Waga <masaki@gmail.com>
  */
-class SimulinkVerifier {
+public class SimulinkVerifier {
     protected SUL<List<Double>, List<Double>> simulink;
     private SimulinkSUL rawSimulink;
     private Alphabet<String> abstractInputAlphabet;
@@ -36,7 +36,7 @@ class SimulinkVerifier {
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws Exception It can be thrown from the constrcutor of SimulinkSUL.
      */
-    SimulinkVerifier(String initScript, List<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
+    public SimulinkVerifier(String initScript, List<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
         this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
@@ -94,14 +94,14 @@ class SimulinkVerifier {
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
 
-    void addHillClimbingEQOracle(Function<Word<List<Double>>, Double> costFunc,
-                                 int length,
-                                 Random random,
-                                 int maxTests,
-                                 int generationSize,
-                                 int childrenSize,
-                                 boolean resetWord,
-                                 PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    public void addHillClimbingEQOracle(Function<Word<List<Double>>, Double> costFunc,
+                                        int length,
+                                        Random random,
+                                        int maxTests,
+                                        int generationSize,
+                                        int childrenSize,
+                                        boolean resetWord,
+                                        PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
@@ -111,7 +111,7 @@ class SimulinkVerifier {
     }
 
 
-    ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
+    public ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
         return verifier.getLtlFormulas();
     }
 
@@ -166,7 +166,7 @@ class SimulinkVerifier {
     /**
      * @return Returns {@code true} if and only if the Simulink model is verified i.e., no counter example is found.
      */
-    boolean run() {
+    public boolean run() {
         Set<SimulinkMembershipOracleCost> tmp = new HashSet<>(memOracleCosts);
         for (SimulinkMembershipOracleCost memOracleCost : memOracleCosts) {
             tmp.remove(memOracleCost);
@@ -201,7 +201,7 @@ class SimulinkVerifier {
      *
      * @param os Write the ETF to {@code os}
      */
-    void writeETFLearnedMealy(OutputStream os) {
+    public void writeETFLearnedMealy(OutputStream os) {
         verifier.writeETFLearnedMealy(os);
     }
 

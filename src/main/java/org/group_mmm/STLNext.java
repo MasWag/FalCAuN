@@ -29,7 +29,7 @@ public class STLNext extends STLCost {
     }
 
     @Override
-    String toAbstractString() {
+    public String toAbstractString() {
         return String.format("X ( %s )", subFml.toAbstractString());
     }
 

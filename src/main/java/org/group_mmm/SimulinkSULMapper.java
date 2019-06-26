@@ -22,8 +22,8 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
     private List<List<Character>> abstractOutputs;
     private List<List<Double>> concreteOutputs;
 
-    SimulinkSULMapper(List<Map<Character, Double>> inputMapper,
-                      List<Character> largestOutputs, List<Map<Character, Double>> outputMapper, List<Function<List<Double>, Double>> sigMap) {
+    public SimulinkSULMapper(List<Map<Character, Double>> inputMapper,
+                             List<Character> largestOutputs, List<Map<Character, Double>> outputMapper, List<Function<List<Double>, Double>> sigMap) {
         Map<String, List<Double>> tmpMapper = new HashMap<>();
 
         for (Map<Character, Double> map : inputMapper) {
