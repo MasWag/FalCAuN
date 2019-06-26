@@ -46,7 +46,7 @@ class STLAnd extends STLCost {
     }
 
     @Override
-    String toAbstractString() {
+    public String toAbstractString() {
         if (nonTemporal) {
             constructAtomicStrings();
             return this.atomicStrings.stream().map(

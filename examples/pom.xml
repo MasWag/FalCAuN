@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <junit.jupiter.version>5.3.1</junit.jupiter.version>
+        <cyveria.version>1.0-SNAPSHOT</cyveria.version>
+    </properties>
+
+    <groupId>org.group_mmm</groupId>
+    <version>1.0-SNAPSHOT</version>
+    <artifactId>cyveria-examples</artifactId>
+    <name>CyVeriA :: Examples</name>
+    <description>
+        A collection of various small example usage of internal classes. This is mainly used for experiments and not
+        intended as a part of the tool CyVeriA itself.
+    </description>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/resources/MATLAB/</directory>
+                <includes>
+                    <include>**/*.autosave</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.group_mmm.examples.ATS1ETF</mainClass>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.group_mmm</groupId>
+            <artifactId>cyveria</artifactId>
+            <version>${cyveria.version}</version>
+        </dependency>
+
+        <!-- LearnLib -->
+        <dependency>
+            <groupId>de.learnlib.distribution</groupId>
+            <artifactId>learnlib-distribution</artifactId>
+            <version>0.14.0</version>
+            <type>pom</type>
+        </dependency>
+
+        <!-- BEGIN MATLAB -->
+        <dependency>
+            <groupId>com.mathworks</groupId>
+            <artifactId>engine</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <!-- END MATLAB -->
+    </dependencies>
+</project>

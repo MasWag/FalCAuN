@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-abstract class STLCost implements Function<Word<List<Double>>, Double> {
+public abstract class STLCost implements Function<Word<List<Double>>, Double> {
     boolean nonTemporal;
     Set<String> atomicStrings;
 
@@ -19,9 +19,9 @@ abstract class STLCost implements Function<Word<List<Double>>, Double> {
         return atomicStrings;
     }
 
-    static STLCost parseSTL(String stlFormula,
-                            List<Map<Character, Double>> outputMapper,
-                            List<Character> largest) {
+    static public STLCost parseSTL(String stlFormula,
+                                   List<Map<Character, Double>> outputMapper,
+                                   List<Character> largest) {
         org.group_mmm.STLVisitor visitor = new STLVisitorImpl(outputMapper, largest);
         return parseSTLImpl(stlFormula, visitor);
     }
@@ -30,7 +30,7 @@ abstract class STLCost implements Function<Word<List<Double>>, Double> {
 
     protected abstract void constructAtomicStrings();
 
-    abstract String toAbstractString();
+    public abstract String toAbstractString();
 
     static STLCost parseSTL(String stlFormula) {
         org.group_mmm.STLVisitor visitor = new STLVisitorImpl();

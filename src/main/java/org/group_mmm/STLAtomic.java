@@ -17,7 +17,7 @@ public class STLAtomic extends STLCost {
     private Set<String> allAPs;
     private List<Map<Character, Double>> outputMapper;
 
-    STLAtomic(int sigIndex, Operation op, double comparator) {
+    public STLAtomic(int sigIndex, Operation op, double comparator) {
         this.sigIndex = sigIndex;
         this.comparator = comparator;
         this.op = op;
@@ -140,7 +140,7 @@ public class STLAtomic extends STLCost {
     }
 
     @Override
-    String toAbstractString() {
+    public String toAbstractString() {
         constructAtomicStrings();
 
         return this.atomicStrings.stream().map(
@@ -209,7 +209,7 @@ public class STLAtomic extends STLCost {
         return APs;
     }
 
-    enum Operation {
+    public enum Operation {
         lt,
         eq,
         gt,

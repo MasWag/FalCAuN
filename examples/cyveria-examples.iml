@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/resources/MATLAB" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.group_mmm:cyveria:1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.0" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:17.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.7.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-adt:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-api:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-core:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-util:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-commons-util:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-dhc:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:27.0-jre" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
+    <orderEntry type="library" name="Maven: org.checkerframework:checker-qual:2.5.2" level="project" />
+    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.17" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-discrimination-tree:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-commons-smartcollections:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-discrimination-tree-vpda:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-kearns-vazirani:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-lstar:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-nlstar:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-ttt:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-ttt-vpda:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-rpni:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-rpni-edsm:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-rpni-mdl:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-api:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-acex:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-counterexamples:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-settings:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-util:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-datastructure-dt:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-datastructure-list:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-datastructure-ot:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-datastructure-pta:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-drivers-basic:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-mapper:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-drivers-simulator:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-emptiness-oracles:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-equivalence-oracles:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-cache:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-incremental:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-reuse:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-statistics:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-membership-oracles:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-parallelism:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: de.learnlib:learnlib-property-oracles:0.14.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-brics:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-modelchecking-ltsmin:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-serialization-aut:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-serialization-core:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-serialization-dot:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-serialization-etf:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-serialization-fsm:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-serialization-learnlibv2:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-serialization-saf:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-serialization-taf:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-dot-visualizer:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.automatalib:automata-jung-visualizer:0.8.0" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.jung:jung-api:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.jung:jung-algorithms:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.jung:jung-graph-impl:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.jung:jung-visualization:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.github.misberner.graphviz-awt-shapes:graphviz-awt-shapes:0.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.mathworks:engine:1.1" level="project" />
+  </component>
+</module>

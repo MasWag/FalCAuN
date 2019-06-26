@@ -22,7 +22,7 @@ public class STLEventually extends STLTemporalOp {
     }
 
     @Override
-    String toAbstractString() {
+    public String toAbstractString() {
         return String.format("<> ( %s )", subFml.toAbstractString());
     }
 }
