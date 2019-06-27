@@ -25,7 +25,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     int generationSize;
     int childrenSize;
     List<? extends String> symbolList;
-    private SimulinkMembershipOracleCost memOracle;
+    SimulinkMembershipOracleCost memOracle;
     private int length;
     private int maxTests;
     private boolean resetWord;

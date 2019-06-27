@@ -110,6 +110,22 @@ public class SimulinkVerifier {
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
 
+    public void addSAEQOracle(Function<Word<List<Double>>, Double> costFunc,
+                              int length,
+                              Random random,
+                              int maxTests,
+                              int generationSize,
+                              int childrenSize,
+                              boolean resetWord,
+                              double alpha,
+                              PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+        SimulinkMembershipOracleCost oracle =
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
+        oracle.setCache(this.memOracle.getCache());
+        memOracleCosts.add(oracle);
+
+        this.verifier.addEqOracle(new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
+    }
 
     public ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
         return verifier.getLtlFormulas();

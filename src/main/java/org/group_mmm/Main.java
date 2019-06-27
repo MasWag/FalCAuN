@@ -106,6 +106,21 @@ public class Main {
                     System.out.println("Max length: " + argParser.getLength());
                     System.out.println("maxTest: " + argParser.getMaxTest());
                 }
+            case SA:
+                for (int i = 0; i < stl.size(); i++) {
+                    PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
+                    verifier.addSAEQOracle(stl.get(i), argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord, argParser.getAlpha(), ltlOracle);
+                }
+                if (argParser.isVerbose()) {
+                    System.out.println("Simulated Annealing is used");
+                    System.out.println("STL size: " + stl.size());
+                    System.out.println("Length: " + argParser.getLength());
+                    System.out.println("maxTest: " + argParser.getMaxTest());
+                    System.out.println("Generation size: " + generationSize);
+                    System.out.println("Children size:" + childrenSize);
+                    System.out.println("Reset word: " + resetWord);
+                    System.out.println("alpha:" + argParser.getAlpha());
+                }
         }
 
         System.out.println("BBC started");

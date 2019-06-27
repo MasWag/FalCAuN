@@ -29,6 +29,7 @@ class ArgParser {
     private List<String> paramNames;
     private int maxTest = 50000;
     private String etfFile = "/tmp/out.etf";
+    private double alpha;
 
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
@@ -45,6 +46,7 @@ class ArgParser {
         options.addOption("i", "init", true, "The initial script of MATLAB");
         options.addOption("p", "param-names", true, "The parameter names of the Simulink model");
         options.addOption("M", "max-test", true, "The maximum test size");
+        options.addOption(null, "sa-alpha", true, "The alpha parameter for simulated annealing (should be [0,1])");
 
 
         DefaultParser parser = new DefaultParser();
@@ -142,6 +144,14 @@ class ArgParser {
                 case "wp":
                     equiv = EquivType.WP;
                     break;
+                case "sa":
+                    equiv = EquivType.SA;
+                    if (cl.hasOption("sa-alpha")) {
+                        alpha = Double.parseDouble(cl.getOptionValue("sa-alpha"));
+                    } else {
+                        throw new MissingOptionException("sa-alpha must be specified for SA");
+                    }
+                    break;
                 default:
                     throw new IllegalArgumentException("unknown equiv. algorithm: " + cl.getOptionValue('E'));
             }
@@ -154,6 +164,10 @@ class ArgParser {
         } else {
             dotFile = null;
         }
+    }
+
+    double getAlpha() {
+        return alpha;
     }
 
     int getMaxTest() {
@@ -219,6 +233,7 @@ class ArgParser {
     enum EquivType {
         HC,
         RANDOM,
-        WP
+        WP,
+        SA
     }
 }

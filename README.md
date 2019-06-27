@@ -40,6 +40,12 @@ Algorithms for equivalence query
 
 ### WP-method
 
+### SA (Simulated Annealing)
+
+When you use simulated annealing, the following option is necessary
+
+**--sa-alpha** *alpha* The alpha parameter for simulated annealing (should be [0,1])
+
 File format of the mapper
 -------------------------
 

@@ -58,6 +58,14 @@ class ArgParserTest {
         args.add("-E=HC");
     }
 
+    private void addSA() {
+        args.add("-E=SA");
+    }
+
+    private void addSAAlpha() {
+        args.add("--sa-alpha=0.2");
+    }
+
     private void addLength() {
         args.add("-l=15");
     }
@@ -139,6 +147,19 @@ class ArgParserTest {
         addInputMapper();
         addOutputMapper();
         addWP();
+        addSTLString();
+        addStepTime();
+        addVerbose();
+        addParamNames();
+        addInitScript();
+        assertThrows(MissingOptionException.class, this::parse);
+    }
+
+    @Test
+    void missingSAAlpha() {
+        addInputMapper();
+        addOutputMapper();
+        addSA();
         addSTLString();
         addStepTime();
         addVerbose();
@@ -287,6 +308,34 @@ class ArgParserTest {
                 assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
                 assertEquals(ArgParser.EquivType.WP, argParser.getEquiv());
                 assertEquals("stl.txt", argParser.getStlFile());
+                assertNull(argParser.getStlFormula());
+            }
+
+            @Test
+            void sa() throws MissingOptionException {
+                addSTLFile();
+                addInputMapper();
+                addOutputMapper();
+                addLength();
+                addStepTime();
+                addSA();
+                addSAAlpha();
+                addMaxTest();
+                addVerbose();
+                addParamNames();
+                addInitScript();
+                parse();
+                quitExpect = false;
+                verboseExpected = true;
+                maxTestExpected = 100;
+                assertNull(argParser.getDotFile());
+                assertEquals("initAT", argParser.getInitScript());
+                assertEquals(Arrays.asList("throttle", "brake"), argParser.getParamNames());
+                assertEquals("input.mapper.txt", argParser.getInputMapperFile());
+                assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
+                assertEquals(ArgParser.EquivType.SA, argParser.getEquiv());
+                assertEquals("stl.txt", argParser.getStlFile());
+                assertEquals(0.2, argParser.getAlpha());
                 assertNull(argParser.getStlFormula());
             }
         }
