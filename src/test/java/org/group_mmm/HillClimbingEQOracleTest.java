@@ -1,0 +1,30 @@
+package org.group_mmm;
+
+import net.automatalib.words.Word;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.Assert.assertNotEquals;
+
+class HillClimbingEQOracleTest {
+    private HillClimbingEQOracle eqOracle;
+
+    @BeforeEach
+    void setUp() {
+        eqOracle = new HillClimbingEQOracle(null, 10, new Random(), 100, 5, 2, false);
+        eqOracle.symbolList = Arrays.asList("a", "b", "c", "d", "e");
+    }
+
+    @Test
+    void createNextGeneration() {
+        List<Word<String>> input = Collections.singletonList(Word.fromList(Arrays.asList("a", "b")));
+        List<Word<String>> output1 = eqOracle.createNextGeneration(input);
+        List<Word<String>> output2 = eqOracle.createNextGeneration(input);
+        assertNotEquals(output1, output2);
+    }
+}

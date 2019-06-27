@@ -142,6 +142,12 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
         return null;
     }
 
+    /**
+     * Generate one word of length {@code length} randomly
+     *
+     * @param symbolList The list of the possible symbols
+     * @return the generated word
+     */
     private Word<String> generateTestWord(List<? extends String> symbolList) {
         final int numSyms = symbolList.size();
         final WordBuilder<String> result = new WordBuilder<>(length);
