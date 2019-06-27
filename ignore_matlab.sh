@@ -15,3 +15,4 @@ rm -f ./src/main/java/org/group_mmm/*Oracle*
 
 rm -f ./src/test/java/org/group_mmm/Simulink*
 rm -f ./src/test/java/org/group_mmm/AutotransExample*
+rm -f ./src/test/java/org/group_mmm/HillClimbingEQOracleTest.java
