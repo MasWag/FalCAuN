@@ -622,8 +622,8 @@ class AutotransExampleTest {
                     Collections.singletonList(
                             exampleAT.constructS5(4770.0, 600.0))));
 
-            boolean useHillClimbing = true;
-            boolean useGA = false;
+            boolean useHillClimbing = false;
+            boolean useSA = true;
             boolean resetWord = false;
 
             STLCost costFunc = new STLGlobal(
@@ -632,7 +632,7 @@ class AutotransExampleTest {
                             new STLNext(new STLAtomic(1, STLAtomic.Operation.gt, 600.0), true)
                     ));
 
-            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS5Learned.dot");
+            executeRun(exampleAT, costFunc, useHillClimbing, useSA, resetWord, "./runS5Learned.dot");
         }
 
         @Test
