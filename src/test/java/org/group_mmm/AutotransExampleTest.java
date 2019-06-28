@@ -587,15 +587,15 @@ class AutotransExampleTest {
                     Collections.singletonList(
                             exampleAT.constructS4(100.0, 65.0))));
 
-            boolean useHillClimbing = true;
-            boolean useGA = false;
+            boolean useHillClimbing = false;
+            boolean useSA = true;
             boolean resetWord = false;
 
             STLCost costFunc =
                     new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
                             new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14));
 
-            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS4Learned.dot");
+            executeRun(exampleAT, costFunc, useHillClimbing, useSA, resetWord, "./runS4Learned.dot");
         }
 
         @Test
