@@ -16,7 +16,7 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AutotransExampleTest {
-    static void executeRun(AutotransExample exampleAT, Function<Word<List<Double>>, Double> costFunc, boolean useHillClimbing, boolean useGA, boolean resetWord, String dotName) throws Exception {
+    static void executeRun(AutotransExample exampleAT, Function<Word<List<Double>>, Double> costFunc, boolean useHillClimbing, boolean useSA, boolean resetWord, String dotName) throws Exception {
         exampleAT.constructVerifier();
 
         if (useHillClimbing) {
@@ -25,11 +25,12 @@ class AutotransExampleTest {
                     new Random(),
                     50000, 5, 15 * 4, resetWord,
                     exampleAT.getVerifier().getLtlFormulas().get(0));
-        } else if (useGA) {
-            exampleAT.getVerifier().addGAEQOracle(costFunc,
+        } else if (useSA) {
+            exampleAT.getVerifier().addSAEQOracle(costFunc,
                     15,
                     new Random(),
-                    10000, 3, 3, 2, 0.01, 0.8, resetWord);
+                    50000, 5, 15 * 4, resetWord, 0.3,
+                    exampleAT.getVerifier().getLtlFormulas().get(0));
         } else {
             exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
         }
@@ -450,13 +451,13 @@ class AutotransExampleTest {
             exampleAT.setProperties(Collections.singletonList(
                     exampleAT.constructS1(120)));
 
-            boolean useHillClimbing = true;
-            boolean useGA = false;
+            boolean useHillClimbing = false;
+            boolean useSA = true;
             boolean resetWord = false;
 
             Function<Word<List<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
 
-            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS1Learned.dot");
+            executeRun(exampleAT, costFunc, useHillClimbing, useSA, resetWord, "./runS1Learned.dot");
         }
 
         @Test

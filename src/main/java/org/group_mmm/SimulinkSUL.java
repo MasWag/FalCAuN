@@ -182,6 +182,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private void preventHugeTempFile(StringBuilder builder) {
         builder.append("Simulink.sdi.setAutoArchiveMode(false);");
         builder.append("Simulink.sdi.setArchiveRunLimit(0);");
+        builder.append("Simulink.sdi.clear;");
     }
 
     /**
