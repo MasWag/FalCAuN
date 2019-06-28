@@ -126,9 +126,11 @@ class SimulinkSULTest {
         @Test
         void executeMeasure() throws InterruptedException, ExecutionException {
             final int length = 15;
-            final int times = 50;
+            final int times = 200;
             Word<List<Double>> input = Word.fromList(Collections.nCopies(length, Arrays.asList(100.0, 0.0)));
             assertEquals(length, input.size());
+            // Execute it once before the measurement to remove the potential overhead at the initial execution.
+            sul.execute(input);
 
             long startTime = System.nanoTime();
             for (int i = 0; i < times; i++) {

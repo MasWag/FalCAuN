@@ -162,21 +162,20 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
         /// Configuration on the accelerator
         // Use normal mode
-        builder.append("set_param(mdl,'SimulationMode','normal');");
+        // builder.append("set_param(mdl,'SimulationMode','normal');");
         // Enable accelerator mode
-        //matlab.eval("set_param(mdl,'SimulationMode','accelerator');");
+        builder.append("set_param(mdl,'SimulationMode','accelerator');");
         // Enable classic accelerator mode
-        //matlab.eval("set_param(0, 'GlobalUseClassicAccelMode', 'on');");
+        builder.append("set_param(0, 'GlobalUseClassicAccelMode', 'on');");
 
 
         // The save format must be an array
         builder.append("set_param(mdl, 'SaveFormat', 'Array');");
 
         // Configuration on the decimation
-        builder.append("set_param(mdl,  'SolverType', 'Fixed-step');");
+        builder.append("set_param(mdl, 'SolverType', 'Fixed-step');");
         builder.append("set_param(mdl, 'FixedStep', '" + SIMULINK_SIMULATION_STEP + "');");
         builder.append("set_param(mdl, 'Decimation', '").append(signalStep / SIMULINK_SIMULATION_STEP).append("');");
-        // matlab.eval("set_param(mdl, 'Decimation', '" + (1) + "');");
     }
 
     private void preventHugeTempFile(StringBuilder builder) {
