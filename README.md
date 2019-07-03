@@ -24,10 +24,10 @@ Usage
 **-O** *file*, **--output-mapper** *file* Read the output mapper configuration from *file*. <br />
 **-E** *algorithm*, **--equiv** *algorithm* Specify the equivalence query algorithm. See below for the detail. <br />
 **-o** *file*, **--output** *file* Write the learned Mealy machine to *file* in DOT format. <br />
-**-s** *step-time*, **--step-time** *step-time* Specify the step time of the sampling.
-**-l** *length*, **--signal-length** *length* Specify the length of the sampled signals.
-**-i** *script*, **--init** *script* The initial script of MATLAB
-**-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink model
+**-s** *step-time*, **--step-time** *step-time* Specify the step time of the sampling. <br />
+**-l** *length*, **--signal-length** *length* Specify the length of the sampled signals. <br />
+**-i** *script*, **--init** *script* The initial script of MATLAB <br />
+**-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink model <br />
 **-M** *test-size*, **--max-test** *test-size* The maximum test size
 
 
@@ -44,7 +44,7 @@ Algorithms for equivalence query
 
 When you use simulated annealing, the following option is necessary
 
-**--sa-alpha** *alpha* The alpha parameter for simulated annealing (should be [0,1])
+**--sa-alpha** *alpha* The alpha parameter for simulated annealing (should be between 0 and 1)
 
 File format of the mapper
 -------------------------
