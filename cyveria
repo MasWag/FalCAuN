@@ -1,0 +1,30 @@
+#!/bin/sh -u
+
+JAR_NAME=org/group_mmm/cyveria/1.0-SNAPSHOT/cyveria-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+if [ -z "$MATLAB_HOME" ]; then
+    echo "Error: environment variable MATLAB_HOME is not set"
+    exit 1
+fi
+
+case "$(uname)" in
+    Darwin)
+        arch=maci64
+        ;;
+    Linux)
+        arch=glnxa64
+        ;;
+    *)
+        echo "Error: Unknown architecture $(uname)"
+        exit 1
+esac
+
+if which mvn 2>&1 > /dev/null; then
+    echo "Error: Maven must be installed"
+    exit 1
+fi
+
+maven_repo_path="$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)"
+
+java -Djava.library.path="$MATLAB_HOME/bin/$arch" -jar ${maven_repo_path}/${JAR_NAME} $@
+
