@@ -4,6 +4,7 @@ import de.learnlib.api.oracle.PropertyOracle;
 import org.apache.commons.cli.MissingOptionException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -160,6 +161,12 @@ public class Main {
             FileWriter writer = new FileWriter(new File(argParser.getDotFile()));
             verifier.writeDOTLearnedMealy(writer);
             writer.close();
+        }
+
+        if (argParser.getEtfFile() != null) {
+            FileOutputStream outputStream = new FileOutputStream(argParser.getEtfFile());
+            verifier.writeETFLearnedMealy(outputStream);
+            outputStream.close();
         }
     }
 }

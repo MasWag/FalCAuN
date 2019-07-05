@@ -22,16 +22,17 @@ class ArgParser {
     private String inputMapperFile;
     private String outputMapperFile;
     private EquivType equiv;
+
+    private String etfFile;
+
     private String dotFile;
     private double stepTime;
     private int length;
     private String initScript;
     private List<String> paramNames;
     private int maxTest = 50000;
-    private String etfFile = "/tmp/out.etf";
     private Double alpha = null;
     private Long timeout = null;
-
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
         options.addOption("v", "verbose", false, "Outputs extra information, mainly for debugging");
@@ -42,7 +43,8 @@ class ArgParser {
         options.addOption("I", "input-mapper", true, "Read the input mapper configuration from file");
         options.addOption("O", "output-mapper", true, "Read the output mapper configuration from file");
         options.addOption("E", "equiv", true, "Specify the equivalence query algorithm");
-        options.addOption("o", "output", true, "Write the learned Mealy machine to file in DOT format");
+        options.addOption("o", "output-dot", true, "Write the learned Mealy machine to file in DOT format");
+        options.addOption(null, "output-etf", true, "Write the learned Mealy machine to file in ETF format");
         options.addOption("s", "step-time", true, "The step time of the sampling");
         options.addOption("l", "signal-length", true, "The length of the signals used in the equivalence queries");
         options.addOption("i", "init", true, "The initial script of MATLAB");
@@ -170,6 +172,15 @@ class ArgParser {
         } else {
             dotFile = null;
         }
+        if (cl.hasOption("output-etf")) {
+            etfFile = cl.getOptionValue("output-etf");
+        } else {
+            etfFile = null;
+        }
+    }
+
+    String getEtfFile() {
+        return etfFile;
     }
 
     Long getTimeout() {
