@@ -11,7 +11,7 @@ Usage
 
 ### Symopsis
 
-     java -Djava.library.path=$MATLAB_HOME/bin/maci64 -jar ./target/cyveria-1.0-SNAPSHOT-jar-with-dependencies.jar [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
+     ./cyveria [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
 
 ### Options
 
@@ -23,7 +23,8 @@ Usage
 **-I** *file*, **--input-mapper** *file* Read the input mapper configuration from *file*. <br />
 **-O** *file*, **--output-mapper** *file* Read the output mapper configuration from *file*. <br />
 **-E** *algorithm*, **--equiv** *algorithm* Specify the equivalence query algorithm. See below for the detail. <br />
-**-o** *file*, **--output** *file* Write the learned Mealy machine to *file* in DOT format. <br />
+**-o** *file*, **--output-dot** *file* Write the learned Mealy machine to *file* in DOT format. <br />
+**--output-etf** *file* Write the learned Mealy machine to *file* in ETF format. <br />
 **-s** *step-time*, **--step-time** *step-time* Specify the step time of the sampling. <br />
 **-l** *length*, **--signal-length** *length* Specify the length of the sampled signals. <br />
 **-i** *script*, **--init** *script* The initial script of MATLAB <br />

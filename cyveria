@@ -19,7 +19,7 @@ case "$(uname)" in
         exit 1
 esac
 
-if which mvn 2>&1 > /dev/null; then
+if !(which mvn 2>&1 > /dev/null); then
     echo "Error: Maven must be installed"
     exit 1
 fi

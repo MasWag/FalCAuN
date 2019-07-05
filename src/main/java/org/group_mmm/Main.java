@@ -106,6 +106,7 @@ public class Main {
                     System.out.println("Max length: " + argParser.getLength());
                     System.out.println("maxTest: " + argParser.getMaxTest());
                 }
+                break;
             case SA:
                 for (int i = 0; i < stl.size(); i++) {
                     PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
@@ -121,6 +122,7 @@ public class Main {
                     System.out.println("Reset word: " + resetWord);
                     System.out.println("alpha:" + argParser.getAlpha());
                 }
+                break;
         }
 
         System.out.println("BBC started");
