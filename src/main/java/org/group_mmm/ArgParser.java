@@ -29,7 +29,7 @@ class ArgParser {
     private List<String> paramNames;
     private int maxTest = 50000;
     private String etfFile = "/tmp/out.etf";
-    private double alpha;
+    private Double alpha = null;
 
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");

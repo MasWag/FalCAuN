@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class SAEQOracle extends HillClimbingEQOracle {
     private double alpha;
     private int maxIteration;
-    private int iteration = 0;
+    private double iteration = 0.0;
 
     public SAEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, double alpha) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord);
@@ -44,13 +44,14 @@ public class SAEQOracle extends HillClimbingEQOracle {
      * @param srcCost the cost of src
      * @param dstCost the cost of dst
      * @return if we should transit from src to dst.
+     * We followed the algorithm in https://ja.wikipedia.org/wiki/%E7%84%BC%E3%81%8D%E3%81%AA%E3%81%BE%E3%81%97%E6%B3%95 .
      */
     private boolean shouldPick(double srcCost, double dstCost) {
         if (srcCost >= dstCost) {
             return true;
         } else {
-            double temperature = Math.pow(alpha, iteration * 1.0 / maxIteration);
-            return (srcCost - dstCost) / temperature >= Math.log(this.random.nextDouble());
+            double temperature = Math.pow(alpha, iteration / maxIteration);
+            return Math.exp((srcCost - dstCost) / temperature) >= this.random.nextDouble();
         }
     }
 
