@@ -1,4 +1,14 @@
 #!/bin/sh
+#****h* CyVeriA/ignore_matlab
+# NAME
+#  ignore_matlab
+# DESCRIPTION
+#  Remove the files that require MATLAB. This script is used for CI.
+#
+# USAGE
+#  ./ignore_matlab.sh
+#
+#******
 
 # remove matlab dependency from pom.xml
 TMPFILE=$(mktemp /tmp/pom.xml.XXXXXX) || exit 1
@@ -11,7 +21,14 @@ rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracleCost.java
 rm -f ./src/main/java/org/group_mmm/SimulinkSUL.java 
 rm -f ./src/main/java/org/group_mmm/SimulinkVerifier.java 
 rm -f ./src/main/java/org/group_mmm/Main.java
-rm -f ./src/main/java/org/group_mmm/*Oracle*
+rm -f ./src/main/java/org/group_mmm/AbstractSelectEQOracle.java
+rm -f ./src/main/java/org/group_mmm/GAEQOracle.java
+rm -f ./src/main/java/org/group_mmm/HillClimbingEQOracle.java
+rm -f ./src/main/java/org/group_mmm/MutateSelectEQOracle.java
+rm -f ./src/main/java/org/group_mmm/SAEQOracle.java
+rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracle.java
+rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracleCost.java
+
 
 rm -f ./src/test/java/org/group_mmm/Simulink*
 rm -f ./src/test/java/org/group_mmm/AutotransExample*
