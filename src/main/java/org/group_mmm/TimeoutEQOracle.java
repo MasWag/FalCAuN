@@ -4,6 +4,8 @@ import de.learnlib.api.oracle.EquivalenceOracle;
 import de.learnlib.api.query.DefaultQuery;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.words.Word;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNullableByDefault;
@@ -16,6 +18,8 @@ import java.util.Collection;
  * @param <O> Output symbol
  */
 public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalenceOracle<I, O> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutEQOracle.class);
+
     private long timeout;
     private long startTime;
     private MealyEquivalenceOracle<I, O> eqOracle;
@@ -41,6 +45,7 @@ public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalence
     @ParametersAreNullableByDefault
     public DefaultQuery<I, Word<O>> findCounterExample(MealyMachine<?, I, ?, O> objects, Collection<? extends I> collection) {
         if ((System.nanoTime() - startTime) > timeout) {
+            LOGGER.info("EQQuery finished because of timeout!!");
             return null;
         } else {
             return eqOracle.findCounterExample(objects, collection);

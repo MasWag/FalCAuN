@@ -26,5 +26,5 @@ fi
 
 maven_repo_path="$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)"
 
-java -Djava.library.path="$MATLAB_HOME/bin/$arch" -jar ${maven_repo_path}/${JAR_NAME} $@
+java -Djava.library.path="$MATLAB_HOME/bin/$arch" -jar ${maven_repo_path}/${JAR_NAME} "$@"
 
