@@ -62,6 +62,16 @@ public class Main {
                 ltlString,
                 sulMapper);
 
+        if (Objects.nonNull(argParser.getTimeout())) {
+            if (argParser.isVerbose()) {
+                System.out.println("Timeout is set: " + argParser.getTimeout() + " seconds.");
+            }
+            verifier.setTimeout(argParser.getTimeout());
+        } else {
+            if (argParser.isVerbose()) {
+                System.out.println("Timeout is not set");
+            }
+        }
 /*
             if (useHillClimbing) {
                 exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,

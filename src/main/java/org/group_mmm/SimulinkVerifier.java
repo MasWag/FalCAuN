@@ -79,6 +79,15 @@ public class SimulinkVerifier {
         this.verifier.addCompleteExplorationEQOracle(minDepth, maxDepth, batchSize);
     }
 
+    /**
+     * Set timeout to the equivalence oracle added next time.
+     *
+     * @param timeout timeout in seconds.
+     */
+    void setTimeout(long timeout) {
+        this.verifier.setTimeout(timeout);
+    }
+
     void addHillClimbingEQOracle(Function<Word<List<Double>>, Double> costFunc,
                                  int length,
                                  Random random,

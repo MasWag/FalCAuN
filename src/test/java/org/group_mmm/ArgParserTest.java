@@ -70,6 +70,10 @@ class ArgParserTest {
         args.add("-l=15");
     }
 
+    private void addTimeout() {
+        args.add("-t=10");
+    }
+
     private void addStepTime() {
         args.add("-s=2.0");
     }
@@ -259,6 +263,7 @@ class ArgParserTest {
                 assertEquals(ArgParser.EquivType.HC, argParser.getEquiv());
                 assertEquals("[] (signal(0) > 100)", argParser.getStlFormula());
                 assertNull(argParser.getStlFile());
+                assertNull(argParser.getTimeout());
             }
 
             @Test
@@ -272,6 +277,7 @@ class ArgParserTest {
                 addDot();
                 addParamNames();
                 addInitScript();
+                addTimeout();
                 parse();
                 quitExpect = false;
                 verboseExpected = false;
@@ -283,6 +289,7 @@ class ArgParserTest {
                 assertEquals(ArgParser.EquivType.RANDOM, argParser.getEquiv());
                 assertEquals("stl.txt", argParser.getStlFile());
                 assertNull(argParser.getStlFormula());
+                assertEquals(10, (long) argParser.getTimeout());
             }
 
             @Test

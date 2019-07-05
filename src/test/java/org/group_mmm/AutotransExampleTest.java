@@ -401,6 +401,34 @@ class AutotransExampleTest {
         }
 
         @Test
+        void setTimeout() throws Exception {
+            Map<Character, Double> velocityMapper = new HashMap<>();
+            velocityMapper.put('a', 80.0);
+            velocityMapper.put('b', 100.0);
+            velocityMapper.put('c', 120.0);
+
+            Map<Character, Double> rotationMapper = new HashMap<>();
+
+            Map<Character, Double> gearMapper = new HashMap<>();
+
+            exampleAT.setOutputMapper(new ArrayList<>(
+                    Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
+
+            ArrayList<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
+            exampleAT.setLargest(largest);
+
+            exampleAT.setProperties(new ArrayList<>(
+                    Collections.singletonList(
+                            exampleAT.constructS1(120))));
+
+            exampleAT.constructVerifier();
+            exampleAT.getVerifier().setTimeout(10);
+
+            exampleAT.getVerifier().addRandomWordEQOracle(20, 30, 100, new Random(), 1);
+            assertTrue(exampleAT.getVerifier().run());
+        }
+
+        @Test
         void constructS1() {
             Map<Character, Double> velocityMapper = new HashMap<>();
             velocityMapper.put('a', 80.0);

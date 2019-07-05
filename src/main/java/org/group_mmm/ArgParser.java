@@ -30,11 +30,13 @@ class ArgParser {
     private int maxTest = 50000;
     private String etfFile = "/tmp/out.etf";
     private Double alpha = null;
+    private Long timeout = null;
 
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
         options.addOption("v", "verbose", false, "Outputs extra information, mainly for debugging");
         options.addOption("V", "version", false, "Print the version");
+        options.addOption("t", "timeout", true, "Set timeout [seconds]");
         options.addOption("f", "stl-file", true, "Read a STL formula from file");
         options.addOption("e", "stl", true, "Specify STLFormulas by signal temporal logic");
         options.addOption("I", "input-mapper", true, "Read the input mapper configuration from file");
@@ -81,6 +83,10 @@ class ArgParser {
             LTSminVersionLogger.setLevel(Level.INFO);
             Logger AbstractLTSminLogger = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
             AbstractLTSminLogger.setLevel(Level.INFO);
+        }
+
+        if (cl.hasOption('t')) {
+            timeout = Long.parseLong(cl.getOptionValue('t'));
         }
 
         if (cl.hasOption('f')) {
@@ -164,6 +170,10 @@ class ArgParser {
         } else {
             dotFile = null;
         }
+    }
+
+    Long getTimeout() {
+        return timeout;
     }
 
     double getAlpha() {

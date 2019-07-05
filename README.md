@@ -18,6 +18,7 @@ Usage
 **-h**, **--help** Print a help message. <br />
 **-v**, **--verbose** It outputs extra information, mainly for debugging. <br />
 **-V**, **--version** Print the version <br />
+**-t** *timeout*, **--timeout** *timeout* Set timeout [seconds]
 **-f** *file*, **--stl-file** *file* Read a STL formula from *file*. <br />
 **-e** *pattern*, **--stl** *STLFormula* Specify *STLFormula* by signal temporal logic. <br />
 **-I** *file*, **--input-mapper** *file* Read the input mapper configuration from *file*. <br />
@@ -30,7 +31,6 @@ Usage
 **-i** *script*, **--init** *script* The initial script of MATLAB <br />
 **-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink model <br />
 **-M** *test-size*, **--max-test** *test-size* The maximum test size
-
 
 Algorithms for equivalence query
 --------------------------------

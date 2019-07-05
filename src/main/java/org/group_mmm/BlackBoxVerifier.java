@@ -105,9 +105,7 @@ class BlackBoxVerifier {
         return memOracle;
     }
 
-    void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
-        this.eqOracle.addOracle(eqOracle);
-    }
+    private TimeoutEQOracle<String, String> timeoutOracle;
 
     void addWpMethodEQOracle(int maxDepth) {
         addEqOracle(new WpMethodEQOracle.MealyWpMethodEQOracle<>(memOracle, maxDepth));
@@ -131,6 +129,26 @@ class BlackBoxVerifier {
                 memOracle, minDepth, maxDepth, batchSize));
     }
 
+    private Long timeout = null;
+
+    void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
+        if (Objects.nonNull(timeout)) {
+            timeoutOracle = new TimeoutEQOracle<>(eqOracle, timeout);
+            this.eqOracle.addOracle(timeoutOracle);
+        } else {
+            this.eqOracle.addOracle(eqOracle);
+        }
+    }
+
+    /**
+     * Set timeout to the equivalence oracle added next time.
+     *
+     * @param timeout timeout in seconds.
+     */
+    void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+
     List<String> getCexProperty() {
         return cexProperty;
     }
@@ -147,6 +165,9 @@ class BlackBoxVerifier {
      * @return Returns {@code true} if and only if the given black-box system is verified i.e., no counter example is found.
      */
     boolean run() {
+        if (Objects.nonNull(timeoutOracle)) {
+            timeoutOracle.start();
+        }
         // create an experiment
         Experiment.MealyExperiment<String, String>
                 experiment = new Experiment.MealyExperiment<>(learner, eqOracle, this.inputAlphabet);
