@@ -1,4 +1,14 @@
 #!/bin/sh -u
+#****h* CyVeriA/cyveria
+# NAME
+#  cyveria
+# DESCRIPTION
+#  the script to launch CyVeriA
+#
+# USAGE
+#  ./cyveria [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
+#
+#******
 
 JAR_NAME=org/group_mmm/cyveria/1.0-SNAPSHOT/cyveria-1.0-SNAPSHOT-jar-with-dependencies.jar
 
