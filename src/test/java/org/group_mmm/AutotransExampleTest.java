@@ -3,6 +3,7 @@ package org.group_mmm;
 import de.learnlib.api.oracle.MembershipOracle;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -422,10 +423,16 @@ class AutotransExampleTest {
                             exampleAT.constructS1(120))));
 
             exampleAT.constructVerifier();
-            exampleAT.getVerifier().setTimeout(10);
+            long timeout = 1000;
+            exampleAT.getVerifier().setTimeout(timeout);
 
             exampleAT.getVerifier().addRandomWordEQOracle(20, 30, 100, new Random(), 1);
+            exampleAT.getVerifier().addRandomWordEQOracle(1, 2, 1, new Random(), 1);
+
+            long startTime = System.nanoTime();
             assertTrue(exampleAT.getVerifier().run());
+            long endTime = System.nanoTime();
+            Assertions.assertThat(endTime - startTime).isGreaterThan(timeout * 1000000000);
         }
 
         @Test
