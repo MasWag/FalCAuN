@@ -41,8 +41,8 @@ import static net.automatalib.util.automata.Automata.stateCover;
 class BlackBoxVerifier {
     private static final Function<String, String> EDGE_PARSER = s -> s;
     final private double multiplier = 1.0;
-    private SUL<String, String> verifiedSystem;
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
+    private SUL<String, String> verifiedSystem;
     private MealyMachine<?, String, ?, String> learnedMealy;
     private List<MealyMachine<?, String, ?, String>> cexMealy;
     private Alphabet<String> inputAlphabet;
@@ -54,6 +54,8 @@ class BlackBoxVerifier {
     private List<Word<String>> cexOutput;
     private ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
     private ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> ltlFormulas;
+    private ArrayList<TimeoutEQOracle<String, String>> timeoutOracles = new ArrayList<>();
+    private Long timeout = null;
 
     /**
      * @param memOracle     The membership oracle
@@ -105,8 +107,6 @@ class BlackBoxVerifier {
         return memOracle;
     }
 
-    private TimeoutEQOracle<String, String> timeoutOracle;
-
     void addWpMethodEQOracle(int maxDepth) {
         addEqOracle(new WpMethodEQOracle.MealyWpMethodEQOracle<>(memOracle, maxDepth));
     }
@@ -129,12 +129,11 @@ class BlackBoxVerifier {
                 memOracle, minDepth, maxDepth, batchSize));
     }
 
-    private Long timeout = null;
-
     void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
         if (Objects.nonNull(timeout)) {
-            timeoutOracle = new TimeoutEQOracle<>(eqOracle, timeout);
+            TimeoutEQOracle<String, String> timeoutOracle = new TimeoutEQOracle<>(eqOracle, timeout);
             this.eqOracle.addOracle(timeoutOracle);
+            timeoutOracles.add(timeoutOracle);
         } else {
             this.eqOracle.addOracle(eqOracle);
         }
@@ -165,7 +164,7 @@ class BlackBoxVerifier {
      * @return Returns {@code true} if and only if the given black-box system is verified i.e., no counter example is found.
      */
     boolean run() {
-        if (Objects.nonNull(timeoutOracle)) {
+        for (TimeoutEQOracle<String, String> timeoutOracle : timeoutOracles) {
             timeoutOracle.start();
         }
         // create an experiment
