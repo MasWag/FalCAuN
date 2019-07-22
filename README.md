@@ -11,7 +11,7 @@ Usage
 
 ### Symopsis
 
-     ./cyveria [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
+     ./cyveria [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP|SA]
 
 ### Options
 
