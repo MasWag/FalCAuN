@@ -582,8 +582,7 @@ class AutotransExampleTest {
             } else if (useGA) {
                 exampleAT.getVerifier().addGAEQOracle(costFuncS1,
                         15,
-                        new Random(),
-                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
+                        10000, 3, 15.0, 0.6, exampleAT.getVerifier().getLtlFormulas().get(0));
             } else {
                 exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
             }

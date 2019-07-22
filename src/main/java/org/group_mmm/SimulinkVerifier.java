@@ -158,21 +158,18 @@ public class SimulinkVerifier {
 
     void addGAEQOracle(Function<Word<List<Double>>, Double> costFunc,
                        int length,
-                       Random random,
                        int maxTests,
                        int generationSize,
-                       int childrenSize,
-                       int changeSize,
-                       double mutationProb,
+                       double distributionIndex, // e.g., 15.0
                        double crossoverProb,
-                       boolean resetWord
+                       PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle
     ) {
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
         memOracleCosts.add(oracle);
 
-        this.verifier.addEqOracle(new GAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, changeSize, crossoverProb, mutationProb, resetWord));
+        this.verifier.addEqOracle(new GAEQOracle(oracle, length, maxTests, generationSize, crossoverProb, distributionIndex, ltlOracle));
     }
 
     List<Word<String>> getCexAbstractInput() {
