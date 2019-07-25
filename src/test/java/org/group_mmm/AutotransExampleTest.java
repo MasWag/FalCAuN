@@ -21,19 +21,42 @@ class AutotransExampleTest {
         exampleAT.constructVerifier();
 
         if (useHillClimbing) {
-            exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
-                    15,
-                    new Random(),
-                    50000, 5, 15 * 4, resetWord,
-                    exampleAT.getVerifier().getLtlFormulas().get(0));
+            executeRun(exampleAT, costFunc, Kind.HC, resetWord, dotName);
         } else if (useSA) {
-            exampleAT.getVerifier().addSAEQOracle(costFunc,
-                    15,
-                    new Random(),
-                    50000, 5, 15 * 4, resetWord, 0.3,
-                    exampleAT.getVerifier().getLtlFormulas().get(0));
+            executeRun(exampleAT, costFunc, Kind.SA, resetWord, dotName);
         } else {
-            exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
+            executeRun(exampleAT, costFunc, Kind.RANDOM, resetWord, dotName);
+        }
+    }
+
+    static void executeRun(AutotransExample exampleAT, Function<Word<List<Double>>, Double> costFunc, Kind kind, boolean resetWord, String dotName) throws Exception {
+        exampleAT.constructVerifier();
+
+        switch (kind) {
+            case HC:
+                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
+                        15,
+                        new Random(),
+                        50000, 5, 15 * 4, resetWord,
+                        exampleAT.getVerifier().getLtlFormulas().get(0));
+                break;
+            case SA:
+                exampleAT.getVerifier().addSAEQOracle(costFunc,
+                        15,
+                        new Random(),
+                        50000, 5, 15 * 4, resetWord, 0.3,
+                        exampleAT.getVerifier().getLtlFormulas().get(0));
+                break;
+            case RANDOM:
+                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
+                break;
+            case GA:
+                exampleAT.getVerifier().addGAEQOracle(costFunc,
+                        15,
+                        500000, 500,// Generation size must be odd number
+                        0.5, 0.9,
+                        exampleAT.getVerifier().getLtlFormulas().get(0));
+                break;
         }
 
         assertFalse(exampleAT.getVerifier().run());
@@ -44,6 +67,13 @@ class AutotransExampleTest {
 
         System.out.println("CexInput: " + exampleAT.getVerifier().getCexAbstractInput());
         System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
+    }
+
+    enum Kind {
+        RANDOM,
+        SA,
+        HC,
+        GA
     }
 
     @Test
@@ -464,7 +494,7 @@ class AutotransExampleTest {
         }
 
         @Test
-        void runS1Hill() throws Exception {
+        void runS1Func(Kind kind) throws Exception {
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
             velocityMapper.put('a', 80.0);
@@ -486,14 +516,23 @@ class AutotransExampleTest {
             exampleAT.setProperties(Collections.singletonList(
                     exampleAT.constructS1(120)));
 
-            boolean useHillClimbing = false;
-            boolean useSA = true;
             boolean resetWord = false;
 
             Function<Word<List<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
 
-            executeRun(exampleAT, costFunc, useHillClimbing, useSA, resetWord, "./runS1Learned.dot");
+            executeRun(exampleAT, costFunc, kind, resetWord, "./runS1Learned.dot");
         }
+
+        @Test
+        void runS1SA() throws Exception {
+            runS1Func(Kind.SA);
+        }
+
+        @Test
+        void runS1GA() throws Exception {
+            runS1Func(Kind.GA);
+        }
+
 
         @Test
         void runS2() throws Exception {
@@ -597,8 +636,7 @@ class AutotransExampleTest {
             System.out.println("CexOutput: " + exampleAT.getVerifier().getCexOutput());
         }
 
-        @Test
-        void runS4() throws Exception {
+        void runS4Func(Kind kind) throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
             //velocityMapper.put('a', 50.0);
             velocityMapper.put('b', 65.0);
@@ -621,15 +659,23 @@ class AutotransExampleTest {
                     Collections.singletonList(
                             exampleAT.constructS4(100.0, 65.0))));
 
-            boolean useHillClimbing = false;
-            boolean useSA = true;
             boolean resetWord = false;
 
             STLCost costFunc =
                     new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
                             new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14));
 
-            executeRun(exampleAT, costFunc, useHillClimbing, useSA, resetWord, "./runS4Learned.dot");
+            executeRun(exampleAT, costFunc, kind, resetWord, "./runS4Learned.dot");
+        }
+
+        @Test
+        void runS4SA() throws Exception {
+            runS4Func(Kind.SA);
+        }
+
+        @Test
+        void runS4GA() throws Exception {
+            runS4Func(Kind.GA);
         }
 
         @Test

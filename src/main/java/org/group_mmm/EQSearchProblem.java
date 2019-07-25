@@ -4,6 +4,7 @@ import de.learnlib.api.query.DefaultQuery;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
 import org.uma.jmetal.solution.IntegerSolution;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class EQSearchProblem extends AbstractIntegerProblem {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EQSearchProblem.class);
     private List<? extends String> symbolList;
     private SimulinkMembershipOracleCost memOracle;
     private MealyMachine<?, String, ?, String> hypothesis;
@@ -46,8 +48,9 @@ public class EQSearchProblem extends AbstractIntegerProblem {
             currentSample.append(symbolList.get(value));
         }
         DefaultQuery<String, Word<String>> query = new DefaultQuery<>(currentSample.toWord());
-
-        integerSolution.setObjective(0, memOracle.processQueryWithCost(query));
+        double robustness = memOracle.processQueryWithCost(query);
+        integerSolution.setObjective(0, robustness);
+        LOGGER.debug("Robustness: {}", robustness);
         Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
         if (!Objects.equals(hypOutput, query.getOutput())) {
             stopped = true;

@@ -156,6 +156,17 @@ public class SimulinkVerifier {
         this.verifier.addEqOracle(new MutateSelectEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
     }
 
+    /**
+     * add a Genetic algorithm-based equivalence oracle
+     *
+     * @param costFunc          the STL formula
+     * @param length            length of the generated signals
+     * @param maxTests          maximum test size
+     * @param generationSize    size of each generation. This must be an even number.
+     * @param distributionIndex the distribution index of the crossover
+     * @param crossoverProb     probability to have crossover
+     * @param ltlOracle         the LTL formula
+     */
     void addGAEQOracle(Function<Word<List<Double>>, Double> costFunc,
                        int length,
                        int maxTests,

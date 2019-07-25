@@ -1,7 +1,8 @@
 package org.group_mmm;
 
 import de.learnlib.api.oracle.PropertyOracle;
-import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GenerationalGeneticAlgorithm;
+import org.slf4j.LoggerFactory;
+import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.SteadyStateGeneticAlgorithm;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -9,19 +10,41 @@ import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 
 import java.util.List;
+import java.util.Objects;
 
-public class SimulinkGenerationalGeneticAlgorithm extends GenerationalGeneticAlgorithm<IntegerSolution> {
+public class SimulinkGenerationalGeneticAlgorithm extends SteadyStateGeneticAlgorithm<IntegerSolution> {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SimulinkGenerationalGeneticAlgorithm.class);
     private EQSearchProblem problem;
     private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
 
     SimulinkGenerationalGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize, CrossoverOperator<IntegerSolution> crossoverOperator, MutationOperator<IntegerSolution> mutationOperator, SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator, SolutionListEvaluator<IntegerSolution> evaluator, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
-        super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
+        super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator);
         this.problem = problem;
         this.ltlOracle = ltlOracle;
     }
 
     @Override
     protected boolean isStoppingConditionReached() {
-        return super.isStoppingConditionReached() || ltlOracle.isDisproved() || problem.isStopped();
+        if (super.isStoppingConditionReached()) {
+            LOGGER.debug("Stop because it reached maxEvaluations");
+            return true;
+        }
+        return ltlOracle.isDisproved() || problem.isStopped();
+    }
+
+    /**
+     * Create initial population only for the initial run
+     *
+     * @return Generated initial population if {@code this.population} is {@code null}. Otherwise it returns {@code this.population}.
+     */
+    @Override
+    protected List<IntegerSolution> createInitialPopulation() {
+        if (Objects.isNull(this.population)) {
+            LOGGER.debug("new population is generated");
+            return super.createInitialPopulation();
+        } else {
+            LOGGER.debug("previous population is reused");
+            return this.population;
+        }
     }
 }
