@@ -53,8 +53,8 @@ class AutotransExampleTest {
             case GA:
                 exampleAT.getVerifier().addGAEQOracle(costFunc,
                         15,
-                        500000, 500,// Generation size must be odd number
-                        0.5, 0.9,
+                        500000, 150,// Generation size must be odd number
+                        0.5, 0.01,
                         exampleAT.getVerifier().getLtlFormulas().get(0));
                 break;
         }

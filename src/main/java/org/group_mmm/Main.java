@@ -1,7 +1,12 @@
 package org.group_mmm;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import de.learnlib.api.oracle.PropertyOracle;
+import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
+import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
 import org.apache.commons.cli.MissingOptionException;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,16 +17,60 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.group_mmm.ArgParser.EquivType.*;
+
 public class Main {
     private static int generationSize = 5;
     private static int childrenSize = 15 * 4;
     private static boolean resetWord = false;
     private static List<Function<List<Double>, Double>> sigMap = Collections.emptyList();
 
+    private static void printEquivSetting(ArgParser argParser, List<STLCost> stl) {
+        final HashMap<ArgParser.EquivType, String> equivName = new HashMap<>();
+        equivName.put(SA, "Simulated Annealing");
+        equivName.put(RANDOM, "Random Test");
+        equivName.put(HC, "Hill Climbing");
+        equivName.put(GA, "Genetic Algorithm");
+
+        System.out.println(equivName.get(argParser.getEquiv()) + " is used");
+
+        System.out.println("STL size: " + stl.size());
+        System.out.println("Length: " + argParser.getLength());
+        System.out.println("maxTest: " + argParser.getMaxTest());
+
+        switch (argParser.getEquiv()) {
+            case SA:
+                System.out.println("alpha:" + argParser.getAlpha());
+            case HC:
+                System.out.println("Generation size: " + generationSize);
+                System.out.println("Children size:" + childrenSize);
+                System.out.println("Reset word: " + resetWord);
+                break;
+            case GA:
+                System.out.println("Population size: " + argParser.getPopulationSize());
+                System.out.println("Crossover probability:" + argParser.getCrossoverProb());
+                System.out.println("Mutation probability: " + argParser.getMutationProb());
+                break;
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         ArgParser argParser = new ArgParser(args);
         if (argParser.isQuit()) {
             return;
+        }
+
+        if (argParser.isVerbose()) {
+            Logger LTSminVersionLogger = (Logger) LoggerFactory.getLogger(LTSminVersion.class);
+            LTSminVersionLogger.setLevel(Level.INFO);
+            Logger AbstractLTSminLogger = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+            AbstractLTSminLogger.setLevel(Level.INFO);
+            Logger EQSearchProblemLogger = (Logger) LoggerFactory.getLogger(EQSearchProblem.class);
+            EQSearchProblemLogger.setLevel(Level.INFO);
+            Logger GAEQOracleLogger = (Logger) LoggerFactory.getLogger(GAEQOracle.class);
+            GAEQOracleLogger.setLevel(Level.INFO);
+            Logger SimulinkSteadyStateGeneticAlgorithmLogger = (Logger) LoggerFactory.getLogger(SimulinkSteadyStateGeneticAlgorithm.class);
+            SimulinkSteadyStateGeneticAlgorithmLogger.setLevel(Level.INFO);
         }
 
         // Parse Simulink mapper
@@ -73,67 +122,34 @@ public class Main {
                 System.out.println("Timeout is not set");
             }
         }
-/*
-            if (useHillClimbing) {
-                exampleAT.getVerifier().addHillClimbingEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        50000, 5, 15 * 4, resetWord,
-                        exampleAT.getVerifier().getLtlFormulas().get(0));
-            } else if (useGA) {
-                exampleAT.getVerifier().addGAEQOracle(costFunc,
-                        15,
-                        new Random(),
-                        10000, 3, 3, 2, 0.01, 0.8, resetWord);
-            } else {
-                exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
-            }
-*/
         switch (argParser.getEquiv()) {
             case HC:
                 for (int i = 0; i < stl.size(); i++) {
                     PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
                     verifier.addHillClimbingEQOracle(stl.get(i), argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord, ltlOracle);
                 }
-                if (argParser.isVerbose()) {
-                    System.out.println("Hill Climing is used");
-                    System.out.println("STL size: " + stl.size());
-                    System.out.println("Length: " + argParser.getLength());
-                    System.out.println("maxTest: " + argParser.getMaxTest());
-                    System.out.println("Generation size: " + generationSize);
-                    System.out.println("Children size:" + childrenSize);
-                    System.out.println("Reset word: " + resetWord);
-                }
                 break;
             case WP:
-                // verifier.addWpMethodEQOracle(30);
-                throw new UnsupportedOperationException("Wp is not implemented yet!!");
+                verifier.addWpMethodEQOracle(30);
+                break;
             case RANDOM:
                 verifier.addRandomWordEQOracle(argParser.getLength(), argParser.getLength(), argParser.getMaxTest(), new Random(), 1);
-                if (argParser.isVerbose()) {
-                    System.out.println("Random Test is used");
-                    System.out.println("STL size: " + stl.size());
-                    System.out.println("Min length: " + argParser.getLength());
-                    System.out.println("Max length: " + argParser.getLength());
-                    System.out.println("maxTest: " + argParser.getMaxTest());
-                }
                 break;
             case SA:
                 for (int i = 0; i < stl.size(); i++) {
                     PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
                     verifier.addSAEQOracle(stl.get(i), argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord, argParser.getAlpha(), ltlOracle);
                 }
-                if (argParser.isVerbose()) {
-                    System.out.println("Simulated Annealing is used");
-                    System.out.println("STL size: " + stl.size());
-                    System.out.println("Length: " + argParser.getLength());
-                    System.out.println("maxTest: " + argParser.getMaxTest());
-                    System.out.println("Generation size: " + generationSize);
-                    System.out.println("Children size:" + childrenSize);
-                    System.out.println("Reset word: " + resetWord);
-                    System.out.println("alpha:" + argParser.getAlpha());
+                break;
+            case GA:
+                for (int i = 0; i < stl.size(); i++) {
+                    PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
+                    verifier.addGAEQOracle(stl.get(i), argParser.getLength(), argParser.getMaxTest(), argParser.getPopulationSize(), argParser.getCrossoverProb(), argParser.getMutationProb(), ltlOracle);
                 }
                 break;
+        }
+        if (argParser.isVerbose()) {
+            printEquivSetting(argParser, stl);
         }
 
         System.out.println("BBC started");

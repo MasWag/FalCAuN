@@ -12,12 +12,12 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import java.util.List;
 import java.util.Objects;
 
-public class SimulinkGenerationalGeneticAlgorithm extends SteadyStateGeneticAlgorithm<IntegerSolution> {
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SimulinkGenerationalGeneticAlgorithm.class);
+public class SimulinkSteadyStateGeneticAlgorithm extends SteadyStateGeneticAlgorithm<IntegerSolution> {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SimulinkSteadyStateGeneticAlgorithm.class);
     private EQSearchProblem problem;
     private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
 
-    SimulinkGenerationalGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize, CrossoverOperator<IntegerSolution> crossoverOperator, MutationOperator<IntegerSolution> mutationOperator, SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator, SolutionListEvaluator<IntegerSolution> evaluator, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    SimulinkSteadyStateGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize, CrossoverOperator<IntegerSolution> crossoverOperator, MutationOperator<IntegerSolution> mutationOperator, SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator, SolutionListEvaluator<IntegerSolution> evaluator, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
         super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator);
         this.problem = problem;
         this.ltlOracle = ltlOracle;

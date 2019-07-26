@@ -28,7 +28,8 @@ rm -f ./src/main/java/org/group_mmm/MutateSelectEQOracle.java
 rm -f ./src/main/java/org/group_mmm/SAEQOracle.java
 rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracle.java
 rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracleCost.java
-
+rm -f ./src/main/java/org/group_mmm/EQSearchProblem.java
+rm -f ./src/main/java/org/group_mmm/SimulinkSteadyStateGeneticAlgorithm.java
 
 rm -f ./src/test/java/org/group_mmm/Simulink*
 rm -f ./src/test/java/org/group_mmm/AutotransExample*

@@ -163,16 +163,16 @@ public class SimulinkVerifier {
      * @param length            length of the generated signals
      * @param maxTests          maximum test size
      * @param generationSize    size of each generation. This must be an even number.
-     * @param distributionIndex the distribution index of the crossover
      * @param crossoverProb     probability to have crossover
+     * @param mutationProbability probability to have mutation
      * @param ltlOracle         the LTL formula
      */
     void addGAEQOracle(Function<Word<List<Double>>, Double> costFunc,
                        int length,
                        int maxTests,
                        int generationSize,
-                       double distributionIndex, // e.g., 15.0
                        double crossoverProb,
+                       double mutationProbability, // e.g., 1.0 / length
                        PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle
     ) {
         SimulinkMembershipOracleCost oracle =
@@ -180,7 +180,7 @@ public class SimulinkVerifier {
         oracle.setCache(this.memOracle.getCache());
         memOracleCosts.add(oracle);
 
-        this.verifier.addEqOracle(new GAEQOracle(oracle, length, maxTests, generationSize, crossoverProb, distributionIndex, ltlOracle));
+        this.verifier.addEqOracle(new GAEQOracle(oracle, length, maxTests, generationSize, crossoverProb, mutationProbability, ltlOracle));
     }
 
     List<Word<String>> getCexAbstractInput() {

@@ -1,9 +1,5 @@
 package org.group_mmm;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
-import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
 import org.apache.commons.cli.*;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +27,12 @@ class ArgParser {
     private String initScript;
     private List<String> paramNames;
     private int maxTest = 50000;
+    private Integer populationSize = null;
     private Double alpha = null;
     private Long timeout = null;
+    private Double mutationProb = null;
+    private Double crossoverProb = null;
+
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
         options.addOption("v", "verbose", false, "Outputs extra information, mainly for debugging");
@@ -50,8 +50,10 @@ class ArgParser {
         options.addOption("i", "init", true, "The initial script of MATLAB");
         options.addOption("p", "param-names", true, "The parameter names of the Simulink model");
         options.addOption("M", "max-test", true, "The maximum test size");
+        options.addOption(null, "population-size", true, "The population size for GA");
         options.addOption(null, "sa-alpha", true, "The alpha parameter for simulated annealing (should be [0,1])");
-
+        options.addOption(null, "ga-crossover-prob", true, "The crossover probability for genetic algorithm (should be [0,1])");
+        options.addOption(null, "ga-mutation-prob", true, "The mutation probability for genetic algorithm (should be [0,1])");
 
         DefaultParser parser = new DefaultParser();
         CommandLine cl;
@@ -81,10 +83,6 @@ class ArgParser {
             System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
         } else {
             System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO");
-            Logger LTSminVersionLogger = (Logger) LoggerFactory.getLogger(LTSminVersion.class);
-            LTSminVersionLogger.setLevel(Level.INFO);
-            Logger AbstractLTSminLogger = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
-            AbstractLTSminLogger.setLevel(Level.INFO);
         }
 
         if (cl.hasOption('t')) {
@@ -160,6 +158,24 @@ class ArgParser {
                         throw new MissingOptionException("sa-alpha must be specified for SA");
                     }
                     break;
+                case "ga":
+                    equiv = EquivType.GA;
+                    if (cl.hasOption("ga-crossover-prob")) {
+                        crossoverProb = Double.parseDouble(cl.getOptionValue("ga-crossover-prob"));
+                    } else {
+                        throw new MissingOptionException("ga-crossover-prob must be specified for GA");
+                    }
+                    if (cl.hasOption("ga-mutation-prob")) {
+                        mutationProb = Double.parseDouble(cl.getOptionValue("ga-mutation-prob"));
+                    } else {
+                        throw new MissingOptionException("ga-mutation-prob must be specified for GA");
+                    }
+                    if (cl.hasOption("population-size")) {
+                        populationSize = Integer.parseInt(cl.getOptionValue("population-size"));
+                    } else {
+                        throw new MissingOptionException("population-size must be specified for GA");
+                    }
+                    break;
                 default:
                     throw new IllegalArgumentException("unknown equiv. algorithm: " + cl.getOptionValue('E'));
             }
@@ -179,6 +195,10 @@ class ArgParser {
         }
     }
 
+    int getPopulationSize() {
+        return populationSize;
+    }
+
     String getEtfFile() {
         return etfFile;
     }
@@ -189,6 +209,14 @@ class ArgParser {
 
     double getAlpha() {
         return alpha;
+    }
+
+    double getMutationProb() {
+        return mutationProb;
+    }
+
+    double getCrossoverProb() {
+        return crossoverProb;
     }
 
     int getMaxTest() {
@@ -255,6 +283,7 @@ class ArgParser {
         HC,
         RANDOM,
         WP,
-        SA
+        SA,
+        GA
     }
 }
