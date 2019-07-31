@@ -60,7 +60,7 @@ public class Main {
             return;
         }
 
-        if (argParser.isVerbose()) {
+        if (!argParser.isVerbose()) {
             Logger LTSminVersionLogger = (Logger) LoggerFactory.getLogger(LTSminVersion.class);
             LTSminVersionLogger.setLevel(Level.INFO);
             Logger AbstractLTSminLogger = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);

@@ -50,7 +50,7 @@ public class EQSearchProblem extends AbstractIntegerProblem {
         DefaultQuery<String, Word<String>> query = new DefaultQuery<>(currentSample.toWord());
         double robustness = memOracle.processQueryWithCost(query);
         integerSolution.setObjective(0, robustness);
-        LOGGER.debug("Robustness: {}", robustness);
+        LOGGER.trace("Robustness: {}", robustness);
         Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
         if (!Objects.equals(hypOutput, query.getOutput())) {
             stopped = true;
