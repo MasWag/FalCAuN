@@ -11,7 +11,7 @@ Usage
 
 ### Symopsis
 
-     ./cyveria [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP|SA]
+     ./cyveria [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP|SA|GA]
 
 ### Options
 
@@ -46,6 +46,14 @@ Algorithms for equivalence query
 When you use simulated annealing, the following option is necessary
 
 **--sa-alpha** *alpha* The alpha parameter for simulated annealing (should be between 0 and 1)
+
+### GA (Genetic Algorithm)
+
+When you use genetic algorithm, the following option is necessary
+
+**--population-size** *size* The size of the population
+**--ga-crossover-prob** *prob* The crossover probability (should be between 0 and 1)
+**--ga-mutation-prob** *prob* The mutation probability (should be between 0 and 1)
 
 File format of the mapper
 -------------------------
