@@ -52,9 +52,9 @@ class AutotransExampleTest {
                 break;
             case GA:
                 exampleAT.getVerifier().addGAEQOracle(costFunc,
-                        15,
-                        500000, 150,// Generation size must be odd number
-                        0.5, 0.01,
+                        30,
+                        500000, ArgParser.GASelectionKind.BestSolution, 30,// Generation size must be odd number
+                        0.8, 0.01,
                         exampleAT.getVerifier().getLtlFormulas().get(0));
                 break;
         }
@@ -366,7 +366,7 @@ class AutotransExampleTest {
 
         @BeforeEach
         void setUp() {
-            exampleAT = new AutotransExample(2.0);
+            exampleAT = new AutotransExample(1.0);
 
             // Construct the input mapper
             {
@@ -621,7 +621,7 @@ class AutotransExampleTest {
             } else if (useGA) {
                 exampleAT.getVerifier().addGAEQOracle(costFuncS1,
                         15,
-                        10000, 3, 15.0, 0.6, exampleAT.getVerifier().getLtlFormulas().get(0));
+                        10000, ArgParser.GASelectionKind.BestSolution, 3, 15.0, 0.6, exampleAT.getVerifier().getLtlFormulas().get(0));
             } else {
                 exampleAT.getVerifier().addRandomWordEQOracle(15, 15, 100, new Random(), 1);
             }
@@ -814,7 +814,7 @@ class AutotransExampleTest {
         }
 
         @Test
-        void runM1() throws Exception {
+        void runM1Func(Kind kind) throws Exception {
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
             velocityMapper.put('a', 30.0);
@@ -853,11 +853,19 @@ class AutotransExampleTest {
             exampleAT.setProperties(new ArrayList<>(
                     Collections.singletonList(costFunc.toAbstractString())));
 
-            boolean useHillClimbing = true;
-            boolean useGA = false;
             boolean resetWord = false;
 
-            executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runM1Learned.dot");
+            executeRun(exampleAT, costFunc, kind, resetWord, "./runM1Learned.dot");
+        }
+
+        @Test
+        void runM1SA() throws Exception {
+            runM1Func(Kind.SA);
+        }
+
+        @Test
+        void runM1GA() throws Exception {
+            runM1Func(Kind.GA);
         }
 
         @Test
