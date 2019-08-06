@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.selection.BestSolutionSelection;
+import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.comparator.ObjectiveComparator;
@@ -20,6 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Equivalence query using genetic algorithm
@@ -34,12 +37,28 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(GAEQOracle.class);
     private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
 
-    GAEQOracle(SimulinkMembershipOracleCost memOracle, int length, int maxEvaluations, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    GAEQOracle(SimulinkMembershipOracleCost memOracle, int length, int maxEvaluations, ArgParser.GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+
         this.problem = new EQSearchProblem(memOracle, length);
         CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerUniformCrossover(crossoverProb);
         MutationOperator<IntegerSolution> mutationOperator = new IntegerRandomMutation(mutationProbability);
         Comparator<IntegerSolution> fitnessComparator = new ObjectiveComparator<>(0);
         this.ltlOracle = ltlOracle;
+
+        SelectionOperator<List<IntegerSolution>, IntegerSolution> selection;
+
+        switch (selectionKind) {
+            case BestSolution:
+                selection = new BestSolutionSelection<>(fitnessComparator);
+                break;
+            case Tournament:
+                selection = new BinaryTournamentSelection<>(fitnessComparator);
+                break;
+            default:
+                selection = null;
+                break;
+        }
+
 
         this.algorithm = new SimulinkSteadyStateGeneticAlgorithm(
                 problem,
@@ -47,7 +66,7 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
                 populationSize,
                 crossoverOperator,
                 mutationOperator,
-                new BestSolutionSelection<>(fitnessComparator),
+                selection,
                 new SequentialSolutionListEvaluator<>(),
                 ltlOracle);
     }

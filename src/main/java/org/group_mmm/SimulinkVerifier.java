@@ -162,6 +162,7 @@ public class SimulinkVerifier {
      * @param costFunc          the STL formula
      * @param length            length of the generated signals
      * @param maxTests          maximum test size
+     * @param selectionKind kind of the selection method
      * @param generationSize    size of each generation. This must be an even number.
      * @param crossoverProb     probability to have crossover
      * @param mutationProbability probability to have mutation
@@ -170,6 +171,7 @@ public class SimulinkVerifier {
     void addGAEQOracle(Function<Word<List<Double>>, Double> costFunc,
                        int length,
                        int maxTests,
+                       ArgParser.GASelectionKind selectionKind,
                        int generationSize,
                        double crossoverProb,
                        double mutationProbability, // e.g., 1.0 / length
@@ -180,7 +182,7 @@ public class SimulinkVerifier {
         oracle.setCache(this.memOracle.getCache());
         memOracleCosts.add(oracle);
 
-        this.verifier.addEqOracle(new GAEQOracle(oracle, length, maxTests, generationSize, crossoverProb, mutationProbability, ltlOracle));
+        this.verifier.addEqOracle(new GAEQOracle(oracle, length, maxTests, selectionKind, generationSize, crossoverProb, mutationProbability, ltlOracle));
     }
 
     List<Word<String>> getCexAbstractInput() {

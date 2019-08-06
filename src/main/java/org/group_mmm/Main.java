@@ -50,6 +50,7 @@ public class Main {
                 System.out.println("Population size: " + argParser.getPopulationSize());
                 System.out.println("Crossover probability:" + argParser.getCrossoverProb());
                 System.out.println("Mutation probability: " + argParser.getMutationProb());
+                System.out.println("Selection kind: " + argParser.getSelectionKind());
                 break;
         }
     }
@@ -144,7 +145,7 @@ public class Main {
             case GA:
                 for (int i = 0; i < stl.size(); i++) {
                     PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
-                    verifier.addGAEQOracle(stl.get(i), argParser.getLength(), argParser.getMaxTest(), argParser.getPopulationSize(), argParser.getCrossoverProb(), argParser.getMutationProb(), ltlOracle);
+                    verifier.addGAEQOracle(stl.get(i), argParser.getLength(), argParser.getMaxTest(), argParser.getSelectionKind(), argParser.getPopulationSize(), argParser.getCrossoverProb(), argParser.getMutationProb(), ltlOracle);
                 }
                 break;
         }

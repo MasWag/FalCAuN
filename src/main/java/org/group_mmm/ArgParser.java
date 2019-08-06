@@ -8,7 +8,7 @@ import java.util.List;
 
 class ArgParser {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ArgParser.class);
-
+    private GASelectionKind selectionKind = null;
     private Options options = new Options();
     private HelpFormatter help = new HelpFormatter();
     private boolean quit = false;
@@ -32,7 +32,6 @@ class ArgParser {
     private Long timeout = null;
     private Double mutationProb = null;
     private Double crossoverProb = null;
-
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
         options.addOption("v", "verbose", false, "Outputs extra information, mainly for debugging");
@@ -54,6 +53,7 @@ class ArgParser {
         options.addOption(null, "sa-alpha", true, "The alpha parameter for simulated annealing (should be [0,1])");
         options.addOption(null, "ga-crossover-prob", true, "The crossover probability for genetic algorithm (should be [0,1])");
         options.addOption(null, "ga-mutation-prob", true, "The mutation probability for genetic algorithm (should be [0,1])");
+        options.addOption(null, "ga-selection-kind", true, "Specify the selection method in GA");
 
         DefaultParser parser = new DefaultParser();
         CommandLine cl;
@@ -175,6 +175,20 @@ class ArgParser {
                     } else {
                         throw new MissingOptionException("population-size must be specified for GA");
                     }
+                    if (cl.hasOption("ga-selection-kind")) {
+                        switch (cl.getOptionValue("ga-selection-kind").toLowerCase()) {
+                            case "bestsolution":
+                                selectionKind = GASelectionKind.BestSolution;
+                                break;
+                            case "tournament":
+                                selectionKind = GASelectionKind.Tournament;
+                                break;
+                            default:
+                                throw new IllegalArgumentException("unknown selection kind: " + cl.getOptionValue("ga-selection-kind"));
+                        }
+                    } else {
+                        throw new MissingOptionException("ga-selection-kind must be specified for GA");
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("unknown equiv. algorithm: " + cl.getOptionValue('E'));
@@ -193,6 +207,15 @@ class ArgParser {
         } else {
             etfFile = null;
         }
+    }
+
+    GASelectionKind getSelectionKind() {
+        return selectionKind;
+    }
+
+    enum GASelectionKind {
+        BestSolution,
+        Tournament
     }
 
     int getPopulationSize() {

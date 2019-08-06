@@ -94,9 +94,36 @@ class ArgParserTest {
         args.add("-E=random");
     }
 
-
     private void addWP() {
         args.add("-E=WP");
+    }
+
+    private void addGA() {
+        args.add("-E=ga");
+    }
+
+    private void addGACrossoverProb() {
+        args.add("--ga-crossover-prob=0.5");
+    }
+
+    private void addGAMutationProb() {
+        args.add("--ga-mutation-prob=0.05");
+    }
+
+    private void addGAPopulationSize() {
+        args.add("--population-size=100");
+    }
+
+    private void addGABestSolution() {
+        args.add("--ga-selection-kind=BestSolution");
+    }
+
+    private void addGATournament() {
+        args.add("--ga-selection-kind=Tournament");
+    }
+
+    private void addGAInvalidSolution() {
+        args.add("--ga-selection-kind=Hoge");
     }
 
     private void addDot() {
@@ -204,6 +231,97 @@ class ArgParserTest {
         addVerbose();
         addInitScript();
         addStepTime();
+        assertThrows(MissingOptionException.class, this::parse);
+    }
+
+    @Test
+    void invalidSolutionKind() {
+        addSTLFile();
+        addInputMapper();
+        addOutputMapper();
+        addLength();
+        addStepTime();
+        addGA();
+        addMaxTest();
+        addVerbose();
+        addParamNames();
+        addInitScript();
+        addGACrossoverProb();
+        addGAMutationProb();
+        addGAPopulationSize();
+        addGAInvalidSolution();
+        assertThrows(IllegalArgumentException.class, this::parse);
+    }
+
+    @Test
+    void missingSolutionKind() {
+        addSTLFile();
+        addInputMapper();
+        addOutputMapper();
+        addLength();
+        addStepTime();
+        addGA();
+        addMaxTest();
+        addVerbose();
+        addParamNames();
+        addInitScript();
+        addGACrossoverProb();
+        addGAMutationProb();
+        addGAPopulationSize();
+        assertThrows(MissingOptionException.class, this::parse);
+    }
+
+    @Test
+    void missingPopulationSize() {
+        addSTLFile();
+        addInputMapper();
+        addOutputMapper();
+        addLength();
+        addStepTime();
+        addGA();
+        addMaxTest();
+        addVerbose();
+        addParamNames();
+        addInitScript();
+        addGACrossoverProb();
+        addGAMutationProb();
+        addGATournament();
+        assertThrows(MissingOptionException.class, this::parse);
+    }
+
+    @Test
+    void missingMutationProb() {
+        addSTLFile();
+        addInputMapper();
+        addOutputMapper();
+        addLength();
+        addStepTime();
+        addGA();
+        addMaxTest();
+        addVerbose();
+        addParamNames();
+        addInitScript();
+        addGACrossoverProb();
+        addGAPopulationSize();
+        addGATournament();
+        assertThrows(MissingOptionException.class, this::parse);
+    }
+
+    @Test
+    void missingCrossoverProb() {
+        addSTLFile();
+        addInputMapper();
+        addOutputMapper();
+        addLength();
+        addStepTime();
+        addGA();
+        addMaxTest();
+        addVerbose();
+        addParamNames();
+        addInitScript();
+        addGAMutationProb();
+        addGAPopulationSize();
+        addGATournament();
         assertThrows(MissingOptionException.class, this::parse);
     }
 
@@ -343,6 +461,68 @@ class ArgParserTest {
                 assertEquals(ArgParser.EquivType.SA, argParser.getEquiv());
                 assertEquals("stl.txt", argParser.getStlFile());
                 assertEquals(0.2, argParser.getAlpha());
+                assertNull(argParser.getStlFormula());
+            }
+
+            @Test
+            void gaBestSolution() throws MissingOptionException {
+                addSTLFile();
+                addInputMapper();
+                addOutputMapper();
+                addLength();
+                addStepTime();
+                addGA();
+                addMaxTest();
+                addVerbose();
+                addParamNames();
+                addInitScript();
+                addGACrossoverProb();
+                addGAMutationProb();
+                addGAPopulationSize();
+                addGABestSolution();
+                parse();
+                quitExpect = false;
+                verboseExpected = true;
+                maxTestExpected = 100;
+                assertNull(argParser.getDotFile());
+                assertEquals("initAT", argParser.getInitScript());
+                assertEquals(Arrays.asList("throttle", "brake"), argParser.getParamNames());
+                assertEquals("input.mapper.txt", argParser.getInputMapperFile());
+                assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
+                assertEquals(ArgParser.EquivType.GA, argParser.getEquiv());
+                assertEquals("stl.txt", argParser.getStlFile());
+                assertEquals(ArgParser.GASelectionKind.BestSolution, argParser.getSelectionKind());
+                assertNull(argParser.getStlFormula());
+            }
+
+            @Test
+            void gaTournament() throws MissingOptionException {
+                addSTLFile();
+                addInputMapper();
+                addOutputMapper();
+                addLength();
+                addStepTime();
+                addGA();
+                addMaxTest();
+                addVerbose();
+                addParamNames();
+                addInitScript();
+                addGACrossoverProb();
+                addGAMutationProb();
+                addGAPopulationSize();
+                addGATournament();
+                parse();
+                quitExpect = false;
+                verboseExpected = true;
+                maxTestExpected = 100;
+                assertNull(argParser.getDotFile());
+                assertEquals("initAT", argParser.getInitScript());
+                assertEquals(Arrays.asList("throttle", "brake"), argParser.getParamNames());
+                assertEquals("input.mapper.txt", argParser.getInputMapperFile());
+                assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
+                assertEquals(ArgParser.EquivType.GA, argParser.getEquiv());
+                assertEquals("stl.txt", argParser.getStlFile());
+                assertEquals(ArgParser.GASelectionKind.Tournament, argParser.getSelectionKind());
                 assertNull(argParser.getStlFormula());
             }
         }
