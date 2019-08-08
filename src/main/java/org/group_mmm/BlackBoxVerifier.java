@@ -116,17 +116,24 @@ class BlackBoxVerifier {
     }
 
     void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
-        addEqOracle(new RandomWordsEQOracle.MealyRandomWordsEQOracle<>(
-                memOracle, minLength, maxLength, maxTests, random, batchSize));
+        addEqOracle(new StopDisprovedEQOracle<>(
+                new RandomWordsEQOracle.MealyRandomWordsEQOracle<>(
+                        memOracle, minLength, maxLength, maxTests, random, batchSize),
+                this.ltlFormulas));
     }
 
     void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
-        addEqOracle(new RandomWalkEQOracle<>(verifiedSystem, restartProbability, maxSteps, random));
+        addEqOracle(new StopDisprovedEQOracle<>(
+                new RandomWalkEQOracle<>(verifiedSystem, restartProbability, maxSteps, random),
+                this.ltlFormulas));
+
     }
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
-        addEqOracle(new CompleteExplorationEQOracle.MealyCompleteExplorationEQOracle<>(
-                memOracle, minDepth, maxDepth, batchSize));
+        addEqOracle(new StopDisprovedEQOracle<>(
+                new CompleteExplorationEQOracle.MealyCompleteExplorationEQOracle<>(
+                        memOracle, minDepth, maxDepth, batchSize),
+                this.ltlFormulas));
     }
 
     void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
