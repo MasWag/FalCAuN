@@ -51,9 +51,10 @@ When you use simulated annealing, the following option is necessary
 
 When you use genetic algorithm, the following option is necessary
 
-**--population-size** *size* The size of the population
-**--ga-crossover-prob** *prob* The crossover probability (should be between 0 and 1)
-**--ga-mutation-prob** *prob* The mutation probability (should be between 0 and 1)
+**--population-size** *size* The size of the population <br />
+**--ga-crossover-prob** *prob* The crossover probability (should be between 0 and 1) <br />
+**--ga-mutation-prob** *prob* The mutation probability (should be between 0 and 1) <br />
+**--ga-selection-kind** *[bestsolution|tournament]* The selection in the genetic algorithm. Either best solution selection or binary tournament.
 
 File format of the mapper
 -------------------------
