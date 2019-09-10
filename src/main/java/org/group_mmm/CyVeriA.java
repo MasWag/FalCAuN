@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.group_mmm.ArgParser.EquivType.*;
 
-public class Main {
+public class CyVeriA {
     private static int generationSize = 5;
     private static int childrenSize = 15 * 4;
     private static boolean resetWord = false;
@@ -51,6 +51,9 @@ public class Main {
                 System.out.println("Crossover probability:" + argParser.getCrossoverProb());
                 System.out.println("Mutation probability: " + argParser.getMutationProb());
                 System.out.println("Selection kind: " + argParser.getSelectionKind());
+                break;
+            case WP:
+                System.out.println("Maximum depth:" + argParser.getMaxDepth());
                 break;
         }
     }
@@ -131,7 +134,7 @@ public class Main {
                 }
                 break;
             case WP:
-                verifier.addWpMethodEQOracle(30);
+                verifier.addWpMethodEQOracle(argParser.getMaxDepth());
                 break;
             case RANDOM:
                 verifier.addRandomWordEQOracle(argParser.getLength(), argParser.getLength(), argParser.getMaxTest(), new Random(), 1);

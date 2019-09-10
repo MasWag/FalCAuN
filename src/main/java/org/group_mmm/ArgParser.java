@@ -32,6 +32,8 @@ class ArgParser {
     private Long timeout = null;
     private Double mutationProb = null;
     private Double crossoverProb = null;
+    private int maxDepth;
+
     ArgParser(String[] args) throws MissingOptionException {
         options.addOption("h", "help", false, "Print a help message");
         options.addOption("v", "verbose", false, "Outputs extra information, mainly for debugging");
@@ -54,6 +56,7 @@ class ArgParser {
         options.addOption(null, "ga-crossover-prob", true, "The crossover probability for genetic algorithm (should be [0,1])");
         options.addOption(null, "ga-mutation-prob", true, "The mutation probability for genetic algorithm (should be [0,1])");
         options.addOption(null, "ga-selection-kind", true, "Specify the selection method in GA");
+        options.addOption(null, "wp-max-depth", true, "Specify the maximum depth in Wp");
 
         DefaultParser parser = new DefaultParser();
         CommandLine cl;
@@ -149,6 +152,11 @@ class ArgParser {
                     break;
                 case "wp":
                     equiv = EquivType.WP;
+                    if (cl.hasOption("wp-max-depth")) {
+                        maxDepth = Integer.parseInt(cl.getOptionValue("wp-max-depth"));
+                    } else {
+                        throw new MissingOptionException("wp-max-depth must be specified for Wp");
+                    }
                     break;
                 case "sa":
                     equiv = EquivType.SA;
@@ -213,9 +221,8 @@ class ArgParser {
         return selectionKind;
     }
 
-    enum GASelectionKind {
-        BestSolution,
-        Tournament
+    int getMaxDepth() {
+        return maxDepth;
     }
 
     int getPopulationSize() {
@@ -300,6 +307,11 @@ class ArgParser {
 
     private void showVersion() {
         System.out.println(ArgParser.class.getPackage().getImplementationTitle() + " version " + ArgParser.class.getPackage().getImplementationVersion());
+    }
+
+    enum GASelectionKind {
+        BestSolution,
+        Tournament
     }
 
     enum EquivType {

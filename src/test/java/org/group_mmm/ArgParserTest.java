@@ -130,6 +130,10 @@ class ArgParserTest {
         args.add("-o=result.dot");
     }
 
+    private void addWpMaxDepth() {
+        args.add("--wp-max-depth=10");
+    }
+
     private void parse() throws MissingOptionException {
         argParser = new ArgParser(args.toArray(new String[0]));
     }
@@ -325,6 +329,22 @@ class ArgParserTest {
         assertThrows(MissingOptionException.class, this::parse);
     }
 
+    @Test
+    void missingMaxDepth() {
+        addSTLFile();
+        addInputMapper();
+        addOutputMapper();
+        addLength();
+        addStepTime();
+        addWP();
+        addMaxTest();
+        addVerbose();
+        addParamNames();
+        addInitScript();
+        assertThrows(MissingOptionException.class, this::parse);
+
+    }
+
     @Nested
     class Success {
 
@@ -422,6 +442,7 @@ class ArgParserTest {
                 addVerbose();
                 addParamNames();
                 addInitScript();
+                addWpMaxDepth();
                 parse();
                 quitExpect = false;
                 verboseExpected = true;

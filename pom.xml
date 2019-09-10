@@ -51,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.group_mmm.Main</mainClass>
+                            <mainClass>org.group_mmm.CyVeriA</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
@@ -67,7 +67,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.group_mmm.Main</mainClass>
+                            <mainClass>org.group_mmm.CyVeriA</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>

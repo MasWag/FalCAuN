@@ -20,7 +20,7 @@ rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracle.java
 rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracleCost.java 
 rm -f ./src/main/java/org/group_mmm/SimulinkSUL.java 
 rm -f ./src/main/java/org/group_mmm/SimulinkVerifier.java 
-rm -f ./src/main/java/org/group_mmm/Main.java
+rm -f ./src/main/java/org/group_mmm/CyVeriA.java
 rm -f ./src/main/java/org/group_mmm/AbstractSelectEQOracle.java
 rm -f ./src/main/java/org/group_mmm/GAEQOracle.java
 rm -f ./src/main/java/org/group_mmm/HillClimbingEQOracle.java
