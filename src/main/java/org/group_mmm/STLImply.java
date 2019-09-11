@@ -16,9 +16,10 @@ public class STLImply extends STLCost {
         this.nonTemporal = subFml1.nonTemporal && subFml2.nonTemporal;
     }
 
+
     @Override
-    public Double apply(Word<List<Double>> signal) {
-        return Math.max(-subFml1.apply(signal), subFml2.apply(signal));
+    public RoSI getRoSI(Word<List<Double>> signal) {
+        return subFml1.getRoSI(signal).assignNegate().assignMax(subFml2.getRoSI(signal));
     }
 
     @Override

@@ -19,8 +19,9 @@ public class STLOr extends STLCost {
     }
 
     @Override
-    public Double apply(Word<List<Double>> signal) {
-        return subFmls.stream().map(subFml -> subFml.apply(signal)).filter(Objects::nonNull).max(Comparator.comparingDouble(Double::valueOf)).orElse(Double.NEGATIVE_INFINITY);
+    public RoSI getRoSI(Word<List<Double>> signal) {
+        return subFmls.stream().map(subFml -> subFml.getRoSI(signal)).filter(
+                Objects::nonNull).reduce(new RoSI(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY), RoSI::max);
     }
 
     @Override

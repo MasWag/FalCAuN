@@ -1,5 +1,8 @@
 package org.group_mmm;
 
+import net.automatalib.words.Word;
+
+import java.util.List;
 import java.util.Set;
 
 abstract class STLTemporalOp extends STLCost {
@@ -9,6 +12,8 @@ abstract class STLTemporalOp extends STLCost {
         this.subFml = subFml;
         this.nonTemporal = false;
     }
+
+    abstract public RoSI getRoSIRaw(Word<List<Double>> signal);
 
     @Override
     protected void constructAtomicStrings() {

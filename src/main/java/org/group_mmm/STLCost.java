@@ -19,6 +19,11 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
         return atomicStrings;
     }
 
+    @Override
+    public Double apply(Word<List<Double>> signal) {
+        return getRoSI(signal).upperBound;
+    }
+
     static public STLCost parseSTL(String stlFormula,
                                    List<Map<Character, Double>> outputMapper,
                                    List<Character> largest) {
@@ -35,6 +40,61 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
     static STLCost parseSTL(String stlFormula) {
         org.group_mmm.STLVisitor visitor = new STLVisitorImpl();
         return parseSTLImpl(stlFormula, visitor);
+    }
+
+    public abstract RoSI getRoSI(Word<List<Double>> signal);
+
+    class RoSI {
+        Double lowerBound;
+        Double upperBound;
+
+        RoSI(double lowerBound, double upperBound) {
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+        }
+
+        RoSI(double value) {
+            this.lowerBound = value;
+            this.upperBound = value;
+        }
+
+        RoSI max(RoSI element) {
+            return new RoSI(
+                    Double.max(lowerBound, element.lowerBound),
+                    Double.max(upperBound, element.upperBound));
+        }
+
+        RoSI assignMax(RoSI element) {
+            lowerBound = Double.max(lowerBound, element.lowerBound);
+            upperBound = Double.max(upperBound, element.upperBound);
+            return this;
+        }
+
+        RoSI min(RoSI element) {
+            return new RoSI(
+                    Double.min(lowerBound, element.lowerBound),
+                    Double.min(upperBound, element.upperBound));
+        }
+
+        /**
+         * Destructive min
+         */
+        RoSI assignMin(RoSI element) {
+            lowerBound = Double.min(lowerBound, element.lowerBound);
+            upperBound = Double.min(upperBound, element.upperBound);
+            return this;
+        }
+
+        RoSI negate() {
+            return new RoSI(-upperBound, -lowerBound);
+        }
+
+        RoSI assignNegate() {
+            double tmp = lowerBound;
+            lowerBound = -upperBound;
+            upperBound = -tmp;
+            return this;
+        }
     }
 
     private static STLCost parseSTLImpl(String stlFormula,

@@ -60,25 +60,25 @@ public class STLAtomic extends STLCost {
     }
 
     @Override
-    public Double apply(Word<List<Double>> signal) {
+    public RoSI getRoSI(Word<List<Double>> signal) {
         List<Double> currentValue;
 
         if (signal.isEmpty()) {
-            return Double.POSITIVE_INFINITY;
+            return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
         currentValue = signal.getSymbol(0);
         if (currentValue == null) {
-            return Double.POSITIVE_INFINITY;
+            return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
         switch (op) {
             case lt:
-                return comparator - currentValue.get(sigIndex);
+                return new RoSI(comparator - currentValue.get(sigIndex));
             case gt:
-                return currentValue.get(sigIndex) - comparator;
+                return new RoSI(currentValue.get(sigIndex) - comparator);
             case eq:
-                return -abs(currentValue.get(sigIndex) - comparator);
+                return new RoSI(-abs(currentValue.get(sigIndex) - comparator));
             case ne:
-                return abs(currentValue.get(sigIndex) - comparator);
+                return new RoSI(abs(currentValue.get(sigIndex) - comparator));
             default:
                 return null;
         }

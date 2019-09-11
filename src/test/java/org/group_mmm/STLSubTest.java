@@ -19,7 +19,7 @@ class STLSubTest {
     @Test
     void applyShortEventual() {
         STLCost fml = new STLSub(new STLEventually(new STLAtomic(0, STLAtomic.Operation.gt, 10.0)), 1, 3);
-        double expect = Double.NEGATIVE_INFINITY;
+        double expect = Double.POSITIVE_INFINITY;
         double actual = fml.apply(signal);
         assertEquals(expect, actual);
     }

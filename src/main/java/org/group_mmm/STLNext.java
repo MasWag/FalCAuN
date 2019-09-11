@@ -24,6 +24,14 @@ public class STLNext extends STLCost {
     }
 
     @Override
+    public RoSI getRoSI(Word<List<Double>> signal) {
+        if (signal.size() <= 1) {
+            return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        }
+        return this.subFml.getRoSI(signal.suffix(signal.size() - 1));
+    }
+
+    @Override
     protected void constructAtomicStrings() {
         this.atomicStrings = null;
     }

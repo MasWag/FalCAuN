@@ -2,7 +2,6 @@ package org.group_mmm;
 
 import ch.qos.logback.classic.Logger;
 import net.automatalib.words.Word;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
@@ -28,19 +27,17 @@ public class STLSub extends STLCost {
     }
 
     @Override
-    @NotNull
-    public Double apply(Word<List<Double>> signal) {
+    public RoSI getRoSI(Word<List<Double>> signal) {
         if (from >= signal.size()) {
-            switch (subFml.getClass().toString()) {
-                case "class org.group_mmm.STLEventually":
-                    return Double.NEGATIVE_INFINITY;
-                case "class org.group_mmm.STLGlobal":
-                    return Double.POSITIVE_INFINITY;
-                default:
-                    LOGGER.error("Unknown class {}", subFml.getClass());
-            }
+            // If the signal is too short
+            return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        } else if (to + 1 > signal.size()) {
+            // If we do not know the window entirely.
+            return subFml.getRoSI(signal.subWord(from, Math.min(to + 1, signal.size())));
+        } else {
+            // If we DO know the window entirely.
+            return subFml.getRoSIRaw(signal.subWord(from, Math.min(to + 1, signal.size())));
         }
-        return subFml.apply(signal.subWord(from, Math.min(to + 1, signal.size())));
     }
 
     @Override

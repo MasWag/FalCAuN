@@ -2,7 +2,6 @@ package org.group_mmm;
 
 import net.automatalib.words.Word;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,8 +11,13 @@ public class STLGlobal extends STLTemporalOp {
     }
 
     @Override
-    public Double apply(Word<List<Double>> signal) {
-        return signal.suffixes(true).stream().map(subFml).filter(Objects::nonNull).min(Comparator.comparingDouble(Double::valueOf)).orElse(Double.POSITIVE_INFINITY);
+    public RoSI getRoSI(Word<List<Double>> signal) {
+        return getRoSIRaw(signal).assignMin(new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
+    }
+
+    public RoSI getRoSIRaw(Word<List<Double>> signal) {
+        return signal.suffixes(true).stream().map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
+                .reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
     }
 
     @Override

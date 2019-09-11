@@ -18,9 +18,11 @@ class STLAnd extends STLCost {
         this.nonTemporal = subFmls.stream().map(STLCost::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
     }
 
+
     @Override
-    public Double apply(Word<List<Double>> signal) {
-        return subFmls.stream().map(subFml -> subFml.apply(signal)).filter(Objects::nonNull).min(Comparator.comparingDouble(Double::valueOf)).orElse(Double.POSITIVE_INFINITY);
+    public RoSI getRoSI(Word<List<Double>> signal) {
+        return subFmls.stream().map(subFml -> subFml.getRoSI(signal)).filter(
+                Objects::nonNull).reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
     }
 
     @Override
