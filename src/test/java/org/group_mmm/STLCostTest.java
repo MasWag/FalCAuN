@@ -6,9 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Double.POSITIVE_INFINITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,10 +23,30 @@ class STLCostTest {
                 "[] ( signal(0) < 120.000000 )",
                 "[] ( ( signal(2) == 3.000000 ) -> ( signal(0) > 20.000000 ) )"
         );
+        abstractExpected = Arrays.asList(
+                "[] ( ( output == \"aaa\" ) || ( output == \"aac\" ) || ( output == \"bab\" ) || ( output == \"aab\" ) || ( output == \"baa\" ) || ( output == \"bac\" ) )",
+                "[] ( ( output == \"aaa\" ) || ( output == \"aac\" ) || ( output == \"caa\" ) || ( output == \"bab\" ) || ( output == \"baa\" ) || ( output == \"cac\" ) || ( output == \"bac\" ) || ( output == \"cab\" ) )"
+        ); // || ( output == "aab" )
+        Map<Character, Double> velocityMap = new HashMap<>();
+        Map<Character, Double> rotationMap = new HashMap<>();
+        Map<Character, Double> gearMap = new HashMap<>();
+        velocityMap.put('a', 20.0);
+        velocityMap.put('b', 120.0);
+        gearMap.put('a', 2.0);
+        gearMap.put('b', 3.0);
+        List<Map<Character, Double>> outputMapper = Arrays.asList(velocityMap, rotationMap, gearMap);
+        List<Character> largest = Arrays.asList('c', 'a', 'c');
+        List<STLAtomic> atomics = new ArrayList<>();
+        atomics.add(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
+        atomics.add(new STLAtomic(2, STLAtomic.Operation.eq, 3));
+        atomics.add(new STLAtomic(0, STLAtomic.Operation.gt, 20));
+        for (STLAtomic atomic : atomics) {
+            atomic.setAtomic(outputMapper, largest);
+        }
+
         formulas = Arrays.asList(
-                new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0)),
-                new STLGlobal(new STLImply(new STLAtomic(2, STLAtomic.Operation.eq, 3),
-                        new STLAtomic(0, STLAtomic.Operation.gt, 20)))
+                new STLGlobal(atomics.get(0)),
+                new STLGlobal(new STLImply(atomics.get(1), atomics.get(2)))
         );
 
         assert concreteExpected.size() == formulas.size();
@@ -38,6 +56,13 @@ class STLCostTest {
     void toStringTest() {
         for (int i = 0; i < concreteExpected.size(); i++) {
             assertEquals(concreteExpected.get(i), formulas.get(i).toString());
+        }
+    }
+
+    @Test
+    void toAbstractStringTest() {
+        for (int i = 0; i < abstractExpected.size(); i++) {
+            assertEquals(abstractExpected.get(i), formulas.get(i).toAbstractString());
         }
     }
 

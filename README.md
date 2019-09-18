@@ -39,7 +39,11 @@ Algorithms for equivalence query
 
 ### Random
 
-### WP-method
+### Wp-method
+
+When you use Wp-method, the following option is necessary
+
+**--wp-max-depth** *depth* The maximum depth in the Wp-method
 
 ### SA (Simulated Annealing)
 

@@ -49,6 +49,12 @@ public class STLAtomic extends STLCost {
         }
     }
 
+    void setAtomic(List<Map<Character, Double>> outputMapper, List<Character> largest) {
+        this.outputMapper = outputMapper;
+        this.largest = largest;
+        setOutputMaps();
+    }
+
     void setOutputMapper(List<Map<Character, Double>> outputMapper) {
         this.outputMapper = outputMapper;
         setOutputMaps();
