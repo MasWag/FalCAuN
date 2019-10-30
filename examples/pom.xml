@@ -7,16 +7,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <junit.jupiter.version>5.3.1</junit.jupiter.version>
-        <cyveria.version>1.0-SNAPSHOT</cyveria.version>
+        <falcaun.version>1.0-SNAPSHOT</falcaun.version>
     </properties>
 
     <groupId>org.group_mmm</groupId>
     <version>1.0-SNAPSHOT</version>
-    <artifactId>cyveria-examples</artifactId>
-    <name>CyVeriA :: Examples</name>
+    <artifactId>falcaun-examples</artifactId>
+    <name>FalCAuN :: Examples</name>
     <description>
         A collection of various small example usage of internal classes. This is mainly used for experiments and not
-        intended as a part of the tool CyVeriA itself.
+        intended as a part of the tool FalCAuN itself.
     </description>
 
     <build>
@@ -68,8 +68,8 @@
     <dependencies>
         <dependency>
             <groupId>org.group_mmm</groupId>
-            <artifactId>cyveria</artifactId>
-            <version>${cyveria.version}</version>
+            <artifactId>falcaun</artifactId>
+            <version>${falcaun.version}</version>
         </dependency>
 
         <!-- LearnLib -->

@@ -274,7 +274,7 @@ class ArgParser {
     }
 
     private void showHelp() {
-        help.printHelp("cyveria", options);
+        help.printHelp("falcaun", options);
     }
 
     boolean isVerbose() {

@@ -3,7 +3,7 @@
 # NAME
 #  run_S5_SA.sh
 # DESCRIPTION
-#  An example usage of CyVeriA for S5 using Simulated Annealing
+#  An example usage of FalCAuN for S5 using Simulated Annealing
 #
 # USAGE
 #  ./run_S5_SA.sh
@@ -28,4 +28,4 @@ readonly TIMEOUT=$((30 * 60)) # 30 min.
 
 ## Actual execution
 
-../cyveria --stl-file=$STL --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --sa-alpha=$ALPHA
+../falcaun --stl-file=$STL --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --sa-alpha=$ALPHA

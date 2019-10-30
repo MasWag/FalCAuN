@@ -1,1 +1,5 @@
 []((signal(2) == 3) -> signal(0) > 20)
+[]((signal(2) == 3) -> signal(0) > 22.5)
+[]((signal(2) == 3) -> signal(0) > 25)
+[]((signal(2) == 3) -> signal(0) > 27.5)
+[]((signal(2) == 3) -> signal(0) > 30)

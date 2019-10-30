@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/CyVeriA
+    working_directory: ~/FalCAuN
     docker:
       - image: circleci/openjdk:8-jdk-browsers
     steps:
@@ -12,7 +12,7 @@ jobs:
             tar xvf ltsmin-v3.1.0-linux.tgz
             sudo cp -r v3.1.0/* /usr
       - restore_cache:
-          key: CyVeriA-{{ checksum "pom.xml" }}
+          key: FalCAuN-{{ checksum "pom.xml" }}
       - run: sh ignore_matlab.sh
       - run: mvn dependency:go-offline
       - store_artifacts:
@@ -20,7 +20,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: CyVeriA-{{ checksum "pom.xml" }}
+          key: FalCAuN-{{ checksum "pom.xml" }}
       - run: mvn test -Dtest=BlackBoxVerifierTest,ArgParserTest,InputMapperReaderTest,OutputMapperReaderTest,STLAtomicTest,STLCostTest,STLParserTest,STLSubTest
       - store_test_results:
           path: target/surefire-reports

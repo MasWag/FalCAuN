@@ -1,16 +1,16 @@
 #!/bin/sh -u
-#****h* CyVeriA/cyveria
+#****h* FalCAuN/falcaun
 # NAME
-#  cyveria
+#  falcaun
 # DESCRIPTION
-#  the script to launch CyVeriA
+#  the script to launch FalCAuN
 #
 # USAGE
-#  ./cyveria [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
+#  ./falcaun [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
 #
 #******
 
-JAR_NAME=org/group_mmm/cyveria/1.0-SNAPSHOT/cyveria-1.0-SNAPSHOT-jar-with-dependencies.jar
+JAR_NAME=org/group_mmm/falcaun/1.0-SNAPSHOT/falcaun-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 if [ -z "$MATLAB_HOME" ]; then
     echo "Error: environment variable MATLAB_HOME is not set"

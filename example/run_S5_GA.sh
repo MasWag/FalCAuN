@@ -3,7 +3,7 @@
 # NAME
 #  run_S5_GA.sh
 # DESCRIPTION
-#  An example usage of CyVeriA for S5 using genetic algorithm
+#  An example usage of FalCAuN for S5 using genetic algorithm
 #
 # USAGE
 #  ./run_S5_GA.sh
@@ -30,4 +30,4 @@ readonly TIMEOUT=$((120 * 60)) # 120 min.
 
 ## Actual execution
 
-../cyveria --stl-file=$STL --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --ga-crossover-prob=$CROSSOVER_PROB --ga-mutation-prob=$MUTATION_PROB --population-size=$POPULATION_SIZE
+../falcaun --stl-file=$STL --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --ga-crossover-prob=$CROSSOVER_PROB --ga-mutation-prob=$MUTATION_PROB --population-size=$POPULATION_SIZE

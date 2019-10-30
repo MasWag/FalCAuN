@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.group_mmm.ArgParser.EquivType.*;
 
-public class CyVeriA {
+public class FalCAuN {
     private static int generationSize = 5;
     private static int childrenSize = 15 * 4;
     private static boolean resetWord = false;

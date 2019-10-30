@@ -22,7 +22,7 @@ class ArgParserTest {
     @BeforeEach
     void setUp() {
         args = new ArrayList<>();
-        args.add("cyveria");
+        args.add("falcaun");
         maxTestExpected = 50000;
     }
 

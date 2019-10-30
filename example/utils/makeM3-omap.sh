@@ -22,4 +22,4 @@ fi
 readonly P1Params=$1
 readonly P2Params=$2
 
-echo $P1Params,$P2Params | tr , '\n' | sort -n | awk 'BEGIN{ORS="\t"}$1=$1".0";END{ORS="\n";print "inf"}' | cat - <(echo inf) <(echo inf)
+echo $P1Params,$P2Params | tr , '\n' | sort -n | uniq | awk 'BEGIN{ORS="\t"}$1=$1".0";END{ORS="\n";print "inf"}' | cat - <(echo inf) <(echo inf)

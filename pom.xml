@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.group_mmm</groupId>
-    <artifactId>cyveria</artifactId>
+    <artifactId>falcaun</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -51,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.group_mmm.CyVeriA</mainClass>
+                            <mainClass>org.group_mmm.FalCAuN</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
@@ -67,7 +67,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.group_mmm.CyVeriA</mainClass>
+                            <mainClass>org.group_mmm.FalCAuN</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>

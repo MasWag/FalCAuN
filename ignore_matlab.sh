@@ -1,5 +1,5 @@
 #!/bin/sh
-#****h* CyVeriA/ignore_matlab
+#****h* FalCAuN/ignore_matlab
 # NAME
 #  ignore_matlab
 # DESCRIPTION
@@ -20,7 +20,7 @@ rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracle.java
 rm -f ./src/main/java/org/group_mmm/SimulinkMembershipOracleCost.java 
 rm -f ./src/main/java/org/group_mmm/SimulinkSUL.java 
 rm -f ./src/main/java/org/group_mmm/SimulinkVerifier.java 
-rm -f ./src/main/java/org/group_mmm/CyVeriA.java
+rm -f ./src/main/java/org/group_mmm/FalCAuN.java
 rm -f ./src/main/java/org/group_mmm/AbstractSelectEQOracle.java
 rm -f ./src/main/java/org/group_mmm/GAEQOracle.java
 rm -f ./src/main/java/org/group_mmm/HillClimbingEQOracle.java

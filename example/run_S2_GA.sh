@@ -3,7 +3,7 @@
 # NAME
 #  run_S2_GA.sh
 # DESCRIPTION
-#  An example usage of CyVeriA for S2 using genetic algorithm
+#  An example usage of FalCAuN for S2 using genetic algorithm
 #
 # USAGE
 #  ./run_S2_GA.sh
@@ -27,7 +27,7 @@ readonly SIGNAL_STEP=1.0
 
 ### Configiration for the equivalence testing
 readonly KIND=GA
-readonly POPULATION_SIZE=150
+readonly POPULATION_SIZE=200
 readonly CROSSOVER_PROB=0.5
 readonly MUTATION_PROB=0.01
 readonly SELECTION_KIND=Tournament
@@ -36,4 +36,4 @@ readonly TIMEOUT=$((240 * 60)) # 240 min.
 
 ## Actual execution
 
-../cyveria --stl-file=$STL --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --ga-crossover-prob=$CROSSOVER_PROB --ga-mutation-prob=$MUTATION_PROB --population-size=$POPULATION_SIZE --ga-selection-kind=$SELECTION_KIND
+../falcaun --stl-file=$STL --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --ga-crossover-prob=$CROSSOVER_PROB --ga-mutation-prob=$MUTATION_PROB --population-size=$POPULATION_SIZE --ga-selection-kind=$SELECTION_KIND

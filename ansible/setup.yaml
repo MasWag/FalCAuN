@@ -47,15 +47,15 @@
       become: yes
       when: findLTSmin is failed
 
-    - name: clone CyVeriA
+    - name: clone FalCAuN
       git:
-        repo: 'git@github.com:MasWag/CyVeriA.git'
-        dest: /home/mwaga/CyVeriA
+        repo: 'git@github.com:MasWag/FalCAuN.git'
+        dest: /home/mwaga/FalCAuN
         force: yes
-      register: CyVeriA_git_result
+      register: FalCAuN_git_result
 
-    # - name: clean CyVeriA
-    #   shell: cd /home/mwaga/CyVeriA && bash -lc 'mvn clean'
+    # - name: clean FalCAuN
+    #   shell: cd /home/mwaga/FalCAuN && bash -lc 'mvn clean'
 
-    # - name: test CyVeriA
-    #   shell: cd /home/mwaga/CyVeriA && bash -lc 'mvn test "-Dtest=!AutotransExampleTest"'
+    # - name: test FalCAuN
+    #   shell: cd /home/mwaga/FalCAuN && bash -lc 'mvn test "-Dtest=!AutotransExampleTest"'
