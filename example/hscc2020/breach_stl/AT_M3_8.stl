@@ -1,0 +1,8 @@
+AT_M3_8_1 := alw (speed[t] < 30 => alw_[0,8] (speed[t] < 70))
+AT_M3_8_2 := alw (speed[t] < 40 => alw_[0,8] (speed[t] < 70))
+AT_M3_8_3 := alw (speed[t] < 30 => alw_[0,8] (speed[t] < 80))
+AT_M3_8_4 := alw (speed[t] < 40 => alw_[0,8] (speed[t] < 80))
+AT_M3_8_5 := alw (speed[t] < 30 => alw_[0,10] (speed[t] < 70))
+AT_M3_8_6 := alw (speed[t] < 40 => alw_[0,10] (speed[t] < 70))
+AT_M3_8_7 := alw (speed[t] < 30 => alw_[0,10] (speed[t] < 80))
+AT_M3_8_8 := alw (speed[t] < 40 => alw_[0,10] (speed[t] < 80))

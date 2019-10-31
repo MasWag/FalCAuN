@@ -1,0 +1,6 @@
+S5_1 := alw((RPM[t] < 4770) or (RPM[t+1] > 600))
+S5_2 := alw((RPM[t] < 4770) or (RPM[t+1] > 1000))
+S5_3 := alw((RPM[t] < 4770) or (RPM[t+1] > 1500))
+S5_4 := alw((RPM[t] < 4000) or (RPM[t+1] > 600))
+S5_5 := alw((RPM[t] < 4000) or (RPM[t+1] > 1000))
+S5_6 := alw((RPM[t] < 4000) or (RPM[t+1] > 1500))
