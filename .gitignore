@@ -25,6 +25,7 @@ hs_err_pid*
 # Simulink
 *.slxc
 *mexmaci64
+*mexa64
 example/slprj/
 src/test/resources/MATLAB/slprj/
 *.autosave
