@@ -1,0 +1,5 @@
+S2_1 := alw((gear[t] == 3) => speed[t] > 20)
+S2_2 := alw((gear[t] == 3) => speed[t] > 22.5)
+S2_3 := alw((gear[t] == 3) => speed[t] > 25)
+S2_4 := alw((gear[t] == 3) => speed[t] > 27.5)
+S2_5 := alw((gear[t] == 3) => speed[t] > 30)

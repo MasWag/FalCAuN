@@ -1,0 +1,6 @@
+alw((signal(1) < 4770) || (X (signal(1) > 600)))
+alw((signal(1) < 4770) || (X (signal(1) > 1000)))
+alw((signal(1) < 4770) || (X (signal(1) > 1500)))
+alw((signal(1) < 4000) || (X (signal(1) > 600)))
+alw((signal(1) < 4000) || (X (signal(1) > 1000)))
+alw((signal(1) < 4000) || (X (signal(1) > 1500)))

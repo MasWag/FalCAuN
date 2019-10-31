@@ -11,6 +11,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * <p>HillClimbingEQOracle class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class HillClimbingEQOracle extends AbstractSelectEQOracle {
     HillClimbingEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord);
@@ -20,6 +25,7 @@ public class HillClimbingEQOracle extends AbstractSelectEQOracle {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected List<Word<String>> createNextGeneration(List<Word<String>> goodSamples) {
         return goodSamples.stream().flatMap(w -> neighborhoodStream(w).limit(this.childrenSize)).collect(Collectors.toList());

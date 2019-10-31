@@ -1,0 +1,3 @@
+\begin{tabular}[t]{|c||c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+ & \multicolumn{4}{c|}{\random} & \multicolumn{4}{c|}{\hc} & \multicolumn{4}{c|}{\ga} & \multicolumn{4}{c|}{\breach}\\
+ kind & mean & std. & max. & min. & mean & std. & max. & min. & mean & std. & max. & min. & mean & std. & max. & min.\\ \hline\hline

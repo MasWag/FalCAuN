@@ -5,6 +5,11 @@ import net.automatalib.words.Word;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * <p>STLNext class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class STLNext extends STLCost {
     private STLCost subFml;
     private boolean nullPositive;
@@ -15,6 +20,7 @@ public class STLNext extends STLCost {
         this.nonTemporal = false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Double apply(Word<List<Double>> signal) {
         if (signal.size() <= 1) {
@@ -23,6 +29,7 @@ public class STLNext extends STLCost {
         return this.subFml.apply(signal.suffix(signal.size() - 1));
     }
 
+    /** {@inheritDoc} */
     @Override
     public RoSI getRoSI(Word<List<Double>> signal) {
         if (signal.size() <= 1) {
@@ -31,21 +38,25 @@ public class STLNext extends STLCost {
         return this.subFml.getRoSI(signal.suffix(signal.size() - 1));
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toAbstractString() {
         return String.format("X ( %s )", subFml.toAbstractString());
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Set<String> getAllAPs() {
         return subFml.getAllAPs();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format("X ( %s )", subFml.toString());

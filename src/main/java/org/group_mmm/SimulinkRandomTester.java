@@ -8,12 +8,12 @@ import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.stream.IntStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Pure Random Tester of a Simulink model
@@ -36,7 +36,6 @@ public class SimulinkRandomTester {
     private Random random = new Random();
     private List<String> properties;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SimulinkRandomTester.class);
-
 
     /**
      * @param initScript The MATLAB script called at first. You have to define mdl in the script.
@@ -98,6 +97,7 @@ public class SimulinkRandomTester {
         cexOutput = new ArrayList<>();
         cexProperty = new ArrayList<>();
         long nanoTimeout = timeout * 1000000000;
+
         List<Integer> unfalsifiedIndex = IntStream.range(0, this.properties.size()).boxed().collect(Collectors.toList());
         LOGGER.info("Starting pure random test");
         long startTime = System.nanoTime();

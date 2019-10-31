@@ -11,6 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+/**
+ * <p>Abstract STLCost class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public abstract class STLCost implements Function<Word<List<Double>>, Double> {
     boolean nonTemporal;
     Set<String> atomicStrings;
@@ -19,11 +24,20 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
         return atomicStrings;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Double apply(Word<List<Double>> signal) {
         return getRoSI(signal).upperBound;
     }
 
+    /**
+     * <p>parseSTL.</p>
+     *
+     * @param stlFormula a {@link java.lang.String} object.
+     * @param outputMapper a {@link java.util.List} object.
+     * @param largest a {@link java.util.List} object.
+     * @return a {@link org.group_mmm.STLCost} object.
+     */
     static public STLCost parseSTL(String stlFormula,
                                    List<Map<Character, Double>> outputMapper,
                                    List<Character> largest) {
@@ -31,10 +45,23 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
         return parseSTLImpl(stlFormula, visitor);
     }
 
+    /**
+     * <p>getAllAPs.</p>
+     *
+     * @return a {@link java.util.Set} object.
+     */
     protected abstract Set<String> getAllAPs();
 
+    /**
+     * <p>constructAtomicStrings.</p>
+     */
     protected abstract void constructAtomicStrings();
 
+    /**
+     * <p>toAbstractString.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public abstract String toAbstractString();
 
     static STLCost parseSTL(String stlFormula) {
@@ -42,6 +69,12 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
         return parseSTLImpl(stlFormula, visitor);
     }
 
+    /**
+     * <p>getRoSI.</p>
+     *
+     * @param signal a {@link net.automatalib.words.Word} object.
+     * @return a {@link org.group_mmm.STLCost.RoSI} object.
+     */
     public abstract RoSI getRoSI(Word<List<Double>> signal);
 
     class RoSI {

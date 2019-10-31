@@ -1,6 +1,4 @@
-- hosts: aws
-  user: mwaga
-  tasks:
+- tasks:
     - name: install Java environment
       apt:     
         name: "{{ packages }}"

@@ -1,0 +1,4 @@
+M1_4_1 := alw (speed[t] < 30 => alw_[0,8] (speed[t] < 70))
+M1_4_2 := alw (speed[t] < 40 => alw_[0,8] (speed[t] < 70))
+M1_4_3 := alw (speed[t] < 30 => alw_[0,8] (speed[t] < 80))
+M1_4_4 := alw (speed[t] < 40 => alw_[0,8] (speed[t] < 80))

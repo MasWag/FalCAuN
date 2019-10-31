@@ -4,10 +4,14 @@ import ch.qos.logback.classic.Logger;
 import net.automatalib.words.Word;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * <p>STLSub class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class STLSub extends STLCost {
     private final Logger LOGGER = (Logger) LoggerFactory.getLogger(STLSub.class);
 
@@ -26,6 +30,7 @@ public class STLSub extends STLCost {
         this.nonTemporal = false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public RoSI getRoSI(Word<List<Double>> signal) {
         if (from >= signal.size()) {
@@ -40,11 +45,13 @@ public class STLSub extends STLCost {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Set<String> getAllAPs() {
         return subFml.getAllAPs();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         String result = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " <>" : " []";
@@ -54,34 +61,37 @@ public class STLSub extends STLCost {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toAbstractString() {
         final String op = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " || " : " && ";
 
-        ArrayList<String> subFmls = new ArrayList<>();
-        for (int i = this.from; i <= this.to; i++) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("( ");
+        StringBuilder builder = new StringBuilder();
+        builder.append("( ");
+        for (int i = 0; i <= this.to; i++) {
 
-            for (int j = 0; j < i; j++) {
+            if (i >= this.from) {
+                builder.append("( ");
+                builder.append(subFml.subFml.toAbstractString());
+                builder.append(" )");
+                if (i < this.to) {
+                    builder.append(op);
+                }
+            }
+            if (i < this.to) {
                 builder.append("X (");
             }
-
-            builder.append(subFml.subFml.toAbstractString());
-
-            for (int j = 0; j < i; j++) {
-                builder.append(" )");
-            }
+        }
+        for (int i = 0; i <= this.to; i++) {
             builder.append(" )");
-
-            subFmls.add(builder.toString());
         }
 
-        return String.join(op, subFmls);
+        return builder.toString();
     }
 }

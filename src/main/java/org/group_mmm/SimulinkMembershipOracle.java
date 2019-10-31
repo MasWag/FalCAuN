@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 /**
  * The membership oracle for a Simulink model
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershipOracle<String, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracle.class);
@@ -36,6 +38,7 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
         this.cache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
     }
 
+    /** {@inheritDoc} */
     @Override
     public void processQueries(Collection<? extends Query<String, Word<String>>> queries) {
         for (Query<String, Word<String>> q : queries) {

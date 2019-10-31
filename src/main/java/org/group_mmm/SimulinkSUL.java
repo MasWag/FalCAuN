@@ -17,18 +17,30 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * The Simulink SUL
+ * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
  */
 class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkSUL.class);
     private final Double signalStep;
-    // The simulation step of Simulink.
-    private final double SIMULINK_SIMULATION_STEP = 0.0025;
+    /**
+     * The simulation step of Simulink.
+     * <p>
+     * If this value is too large, Simulink can abort due to an computation error. In that case, you should make this value larger.
+     */
+    private double simulinkSimulationStep = 0.0025;
     private MatlabEngine matlab;
     private List<String> paramNames;
     private Double endTime = 0.0;
     private List<List<Double>> previousInput;
     private boolean isInitial = true;
+
+    /**
+     * Setter of simulinkSimulationStep
+     * @param simulinkSimulationStep The fixed simulation step of Simulink. If this value is too large, Simulink can abort due to an computation error.
+     */
+    public void setSimulationStep(double simulinkSimulationStep) {
+        this.simulinkSimulationStep = simulinkSimulationStep;
+    }
 
     SimulinkSUL(String initScript, List<String> paramNames, Double signalStep) throws InterruptedException, ExecutionException {
         // Load System here
@@ -61,11 +73,17 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean canFork() {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void pre() {
         endTime = 0.0;
@@ -73,6 +91,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         isInitial = true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void post() {
         previousInput.clear();
@@ -80,6 +101,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         isInitial = true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nullable
     @Override
     public List<Double> step(@Nullable List<Double> inputSignal) throws SULException {
@@ -174,8 +198,8 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
         // Configuration on the decimation
         builder.append("set_param(mdl, 'SolverType', 'Fixed-step');");
-        builder.append("set_param(mdl, 'FixedStep', '" + SIMULINK_SIMULATION_STEP + "');");
-        builder.append("set_param(mdl, 'Decimation', '").append(signalStep / SIMULINK_SIMULATION_STEP).append("');");
+        builder.append("set_param(mdl, 'FixedStep', '" + simulinkSimulationStep + "');");
+        builder.append("set_param(mdl, 'Decimation', '").append(signalStep / simulinkSimulationStep).append("');");
     }
 
     private void preventHugeTempFile(StringBuilder builder) {
@@ -230,12 +254,18 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         return result.toWord();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public SUL<List<Double>, List<Double>> fork() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void finalize() throws Throwable {
         try {

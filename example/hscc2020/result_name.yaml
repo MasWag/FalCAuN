@@ -1,0 +1,66 @@
+#****h* hscc2020/result_name.yaml
+# NAME
+#  result_name.yaml
+# DESCRIPTION
+#  The YAML file to show the relation between the benchmark and the filename of the log
+#******
+- $\stlFml_1$:
+    RANDOM: AT_S1
+    HC: AT_S1
+    GA: AT_S1
+    breach: AT_S1
+- $\stlFml_2$:
+    RANDOM: AT_S2
+    HC: AT_S2
+    GA: AT_S2
+    breach: AT_S2
+- $\stlFml_3$:
+    RANDOM: AT_S3
+    HC: AT_S3
+    GA: AT_S3
+    breach: AT_S3
+- $\stlFml_4$:
+    RANDOM: AT_S4
+    HC: AT_S4
+    GA: AT_S4
+    breach: AT_S4
+- $\stlFml_5$:
+    RANDOM: AT_S5
+    HC: AT_S5
+    GA: AT_S5
+    breach: AT_S5
+- $\stlFml_{6,\mathrm{tiny}}$:
+    RANDOM: AT_M1-tiny
+    HC: AT_M1-tiny
+    GA: AT_M1-tiny
+    breach: AT_M1_2
+- $\stlFml_{6,\mathrm{small}}$:
+    RANDOM: AT_M1-small
+    HC: AT_M1-small
+    GA: AT_M1-small
+    breach: AT_M1_4
+- $\stlFml_{6,\mathrm{medium}}$:
+    RANDOM: AT_M1-medium
+    HC: AT_M1-medium
+    GA: AT_M1-medium
+    breach: AT_M1_8
+- $\stlFml_{6,\mathrm{large}}$:
+    RANDOM: AT_M1-large
+    HC: AT_M1-large
+    GA: AT_M1-large
+    breach: AT_M1_12
+- $\stlFml_{6,\mathrm{huge}}$:
+    RANDOM: AT_M1-huge
+    HC: AT_M1-huge
+    GA: AT_M1-huge
+    breach: AT_M1_18
+- $\stlFml_{6,\mathrm{gigantic}}$:
+    RANDOM: AT_M1-gigantic
+    HC: AT_M1-gigantic
+    GA: AT_M1-gigantic
+    breach: AT_M1_36
+- $\stlFml_7$:
+    RANDOM: AT_M2
+    HC: AT_M2
+    GA: AT_M2
+    breach: AT_M2

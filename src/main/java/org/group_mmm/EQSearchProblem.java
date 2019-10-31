@@ -12,6 +12,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * <p>EQSearchProblem class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class EQSearchProblem extends AbstractIntegerProblem {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EQSearchProblem.class);
     private List<? extends String> symbolList;
@@ -40,6 +45,7 @@ public class EQSearchProblem extends AbstractIntegerProblem {
         setUpperLimit(upperLimit);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void evaluate(IntegerSolution integerSolution) {
         WordBuilder<String> currentSample = new WordBuilder<>();
@@ -53,6 +59,7 @@ public class EQSearchProblem extends AbstractIntegerProblem {
         LOGGER.trace("Robustness: {}", robustness);
         Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
         if (!Objects.equals(hypOutput, query.getOutput())) {
+            LOGGER.info("CEX with Robustness: {}", robustness);
             stopped = true;
             cexQuery = query;
         }

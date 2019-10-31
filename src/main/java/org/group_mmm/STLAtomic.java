@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 
+/**
+ * <p>STLAtomic class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class STLAtomic extends STLCost {
     private Operation op;
     private int sigIndex;
@@ -17,6 +22,13 @@ public class STLAtomic extends STLCost {
     private Set<String> allAPs;
     private List<Map<Character, Double>> outputMapper;
 
+    /**
+     * <p>Constructor for STLAtomic.</p>
+     *
+     * @param sigIndex a int.
+     * @param op a {@link org.group_mmm.STLAtomic.Operation} object.
+     * @param comparator a double.
+     */
     public STLAtomic(int sigIndex, Operation op, double comparator) {
         this.sigIndex = sigIndex;
         this.comparator = comparator;
@@ -24,6 +36,7 @@ public class STLAtomic extends STLCost {
         this.nonTemporal = true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Set<String> getAllAPs() {
         if (this.allAPs == null) {
@@ -65,6 +78,7 @@ public class STLAtomic extends STLCost {
         setOutputMaps();
     }
 
+    /** {@inheritDoc} */
     @Override
     public RoSI getRoSI(Word<List<Double>> signal) {
         List<Double> currentValue;
@@ -90,6 +104,7 @@ public class STLAtomic extends STLCost {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         switch (op) {
@@ -105,6 +120,7 @@ public class STLAtomic extends STLCost {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void constructAtomicStrings() {
         if (this.atomicStrings != null) {
@@ -145,6 +161,7 @@ public class STLAtomic extends STLCost {
         return atomicStrings;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toAbstractString() {
         constructAtomicStrings();

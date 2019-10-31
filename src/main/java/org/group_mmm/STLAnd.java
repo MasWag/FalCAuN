@@ -19,17 +19,20 @@ class STLAnd extends STLCost {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public RoSI getRoSI(Word<List<Double>> signal) {
         return subFmls.stream().map(subFml -> subFml.getRoSI(signal)).filter(
                 Objects::nonNull).reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return subFmls.stream().map(STLCost::toString).collect(Collectors.joining(" && "));
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void constructAtomicStrings() {
         if (this.nonTemporal) {
@@ -42,11 +45,13 @@ class STLAnd extends STLCost {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Set<String> getAllAPs() {
         return subFmls.get(0).getAllAPs();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toAbstractString() {
         if (nonTemporal) {

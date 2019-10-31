@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 
 import static org.group_mmm.ArgParser.EquivType.*;
 
+/**
+ * <p>FalCAuN class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class FalCAuN {
     private static int generationSize = 5;
     private static int childrenSize = 15 * 4;
@@ -58,6 +63,12 @@ public class FalCAuN {
         }
     }
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.lang.Exception if any.
+     */
     public static void main(String[] args) throws Exception {
         ArgParser argParser = new ArgParser(args);
         if (argParser.isQuit()) {

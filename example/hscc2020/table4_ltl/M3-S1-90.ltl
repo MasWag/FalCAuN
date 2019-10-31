@@ -1,0 +1,1 @@
+[] ( ( ( output == "aaa" ) || ( output == "caa" ) || ( output == "baa" ) || ( output == "eaa" ) || ( output == "daa" ) || ( output == "faa" ) || ( output == "gaa" ) ))

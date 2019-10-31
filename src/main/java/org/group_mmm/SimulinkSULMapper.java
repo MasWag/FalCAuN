@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
  * I/O Mapper between abstract/concrete Simulink model.
  * <p>
  * TODO For now, the abstract alphabet is String for simplicity but later, it can be integers to handle more data.
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, List<Double>> {
     private Map<String, List<Double>> inputMapper;
@@ -22,6 +24,14 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
     private List<List<Character>> abstractOutputs;
     private List<List<Double>> concreteOutputs;
 
+    /**
+     * <p>Constructor for SimulinkSULMapper.</p>
+     *
+     * @param inputMapper a {@link java.util.List} object.
+     * @param largestOutputs a {@link java.util.List} object.
+     * @param outputMapper a {@link java.util.List} object.
+     * @param sigMap a {@link java.util.List} object.
+     */
     public SimulinkSULMapper(List<Map<Character, Double>> inputMapper,
                              List<Character> largestOutputs, List<Map<Character, Double>> outputMapper, List<Function<List<Double>, Double>> sigMap) {
         Map<String, List<Double>> tmpMapper = new HashMap<>();
@@ -62,6 +72,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
         this.sigMap = sigMap;
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Double> mapInput(String s) {
         return (s == null) ? null : inputMapper.get(s);
@@ -73,6 +84,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
         ).collect(Collectors.toList());
     }
 
+    /** {@inheritDoc} */
     @Override
     public String mapOutput(List<Double> concreteOutput) {
         // System.out.println("AF: " + concreteOutput.get(0));
