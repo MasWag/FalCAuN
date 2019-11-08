@@ -6,7 +6,7 @@
 #  Script to execute an experiment using FalCAuN
 #
 # USAGE
-#  Usage: ./run_falcaun.sh [Spec]
+#  Usage: ./run_falcaun.sh [kind] [Spec]
 #
 # EXAMPLE
 #  ./run_falcaun.sh GA AT_S1
