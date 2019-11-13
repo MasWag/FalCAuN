@@ -12,7 +12,7 @@
 #  ./run_breach_all.sh
 #******
 
-for experiment in ./breach_scripts/*.m; do
+for experiment in ./breach_scripts/run_breach_AT_*.m; do
     tmp=${experiment/.m/}
     spec=${tmp/.\/breach_scripts\/run_breach_/}
     echo "==== Start experiment $spec ======"
