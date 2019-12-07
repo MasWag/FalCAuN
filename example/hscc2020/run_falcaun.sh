@@ -3,34 +3,38 @@
 # NAME
 #  run_falcaun
 # DESCRIPTION
-#  Script to execute an experiment using FalCAuN
+#  Script to execute an experiment using FalCAuN. By default, the timeout is 240 min.
 #
 # USAGE
-#  Usage: ./run_falcaun.sh [kind] [Spec]
+#  ./run_falcaun.sh [kind] [Spec]
+#  ./run_falcaun.sh [kind] [Spec] [timeout in sec.]
 #
 # EXAMPLE
 #  ./run_falcaun.sh GA AT_S1
 #  ./run_falcaun.sh HC AT_M1-large
+#  ./run_falcaun.sh GA AT_M1-large $((240 * 60))
 #******
+
+if (($# < 2)); then
+    echo 'Usage: ./run_falcaun.sh [kind] [Spec]'
+    echo 'Usage: ./run_falcaun.sh [kind] [Spec] [timeout in sec.]'
+    echo 'Example: ./run_falcaun.sh GA AT_S1'
+    echo 'Example: ./run_falcaun.sh GA AT_M1-large'
+    echo 'Example: ./run_falcaun.sh GA AT_M1-large $((240 * 60))'
+    exit
+else
+    kind=$1
+    spec=$2
+fi
 
 readonly LENGTH=30
 readonly SIGNAL_STEP=1.0
 readonly POPULATION_SIZE=150
 readonly CROSSOVER_PROB=0.50
 readonly MUTATION_PROB=0.01
-readonly TIMEOUT=$((240 * 60)) # 240 min.
+readonly TIMEOUT=${3:-$((240 * 60))} # by default, timeout is 240 min.
 readonly SELECTION_KIND=Tournament
 readonly MAX_TEST=50000
-
-if (($# < 2)); then
-    echo 'Usage: ./run_falcaun.sh [kind] [Spec]'
-    echo 'Example: ./run_falcaun.sh GA AT_S1'
-    echo 'Example: ./run_falcaun.sh GA AT_M1-large'
-    exit
-else
-    kind=$1
-    spec=$2
-fi
 
 rm -f /home/mwaga/CyVeriA/src/test/resources/MATLAB/Autotrans_shift.mdl.autosave
 
