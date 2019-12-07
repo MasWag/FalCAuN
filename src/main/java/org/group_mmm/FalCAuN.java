@@ -151,6 +151,46 @@ public class FalCAuN {
                     verifier.addGAEQOracle(stl.get(i), argParser.getLength(), argParser.getMaxTest(), argParser.getSelectionKind(), argParser.getPopulationSize(), argParser.getCrossoverProb(), argParser.getMutationProb(), ltlOracle);
                 }
                 break;
+            case PURE_RANDOM:
+                SimulinkRandomTester tester = new SimulinkRandomTester(
+                        argParser.getInitScript(),
+                        argParser.getParamNames(),
+                        argParser.getLength(),
+                        argParser.getStepTime(),
+                        ltlString,
+                        stl,
+                        sulMapper);
+                if (Objects.nonNull(argParser.getTimeout())) {
+                    if (argParser.isVerbose()) {
+                        System.out.println("Timeout is set: " + argParser.getTimeout() + " seconds.");
+                    }
+                    tester.setTimeout(argParser.getTimeout());
+                } else {
+                    if (argParser.isVerbose()) {
+                        System.out.println("Timeout is not set");
+                    }
+                }
+                System.out.println("Pure random started");
+                long startTime = System.nanoTime();
+                boolean result = tester.run();
+                long endTime = System.nanoTime();
+                System.out.println("Pure random finished");
+                System.out.println("Pure random Elapsed Time: " + ((endTime - startTime) / 1000000000.0) + " [sec]");
+                if (result) {
+                    System.out.println("All the given properties are verified");
+                } else {
+                    System.out.println("The following properties are falsified");
+                    for (int i = 0; i < tester.getCexAbstractInput().size(); i++) {
+                        if (tester.getCexAbstractInput().get(i) != null) {
+                            System.out.println("Property STL: " + stl.get(i));
+                            System.out.println("Property LTL: " + tester.getCexProperty().get(i));
+                            System.out.println("Concrete Input: " + tester.getCexConcreteInput().get(i));
+                            System.out.println("Abstract Input: " + tester.getCexAbstractInput().get(i));
+                            System.out.println("Output: " + tester.getCexOutput().get(i));
+                        }
+                    }
+                }
+                return;
         }
         if (argParser.isVerbose()) {
             printEquivSetting(argParser, stl);

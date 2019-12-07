@@ -6,8 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="cyveria" />
+        <module name="falcaun" />
         <module name="CyVeriA" />
+        <module name="cyveria" />
       </profile>
     </annotationProcessing>
   </component>

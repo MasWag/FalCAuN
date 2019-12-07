@@ -150,6 +150,9 @@ class ArgParser {
                 case "random":
                     equiv = EquivType.RANDOM;
                     break;
+                case "pure_random":
+                    equiv = EquivType.PURE_RANDOM;
+                    break;
                 case "wp":
                     equiv = EquivType.WP;
                     if (cl.hasOption("wp-max-depth")) {
@@ -319,6 +322,7 @@ class ArgParser {
         RANDOM,
         WP,
         SA,
-        GA
+        GA,
+        PURE_RANDOM
     }
 }
