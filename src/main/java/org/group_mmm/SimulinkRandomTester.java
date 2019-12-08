@@ -99,6 +99,7 @@ public class SimulinkRandomTester {
         cexProperty = new ArrayList<>();
         long nanoTimeout = timeout * 1000000000;
         List<Integer> unfalsifiedIndex = IntStream.range(0, this.properties.size()).boxed().collect(Collectors.toList());
+        LOGGER.info("Starting pure random test");
         long startTime = System.nanoTime();
         while ((System.nanoTime() - startTime) <= nanoTimeout) {
             Word<String> abstractInput = generateTestWord(new ArrayList<>(abstractInputAlphabet));
