@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -77,12 +78,14 @@ class AutotransExampleTest {
     }
 
     @Test
+    @Disabled
     void constructAT1() {
         AutotransExample exampleAT = new AutotransExample(10.0);
         System.out.println(exampleAT.constructAT1(4200));
     }
 
     @Test
+    @Disabled
     void memOracleBB() throws Exception {
         AutotransExample exampleAT = new AutotransExample(10.0);
         exampleAT.setProperties(Collections.singletonList(
@@ -112,6 +115,7 @@ class AutotransExampleTest {
      * AT1 in [HAF14] for omega = 4500
      */
     @Test
+    @Disabled
     void runAT1() throws Exception {
         AutotransExample exampleAT1 = new AutotransExample(10.0);
         exampleAT1.setProperties(new ArrayList<>(
@@ -129,6 +133,7 @@ class AutotransExampleTest {
      * AT2 in [HAF14] for v = 120 and omega = 4500
      */
     @Test
+    @Disabled
     void runAT2() throws Exception {
         AutotransExample exampleAT2 = new AutotransExample(10.0);
         exampleAT2.setProperties(new ArrayList<>(
@@ -145,6 +150,7 @@ class AutotransExampleTest {
      * AT2 in [HAF14] for v = 160 and omega = 5000
      */
     @Test
+    @Disabled
     void runAT2_1() throws Exception {
         AutotransExample exampleAT2 = new AutotransExample(10.0);
         List<Map<Character, Double>> outputMapper = exampleAT2.getOutputMapper();
@@ -217,6 +223,7 @@ class AutotransExampleTest {
     }
 
     @Test
+    @Disabled
     void constructAT3() {
         AutotransExample exampleAT = new AutotransExample(10.0);
 
@@ -250,6 +257,7 @@ class AutotransExampleTest {
     }
 
     @Test
+    @Disabled
     void runAT3() throws Exception {
         AutotransExample exampleAT = new AutotransExample(1.0);
 
@@ -323,6 +331,7 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runAT1() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
 
@@ -393,6 +402,7 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runS1() throws Exception {
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
@@ -432,6 +442,7 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void setTimeout() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
             velocityMapper.put('a', 80.0);
@@ -465,6 +476,7 @@ class AutotransExampleTest {
             Assertions.assertThat(endTime - startTime).isGreaterThan(timeout * 1000000000);
         }
 
+        @Disabled
         @Test
         void easyS1() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
@@ -497,6 +509,7 @@ class AutotransExampleTest {
             Assertions.assertThat(endTime - startTime).isLessThan(timeout * 1000000000);
         }
 
+        @Disabled
         @Test
         void constructS1() {
             Map<Character, Double> velocityMapper = new HashMap<>();
@@ -526,6 +539,7 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runS1Func(Kind kind) throws Exception {
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
@@ -556,17 +570,20 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runS1SA() throws Exception {
             runS1Func(Kind.SA);
         }
 
         @Test
+        @Disabled
         void runS1GA() throws Exception {
             runS1Func(Kind.GA);
         }
 
 
         @Test
+        @Disabled
         void runS2() throws Exception {
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
@@ -604,6 +621,7 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runS1andS2() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
             //velocityMapper.put('a', 10.0);
@@ -701,16 +719,19 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runS4SA() throws Exception {
             runS4Func(Kind.SA);
         }
 
         @Test
+        @Disabled
         void runS4GA() throws Exception {
             runS4Func(Kind.GA);
         }
 
         @Test
+        @Disabled
         void runS5() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
 
@@ -748,6 +769,7 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runS4andS5() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
             //velocityMapper.put('a', 50.0);
@@ -846,6 +868,7 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runM1Func(Kind kind) throws Exception {
             //{120, 160, 170, 200}.
             Map<Character, Double> velocityMapper = new HashMap<>();
@@ -891,16 +914,19 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runM1SA() throws Exception {
             runM1Func(Kind.SA);
         }
 
         @Test
+        @Disabled
         void runM1GA() throws Exception {
             runM1Func(Kind.GA);
         }
 
         @Test
+        @Disabled
         void runM2() throws Exception {
             // Construct the input mapper
             {
@@ -970,6 +996,7 @@ class AutotransExampleTest {
         }
 
         @Test
+        @Disabled
         void runRevS4() throws Exception {
             Map<Character, Double> velocityMapper = new HashMap<>();
             velocityMapper.put('a', 50.0);
