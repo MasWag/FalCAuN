@@ -88,6 +88,8 @@ Output mapper specifies how we map the real-valued signal to an atomic propositi
 Installation
 ------------
 
+FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works on many UNIX-like operating systems. We tested FalCAuN on macOS 10.15 Catalina, Ubuntu 18.04, and Arch Linux.
+
 ### Requirements
 
 - Java 8
@@ -95,13 +97,62 @@ Installation
 - LTSMin 3.1.0
   - This is not officially released yet.
   - You have to download it from [HERE](https://github.com/Meijuh/ltsmin/releases/tag/v3.1.0).
-- MATLAB
-
+- MATLAB/Simulink
+  - We tested with MATLAB R2018b but any later version should be fine.
 
 ### Instructions
 
+#### 0. Install the Requirements
+
+You need to install the aforementioned requirements. For example, on Ubuntu, you can install Java 8 and Maven by the following command.
+
+```sh
+sudo apt-get install maven openjdk-8-jdk-headless -y
+```
+
+You have to manually install LTSMin 3.1.0 and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 by the following commands.
+
+```sh
+wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz -O ltsmin-v3.1.0-linux.tgz
+tar xvf ltsmin-v3.1.0-linux.tgz
+sudo cp -r ./v3.1.0/share /usr/local/share
+sudo cp -r ./v3.1.0/include /usr/local/include
+sudo install ./v3.1.0/bin/* /usr/local/bin
+```
+
+#### 1. Setup the environment variable
+
+We assume that the environment variable `MATLAB_HOME` shows where MATLAB is installed. An example is as follows.
+
 ```sh
 export MATLAB_HOME=<path/to/matlab/home>
-mvn clean
-mvn install -DskipTests=true
+## Example:
+# export MATLAB_HOME=/usr/local/MATLAB/R2018b/
 ```
+
+#### 2. Build and Install FalCAuN
+
+You can build and install FalCAuN using maven. You have to execute `mvn clean` to setup the Java API of MATLAB. An example is as follows.
+
+```sh
+mvn clean
+mvn install
+```
+
+#### 3. (Optional) Use/Install the Helper Script
+
+You can use the helper shell script `falcaun` to launch FalCAuN easily. An example usage is as follows. This takes at least a few minutes for MATLAB start up and another few minutes to falsify all the STL formulas in `./example/AT_M4.stl`. Please be patient!!
+
+```sh
+./falcaun --stl-file=./example/AT_M4.stl --output-mapper=./example/AT_M4.omap.tsv --input-mapper=./example/AT.imap.tsv --equiv=GA --step-time=1.0 --signal-length=30  --init='cd ./example; initAT' --max-test=50000 --param-names="throttle brake" --ga-crossover-prob=0.5 --ga-mutation-prob=0.01 --population-size=150 --ga-selection-kind=Tournament
+```
+
+You can also install this script as follows.
+
+```sh
+sudo install falcaun /usr/local/bin
+```
+
+### Notes
+
+- The unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test`
