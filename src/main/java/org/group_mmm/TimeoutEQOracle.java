@@ -16,6 +16,7 @@ import java.util.Collection;
  *
  * @param <I> Input symbol
  * @param <O> Output symbol
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalenceOracle<I, O> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutEQOracle.class);
@@ -40,6 +41,7 @@ public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalence
         startTime = System.nanoTime();
     }
 
+    /** {@inheritDoc} */
     @Nullable
     @Override
     @ParametersAreNullableByDefault

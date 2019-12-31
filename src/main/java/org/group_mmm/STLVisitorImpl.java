@@ -9,6 +9,11 @@ import java.util.Map;
 
 import static org.group_mmm.STLAtomic.Operation.*;
 
+/**
+ * <p>STLVisitorImpl class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(STLVisitorImpl.class);
     private List<Map<Character, Double>> outputMapper;
@@ -25,6 +30,7 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
         this.largest = largest;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object visitInterval(org.group_mmm.STLParser.IntervalContext ctx) {
         int from = Integer.parseInt(ctx.left.getText());
@@ -47,6 +53,7 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object visitExpr(org.group_mmm.STLParser.ExprContext ctx) {
         if (ctx.atomic() != null) {
@@ -98,6 +105,7 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Object visitAtomic(org.group_mmm.STLParser.AtomicContext ctx) {
         int sigIndex = Integer.parseInt(ctx.signalID.getText());

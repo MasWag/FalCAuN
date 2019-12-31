@@ -15,7 +15,7 @@ import java.util.function.Function;
 /**
  * Verifier of a Simulink model
  *
- * @author Masaki Waga <masaki@gmail.com>
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class SimulinkVerifier {
     protected SUL<List<Double>, List<Double>> simulink;
@@ -29,12 +29,14 @@ public class SimulinkVerifier {
     private List<SimulinkMembershipOracleCost> memOracleCosts = new ArrayList<>();
 
     /**
+     * <p>Constructor for SimulinkVerifier.</p>
+     *
      * @param initScript The MATLAB script called at first. You have to define mdl in the script.
      * @param paramName  The list of input parameters.
      * @param signalStep The signal step in the simulatin
      * @param properties The LTL properties to be verified
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
-     * @throws Exception It can be thrown from the constrcutor of SimulinkSUL.
+     * @throws java.lang.Exception It can be thrown from the constrcutor of SimulinkSUL.
      */
     public SimulinkVerifier(String initScript, List<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
@@ -103,6 +105,18 @@ public class SimulinkVerifier {
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
 
+    /**
+     * <p>addHillClimbingEQOracle.</p>
+     *
+     * @param costFunc       a {@link java.util.function.Function} object.
+     * @param length         a int.
+     * @param random         a {@link java.util.Random} object.
+     * @param maxTests       a int.
+     * @param generationSize a int.
+     * @param childrenSize   a int.
+     * @param resetWord      a boolean.
+     * @param ltlOracle      a {@link de.learnlib.api.oracle.PropertyOracle.MealyPropertyOracle} object.
+     */
     public void addHillClimbingEQOracle(Function<Word<List<Double>>, Double> costFunc,
                                         int length,
                                         Random random,
@@ -119,6 +133,19 @@ public class SimulinkVerifier {
         this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
 
+    /**
+     * <p>addSAEQOracle.</p>
+     *
+     * @param costFunc       a {@link java.util.function.Function} object.
+     * @param length         a int.
+     * @param random         a {@link java.util.Random} object.
+     * @param maxTests       a int.
+     * @param generationSize a int.
+     * @param childrenSize   a int.
+     * @param resetWord      a boolean.
+     * @param alpha          a double.
+     * @param ltlOracle      a {@link de.learnlib.api.oracle.PropertyOracle.MealyPropertyOracle} object.
+     */
     public void addSAEQOracle(Function<Word<List<Double>>, Double> costFunc,
                               int length,
                               Random random,
@@ -136,6 +163,11 @@ public class SimulinkVerifier {
         this.verifier.addEqOracle(new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
     }
 
+    /**
+     * <p>getLtlFormulas.</p>
+     *
+     * @return a {@link java.util.ArrayList} object.
+     */
     public ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
         return verifier.getLtlFormulas();
     }
@@ -159,14 +191,14 @@ public class SimulinkVerifier {
     /**
      * add a Genetic algorithm-based equivalence oracle
      *
-     * @param costFunc          the STL formula
-     * @param length            length of the generated signals
-     * @param maxTests          maximum test size
-     * @param selectionKind kind of the selection method
-     * @param generationSize    size of each generation. This must be an even number.
-     * @param crossoverProb     probability to have crossover
+     * @param costFunc            the STL formula
+     * @param length              length of the generated signals
+     * @param maxTests            maximum test size
+     * @param selectionKind       kind of the selection method
+     * @param generationSize      size of each generation. This must be an even number.
+     * @param crossoverProb       probability to have crossover
      * @param mutationProbability probability to have mutation
-     * @param ltlOracle         the LTL formula
+     * @param ltlOracle           the LTL formula
      */
     void addGAEQOracle(Function<Word<List<Double>>, Double> costFunc,
                        int length,
@@ -199,6 +231,8 @@ public class SimulinkVerifier {
     }
 
     /**
+     * <p>run.</p>
+     *
      * @return Returns {@code true} if and only if the Simulink model is verified i.e., no counter example is found.
      */
     public boolean run() {
@@ -252,5 +286,14 @@ public class SimulinkVerifier {
      */
     void visualizeLearnedMealy() {
         this.verifier.visualizeLearnedMealy();
+    }
+
+    /**
+     * Modify the simulation step of Simulink.
+     *
+     * @param simulinkSimulationStep The fixed simulation step of Simulink. If this value is too large, Simulink can abort due to an computation error.
+     */
+    public void setSimulationStep(double simulinkSimulationStep) {
+        this.rawSimulink.setSimulationStep(simulinkSimulationStep);
     }
 }

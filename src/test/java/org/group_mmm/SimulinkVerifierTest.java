@@ -1,6 +1,7 @@
 package org.group_mmm;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -11,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class SimulinkVerifierTest {
-    private final String initScript = "cd ./src/test/resources/MATLAB; initAFC;";
+    private final String PWD = System.getenv("PWD");
+    private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAFC;";
     /*
        The range should be as follows.
 	  - Pedal_Angle: [8.8 90.0]
@@ -59,6 +61,7 @@ class SimulinkVerifierTest {
 
         try {
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+            verifier.setSimulationStep(0.0001);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
@@ -71,6 +74,7 @@ class SimulinkVerifierTest {
     }
 
     @Test
+    @Disabled
     void runZHA19_AFC1() {
         // Try AFC1 in ZHA19 (https://arxiv.org/pdf/1905.07549.pdf)
         // Construct the mapper
@@ -153,6 +157,7 @@ class SimulinkVerifierTest {
     }
 
     @Test
+    @Disabled
     void runHAF14_AT4() {
         // Try AT4 in HAF14 (https://easychair.org/publications/open/4bfq)
         // Construct the mapper

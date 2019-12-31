@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * <p>STLImply class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class STLImply extends STLCost {
     private STLCost subFml1, subFml2;
 
@@ -17,11 +22,13 @@ public class STLImply extends STLCost {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public RoSI getRoSI(Word<List<Double>> signal) {
         return subFml1.getRoSI(signal).assignNegate().assignMax(subFml2.getRoSI(signal));
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void constructAtomicStrings() {
         if (this.nonTemporal) {
@@ -35,11 +42,13 @@ public class STLImply extends STLCost {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Set<String> getAllAPs() {
         return subFml1.getAllAPs();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toAbstractString() {
         if (nonTemporal) {
@@ -51,6 +60,7 @@ public class STLImply extends STLCost {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return String.format("( %s ) -> ( %s )", subFml1.toString(), subFml2.toString());

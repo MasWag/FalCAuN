@@ -18,6 +18,18 @@ public class SAEQOracle extends HillClimbingEQOracle {
     private int maxIteration;
     private double iteration = 0.0;
 
+    /**
+     * <p>Constructor for SAEQOracle.</p>
+     *
+     * @param memOracle a {@link org.group_mmm.SimulinkMembershipOracleCost} object.
+     * @param length a int.
+     * @param random a {@link java.util.Random} object.
+     * @param maxTests a int.
+     * @param generationSize a int.
+     * @param childrenSize a int.
+     * @param resetWord a boolean.
+     * @param alpha a double.
+     */
     public SAEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, double alpha) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord);
         maxIteration = maxTests / (generationSize * childrenSize);
@@ -30,6 +42,7 @@ public class SAEQOracle extends HillClimbingEQOracle {
         this.alpha = alpha;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected List<Word<String>> createNextGeneration(List<Word<String>> goodSamples) {
         iteration++;

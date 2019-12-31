@@ -28,8 +28,8 @@ import java.util.List;
  * Equivalence query using genetic algorithm
  *
  * @author Masaki Waga
- * <p>
- * We use uniform crossover and random mutation.
+ * 
+ * <p>We use uniform crossover and random mutation.</p>
  */
 class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String> {
     private Algorithm<IntegerSolution> algorithm;
@@ -78,6 +78,7 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
         return ltlOracle.isDisproved();
     }
 
+    /** {@inheritDoc} */
     @Nullable
     @Override
     @ParametersAreNonnullByDefault

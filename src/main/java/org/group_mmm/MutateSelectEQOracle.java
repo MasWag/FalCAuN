@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+/**
+ * <p>MutateSelectEQOracle class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class MutateSelectEQOracle extends AbstractSelectEQOracle {
     private int changeSize;
 
@@ -15,6 +20,7 @@ public class MutateSelectEQOracle extends AbstractSelectEQOracle {
         this.changeSize = changeSize;
     }
 
+    /** {@inheritDoc} */
     protected List<Word<String>> createNextGeneration(List<Word<String>> goodSamples) {
         ArrayList<Word<String>> nextGeneration = new ArrayList<>(generationSize * childrenSize);
 

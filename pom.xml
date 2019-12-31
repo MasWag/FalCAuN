@@ -11,7 +11,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <junit.jupiter.version>5.3.1</junit.jupiter.version>
-
+        <skipTests>true</skipTests>
     </properties>
     <build>
         <plugins>
@@ -92,7 +92,7 @@
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
                     <argLine>-Djava.library.path=${env.MATLAB_HOME}/bin/maci64:${env.MATLAB_HOME}/bin/glnxa64</argLine>
-                    <skipTests>true</skipTests>
+                    <skipTests>${skipTests}</skipTests>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -180,6 +180,14 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>3.1.1</version>
+              <configuration>
+                <show>private</show>
+              </configuration>
+        </plugin>
         </plugins>
 
         <resources>

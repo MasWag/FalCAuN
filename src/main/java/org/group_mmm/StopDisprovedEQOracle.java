@@ -19,6 +19,7 @@ import java.util.List;
  *
  * @param <I> Input symbol
  * @param <O> Output symbol
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class StopDisprovedEQOracle<I, O> implements EquivalenceOracle.MealyEquivalenceOracle<I, O> {
     private static final Logger LOGGER = LoggerFactory.getLogger(org.group_mmm.StopDisprovedEQOracle.class);
@@ -35,6 +36,7 @@ public class StopDisprovedEQOracle<I, O> implements EquivalenceOracle.MealyEquiv
         this.ltlOracles = ltlOracles;
     }
 
+    /** {@inheritDoc} */
     @Nullable
     @Override
     @ParametersAreNullableByDefault

@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 
 import static com.google.common.primitives.Doubles.min;
 
+/**
+ * <p>Abstract AbstractSelectEQOracle class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSelectEQOracle.class);
     Random random;
@@ -77,7 +82,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     private double minCost = Double.POSITIVE_INFINITY;
 
     /**
-     * Returns whether the property is disproved i.e., whether it observed such an input that the cost function < 0.
+     * Returns whether the property is disproved i.e., whether it observed such an input that the cost function {@literal < 0}.
      *
      * @return whether the property is disproved.
      */
@@ -89,6 +94,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
         }
     }
 
+    /** {@inheritDoc} */
     @Nullable
     @ParametersAreNonnullByDefault
     @Override

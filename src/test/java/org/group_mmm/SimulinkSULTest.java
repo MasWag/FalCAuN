@@ -2,6 +2,7 @@ package org.group_mmm;
 
 import net.automatalib.words.Word;
 import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,17 +21,25 @@ class SimulinkSULTest {
         this.sul = new SimulinkSUL(initScript, paramNames, signalStep);
     }
 
+    @AfterEach
+    void teardown() throws Throwable {
+        this.sul.finalize();
+    }
+
     @Nested
     class AFC {
         // The outputs are, AF, AFref, and mode
         int expectedOutputSize = 3;
+        private final String PWD = System.getenv("PWD");
+        private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAFC;";
 
         @BeforeEach
         void setUp() throws Exception {
             SimulinkSULTest.this.setUp(
-                    "cd ./src/test/resources/MATLAB; initAFC;",
+                    initScript,
                     Arrays.asList("Pedal Angle", "Engine Speed"),
                     2.0);
+            SimulinkSULTest.this.sul.setSimulationStep(0.0001);
         }
 
         @Test
@@ -73,11 +82,13 @@ class SimulinkSULTest {
     class AT {
         // The outputs are, velocity, rotation, and gear
         int expectedOutputSize = 3;
+        private final String PWD = System.getenv("PWD");
+        private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAT;";
 
         @BeforeEach
         void setUp() throws Exception {
             SimulinkSULTest.this.setUp(
-                    "cd ./src/test/resources/MATLAB; initAT;",
+                    initScript,
                     Arrays.asList("throttle", "brake"),
                     2.0);
         }

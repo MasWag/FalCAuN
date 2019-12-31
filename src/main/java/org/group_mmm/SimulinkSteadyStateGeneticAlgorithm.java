@@ -12,6 +12,11 @@ import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * <p>SimulinkSteadyStateGeneticAlgorithm class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class SimulinkSteadyStateGeneticAlgorithm extends SteadyStateGeneticAlgorithm<IntegerSolution> {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SimulinkSteadyStateGeneticAlgorithm.class);
     private EQSearchProblem problem;
@@ -23,6 +28,7 @@ public class SimulinkSteadyStateGeneticAlgorithm extends SteadyStateGeneticAlgor
         this.ltlOracle = ltlOracle;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean isStoppingConditionReached() {
         if (super.isStoppingConditionReached()) {
@@ -33,9 +39,9 @@ public class SimulinkSteadyStateGeneticAlgorithm extends SteadyStateGeneticAlgor
     }
 
     /**
-     * Create initial population only for the initial run
+     * {@inheritDoc}
      *
-     * @return Generated initial population if {@code this.population} is {@code null}. Otherwise it returns {@code this.population}.
+     * Create initial population only for the initial run
      */
     @Override
     protected List<IntegerSolution> createInitialPopulation() {

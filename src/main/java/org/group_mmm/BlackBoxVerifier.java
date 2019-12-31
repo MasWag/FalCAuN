@@ -36,7 +36,7 @@ import static net.automatalib.util.automata.Automata.stateCover;
 /**
  * Verifier of a black-box system
  *
- * @author Masaki Waga <masaki@gmail.com>
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 class BlackBoxVerifier {
     private static final Function<String, String> EDGE_PARSER = s -> s;
@@ -103,6 +103,11 @@ class BlackBoxVerifier {
         return ltlFormulas;
     }
 
+    /**
+     * <p>Getter for the field <code>memOracle</code>.</p>
+     *
+     * @return a {@link de.learnlib.api.oracle.MembershipOracle.MealyMembershipOracle} object.
+     */
     public MembershipOracle.MealyMembershipOracle<String, String> getMemOracle() {
         return memOracle;
     }

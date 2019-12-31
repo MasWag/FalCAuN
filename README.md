@@ -102,7 +102,7 @@ sudo install falcaun /usr/local/bin
 
 ### Notes
 
-- The unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test`
+- The unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test -DskipTests=false`.
 
 
 Algorithms for equivalence query

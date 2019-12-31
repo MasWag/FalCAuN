@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * <p>STLSub class.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
 public class STLSub extends STLCost {
     private final Logger LOGGER = (Logger) LoggerFactory.getLogger(STLSub.class);
 
@@ -26,6 +31,7 @@ public class STLSub extends STLCost {
         this.nonTemporal = false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public RoSI getRoSI(Word<List<Double>> signal) {
         if (from >= signal.size()) {
@@ -40,11 +46,13 @@ public class STLSub extends STLCost {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Set<String> getAllAPs() {
         return subFml.getAllAPs();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         String result = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " <>" : " []";
@@ -54,11 +62,13 @@ public class STLSub extends STLCost {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toAbstractString() {
         final String op = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " || " : " && ";

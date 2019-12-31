@@ -16,6 +16,12 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
     private double mutationProbability;
     private Random random;
 
+    /**
+     * <p>Constructor for IntegerRandomMutation.</p>
+     *
+     * @param mutationProbability a double.
+     * @param random a {@link java.util.Random} object.
+     */
     public IntegerRandomMutation(double mutationProbability, Random random) {
         this.mutationProbability = mutationProbability;
         this.random = random;
@@ -26,6 +32,7 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
         this.random = new Random();
     }
 
+    /** {@inheritDoc} */
     @NotNull
     @Override
     public IntegerSolution execute(IntegerSolution solution) {
