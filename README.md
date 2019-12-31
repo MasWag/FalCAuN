@@ -32,59 +32,6 @@ Usage
 **-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink model <br />
 **-M** *test-size*, **--max-test** *test-size* The maximum test size
 
-Algorithms for equivalence query
---------------------------------
-
-### HC (Hill Climbing)
-
-### Random
-
-### Wp-method
-
-When you use Wp-method, the following option is necessary
-
-**--wp-max-depth** *depth* The maximum depth in the Wp-method
-
-### SA (Simulated Annealing)
-
-When you use simulated annealing, the following option is necessary
-
-**--sa-alpha** *alpha* The alpha parameter for simulated annealing (should be between 0 and 1)
-
-### GA (Genetic Algorithm)
-
-When you use genetic algorithm, the following option is necessary
-
-**--population-size** *size* The size of the population <br />
-**--ga-crossover-prob** *prob* The crossover probability (should be between 0 and 1) <br />
-**--ga-mutation-prob** *prob* The mutation probability (should be between 0 and 1) <br />
-**--ga-selection-kind** *[bestsolution|tournament]* The selection in the genetic algorithm. Either best solution selection or binary tournament.
-
-File format of the mapper
--------------------------
-
-Both input and output mappers are specified by TSV files.
-
-### Input mapper
-
-Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take different number of inputs i.e., N1 and N2 can be different.
-
-```
-<value 1 of signal(1)>	<value 2 of signal(1)>	...	<value N1 of signal(1)>
-<value 1 of signal(2)>	<value 2 of signal(2)>	...	<value N2 of signal(2)>
-...						
-```
-
-### Output mapper
-
-Output mapper specifies how we map the real-valued signal to an atomic proposition. Precisely, we split the vector space R^n by grids. Each grid is one atomic proposition. Since the maximum upper bound is the positive infinity, the last cell for each signal must be `inf`.
-
-```
-<upper bound of signal(1) for AP1-1>	<upper bound of signal(1) for AP1-2>	...	<upper bound of signal(1) for AP1-N1>
-<upper bound of signal(2) for AP2-1>	<upper bound of signal(2) for AP2-2>	...	<upper bound of signal(2) for AP2-N2>
-...
-```
-
 Installation
 ------------
 
@@ -156,3 +103,57 @@ sudo install falcaun /usr/local/bin
 ### Notes
 
 - The unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test`
+
+
+Algorithms for equivalence query
+--------------------------------
+
+### HC (Hill Climbing)
+
+### Random
+
+### Wp-method
+
+When you use Wp-method, the following option is necessary
+
+**--wp-max-depth** *depth* The maximum depth in the Wp-method
+
+### SA (Simulated Annealing)
+
+When you use simulated annealing, the following option is necessary
+
+**--sa-alpha** *alpha* The alpha parameter for simulated annealing (should be between 0 and 1)
+
+### GA (Genetic Algorithm)
+
+When you use genetic algorithm, the following option is necessary
+
+**--population-size** *size* The size of the population <br />
+**--ga-crossover-prob** *prob* The crossover probability (should be between 0 and 1) <br />
+**--ga-mutation-prob** *prob* The mutation probability (should be between 0 and 1) <br />
+**--ga-selection-kind** *[bestsolution|tournament]* The selection in the genetic algorithm. Either best solution selection or binary tournament.
+
+File format of the mapper
+-------------------------
+
+Both input and output mappers are specified by TSV files.
+
+### Input mapper
+
+Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take different number of inputs i.e., N1 and N2 can be different.
+
+```
+<value 1 of signal(1)>	<value 2 of signal(1)>	...	<value N1 of signal(1)>
+<value 1 of signal(2)>	<value 2 of signal(2)>	...	<value N2 of signal(2)>
+...						
+```
+
+### Output mapper
+
+Output mapper specifies how we map the real-valued signal to an atomic proposition. Precisely, we split the vector space R^n by grids. Each grid is one atomic proposition. Since the maximum upper bound is the positive infinity, the last cell for each signal must be `inf`.
+
+```
+<upper bound of signal(1) for AP1-1>	<upper bound of signal(1) for AP1-2>	...	<upper bound of signal(1) for AP1-N1>
+<upper bound of signal(2) for AP2-1>	<upper bound of signal(2) for AP2-2>	...	<upper bound of signal(2) for AP2-N2>
+...
+```
