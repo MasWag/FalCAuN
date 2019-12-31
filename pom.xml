@@ -92,6 +92,7 @@
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
                     <argLine>-Djava.library.path=${env.MATLAB_HOME}/bin/maci64:${env.MATLAB_HOME}/bin/glnxa64</argLine>
+                    <skipTests>true</skipTests>
                 </configuration>
                 <dependencies>
                     <dependency>
