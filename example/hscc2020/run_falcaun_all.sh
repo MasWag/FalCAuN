@@ -20,7 +20,7 @@ for experiment in *.stl; do
     spec=${experiment/.stl/}
     for kind in GA HC RANDOM; do
         echo "==== Start experiment $kind $spec ======"
-           ./run_falcaun.sh $kind $spec $1
+           ./run_falcaun.sh $kind "$spec" "${1:-}"
         echo "==== Finished experiment $kind $spec ======"
     done
 done
