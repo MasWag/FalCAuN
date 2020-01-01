@@ -7,14 +7,14 @@ We implemented and evaluated our tool FalCAuN. See also [README.md](../README.md
 Breach
 ------
 
-As a baseline, we used [*Breach*](https://github.com/decyphir/breach), which is one of the state-of-the-art falsification tool. We used [Breach version 1.5.2](https://github.com/decyphir/breach/releases/tag/1.5.2).
+As a baseline, we used [*Breach*](https://github.com/decyphir/breach), which is one of the state-of-the-art falsification tool. We used [Breach version 1.5.2](https://github.com/decyphir/breach/releases/tag/1.5.2). See https://github.com/decyphir/breach/blob/1.5.2/README.md for the installation instruction of Breach.
 
 How to reproduce the experiment results
 ---------------------------------------
 
 ### Experiments
 
-The scripts to reproduce the experiment results is included in this directory. We note that these scripts do not repeat the experiments while in the paper, we repeated the experiments 10 times and computed their means and standard deviations. The results are saved under `./results`. 
+The scripts and data to reproduce the experiment results is included in this directory. We note that these scripts do not repeat the experiments while in the paper, we repeated the experiments 10 times and computed their means and standard deviations. The results are saved under `./results`. 
 
 The experiments take more time than the timeout because we check the timeout only at the beginning of the equivalence testing. The time for the initialization of MATLAB/Simulink is not excluded from the timeout.
 
@@ -237,23 +237,12 @@ The intuition of M1 specifications is "the velocity of a car should not increase
 
 The intuition of M2 specifications is "The gear should not change too soon after the latest gear change". The amount of "soon" is different among the concrete specifications.
 
-
-Benchmark Copy is inspired by the monitoring of variable updates much like the scenario in [BDSV14]. The action is `update` and `update` has one string and one integer values. The string value is the name of the updated variable and the integer value is the updated value.
-
-### Dominant
-
-Benchmark Dominant is inspired by the monitoring of withdrawals from bank accounts of various users much like the scenario in [BKZ17]. The action is `withdraw` and `withdraw` has one string and one integer values. The string value is the user name and the integer value is the amount of the withdrawals.
-
-### Periodic
-
-Benchmark Periodic is inspired by a parameter identification of periodic withdrawals from one bank account. The action is `withdraw` and `withdraw` has one integer value. The the integer value is the amount of the withdrawals.
-
 References
 ----------
 
 <dl>
 <dt>[Waga20]</dt>
-<dd>Masaki Waga, Falsification of Cyber-Physical Systems with Robustness-Guided Black-Box Checking, Proc. HSCC 2020, <del>LNCS 11561, pp. 520-539</del>.</dd>
+<dd>Masaki Waga, Falsification of Cyber-Physical Systems with Robustness-Guided Black-Box Checking, To appear in Proc. HSCC 2020.</dd>
 <dt>[HAF14]</dt>
 <dd>Bardh Hoxha, Houssam Abbas, and Georgios E. Fainekos, Benchmarks for Temporal Logic Requirements for Automotive
 Systems, Proc. ARCH@CPSWeek / ARCH@CPSWeek 2015, Vol. 34. EasyChair, 25–30.</dd>

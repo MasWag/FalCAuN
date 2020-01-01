@@ -13,17 +13,17 @@ Usage
 
      ./falcaun [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP|SA|GA]
 
-### Options
+### General Options
 
 **-h**, **--help** Print a help message. <br />
 **-v**, **--verbose** It outputs extra information, mainly for debugging. <br />
 **-V**, **--version** Print the version <br />
 **-t** *timeout*, **--timeout** *timeout* Set timeout [seconds]
 **-f** *file*, **--stl-file** *file* Read a STL formula from *file*. <br />
-**-e** *pattern*, **--stl** *STLFormula* Specify *STLFormula* by signal temporal logic. <br />
+**-e** *STLFormula*, **--stl** *STLFormula* Specify *STLFormula* by signal temporal logic. <br />
 **-I** *file*, **--input-mapper** *file* Read the input mapper configuration from *file*. <br />
 **-O** *file*, **--output-mapper** *file* Read the output mapper configuration from *file*. <br />
-**-E** *algorithm*, **--equiv** *algorithm* Specify the equivalence query algorithm. See below for the detail. <br />
+**-E** *algorithm*, **--equiv** *algorithm* Specify the equivalence testing algorithm. See below for the detail. <br />
 **-o** *file*, **--output-dot** *file* Write the learned Mealy machine to *file* in DOT format. <br />
 **--output-etf** *file* Write the learned Mealy machine to *file* in ETF format. <br />
 **-s** *step-time*, **--step-time** *step-time* Specify the step time of the sampling. <br />
@@ -31,6 +31,25 @@ Usage
 **-i** *script*, **--init** *script* The initial script of MATLAB <br />
 **-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink model <br />
 **-M** *test-size*, **--max-test** *test-size* The maximum test size
+
+### Options Specific to the Equivalence Testing
+
+When you use GA, SA, or WP for the equivalence testing, you have to specify the following options in addition.
+
+### GA (Genetic Algorithm)
+
+**--population-size** *size* The size of the population <br />
+**--ga-crossover-prob** *prob* The crossover probability (should be between 0 and 1) <br />
+**--ga-mutation-prob** *prob* The mutation probability (should be between 0 and 1) <br />
+**--ga-selection-kind** *[bestsolution|tournament]* The selection in the genetic algorithm. Either best solution selection or binary tournament.
+
+### SA (Simulated Annealing)
+
+**--sa-alpha** *alpha* The alpha parameter for simulated annealing (should be between 0 and 1)
+
+#### WP (Wp-method)
+
+**--wp-max-depth** *depth* The maximum depth in the Wp-method
 
 Installation
 ------------
@@ -105,33 +124,16 @@ sudo install falcaun /usr/local/bin
 - The unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test -DskipTests=false`.
 
 
-Algorithms for equivalence query
---------------------------------
+Algorithms for equivalence testing
+----------------------------------
 
-### HC (Hill Climbing)
+We implemented the following 5 equivalence testing algorithms. 
 
-### Random
-
-### Wp-method
-
-When you use Wp-method, the following option is necessary
-
-**--wp-max-depth** *depth* The maximum depth in the Wp-method
-
-### SA (Simulated Annealing)
-
-When you use simulated annealing, the following option is necessary
-
-**--sa-alpha** *alpha* The alpha parameter for simulated annealing (should be between 0 and 1)
-
-### GA (Genetic Algorithm)
-
-When you use genetic algorithm, the following option is necessary
-
-**--population-size** *size* The size of the population <br />
-**--ga-crossover-prob** *prob* The crossover probability (should be between 0 and 1) <br />
-**--ga-mutation-prob** *prob* The mutation probability (should be between 0 and 1) <br />
-**--ga-selection-kind** *[bestsolution|tournament]* The selection in the genetic algorithm. Either best solution selection or binary tournament.
+- HC (hill climbing)
+- RANDOM (random testing)
+- GA (genetic algorithm)
+- (Experimental!!) SA (simulated annealing)
+- (Experimental!!) Wp (Wp-method)
 
 File format of the mapper
 -------------------------
@@ -140,12 +142,22 @@ Both input and output mappers are specified by TSV files.
 
 ### Input mapper
 
-Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take different number of inputs i.e., N1 and N2 can be different.
+Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take different number of inputs i.e., N0 and N1 can be different.
 
 ```
+<value 1 of signal(0)>	<value 2 of signal(0)>	...	<value N0 of signal(0)>
 <value 1 of signal(1)>	<value 2 of signal(1)>	...	<value N1 of signal(1)>
-<value 1 of signal(2)>	<value 2 of signal(2)>	...	<value N2 of signal(2)>
 ...						
+```
+
+For example, the following shows that:
+
+- the domain of `signal(0)` is 10 and 40; and
+- the domain of `signal(1)` is 0, 50, and 100.
+
+```
+10	40
+0	50	100
 ```
 
 ### Output mapper
@@ -153,7 +165,57 @@ Input mapper specifies the possible input values of each signal (e.g., break and
 Output mapper specifies how we map the real-valued signal to an atomic proposition. Precisely, we split the vector space R^n by grids. Each grid is one atomic proposition. Since the maximum upper bound is the positive infinity, the last cell for each signal must be `inf`.
 
 ```
-<upper bound of signal(1) for AP1-1>	<upper bound of signal(1) for AP1-2>	...	<upper bound of signal(1) for AP1-N1>
-<upper bound of signal(2) for AP2-1>	<upper bound of signal(2) for AP2-2>	...	<upper bound of signal(2) for AP2-N2>
+<upper bound of signal(0) for AP0-1>	<upper bound of signal(0) for AP0-2>	...	<upper bound of signal(0) for AP0-N0>
+<upper bound of signal(0) for AP1-1>	<upper bound of signal(1) for AP1-2>	...	<upper bound of signal(1) for AP1-N1>
 ...
+```
+For example, the following output mapper stands for as follows.
+
+- For `signal(0)`:
+  - `AP0-1` holds if `signal(0)` <= 10;
+  - `AP0-2` holds if 10 < `signal(0)` <= 40; and
+  - `AP0-3` holds if 40 < `signal(0)`.
+- For `signal(1)`:
+  - `AP1-1` holds if `signal(1)` <= 0;
+  - `AP1-2` holds if 0 < `signal(1)` <= 50;
+  - `AP1-3` holds if 50 < `signal(1)` <= 100; and
+  - `AP1-4` holds if 100 < `signal(1)`.
+- For `signal(2)`, `AP2-1` always holds.
+
+```
+10	40	inf
+0	50	100	inf
+inf
+```
+
+STL
+---
+
+The definition of signal temporal logic in FalCAuN is as follows.
+
+```
+expr : atomic
+     | expr && expr
+     | expr || expr
+     | expr -> expr
+     | ! expr
+     | GLOBALLY expr
+     | EVENTUALLY expr
+     | X expr
+     | expr U expr
+     | GLOBALLY_interval expr
+     | EVENTUALLY_interval expr
+     | expr U_interval expr
+     | ( expr )
+
+atomic : signal(NATURAL) == value
+       | signal(NATURAL) < value
+       | signal(NATURAL) > value
+       | signal(NATURAL) != value
+
+value : -? NATURAL | -? FLOAT
+
+GLOBALLY : '[]' | 'alw' | 'G'
+
+EVENTUALLY : '<>' | 'ev' | 'F'
 ```

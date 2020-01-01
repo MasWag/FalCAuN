@@ -47,21 +47,21 @@ fi
 mkdir -p ./results
 
 ../../falcaun \
-     --stl-file=./$spec.stl \
-     --input-mapper=./AT.imap.tsv \
-     --output-mapper=./$spec.omap.tsv \
-     --equiv=$kind \
+     --stl-file="./$spec.stl" \
+     --input-mapper="./AT.imap.tsv" \
+     --output-mapper="./$spec.omap.tsv" \
+     --equiv="$kind" \
      -l=$LENGTH \
      -s=$SIGNAL_STEP \
      -i="initAT" \
      --param-names="throttle brake" \
-     --output-dot=./results/learned-$kind-$POPULATION_SIZE-$CROSSOVER_PROB-$MUTATION_PROB.dot \
-     --output-etf=./results/learned-$kind-$POPULATION_SIZE-$CROSSOVER_PROB-$MUTATION_PROB.etf \
+     --output-dot="./results/learned-$spec-$kind.dot" \
+     --output-etf="./results/learned-$spec-$kind.etf" \
      -M=$MAX_TEST \
-     -t $TIMEOUT \
+     -t "$TIMEOUT" \
      --ga-crossover-prob=$CROSSOVER_PROB \
      --ga-mutation-prob=$MUTATION_PROB \
      --population-size=$POPULATION_SIZE \
      --ga-selection-kind=$SELECTION_KIND | 
     $SED '/DEBUG/ d' |
-    tee ./results/result-$spec-$kind.txt
+    tee "./results/result-$spec-$kind.txt"
