@@ -1,4 +1,13 @@
-all: mean.summary.standalone.pdf mean.M1.plot.standalone.pdf
+all: table2.pdf figure3.pdf table3.pdf table4.txt
+
+table2.pdf: mean.summary.standalone.pdf
+	cp $< $@
+
+figure3.pdf: mean.M1.plot.standalone.pdf
+	cp $< $@
+
+table3.pdf: mean.states.summary.standalone.pdf
+	cp $< $@
 
 %.summary.standalone.pdf: %.summary.standalone.tex %.summary.tabular.tex
 	cd $(dir $<) && pdflatex $(notdir $<)
@@ -36,11 +45,11 @@ mean.result.tsv: result.with.number.tsv
 all.result.tsv: result.with.number.tsv
 	awk '{OFS="\t";print $$1,$$2,$$3"/"$$7" "$$4"/"$$8" "$$5"/"$$9" "$$6"/"$$10}' $< > $@
 
-result.with.number.tsv: result.tsv
-	awk '$$2 == "random"{$$2="1random"}$$2 == "hc"{$$2="2hc"}$$2 == "ga"{$$2="3ga"}$$2 == "breach"{$$2="4breach"}1;' $< > $@
+%.with.number.tsv: %.tsv
+	awk 'BEGIN{OFS="\t"}$$2 == "random"{$$2="1random"}$$2 == "hc"{$$2="2hc"}$$2 == "ga"{$$2="3ga"}$$2 == "breach"{$$2="4breach"}1;' $< > $@
 
-mean.states.summary.tsv: constructed_states.tsv
-	cat $< | awk 'BEGIN{OFS="\t"}$$2 == "random"{$$2="1random"}$$2 == "hc"{$$2="2hc"}$$2 == "ga"{$$2="3ga"}1;' | cut -f 1-3 | datamash crosstab 1,2 collapse 3 | sed '1d;s/\\\\/\\/g' > $@
+mean.states.result.tsv: constructed_states.with.number.tsv
+	cat $< | cut -f 1-3 > $@
 
 all.states.summary.tsv: constructed_states.tsv
 	cat $< | awk '$$2 == "random"{$$2="1random"}$$2 == "hc"{$$2="2hc"}$$2 == "ga"{$$2="3ga"}1;' | sort | awk '{OFS="\t";print $$1,$$2,$$3" "$$4" "$$5" "$$6}' | sort | datamash crosstab 1,2 collapse 3 | sed 's/\\\\/\\/g' | awk 'NR>1'> $@
@@ -55,9 +64,21 @@ result.tsv: result_name.list.txt ./utils/list2result.awk ./utils/makeRawNumTime.
 	ruby -ryaml -rjson -e 'puts JSON.pretty_generate(YAML.load(STDIN.read))' < $< > $@
 
 constructed_states.tsv: result_name.list.txt ./utils/list2states.awk ./utils/makeStateSize.sh
-	grep -v breach $< | ./utils/list2states.awk  | tr ' ' '\t' > $@
+	grep -v breach $< | ./utils/list2states.awk  | tr ' ' '\t' | sed 's/[rR][aA][nN][dD][oO][mM]/random/g;s/[gG][aA]/ga/g;s/[hH][cC]/hc/g;' > $@
 
 clean:
-	$(RM) result.tsv result_name.{list.txt,json} {all,mean-std,all.states,mean.states}.summary.{standalone.{pdf,tex,aux,log},tabular.tex,tabular.body.tex,tsv} constructed_states.tsv mean.M1.plot.tikz.tex mean.M1 mean.M1.plot.standalone.{aux,log,pdf}
+	$(RM) result.tsv result_name.{list.txt,json} {all,mean-std,all.states,mean.states}.summary.{standalone.{pdf,tex,aux,log},tabular.tex,tabular.body.tex,tsv} constructed_states.tsv mean.M1.plot.tikz.tex mean.M1 mean.M1.plot.standalone.{aux,log,pdf} results/table4* result.with.number.tsv
+
+table4.txt : results/table4.all.tsv
+	awk 'BEGIN{OFS="\t"}{print $$1,$$2,$$3,($$4<0),$$4}' $< | datamash --sort --group 1 sum 3 sum 4 mean 5 sstdev 5 > $@
+
+results/table4.all.tsv: results/table4.tsv results/table4.matlab.result
+	cat results/table4.tsv | awk '{print "table4_"$$1$$2,$$3}' | sed 's:ltl.*results/::' | sort | join -1 1 -2 1 - results/table4.matlab.result | sed 's/\./.ltl /' > $@
+
+results/table4.tsv: run_table4.sh ./results/learned-AT_M1-gigantic-GA.etf table4_ltl/M3-S1-90.ltl table4_ltl/M3-S4-90-40.ltl table4_ltl/M3-S4-90-50.ltl table4_ltl/M3-S4-90-60.ltl
+	./run_table4.sh
+
+results/table4.matlab.result: run_table4_breach.sh run_table4.m.m4 run_table4.m.header results/table4.tsv
+	./run_table4_breach.sh
 
 .PHONY: clean all
