@@ -62,7 +62,7 @@ FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works o
 - Maven
 - LTSMin 3.1.0
   - This is not officially released yet.
-  - You have to download it from [HERE](https://github.com/Meijuh/ltsmin/releases/tag/v3.1.0).
+  - You can download it from [HERE](https://github.com/Meijuh/ltsmin/releases/tag/v3.1.0).
 - MATLAB/Simulink
   - We tested with MATLAB R2018b but any later version should be fine.
 

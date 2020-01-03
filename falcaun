@@ -6,11 +6,11 @@
 #  the script to launch FalCAuN
 #
 # USAGE
-#  ./falcaun [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP]
+#  ./falcaun [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[ga|hc|random|wp]
 #
 #******
 
-JAR_NAME=org/group_mmm/falcaun/1.0-SNAPSHOT/falcaun-1.0-SNAPSHOT-jar-with-dependencies.jar
+readonly JAR_NAME=org/group_mmm/falcaun/1.0-SNAPSHOT/falcaun-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 if [ -z "$MATLAB_HOME" ]; then
     echo "Error: environment variable MATLAB_HOME is not set"
@@ -20,21 +20,33 @@ fi
 case "$(uname)" in
     Darwin)
         arch=maci64
+        if java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '1.8')/bin/java"; then
+            echo "Java 8 found at $java";
+        else
+            echo "Error: Java 8 did not found";
+            exit 1;
+        fi
         ;;
     Linux)
         arch=glnxa64
+        if java=$(find /usr/lib/jvm/java-8-openjdk* -name java -type f) 2>/dev/null; then
+            echo "Java 8 found at $java";
+        else
+            echo "Error: Java 8 did not found";
+            exit 1;
+        fi
         ;;
     *)
         echo "Error: Unknown architecture $(uname)"
         exit 1
 esac
 
-if !(which mvn 2>&1 > /dev/null); then
+if ! (command -v mvn > /dev/null 2>&1 ); then
     echo "Error: Maven must be installed"
     exit 1
 fi
 
 maven_repo_path="$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)"
 
-java -Djava.library.path="$MATLAB_HOME/bin/$arch" -jar ${maven_repo_path}/${JAR_NAME} "$@"
+$java -Djava.library.path="$MATLAB_HOME/bin/$arch" -jar "${maven_repo_path}/${JAR_NAME}" "$@"
 
