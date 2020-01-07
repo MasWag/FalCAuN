@@ -1,0 +1,4 @@
+S1_90 := alw (speed[t] < 90)
+S4_90_40 := (alw_[0,26] (speed[t] < 90)) or (alw_[28,28] (speed[t] > 40.0))
+S4_90_50 := (alw_[0,26] (speed[t] < 90)) or (alw_[28,28] (speed[t] > 50.0))
+S4_90_60 := (alw_[0,26] (speed[t] < 90)) or (alw_[28,28] (speed[t] > 60.0))

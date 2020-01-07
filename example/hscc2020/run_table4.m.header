@@ -1,0 +1,5 @@
+InitBreach;
+BrAT = BreachSimulinkSystem('Autotrans_shift');
+InitAT(BrAT);
+
+STL_ReadFile('./table4_breach.stl');
