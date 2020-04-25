@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Logger;
 import net.automatalib.words.Word;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -73,25 +72,24 @@ public class STLSub extends STLCost {
     public String toAbstractString() {
         final String op = (subFml.getClass().toString().equals("class org.group_mmm.STLEventually")) ? " || " : " && ";
 
-        ArrayList<String> subFmls = new ArrayList<>();
-        for (int i = this.from; i <= this.to; i++) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("( ");
+        StringBuilder builder = new StringBuilder();
+        builder.append("( ");
+        for (int i = 0; i <= this.to; i++) {
 
-            for (int j = 0; j < i; j++) {
-                builder.append("X (");
+            if (i >= this.from) {
+                builder.append(subFml.subFml.toAbstractString());
+                if (i < this.to) {
+                    builder.append(op);
+                }
             }
-
-            builder.append(subFml.subFml.toAbstractString());
-
-            for (int j = 0; j < i; j++) {
-                builder.append(" )");
+            if (i < this.to) {
+                builder.append("( X ");
             }
+        }
+        for (int i = 0; i <= this.to; i++) {
             builder.append(" )");
-
-            subFmls.add(builder.toString());
         }
 
-        return String.join(op, subFmls);
+        return builder.toString();
     }
 }
