@@ -16,11 +16,19 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
     private double mutationProbability;
     private Random random;
 
+    public double getMutationProbability() {
+        return mutationProbability;
+    }
+
+    public void setMutationProbability(double mutationProbability) {
+        this.mutationProbability = mutationProbability;
+    }
+
     /**
      * <p>Constructor for IntegerRandomMutation.</p>
      *
      * @param mutationProbability a double.
-     * @param random a {@link java.util.Random} object.
+     * @param random              a {@link java.util.Random} object.
      */
     public IntegerRandomMutation(double mutationProbability, Random random) {
         this.mutationProbability = mutationProbability;
@@ -39,9 +47,10 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
         assert (Objects.nonNull(solution));
 
         for (int i = 0; i < solution.getNumberOfVariables(); i++) {
-            if (Math.random() < mutationProbability) {
-                Integer value = random.nextInt(solution.getUpperBound(i) + 1) + solution.getLowerBound(i);
-                solution.setVariableValue(i, value);
+            if (this.random.nextDouble() < mutationProbability) {
+                int positionToChange = this.random.nextInt(solution.getNumberOfVariables() - 1);
+                Integer newValue = random.nextInt(solution.getUpperBound(i) + 1) + solution.getLowerBound(i);
+                solution.setVariableValue(positionToChange, newValue);
             }
         }
         return solution;
