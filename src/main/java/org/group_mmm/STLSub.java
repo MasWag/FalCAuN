@@ -77,7 +77,9 @@ public class STLSub extends STLCost {
         for (int i = 0; i <= this.to; i++) {
 
             if (i >= this.from) {
+                builder.append("( ");
                 builder.append(subFml.subFml.toAbstractString());
+                builder.append(" )");
                 if (i < this.to) {
                     builder.append(op);
                 }

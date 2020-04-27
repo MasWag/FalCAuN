@@ -59,6 +59,7 @@ public class EQSearchProblem extends AbstractIntegerProblem {
         LOGGER.trace("Robustness: {}", robustness);
         Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
         if (!Objects.equals(hypOutput, query.getOutput())) {
+            LOGGER.info("CEX with Robustness: {}", robustness);
             stopped = true;
             cexQuery = query;
         }

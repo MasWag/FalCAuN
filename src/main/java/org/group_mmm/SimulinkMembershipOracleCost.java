@@ -1,22 +1,20 @@
 package org.group_mmm;
 
 import de.learnlib.api.query.Query;
+import net.automatalib.incremental.mealy.IncrementalMealyBuilder;
 import net.automatalib.incremental.mealy.tree.IncrementalMealyTreeBuilder;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracleCost.class);
-    private IncrementalMealyTreeBuilder<String, Double> costCache;
+    private IncrementalMealyBuilder<String, Double> costCache;
     private Function<Word<List<Double>>, Double> costFunc;
     private Set<SimulinkMembershipOracleCost> notifiedSet = new HashSet<>();
 
@@ -26,12 +24,30 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
         this.costCache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void processQueries(Collection<? extends Query<String, Word<String>>> queries) {
+        for (Query<String, Word<String>> q : queries) {
+            final Word<String> abstractInput = q.getInput();
+            WordBuilder<String> abstractOutputBuilder = new WordBuilder<>(abstractInput.size());
+
+            if (!cache.lookup(abstractInput, abstractOutputBuilder)) {
+                processQueryWithCost(q);
+            } else {
+                final Word<String> output = abstractOutputBuilder.toWord().suffix(q.getSuffix().length());
+                q.answer(output);
+            }
+        }
+    }
+
     Double processQueryWithCost(Query<String, Word<String>> q) {
         final Word<String> abstractInput = q.getInput();
         WordBuilder<String> abstractOutputBuilder = new WordBuilder<>(abstractInput.size());
         WordBuilder<Double> costBuilder = new WordBuilder<>(abstractInput.size());
 
-        if (!cache.lookup(abstractInput, abstractOutputBuilder) || !costCache.lookup(abstractInput, costBuilder)) {
+        if (!cache.lookup(abstractInput, abstractOutputBuilder) || !costCache.lookup(abstractInput, costBuilder) || costBuilder.toWord().lastSymbol().isInfinite()) {
             abstractOutputBuilder.clear();
             costBuilder.clear();
 
@@ -56,11 +72,19 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
 
             cache.insert(abstractInput, abstractOutputBuilder.toWord());
             costCache.insert(abstractInput, costBuilder.toWord());
+            // for assert
+            WordBuilder<Double> tmpCostBuilder = new WordBuilder<>(abstractInput.size());
+            costCache.lookup(abstractInput, tmpCostBuilder);
+            assert (Objects.equals(tmpCostBuilder.toWord(), costBuilder.toWord()));
             for (SimulinkMembershipOracleCost notified : notifiedSet) {
                 notified.cacheInsert(abstractInput, concreteOutput, abstractOutputBuilder.toWord());
             }
-        } else {
-            costCache.lookup(abstractInput, costBuilder);
+            costCache.lookup(abstractInput, tmpCostBuilder);
+            assert (Objects.equals(tmpCostBuilder.toWord(), costBuilder.toWord()));
+            if (costBuilder.toWord().lastSymbol().isInfinite()) {
+                LOGGER.warn("Infinite robustness is detected. {} {}", costBuilder.toWord().lastSymbol(), abstractInput);
+                LOGGER.warn("Raw Output: {}", concreteOutput);
+            }
         }
 
         final Word<String> output = abstractOutputBuilder.toWord().suffix(q.getSuffix().length());

@@ -48,7 +48,7 @@ class STLSubTest {
         STLCost fml = new STLSub(new STLEventually(atomic), 1, 3);
         // Optimization
         // String expect = "( X (( output == \"b\" ) ) ) || ( X (X (( output == \"b\" ) ) ) ) || ( X (X (X (( output == \"b\" ) ) ) ) )";
-        String expect = "( ( X ( output == \"b\" ) || ( X ( output == \"b\" ) || ( X ( output == \"b\" ) ) ) ) )";
+        String expect = "( ( X ( ( output == \"b\" ) ) || ( X ( ( output == \"b\" ) ) || ( X ( ( output == \"b\" ) ) ) ) ) )";
         String actual = fml.toAbstractString();
         assertEquals(expect, actual);
     }
@@ -66,7 +66,7 @@ class STLSubTest {
         STLCost fml = new STLSub(new STLGlobal(atomic), 1, 3);
         // Optimization
         // String expect = "( X (( output == \"a\" ) ) ) && ( X (X (( output == \"a\" ) ) ) ) && ( X (X (X (( output == \"a\" ) ) ) ) )";
-        String expect = "( ( X ( output == \"a\" ) && ( X ( output == \"a\" ) && ( X ( output == \"a\" ) ) ) ) )";
+        String expect = "( ( X ( ( output == \"a\" ) ) && ( X ( ( output == \"a\" ) ) && ( X ( ( output == \"a\" ) ) ) ) ) )";
         String actual = fml.toAbstractString();
         assertEquals(expect, actual);
     }

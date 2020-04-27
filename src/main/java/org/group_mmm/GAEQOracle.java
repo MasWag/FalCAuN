@@ -59,7 +59,8 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
                 break;
         }
 
-
+        // We use steady state GA because, otherwise, it converged to a suboptimal point. Perhaps we can improve by parameter tuning.
+        // See also https://www.researchgate.net/post/Whats_the_difference_between_the_steady_state_genetic_algorithm_and_the_generational_genetic_algorithm
         this.algorithm = new SimulinkSteadyStateGeneticAlgorithm(
                 problem,
                 maxEvaluations,
