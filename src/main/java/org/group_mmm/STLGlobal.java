@@ -23,7 +23,7 @@ public class STLGlobal extends STLTemporalOp {
 
     /** {@inheritDoc} */
     public RoSI getRoSIRaw(Word<List<Double>> signal) {
-        return signal.suffixes(true).stream().map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
+        return signal.suffixes(true).stream().filter(w -> !w.isEmpty()).map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
                 .reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
     }
 
