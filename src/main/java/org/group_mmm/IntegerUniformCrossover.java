@@ -15,6 +15,14 @@ import java.util.Objects;
 public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolution> {
     private double crossoverProbability;
 
+    public double getCrossoverProbability() {
+        return crossoverProbability;
+    }
+
+    public void setCrossoverProbability(double crossoverProbability) {
+        this.crossoverProbability = crossoverProbability;
+    }
+
     /**
      * <p>Constructor for IntegerUniformCrossover.</p>
      */
@@ -36,15 +44,18 @@ public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolutio
     public List<IntegerSolution> execute(List<IntegerSolution> integerSolutions) {
         assert (Objects.nonNull(integerSolutions));
         assert (integerSolutions.size() == 2);
-        List<IntegerSolution> solutions = new ArrayList<>(integerSolutions);
+
+        List<IntegerSolution> offspring = new ArrayList<>(2);
+        offspring.add((IntegerSolution) integerSolutions.get(0).copy());
+        offspring.add((IntegerSolution) integerSolutions.get(1).copy());
         for (int i = 0; i < integerSolutions.get(0).getNumberOfVariables(); i++) {
             if (Math.random() < crossoverProbability) {
-                int tmp = solutions.get(0).getVariableValue(i);
-                solutions.get(0).setVariableValue(i, solutions.get(1).getVariableValue(i));
-                solutions.get(1).setVariableValue(i, tmp);
+                int tmp = offspring.get(0).getVariableValue(i);
+                offspring.get(0).setVariableValue(i, offspring.get(1).getVariableValue(i));
+                offspring.get(1).setVariableValue(i, tmp);
             }
         }
-        return integerSolutions;
+        return offspring;
     }
 
     /**
@@ -52,6 +63,7 @@ public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolutio
      *
      * @return a int.
      */
+    @Override
     public int getNumberOfRequiredParents() {
         return 2;
     }
@@ -61,6 +73,7 @@ public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolutio
      *
      * @return a int.
      */
+    @Override
     public int getNumberOfGeneratedChildren() {
         return 2;
     }

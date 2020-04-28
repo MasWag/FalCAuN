@@ -85,7 +85,7 @@ public class STLSub extends STLCost {
                 }
             }
             if (i < this.to) {
-                builder.append("( X ");
+                builder.append("X (");
             }
         }
         for (int i = 0; i <= this.to; i++) {
