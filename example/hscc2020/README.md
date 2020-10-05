@@ -2,7 +2,7 @@ Experiments Data for HSCC 2020
 ==============================
 
 This is a document on the experiment data for the HSCC 2020 paper [Waga20].
-We implemented and evaluated our tool FalCAuN. See also [README.md](../README.md).
+We implemented and evaluated our tool FalCAuN. See also [README.md](../../README.md).
 
 Breach
 ------
