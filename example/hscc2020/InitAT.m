@@ -1,25 +1,12 @@
-%% Initialize the automatic transmission model
-function InitAT( BrAT )
+%% Init Script for the Automatic transmission  model
+% We use the automatic transmission model in [Hoxha et al.,
+% ARCH@CPSWeek 2014].
 
-%% Describes and generate driving scenarios
-% We create an input generator that will alternates between acceleration and braking
+%% Load the AT model
+mdl = 'Autotrans_shift';
+load_system(mdl);
 
-BrAT.Sys.tspan =0:.01:30;
-input_gen.type = 'UniStep';
-input_gen.cp = 30;
-BrAT.SetInputGen(input_gen);
-
-for cpi = 0:input_gen.cp -1
-    throttle_sig = strcat('throttle_u',num2str(cpi));
-    BrAT.SetParamRanges({throttle_sig},[0.0 100.0]);
-    brake_sig = strcat('brake_u',num2str(cpi));
-    BrAT.SetParamRanges({brake_sig},[0.0 325.0]);
-end
-
-% define the input parameters and ranges
-% input_params.names = {'throttle_u0'};
-% input_params.ranges = [0 100];
-
-AT_Falsify = BrAT.copy();
-end
-
+%% References
+% * [Hoxha et al., ARCH@CPSWeek 2014]: *Benchmarks for Temporal
+% Logic Requirements for Automotive Systems*, ARCH@CPSWeek 2014,
+% Bardh Hoxha, Houssam Abbas, Georgios E. Fainekos
