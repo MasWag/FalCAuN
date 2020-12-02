@@ -21,6 +21,6 @@ jobs:
           paths:
             - ~/.m2
           key: FalCAuN-{{ checksum "pom.xml" }}
-      - run: mvn test -Dtest=BlackBoxVerifierTest,ArgParserTest,InputMapperReaderTest,OutputMapperReaderTest,STLAtomicTest,STLCostTest,STLParserTest,STLSubTest,STLUntilTest
+      - run: mvn test -Dtest=BlackBoxVerifierTest,ArgParserTest,InputMapperReaderTest,OutputMapperReaderTest,STLAtomicTest,STLCostTest,STLParserTest,STLSubTest,STLUntilTest -DskipTests=false
       - store_test_results:
           path: target/surefire-reports
