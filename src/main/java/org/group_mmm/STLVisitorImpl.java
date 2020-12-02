@@ -94,6 +94,18 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
             STLEventually eventually = new STLEventually((STLCost) visitExpr(ctx.expr(0)));
 
             return handleInterval(eventually, ctx.interval());
+        } else if (ctx.UNTIL() != null) {
+            // Until
+            LOGGER.trace("Until");
+            assert ctx.expr().size() == 2;
+            STLUntil until = new STLUntil((STLCost) visitExpr(ctx.expr(0)), (STLCost) visitExpr(ctx.expr(1)));
+
+            if (ctx.interval() != null) {
+                LOGGER.error("Bounded until is not implemented yet");
+                return null;
+            } else {
+                return until;
+            }
         } else if (ctx.LPAREN() != null) {
             // Paren
             LOGGER.trace("paren");
