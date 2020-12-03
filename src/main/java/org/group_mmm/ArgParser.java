@@ -1,5 +1,8 @@
 package org.group_mmm;
 
+import ch.qos.logback.classic.Level;
+import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
+import net.automatalib.modelcheckers.ltsmin.LTSminUtil;
 import org.apache.commons.cli.*;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +48,7 @@ class ArgParser {
         options.addOption("O", "output-mapper", true, "Read the output mapper configuration from file");
         options.addOption("E", "equiv", true, "Specify the equivalence query algorithm");
         options.addOption("o", "output-dot", true, "Write the learned Mealy machine to file in DOT format");
+        options.addOption(null, "ltsmin-verbose", false, "Outputs extra information of LTSMin");
         options.addOption(null, "output-etf", true, "Write the learned Mealy machine to file in ETF format");
         options.addOption("s", "step-time", true, "The step time of the sampling");
         options.addOption("l", "signal-length", true, "The length of the signals used in the equivalence queries");
@@ -80,12 +84,18 @@ class ArgParser {
             quit = true;
             return;
         }
-
         verbose = cl.hasOption('v');
         if (verbose) {
             System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
         } else {
             System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO");
+        }
+        if (cl.hasOption("ltsmin-verbose")) {
+            ch.qos.logback.classic.Logger LTSMinLOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+            LTSMinLOGGER.setLevel(Level.DEBUG);
+            LTSminUtil.setVerbose(true);
+        } else {
+            LTSminUtil.setVerbose(false);
         }
 
         if (cl.hasOption('t')) {
