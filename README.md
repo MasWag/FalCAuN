@@ -1,7 +1,7 @@
 FalCAuN
 =======
 
-[![CircleCI](https://circleci.com/gh/MasWag/FalCAuN.svg?style=svg&circle-token=529c89869f5a7b6e9f957ee656ffc55349d050ca)](https://circleci.com/gh/MasWag/FalCAuN)
+[![JUnit](https://github.com/MasWag/FalCAuN/workflows/JUnit/badge.svg)](https://github.com/MasWag/FalCAuN/actions?query=workflow%3AJUnit)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
 
 This is the source code repository for FalCAuN ---  Falsification of CPSs via Automata Learning.
