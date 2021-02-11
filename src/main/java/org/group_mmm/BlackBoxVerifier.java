@@ -121,33 +121,28 @@ class BlackBoxVerifier {
     }
 
     void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
-        addEqOracle(new StopDisprovedEQOracle<>(
-                new RandomWordsEQOracle.MealyRandomWordsEQOracle<>(
-                        memOracle, minLength, maxLength, maxTests, random, batchSize),
-                this.ltlFormulas));
+        addEqOracle(new RandomWordsEQOracle.MealyRandomWordsEQOracle<>(
+                memOracle, minLength, maxLength, maxTests, random, batchSize));
     }
 
     void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
-        addEqOracle(new StopDisprovedEQOracle<>(
-                new RandomWalkEQOracle<>(verifiedSystem, restartProbability, maxSteps, random),
-                this.ltlFormulas));
+        addEqOracle(new RandomWalkEQOracle<>(verifiedSystem, restartProbability, maxSteps, random));
 
     }
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
-        addEqOracle(new StopDisprovedEQOracle<>(
-                new CompleteExplorationEQOracle.MealyCompleteExplorationEQOracle<>(
-                        memOracle, minDepth, maxDepth, batchSize),
-                this.ltlFormulas));
+        addEqOracle(new CompleteExplorationEQOracle.MealyCompleteExplorationEQOracle<>(
+                memOracle, minDepth, maxDepth, batchSize));
     }
 
     void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
         if (Objects.nonNull(timeout)) {
-            TimeoutEQOracle<String, String> timeoutOracle = new TimeoutEQOracle<>(eqOracle, timeout);
+            TimeoutEQOracle<String, String> timeoutOracle = new TimeoutEQOracle<>(
+                    new StopDisprovedEQOracle<>(eqOracle, this.ltlFormulas), timeout);
             this.eqOracle.addOracle(timeoutOracle);
             timeoutOracles.add(timeoutOracle);
         } else {
-            this.eqOracle.addOracle(eqOracle);
+            this.eqOracle.addOracle(new StopDisprovedEQOracle<>(eqOracle, this.ltlFormulas));
         }
     }
 
