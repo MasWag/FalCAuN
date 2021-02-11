@@ -35,6 +35,7 @@ readonly MUTATION_PROB=0.01
 readonly TIMEOUT=${3:-$((240 * 60))} # by default, timeout is 240 min.
 readonly SELECTION_KIND=Tournament
 readonly MAX_TEST=50000
+readonly WP_MAX_DEPTH=30
 
 rm -f /home/mwaga/CyVeriA/src/test/resources/MATLAB/Autotrans_shift.mdl.autosave
 
@@ -62,6 +63,7 @@ mkdir -p ./results
      --ga-crossover-prob=$CROSSOVER_PROB \
      --ga-mutation-prob=$MUTATION_PROB \
      --population-size=$POPULATION_SIZE \
-     --ga-selection-kind=$SELECTION_KIND | 
+     --ga-selection-kind=$SELECTION_KIND \
+     --wp-max-depth=$WP_MAX_DEPTH | 
     $SED '/DEBUG/ d' |
     tee "./results/result-$spec-$kind.txt"
