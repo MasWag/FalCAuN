@@ -20,7 +20,9 @@ fi
 case "$(uname)" in
     Darwin)
         arch=maci64
-        if java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '1.8')/bin/java"; then
+        if java="$(/usr/libexec/java_home -v '1.8')/bin/java"; then
+            echo "Java 8 found at $java";
+        elif java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '1.8')/bin/java"; then
             echo "Java 8 found at $java";
         else
             echo "Error: Java 8 did not found";
