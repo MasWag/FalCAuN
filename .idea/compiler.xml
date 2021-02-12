@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="falcaun" />
         <module name="CyVeriA" />
+        <module name="FalCAuN" />
         <module name="cyveria" />
       </profile>
     </annotationProcessing>
