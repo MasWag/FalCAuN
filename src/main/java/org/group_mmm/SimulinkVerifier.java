@@ -183,7 +183,7 @@ public class SimulinkVerifier {
     /**
      * add a Genetic algorithm-based equivalence oracle
      *
-     * @param costFunc            the STL formula
+     * @param costFunc            The cost function assigning a Double to each OutputSignal. This is typically an STL formula.
      * @param length              length of the generated signals
      * @param maxTests            maximum test size
      * @param selectionKind       kind of the selection method
