@@ -36,7 +36,7 @@ public class SimulinkVerifier {
      * @param signalStep The signal step in the simulatin
      * @param properties The LTL properties to be verified
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
-     * @throws java.lang.Exception It can be thrown from the constrcutor of SimulinkSUL.
+     * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
     public SimulinkVerifier(String initScript, List<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
@@ -57,8 +57,16 @@ public class SimulinkVerifier {
         return verifier.getCexProperty();
     }
 
-    void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
-        this.verifier.addEqOracle(eqOracle);
+    void addSimulinkEqOracle(Function<Word<List<Double>>, Double> costFunc,
+                             Function<SimulinkMembershipOracleCost,
+                                     PropertyOracle.MealyEquivalenceOracle<String, String>> constructor) {
+        // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
+        SimulinkMembershipOracleCost oracle =
+                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
+        oracle.setCache(this.memOracle.getCache());
+        memOracleCosts.add(oracle);
+
+        this.verifier.addEqOracle(constructor.apply(oracle));
     }
 
     void addWpMethodEQOracle(int maxDepth) {
@@ -97,12 +105,8 @@ public class SimulinkVerifier {
                                  int generationSize,
                                  int childrenSize,
                                  boolean resetWord) {
-        SimulinkMembershipOracleCost oracle =
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
-        oracle.setCache(this.memOracle.getCache());
-        memOracleCosts.add(oracle);
-
-        this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
+        this.addSimulinkEqOracle(costFunc, oracle ->
+                new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
 
     /**
@@ -125,12 +129,8 @@ public class SimulinkVerifier {
                                         int childrenSize,
                                         boolean resetWord,
                                         PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
-        SimulinkMembershipOracleCost oracle =
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
-        oracle.setCache(this.memOracle.getCache());
-        memOracleCosts.add(oracle);
-
-        this.verifier.addEqOracle(new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
+        this.addSimulinkEqOracle(costFunc, oracle ->
+                new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
 
     /**
@@ -155,12 +155,8 @@ public class SimulinkVerifier {
                               boolean resetWord,
                               double alpha,
                               PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
-        SimulinkMembershipOracleCost oracle =
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
-        oracle.setCache(this.memOracle.getCache());
-        memOracleCosts.add(oracle);
-
-        this.verifier.addEqOracle(new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
+        this.addSimulinkEqOracle(costFunc, oracle ->
+                new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
     }
 
     /**
@@ -180,12 +176,8 @@ public class SimulinkVerifier {
                                  int childrenSize,
                                  int changeSize,
                                  boolean resetWord) {
-        SimulinkMembershipOracleCost oracle =
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
-        oracle.setCache(this.memOracle.getCache());
-        memOracleCosts.add(oracle);
-
-        this.verifier.addEqOracle(new MutateSelectEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
+        this.addSimulinkEqOracle(costFunc, oracle ->
+                new MutateSelectEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
     }
 
     /**
@@ -207,14 +199,9 @@ public class SimulinkVerifier {
                        int generationSize,
                        double crossoverProb,
                        double mutationProbability, // e.g., 1.0 / length
-                       PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle
-    ) {
-        SimulinkMembershipOracleCost oracle =
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
-        oracle.setCache(this.memOracle.getCache());
-        memOracleCosts.add(oracle);
-
-        this.verifier.addEqOracle(new GAEQOracle(oracle, length, maxTests, selectionKind, generationSize, crossoverProb, mutationProbability, ltlOracle));
+                       PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+        this.addSimulinkEqOracle(costFunc, oracle ->
+                new GAEQOracle(oracle, length, maxTests, selectionKind, generationSize, crossoverProb, mutationProbability, ltlOracle));
     }
 
     List<Word<String>> getCexAbstractInput() {
