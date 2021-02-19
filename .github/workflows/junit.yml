@@ -38,3 +38,6 @@ jobs:
 
       - name: Test with Maven
         run: mvn test -Dtest=BlackBoxVerifierTest,ArgParserTest,InputMapperReaderTest,OutputMapperReaderTest,STLAtomicTest,STLCostTest,STLParserTest,STLSubTest,STLUntilTest -DskipTests=false
+
+      - name: Upload the test coverage to Codecov
+        uses: codecov/codecov-action@v1
