@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import lombok.extern.slf4j.Slf4j;
 import net.automatalib.words.Word;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -26,9 +27,7 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
 
     /** {@inheritDoc} */
     @Override
-    public Double apply(Word<List<Double>> signal) {
-        return getRoSI(signal).upperBound;
-    }
+    public Double apply(Word<List<Double>> signal) { return getRoSI(signal).getRobustness(); }
 
     /**
      * <p>parseSTL.</p>
@@ -77,6 +76,7 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
      */
     public abstract RoSI getRoSI(Word<List<Double>> signal);
 
+    @Slf4j
     class RoSI {
         Double lowerBound;
         Double upperBound;
@@ -127,6 +127,17 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
             lowerBound = -upperBound;
             upperBound = -tmp;
             return this;
+        }
+
+        double getRobustness() {
+            if (Double.isFinite(upperBound)) {
+                return upperBound;
+            } else if (Double.isFinite(lowerBound)) {
+                return lowerBound;
+            } else {
+                log.info("Infinite RoSI");
+                return upperBound;
+            }
         }
     }
 
