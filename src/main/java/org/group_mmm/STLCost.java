@@ -1,6 +1,5 @@
 package org.group_mmm;
 
-import lombok.extern.slf4j.Slf4j;
 import net.automatalib.words.Word;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -72,74 +71,9 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
      * <p>getRoSI.</p>
      *
      * @param signal a {@link net.automatalib.words.Word} object.
-     * @return a {@link org.group_mmm.STLCost.RoSI} object.
+     * @return a {@link RoSI} object.
      */
     public abstract RoSI getRoSI(Word<List<Double>> signal);
-
-    @Slf4j
-    class RoSI {
-        Double lowerBound;
-        Double upperBound;
-
-        RoSI(double lowerBound, double upperBound) {
-            this.lowerBound = lowerBound;
-            this.upperBound = upperBound;
-        }
-
-        RoSI(double value) {
-            this.lowerBound = value;
-            this.upperBound = value;
-        }
-
-        RoSI max(RoSI element) {
-            return new RoSI(
-                    Double.max(lowerBound, element.lowerBound),
-                    Double.max(upperBound, element.upperBound));
-        }
-
-        RoSI assignMax(RoSI element) {
-            lowerBound = Double.max(lowerBound, element.lowerBound);
-            upperBound = Double.max(upperBound, element.upperBound);
-            return this;
-        }
-
-        RoSI min(RoSI element) {
-            return new RoSI(
-                    Double.min(lowerBound, element.lowerBound),
-                    Double.min(upperBound, element.upperBound));
-        }
-
-        /**
-         * Destructive min
-         */
-        RoSI assignMin(RoSI element) {
-            lowerBound = Double.min(lowerBound, element.lowerBound);
-            upperBound = Double.min(upperBound, element.upperBound);
-            return this;
-        }
-
-        RoSI negate() {
-            return new RoSI(-upperBound, -lowerBound);
-        }
-
-        RoSI assignNegate() {
-            double tmp = lowerBound;
-            lowerBound = -upperBound;
-            upperBound = -tmp;
-            return this;
-        }
-
-        double getRobustness() {
-            if (Double.isFinite(upperBound)) {
-                return upperBound;
-            } else if (Double.isFinite(lowerBound)) {
-                return lowerBound;
-            } else {
-                log.info("Infinite RoSI");
-                return upperBound;
-            }
-        }
-    }
 
     private static STLCost parseSTLImpl(String stlFormula,
                                         org.group_mmm.STLVisitor visitor) {

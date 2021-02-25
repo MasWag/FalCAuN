@@ -32,8 +32,8 @@ class STLUntilTest {
         STLCost until = new STLUntil(new STLAtomic(0, STLAtomic.Operation.lt, POSITIVE_INFINITY),
                 new STLAtomic(0, STLAtomic.Operation.gt, 0));
         STLCost eventually = new STLEventually(new STLAtomic(0, STLAtomic.Operation.gt, 0));
-        STLCost.RoSI untilRoSI = until.getRoSI(input);
-        STLCost.RoSI eventuallyRoSI = eventually.getRoSI(input);
+        RoSI untilRoSI = until.getRoSI(input);
+        RoSI eventuallyRoSI = eventually.getRoSI(input);
         assertEquals(eventuallyRoSI.upperBound, untilRoSI.upperBound);
         assertEquals(eventuallyRoSI.lowerBound, untilRoSI.lowerBound);
     }

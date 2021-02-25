@@ -149,19 +149,19 @@ class STLCostTest {
                     new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 35.0)), 0, 2);
             STLCost costFunc = new STLImply(costFunc1, costFunc2);
 
-            STLCost.RoSI robustness1Atomic = costFunc1Atomic.getRoSI(input);
+            RoSI robustness1Atomic = costFunc1Atomic.getRoSI(input);
             assertNotEquals(POSITIVE_INFINITY, robustness1Atomic.lowerBound);
             assertNotEquals(NEGATIVE_INFINITY, robustness1Atomic.lowerBound);
 
-            STLCost.RoSI robustness1Global = costFunc1Global.getRoSIRaw(input);
+            RoSI robustness1Global = costFunc1Global.getRoSIRaw(input);
             assertEquals(-1188.159777396062, robustness1Global.lowerBound.doubleValue());
             assertEquals(-1188.159777396062, robustness1Global.upperBound.doubleValue());
 
-            STLCost.RoSI robustness1 = costFunc1.getRoSI(input);
+            RoSI robustness1 = costFunc1.getRoSI(input);
             assertNotEquals(POSITIVE_INFINITY, robustness1.lowerBound);
             assertNotEquals(NEGATIVE_INFINITY, robustness1.lowerBound);
 
-            STLCost.RoSI robustness2 = costFunc2.getRoSI(input);
+            RoSI robustness2 = costFunc2.getRoSI(input);
             assertNotEquals(POSITIVE_INFINITY, robustness2.upperBound);
             assertNotEquals(NEGATIVE_INFINITY, robustness2.upperBound);
 
