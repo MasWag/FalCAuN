@@ -55,13 +55,12 @@ class RoSI {
         return this;
     }
 
-    double getRobustness() {
+    Double getRobustness() {
         if (Double.isFinite(upperBound)) {
             return upperBound;
         } else if (Double.isFinite(lowerBound)) {
             return lowerBound;
         } else {
-            log.info("Infinite RoSI");
             return upperBound;
         }
     }
