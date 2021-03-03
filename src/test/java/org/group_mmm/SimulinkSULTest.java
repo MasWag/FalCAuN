@@ -62,14 +62,16 @@ class SimulinkSULTest {
         void step() {
             sul.pre();
             List<Double> input = Arrays.asList(80.0, 900.0);
-            List<Double> output = sul.step(input);
-            assertNotNull(output);
-            assertEquals(expectedOutputSize, output.size());
+            List<Double> firstOutput = sul.step(input);
+            assertNotNull(firstOutput);
+            assertEquals(expectedOutputSize, firstOutput.size());
 
             input = Arrays.asList(85.0, 920.0);
-            output = sul.step(input);
-            assertNotNull(output);
-            assertEquals(expectedOutputSize, output.size());
+            List<Double> secondOutput = sul.step(input);
+            assertNotNull(secondOutput);
+            assertEquals(expectedOutputSize, secondOutput.size());
+            // Since the inputs are totally different, the output should change.
+            assertNotEquals(firstOutput, secondOutput);
         }
 
         @Test
@@ -113,14 +115,16 @@ class SimulinkSULTest {
         void step() {
             sul.pre();
             List<Double> input = Arrays.asList(80.0, 0.0);
-            List<Double> output = sul.step(input);
-            assertNotNull(output);
-            assertEquals(expectedOutputSize, output.size());
+            List<Double> firstOutput = sul.step(input);
+            assertNotNull(firstOutput);
+            assertEquals(expectedOutputSize, firstOutput.size());
 
             input = Arrays.asList(0.0, 200.0);
-            output = sul.step(input);
-            assertNotNull(output);
-            assertEquals(expectedOutputSize, output.size());
+            List<Double> secondOutput = sul.step(input);
+            assertNotNull(secondOutput);
+            assertEquals(expectedOutputSize, secondOutput.size());
+            // Since the inputs are totally different, the output should change.
+            assertNotEquals(firstOutput, secondOutput);
         }
 
         @Test

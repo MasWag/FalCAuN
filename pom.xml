@@ -15,10 +15,11 @@
     </properties>
     <build>
         <plugins>
+            <!-- Copying project dependencies: https://maven.apache.org/plugins/maven-dependency-plugin/examples/copying-project-dependencies.html -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.1</version>
+                <version>3.1.2</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -27,10 +28,10 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputdirectory>${project.build.directory}/lib</outputdirectory>
-                            <overwritereleases>false</overwritereleases>
-                            <overwritesnapshots>false</overwritesnapshots>
-                            <overwriteifnewer>true</overwriteifnewer>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
                     </execution>
                 </executions>
@@ -91,6 +92,7 @@
                 <version>2.19.1</version>
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
+                    <!--suppress UnresolvedMavenProperty -->
                     <argLine>-Djava.library.path=${env.MATLAB_HOME}/bin/maci64:${env.MATLAB_HOME}/bin/glnxa64</argLine>
                     <skipTests>${skipTests}</skipTests>
                 </configuration>
@@ -113,8 +115,8 @@
                         <configuration>
                             <file>${env.MATLAB_HOME}/extern/engines/java/jar/engine.jar</file>
                             <groupId>com.mathworks</groupId>
-                            <artifactId>engine</artifactId>　　　
-                            <version>1.1</version>　
+                            <artifactId>engine</artifactId>
+                            <version>1.1</version>
                             <packaging>jar</packaging>
                             <generatePom>true</generatePom>
                         </configuration>
@@ -144,14 +146,16 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
+                <version>0.8.6</version>
                 <executions>
+                    <!-- Generate jacoco.exec -->
                     <execution>
                         <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+                    <!-- Generate a report from the executable file -->
                     <execution>
                         <id>report</id>
                         <phase>prepare-package</phase>
@@ -159,26 +163,7 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-
-                            <dataFile>target/jacoco.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>target/my-reports</outputDirectory>
-                        </configuration>
-                    </execution>
                 </executions>
-                <configuration>
-                    <systemPropertyVariables>
-                        <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
-                    </systemPropertyVariables>
-                </configuration>
             </plugin>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>

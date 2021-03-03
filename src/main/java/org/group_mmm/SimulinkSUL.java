@@ -134,7 +134,15 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
                 builder.append("set_param(mdl, 'InitialState', 'myOperPoint');");
             }
 
-            builder.append("simOut = sim(mdl, 'StopTime', '").append(endTime + signalStep).append("');");
+            // append the input signal
+            builder.append("in = Simulink.SimulationInput(mdl);");
+            builder.append("in = in.setExternalInput(ds);");
+
+            // Set the StopTime
+            builder.append("in = in.setModelParameter('StopTime', '").append(endTime + signalStep).append("');");
+
+            // Run the simulation
+            builder.append("simOut = sim(in);");
             builder.append("myOperPoint = simOut.get('myOperPoint');");
             builder.append("y = simOut.get('yout');");
 
