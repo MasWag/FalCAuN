@@ -61,7 +61,7 @@ class SimulinkMembershipOracleTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
-        this.mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        this.mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         this.simulink = new SimulinkSUL(initScript, paramNames, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();

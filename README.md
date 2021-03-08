@@ -23,13 +23,15 @@ Usage
 **-e** *STLFormula*, **--stl** *STLFormula* Specify *STLFormula* by signal temporal logic. <br />
 **-I** *file*, **--input-mapper** *file* Read the input mapper configuration from *file*. <br />
 **-O** *file*, **--output-mapper** *file* Read the output mapper configuration from *file*. <br />
+**-S** *file*, **--signal-mapper** *file* Read the signal mapper from *file*. <br />
 **-E** *algorithm*, **--equiv** *algorithm* Specify the equivalence testing algorithm. See below for the detail. <br />
 **-o** *file*, **--output-dot** *file* Write the learned Mealy machine to *file* in DOT format. <br />
 **--output-etf** *file* Write the learned Mealy machine to *file* in ETF format. <br />
 **-s** *step-time*, **--step-time** *step-time* Specify the step time of the sampling. <br />
 **-l** *length*, **--signal-length** *length* Specify the length of the sampled signals. <br />
 **-i** *script*, **--init** *script* The initial script of MATLAB <br />
-**-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink model <br />
+**-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink
+model <br />
 **-M** *test-size*, **--max-test** *test-size* The maximum test size
 
 ### Options Specific to the Equivalence Testing

@@ -8,13 +8,11 @@ import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
 import org.apache.commons.cli.MissingOptionException;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.group_mmm.ArgParser.EquivType.*;
@@ -28,7 +26,6 @@ public class FalCAuN {
     private static int generationSize = 5;
     private static int childrenSize = 15 * 4;
     private static boolean resetWord = false;
-    private static List<Function<List<Double>, Double>> sigMap = Collections.emptyList();
 
     private static void printEquivSetting(ArgParser argParser, List<STLCost> stl) {
         final HashMap<ArgParser.EquivType, String> equivName = new HashMap<>();
@@ -99,7 +96,7 @@ public class FalCAuN {
             System.out.println("OutputMapper: " + outputMapper);
             System.out.println("Largest: " + largest);
         }
-        SimulinkSULMapper sulMapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        SimulinkSULMapper sulMapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, argParser.getSigMap());
 
         // Parse STL formulas
         List<STLCost> stl;
@@ -229,7 +226,7 @@ public class FalCAuN {
         }
 
         if (argParser.getDotFile() != null) {
-            FileWriter writer = new FileWriter(new File(argParser.getDotFile()));
+            FileWriter writer = new FileWriter(argParser.getDotFile());
             verifier.writeDOTLearnedMealy(writer);
             writer.close();
         }

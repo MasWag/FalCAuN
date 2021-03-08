@@ -57,7 +57,7 @@ class SimulinkVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         try {
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
@@ -144,7 +144,7 @@ class SimulinkVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(afMapper, afRefMapper, cmMapper, muMapper));
             largest = new ArrayList<>(Arrays.asList('x', '0', '1', 'h'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         try {
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, propertyZHA19_AFC1, mapper);
@@ -227,7 +227,7 @@ class SimulinkVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(afMapper, afRefMapper, cmMapper, muMapper));
             largest = new ArrayList<>(Arrays.asList('x', '0', '1', 'h'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         try {
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, propertyZHA19_AFC1, mapper);

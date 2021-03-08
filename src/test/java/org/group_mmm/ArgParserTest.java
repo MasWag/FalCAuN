@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -134,7 +135,7 @@ class ArgParserTest {
         args.add("--wp-max-depth=10");
     }
 
-    private void parse() throws MissingOptionException {
+    private void parse() throws MissingOptionException, IOException {
         argParser = new ArgParser(args.toArray(new String[0]));
     }
 
@@ -349,7 +350,7 @@ class ArgParserTest {
     class Success {
 
         @Test
-        void help() throws MissingOptionException {
+        void help() throws MissingOptionException, IOException {
             addHelp();
             parse();
             quitExpect = true;
@@ -357,7 +358,7 @@ class ArgParserTest {
         }
 
         @Test
-        void version() throws MissingOptionException {
+        void version() throws MissingOptionException, IOException {
             addVersion();
             parse();
             quitExpect = true;
@@ -381,7 +382,7 @@ class ArgParserTest {
             }
 
             @Test
-            void stlString() throws MissingOptionException {
+            void stlString() throws MissingOptionException, IOException {
                 addSTLString();
                 addInputMapper();
                 addOutputMapper();
@@ -405,7 +406,7 @@ class ArgParserTest {
             }
 
             @Test
-            void stlFile() throws MissingOptionException {
+            void stlFile() throws MissingOptionException, IOException {
                 addSTLFile();
                 addInputMapper();
                 addOutputMapper();
@@ -431,7 +432,7 @@ class ArgParserTest {
             }
 
             @Test
-            void wp() throws MissingOptionException {
+            void wp() throws MissingOptionException, IOException {
                 addSTLFile();
                 addInputMapper();
                 addOutputMapper();
@@ -458,7 +459,7 @@ class ArgParserTest {
             }
 
             @Test
-            void sa() throws MissingOptionException {
+            void sa() throws MissingOptionException, IOException {
                 addSTLFile();
                 addInputMapper();
                 addOutputMapper();
@@ -486,7 +487,7 @@ class ArgParserTest {
             }
 
             @Test
-            void gaBestSolution() throws MissingOptionException {
+            void gaBestSolution() throws MissingOptionException, IOException {
                 addSTLFile();
                 addInputMapper();
                 addOutputMapper();
@@ -517,7 +518,7 @@ class ArgParserTest {
             }
 
             @Test
-            void gaTournament() throws MissingOptionException {
+            void gaTournament() throws MissingOptionException, IOException {
                 addSTLFile();
                 addInputMapper();
                 addOutputMapper();

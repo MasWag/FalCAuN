@@ -104,6 +104,6 @@ class SimulinkSULMapperTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('0', '0', 'p'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
     }
 }

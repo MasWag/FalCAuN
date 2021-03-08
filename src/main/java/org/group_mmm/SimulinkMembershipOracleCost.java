@@ -62,23 +62,29 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
                 return null;
             }
             assert concreteOutput.size() == concreteInput.size();
-            List<Double> robustness = concreteOutput.prefixes(false).stream().map(costFunc).collect(Collectors.toList());
+            List<Double> robustness = concreteOutput.prefixes(false).stream()
+                    .map(word -> Word.fromList(word.stream().map(mapper::mapConcrete).collect(Collectors.toList())))
+                    .map(costFunc).collect(Collectors.toList())
+                    .subList(1, concreteInput.length() + 1); // remove the additional element by prefixes
+            assert concreteOutput.size() == abstractInput.size();
+            assert robustness.size() == abstractInput.size();
             costBuilder.append(robustness);
 
             abstractOutputBuilder.append(
                     concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList()));
 
-            assert concreteOutput.size() == abstractOutputBuilder.toWord().size();
+            assert concreteOutput.size() == abstractOutputBuilder.size();
 
             cache.insert(abstractInput, abstractOutputBuilder.toWord());
             costCache.insert(abstractInput, costBuilder.toWord());
             // for assert
-            WordBuilder<Double> tmpCostBuilder = new WordBuilder<>(abstractInput.size());
+            WordBuilder<Double> tmpCostBuilder = new WordBuilder<>();
             costCache.lookup(abstractInput, tmpCostBuilder);
             assert (Objects.equals(tmpCostBuilder.toWord(), costBuilder.toWord()));
             for (SimulinkMembershipOracleCost notified : notifiedSet) {
                 notified.cacheInsert(abstractInput, concreteOutput, abstractOutputBuilder.toWord());
             }
+            tmpCostBuilder.clear();
             costCache.lookup(abstractInput, tmpCostBuilder);
             assert (Objects.equals(tmpCostBuilder.toWord(), costBuilder.toWord()));
             if (costBuilder.toWord().lastSymbol().isInfinite()) {
@@ -94,10 +100,11 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
 
     private void cacheInsert(Word<String> abstractInput, Word<List<Double>> concreteOutput, Word<String> abstractOutput) {
         super.cacheInsert(abstractInput, abstractOutput);
-        WordBuilder<Double> costBuilder = new WordBuilder<>(abstractInput.size());
-        List<Double> robustness = concreteOutput.prefixes(false).stream().map(costFunc).collect(Collectors.toList());
-        costBuilder.append(robustness);
-        costCache.insert(abstractInput, costBuilder.toWord());
+        Word<Double> robustness = Word.fromList(concreteOutput.prefixes(false).stream()
+                .map(word -> Word.fromList(word.stream().map(mapper::mapConcrete).collect(Collectors.toList())))
+                .map(costFunc).collect(Collectors.toList())
+                .subList(1, abstractInput.length() + 1)); // remove the additional element by prefixes
+        costCache.insert(abstractInput, robustness);
     }
 
     boolean addNotified(SimulinkMembershipOracleCost notified) {
