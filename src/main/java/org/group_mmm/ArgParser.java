@@ -6,6 +6,7 @@ import net.automatalib.modelcheckers.ltsmin.LTSminUtil;
 import org.apache.commons.cli.*;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,16 +37,18 @@ class ArgParser {
     private Double mutationProb = null;
     private Double crossoverProb = null;
     private int maxDepth;
+    SignalMapper sigMap;
 
-    ArgParser(String[] args) throws MissingOptionException {
+    ArgParser(String[] args) throws MissingOptionException, IOException {
         options.addOption("h", "help", false, "Print a help message");
         options.addOption("v", "verbose", false, "Outputs extra information, mainly for debugging");
         options.addOption("V", "version", false, "Print the version");
         options.addOption("t", "timeout", true, "Set timeout [seconds]");
-        options.addOption("f", "stl-file", true, "Read a STL formula from file");
+        options.addOption("f", "stl-file", true, "Read STL formulas from file");
         options.addOption("e", "stl", true, "Specify STLFormulas by signal temporal logic");
         options.addOption("I", "input-mapper", true, "Read the input mapper configuration from file");
         options.addOption("O", "output-mapper", true, "Read the output mapper configuration from file");
+        options.addOption("S", "signal-mapper", true, "Read the signal mapper from file");
         options.addOption("E", "equiv", true, "Specify the equivalence query algorithm");
         options.addOption("o", "output-dot", true, "Write the learned Mealy machine to file in DOT format");
         options.addOption(null, "ltsmin-verbose", false, "Outputs extra information of LTSMin");
@@ -228,6 +231,11 @@ class ArgParser {
         } else {
             etfFile = null;
         }
+        if (cl.hasOption("signal-mapper")) {
+            sigMap = SignalMapper.parse(cl.getOptionValue("signal-mapper"));
+        } else {
+            sigMap = new SignalMapper();
+        }
     }
 
     GASelectionKind getSelectionKind() {
@@ -316,6 +324,10 @@ class ArgParser {
 
     String getDotFile() {
         return dotFile;
+    }
+
+    SignalMapper getSigMap() {
+        return sigMap;
     }
 
     private void showVersion() {
