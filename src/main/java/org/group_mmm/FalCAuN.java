@@ -3,6 +3,7 @@ package org.group_mmm;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import de.learnlib.api.oracle.PropertyOracle;
+import lombok.extern.slf4j.Slf4j;
 import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
 import org.apache.commons.cli.MissingOptionException;
@@ -22,6 +23,7 @@ import static org.group_mmm.ArgParser.EquivType.*;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
+@Slf4j
 public class FalCAuN {
     private static int generationSize = 5;
     private static int childrenSize = 15 * 4;
@@ -115,6 +117,10 @@ public class FalCAuN {
         if (argParser.isVerbose()) {
             System.out.println("STL formulas: " + stl);
             System.out.println("LTL formulas: " + ltlString);
+        }
+        int maxLTLLength = ltlString.stream().map(String::length).max(Integer::compareTo).orElse(0);
+        if (maxLTLLength >= 8194) {
+            log.warn("Size of the longest LTL string is " + maxLTLLength + ". This is probably too long.");
         }
 
         SimulinkVerifier verifier = new SimulinkVerifier(

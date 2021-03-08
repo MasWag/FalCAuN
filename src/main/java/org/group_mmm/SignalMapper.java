@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
+@RequiredArgsConstructor
 public class SignalMapper {
     final private List<Function<List<Double>, Double>> sigMap;
 
@@ -26,9 +28,6 @@ public class SignalMapper {
         this.sigMap = Collections.emptyList();
     }
 
-    public SignalMapper(List<Function<List<Double>, Double>> sigMap) {
-        this.sigMap = sigMap;
-    }
 
     //@ requires 0 <= index < size()
     public double apply(int index, List<Double> concreteSignal) {

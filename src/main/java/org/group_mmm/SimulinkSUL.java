@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -33,9 +34,11 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private Double endTime = 0.0;
     private List<List<Double>> previousInput;
     private boolean isInitial = true;
+    private boolean useFastRestart = true;
 
     /**
      * Setter of simulinkSimulationStep
+     *
      * @param simulinkSimulationStep The fixed simulation step of Simulink. If this value is too large, Simulink can abort due to an computation error.
      */
     public void setSimulationStep(double simulinkSimulationStep) {
@@ -134,17 +137,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
                 builder.append("set_param(mdl, 'InitialState', 'myOperPoint');");
             }
 
-            // append the input signal
-            builder.append("in = Simulink.SimulationInput(mdl);");
-            builder.append("in = in.setExternalInput(ds);");
-
-            // Set the StopTime
-            builder.append("in = in.setModelParameter('StopTime', '").append(endTime + signalStep).append("');");
 
             // Run the simulation
-            builder.append("simOut = sim(in);");
-            builder.append("myOperPoint = simOut.get('myOperPoint');");
-            builder.append("y = simOut.get('yout');");
+            runSimulation(builder, endTime + signalStep);
 
             matlab.eval(builder.toString());
 
@@ -190,7 +185,11 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         builder.append("set_param(mdl, 'ExternalInput', 'ds');");
 
         // Enable fast restart
-        builder.append("set_param(mdl,'FastRestart','on');");
+        if (this.useFastRestart) {
+            builder.append("set_param(mdl,'FastRestart','on');");
+        } else {
+            builder.append("set_param(mdl,'FastRestart','off');");
+        }
 
         /// Configuration on the accelerator
         // Use normal mode
@@ -206,7 +205,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
         // Configuration on the decimation
         builder.append("set_param(mdl, 'SolverType', 'Fixed-step');");
-        builder.append("set_param(mdl, 'FixedStep', '" + simulinkSimulationStep + "');");
+        builder.append("set_param(mdl, 'FixedStep', '").append(simulinkSimulationStep).append("');");
         builder.append("set_param(mdl, 'Decimation', '").append(signalStep / simulinkSimulationStep).append("');");
     }
 
@@ -214,6 +213,27 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         builder.append("Simulink.sdi.setAutoArchiveMode(false);");
         builder.append("Simulink.sdi.setArchiveRunLimit(0);");
         builder.append("Simulink.sdi.clear;");
+    }
+
+    private void runSimulation(StringBuilder builder, double stopTime) {
+        // append the input signal
+        builder.append("in = Simulink.SimulationInput(mdl);");
+        builder.append("in = in.setExternalInput(ds);");
+
+        // Set the StopTime
+        builder.append("in = in.setModelParameter('StopTime', '").append(stopTime).append("');");
+        // Save the output to yout
+        if (!this.useFastRestart) {
+            builder.append("in = in.setModelParameter('SaveOutput', 'on');");
+            builder.append("in = in.setModelParameter('OutputSaveName', 'yout');");
+            builder.append("in = in.setModelParameter('SaveTime', 'on');");
+            builder.append("in = in.setModelParameter('OutputTimeName', 'tout');");
+        }
+        builder.append("in = in.setModelParameter('LoadInitialState', 'off');");
+
+        // Execute the simulation
+        builder.append("simOut = sim(in);");
+        builder.append("y = simOut.get('yout');");
     }
 
     /**
@@ -240,14 +260,22 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
         preventHugeTempFile(builder);
 
-        // Execute the simulation
-        builder.append("set_param(mdl, 'LoadInitialState', 'off');");
-        builder.append("simOut = sim(mdl, 'StopTime', '").append(signalStep * numberOfSamples).append("');");
-        builder.append("y = simOut.get('yout');");
+        runSimulation(builder, signalStep * numberOfSamples);
+
         matlab.eval(builder.toString());
 
         // get the simulation result and make the result
         double[][] y = matlab.getVariable("y");
+        if (Objects.isNull(y) || Objects.isNull(y[0])) {
+            if (this.useFastRestart) {
+                this.useFastRestart = false;
+                LOGGER.info("disable fast restart");
+                return this.execute(inputSignal);
+            } else {
+                LOGGER.error("I do not know how to obtain non-null result");
+                return null;
+            }
+        }
 
         //convert double[][] to Word<ArrayList<Double>
         WordBuilder<List<Double>> result = new WordBuilder<>();
@@ -257,9 +285,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         }
 
         post();
-
-        assert inputSignal.size() == result.toWord().size();
-        return result.toWord();
+        Word<List<Double>> resultWord = result.toWord();
+        assert inputSignal.size() == resultWord.size();
+        return resultWord;
     }
 
     /**
