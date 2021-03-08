@@ -16,12 +16,12 @@ public class SignalMapper {
     }
 
     //@ requires 0 <= index < size()
-    double apply(int index, List<Double> concreteSignal) {
+    public double apply(int index, List<Double> concreteSignal) {
         return this.sigMap.get(index).apply(concreteSignal);
     }
 
     //@ ensures \result >= 0
-    int size() {
+    public int size() {
         return this.sigMap.size();
     }
 }
