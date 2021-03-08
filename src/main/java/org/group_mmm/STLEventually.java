@@ -16,25 +16,41 @@ public class STLEventually extends STLTemporalOp {
         super(subFml);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RoSI getRoSI(Word<List<Double>> signal) {
         return getRoSIRaw(signal).assignMax(new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public RoSI getRoSIRaw(Word<List<Double>> signal) {
         return signal.suffixes(true).stream().map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
                 .reduce(new RoSI(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY), RoSI::max);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
+    public RoSI getRoSIRawWithLen(Word<List<Double>> signal, int length) {
+        return signal.suffixes(true).subList(0, length).stream().map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
+                .reduce(new RoSI(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY), RoSI::max);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format("<> ( %s )", subFml.toString());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toAbstractString() {
         return String.format("<> ( %s )", subFml.toAbstractString());

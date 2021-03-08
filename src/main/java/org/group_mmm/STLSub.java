@@ -36,7 +36,7 @@ public class STLSub extends STLCost {
             return subFml.getRoSI(signal.subWord(from, Math.min(to + 1, signal.size())));
         } else {
             // If we DO know the window entirely.
-            return subFml.getRoSIRaw(signal.subWord(from, Math.min(to + 1, signal.size())));
+            return subFml.getRoSIRawWithLen(signal.subWord(from, signal.size()), to - from + 1);
         }
     }
 

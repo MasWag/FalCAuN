@@ -21,13 +21,26 @@ abstract class STLTemporalOp extends STLCost {
      */
     abstract public RoSI getRoSIRaw(Word<List<Double>> signal);
 
-    /** {@inheritDoc} */
+    /**
+     * <p>getRoSIRawLen.</p>
+     *
+     * @param signal a {@link net.automatalib.words.Word} object.
+     * @param length the length to compute the RoSI
+     * @return a RoSI object.
+     */
+    abstract public RoSI getRoSIRawWithLen(Word<List<Double>> signal, int length);
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Set<String> getAllAPs() {
         return subFml.getAllAPs();

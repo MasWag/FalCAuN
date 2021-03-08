@@ -179,4 +179,66 @@ class STLCostTest {
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
     }
+
+    @Nested
+    class Bug20210308 {
+        Word<List<Double>> input;
+
+        @BeforeEach
+        void setUp() {
+            WordBuilder<List<Double>> builder = new WordBuilder<>();
+            builder.append(new ArrayList<>(Arrays.asList(0.0, 10.0, 20.0, 30.0, 40.0)));
+            builder.append(new ArrayList<>(Arrays.asList(0.0, 10.0, 20.0, 30.0, 40.0)));
+            builder.append(new ArrayList<>(Arrays.asList(-50.000000000001535, -13.37570312500029, 13.247187500000098, 29.868671875, 40.0)));
+            builder.append(new ArrayList<>(Arrays.asList(-59.99954600070697, -47.81534062500114, -36.600771875001236, -25.25632812500158, 12.988749999999484)));
+            builder.append(new ArrayList<>(Arrays.asList(-60.004085993650335, -46.249771874999944, -36.40148437500135, -22.886831250001578, -8.39775000000147)));
+            builder.append(new ArrayList<>(Arrays.asList(-69.00458537226298, -53.99168437499835, -44.21459687500029, -32.78760000000117, -17.627396875001434)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.00449459507554, -56.76171562499858, -43.38780000000024, -33.53242187500134, -20.640090625001296)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.00494857378972, -56.80333749999857, -43.41665625000154, -33.582031250001094, -20.773590625001443)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.00499396959763, -55.33433437499896, -44.850396875002, -34.82922500000137, -19.716681250001074)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.0049939902318, -58.13497812499857, -46.526240625001364, -31.294840625001566, -19.090171874999807)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -56.493149999999105, -43.628506250001806, -33.88290312500148, -20.950887499999578)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -58.81998437499879, -43.74528437500281, -31.753118750002557, -21.79080937499954)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -58.35149062499834, -43.05281562500275, -32.23796875000258, -22.245231249999495)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -55.222240624999515, -45.372640625001864, -34.033787500002234, -18.915256250000677)));
+            builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -58.495021874998656, -43.38252812500288, -31.858421875002815, -22.020599999999433)));
+            input = builder.toWord();
+            input.stream().forEach(line -> line.add(line.get(4) - line.get(3)));
+            assert Objects.requireNonNull(input.getSymbol(0)).size() == 6;
+        }
+
+        @Test
+        void CC4() {
+            STLCost costFunc1Atomic =
+                    new STLAtomic(5, STLAtomic.Operation.gt, 8);
+            STLTemporalOp costFunc1Global =
+                    new STLGlobal(costFunc1Atomic);
+            STLCost costFunc1 =
+                    new STLSub(costFunc1Global, 0, 2);
+            STLCost costFunc2 =
+                    new STLSub(new STLEventually(costFunc1), 0, 3);
+            STLCost costFunc = new STLSub(new STLGlobal(costFunc2), 0, 6);
+
+            RoSI robustness1Atomic = costFunc1Atomic.getRoSI(input);
+            assertNotEquals(POSITIVE_INFINITY, robustness1Atomic.lowerBound);
+            assertNotEquals(NEGATIVE_INFINITY, robustness1Atomic.lowerBound);
+
+            RoSI robustness1Global = costFunc1Global.getRoSIRaw(input);
+            assertEquals(1.8378218750033817, robustness1Global.lowerBound.doubleValue());
+            assertEquals(1.8378218750033817, robustness1Global.upperBound.doubleValue());
+
+            RoSI robustness1 = costFunc1.getRoSI(input);
+            assertNotEquals(POSITIVE_INFINITY, robustness1.lowerBound);
+            assertNotEquals(NEGATIVE_INFINITY, robustness1.lowerBound);
+
+            RoSI robustness2 = costFunc2.getRoSI(input);
+            assertNotEquals(POSITIVE_INFINITY, robustness2.upperBound);
+            assertNotEquals(NEGATIVE_INFINITY, robustness2.upperBound);
+
+            double robustness = costFunc.apply(input);
+
+            assertNotEquals(POSITIVE_INFINITY, robustness);
+            assertNotEquals(NEGATIVE_INFINITY, robustness);
+        }
+    }
 }
