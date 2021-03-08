@@ -8,7 +8,6 @@ import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
 import org.apache.commons.cli.MissingOptionException;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.nio.file.FileSystems;
@@ -99,7 +98,7 @@ public class FalCAuN {
             System.out.println("OutputMapper: " + outputMapper);
             System.out.println("Largest: " + largest);
         }
-        SimulinkSULMapper sulMapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        SimulinkSULMapper sulMapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         // Parse STL formulas
         List<STLCost> stl;
@@ -229,7 +228,7 @@ public class FalCAuN {
         }
 
         if (argParser.getDotFile() != null) {
-            FileWriter writer = new FileWriter(new File(argParser.getDotFile()));
+            FileWriter writer = new FileWriter(argParser.getDotFile());
             verifier.writeDOTLearnedMealy(writer);
             writer.close();
         }

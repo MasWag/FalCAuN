@@ -6,7 +6,6 @@ import net.automatalib.words.Word;
 import net.automatalib.words.impl.SimpleAlphabet;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, List<Double>> {
     private Map<String, List<Double>> inputMapper;
     private List<Character> largestOutputs;
-    private List<Function<List<Double>, Double>> sigMap;
+    private SignalMapper sigMap;
 
     private List<List<Character>> abstractOutputs;
     private List<List<Double>> concreteOutputs;
@@ -27,13 +26,14 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
     /**
      * <p>Constructor for SimulinkSULMapper.</p>
      *
-     * @param inputMapper a {@link java.util.List} object.
+     * @param inputMapper    a {@link java.util.List} object.
      * @param largestOutputs a {@link java.util.List} object.
-     * @param outputMapper a {@link java.util.List} object.
-     * @param sigMap a {@link java.util.List} object.
+     * @param outputMapper   a {@link java.util.List} object.
+     * @param sigMap         a {@link java.util.List} object.
      */
     public SimulinkSULMapper(List<Map<Character, Double>> inputMapper,
-                             List<Character> largestOutputs, List<Map<Character, Double>> outputMapper, List<Function<List<Double>, Double>> sigMap) {
+                             List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,
+                             SignalMapper sigMap) {
         Map<String, List<Double>> tmpMapper = new HashMap<>();
 
         for (Map<Character, Double> map : inputMapper) {
@@ -89,13 +89,14 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
     public String mapOutput(List<Double> concreteOutput) {
         // System.out.println("AF: " + concreteOutput.get(0));
         StringBuilder result = new StringBuilder(concreteOutput.size());
+        assert concreteOutputs.size() == sigMap.size() + concreteOutput.size();
 
         for (int i = 0; i < concreteOutputs.size(); i++) {
             double cOuti;
             if (i < concreteOutput.size()) {
                 cOuti = concreteOutput.get(i);
             } else {
-                cOuti = sigMap.get(i - concreteOutput.size()).apply(concreteOutput);
+                cOuti = sigMap.apply(i - concreteOutput.size(), concreteOutput);
             }
             int searchResult = Collections.binarySearch(concreteOutputs.get(i), cOuti);
             int index = searchResult >= 0 ? searchResult : ~searchResult;

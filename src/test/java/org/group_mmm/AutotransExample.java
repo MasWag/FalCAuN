@@ -85,7 +85,7 @@ public class AutotransExample {
             outputMapper = new ArrayList<>(Arrays.asList(velocityMapper, rotationMapper, gearMapper));
             largest = new ArrayList<>(Arrays.asList('X', 'X', 'X'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         setOutputMaps();
     }
 
@@ -107,7 +107,7 @@ public class AutotransExample {
 
     void setInputMapper(List<Map<Character, Double>> inputMapper) {
         this.inputMapper = inputMapper;
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
     }
 
     List<Map<Character, Double>> getOutputMapper() {
@@ -116,7 +116,7 @@ public class AutotransExample {
 
     void setOutputMapper(List<Map<Character, Double>> outputMapper) {
         this.outputMapper = outputMapper;
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         setOutputMaps();
     }
 
@@ -126,7 +126,7 @@ public class AutotransExample {
 
     void setLargest(List<Character> largest) {
         this.largest = largest;
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         setOutputMaps();
     }
 
@@ -164,7 +164,7 @@ public class AutotransExample {
 
     public void setSigMap(List<Function<List<Double>, Double>> sigMap) {
         this.sigMap = sigMap;
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, this.sigMap);
+        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(this.sigMap));
     }
 
     private List<Character> constructSmallerAPs(int index, double threshold) {
