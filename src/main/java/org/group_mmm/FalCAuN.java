@@ -216,6 +216,7 @@ public class FalCAuN {
         long endTime = System.nanoTime();
         System.out.println("BBC finished");
         System.out.println("BBC Elapsed Time: " + ((endTime - startTime) / 1000000000.0) + " [sec]");
+        System.out.println("Simulink Execution: " + verifier.getSimulinkCount() + " times");
         if (result) {
             System.out.println("All the given properties are verified");
         } else {

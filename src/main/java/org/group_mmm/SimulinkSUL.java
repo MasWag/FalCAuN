@@ -3,6 +3,7 @@ package org.group_mmm;
 import com.mathworks.engine.MatlabEngine;
 import de.learnlib.api.SUL;
 import de.learnlib.api.exception.SULException;
+import lombok.Getter;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
 import org.apache.commons.lang3.ArrayUtils;
@@ -35,6 +36,8 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private List<List<Double>> previousInput;
     private boolean isInitial = true;
     private boolean useFastRestart = true;
+    @Getter
+    private int counter = 0;
 
     /**
      * Setter of simulinkSimulationStep
@@ -234,6 +237,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         // Execute the simulation
         builder.append("simOut = sim(in);");
         builder.append("y = simOut.get('yout');");
+        counter++;
     }
 
     /**

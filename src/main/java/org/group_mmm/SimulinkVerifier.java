@@ -283,4 +283,11 @@ public class SimulinkVerifier {
     public void setSimulationStep(double simulinkSimulationStep) {
         this.rawSimulink.setSimulationStep(simulinkSimulationStep);
     }
+
+    /**
+     * @return the number of the Simulink executions
+     */
+    public int getSimulinkCount() {
+        return this.rawSimulink.getCounter();
+    }
 }
