@@ -57,7 +57,7 @@ public class SimulinkVerifier {
         return verifier.getCexProperty();
     }
 
-    void addSimulinkEqOracle(Function<Word<List<Double>>, Double> costFunc,
+    void addSimulinkEqOracle(STLCost costFunc,
                              Function<SimulinkMembershipOracleCost,
                                      PropertyOracle.MealyEquivalenceOracle<String, String>> constructor) {
         // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
@@ -98,7 +98,7 @@ public class SimulinkVerifier {
         this.verifier.setTimeout(timeout);
     }
 
-    void addHillClimbingEQOracle(Function<Word<List<Double>>, Double> costFunc,
+    void addHillClimbingEQOracle(STLCost costFunc,
                                  int length,
                                  Random random,
                                  int maxTests,
@@ -121,7 +121,7 @@ public class SimulinkVerifier {
      * @param resetWord      a boolean.
      * @param ltlOracle      a {@link de.learnlib.api.oracle.PropertyOracle.MealyPropertyOracle} object.
      */
-    public void addHillClimbingEQOracle(Function<Word<List<Double>>, Double> costFunc,
+    public void addHillClimbingEQOracle(STLCost costFunc,
                                         int length,
                                         Random random,
                                         int maxTests,
@@ -146,7 +146,7 @@ public class SimulinkVerifier {
      * @param alpha          a double.
      * @param ltlOracle      a {@link de.learnlib.api.oracle.PropertyOracle.MealyPropertyOracle} object.
      */
-    public void addSAEQOracle(Function<Word<List<Double>>, Double> costFunc,
+    public void addSAEQOracle(STLCost costFunc,
                               int length,
                               Random random,
                               int maxTests,
@@ -168,7 +168,7 @@ public class SimulinkVerifier {
         return verifier.getLtlFormulas();
     }
 
-    void addMutateSelectEQOracle(Function<Word<List<Double>>, Double> costFunc,
+    void addMutateSelectEQOracle(STLCost costFunc,
                                  int length,
                                  Random random,
                                  int maxTests,
@@ -192,7 +192,7 @@ public class SimulinkVerifier {
      * @param mutationProbability probability to have mutation
      * @param ltlOracle           the LTL formula
      */
-    void addGAEQOracle(Function<Word<List<Double>>, Double> costFunc,
+    void addGAEQOracle(STLCost costFunc,
                        int length,
                        int maxTests,
                        ArgParser.GASelectionKind selectionKind,

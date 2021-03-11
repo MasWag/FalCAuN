@@ -1,7 +1,5 @@
 package org.group_mmm;
 
-import net.automatalib.words.Word;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,20 +17,26 @@ class STLAnd extends STLCost {
     }
 
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public RoSI getRoSI(Word<List<Double>> signal) {
+    public RoSI getRoSI(IOSignal signal) {
         return subFmls.stream().map(subFml -> subFml.getRoSI(signal)).filter(
                 Objects::nonNull).reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return subFmls.stream().map(STLCost::toString).collect(Collectors.joining(" && "));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void constructAtomicStrings() {
         if (this.nonTemporal) {

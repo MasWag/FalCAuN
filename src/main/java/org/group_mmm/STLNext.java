@@ -1,8 +1,5 @@
 package org.group_mmm;
 
-import net.automatalib.words.Word;
-
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,31 +17,39 @@ public class STLNext extends STLCost {
         this.nonTemporal = false;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Double apply(Word<List<Double>> signal) {
+    public Double apply(IOSignal signal) {
         if (signal.size() <= 1) {
             return this.nullPositive ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
         }
         return this.subFml.apply(signal.suffix(signal.size() - 1));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public RoSI getRoSI(Word<List<Double>> signal) {
+    public RoSI getRoSI(IOSignal signal) {
         if (signal.size() <= 1) {
             return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
         return this.subFml.getRoSI(signal.suffix(signal.size() - 1));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toAbstractString() {
         return String.format("X ( %s )", subFml.toAbstractString());

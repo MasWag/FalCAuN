@@ -1,7 +1,5 @@
 package org.group_mmm;
 
-import net.automatalib.words.Word;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,20 +21,26 @@ public class STLOr extends STLCost {
         this.nonTemporal = subFmls.stream().map(STLCost::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public RoSI getRoSI(Word<List<Double>> signal) {
+    public RoSI getRoSI(IOSignal signal) {
         return subFmls.stream().map(subFml -> subFml.getRoSI(signal)).filter(
                 Objects::nonNull).reduce(new RoSI(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY), RoSI::max);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return subFmls.stream().map(STLCost::toString).collect(Collectors.joining(" || "));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void constructAtomicStrings() {
         if (this.nonTemporal) {

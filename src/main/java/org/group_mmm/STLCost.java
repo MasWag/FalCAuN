@@ -1,6 +1,5 @@
 package org.group_mmm;
 
-import net.automatalib.words.Word;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -16,17 +15,13 @@ import java.util.function.Function;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public abstract class STLCost implements Function<Word<List<Double>>, Double> {
+public abstract class STLCost implements Function<IOSignal, Double> {
     boolean nonTemporal;
     Set<String> atomicStrings;
 
     Set<String> getAtomicStrings() {
         return atomicStrings;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public Double apply(Word<List<Double>> signal) { return getRoSI(signal).getRobustness(); }
 
     /**
      * <p>parseSTL.</p>
@@ -37,9 +32,15 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
      * @return a {@link org.group_mmm.STLCost} object.
      */
     static public STLCost parseSTL(String stlFormula,
+                                   List<Map<Character, Double>> inputMapper,
                                    List<Map<Character, Double>> outputMapper,
                                    List<Character> largest) {
-        org.group_mmm.STLVisitor visitor = new STLVisitorImpl(outputMapper, largest);
+        org.group_mmm.STLVisitor<STLCost> visitor = new STLVisitorImpl(inputMapper, outputMapper, largest);
+        return parseSTLImpl(stlFormula, visitor);
+    }
+
+    static STLCost parseSTL(String stlFormula) {
+        org.group_mmm.STLVisitor<STLCost> visitor = new STLVisitorImpl();
         return parseSTLImpl(stlFormula, visitor);
     }
 
@@ -62,9 +63,22 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
      */
     public abstract String toAbstractString();
 
-    static STLCost parseSTL(String stlFormula) {
-        org.group_mmm.STLVisitor visitor = new STLVisitorImpl();
-        return parseSTLImpl(stlFormula, visitor);
+    private static STLCost parseSTLImpl(String stlFormula,
+                                        org.group_mmm.STLVisitor<STLCost> visitor) {
+        CharStream stream = CharStreams.fromString(stlFormula);
+        org.group_mmm.STLLexer lexer = new org.group_mmm.STLLexer(stream);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        org.group_mmm.STLParser parser = new org.group_mmm.STLParser(tokens);
+        ParseTree tree = parser.expr();
+        return visitor.visit(tree);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Double apply(IOSignal signal) {
+        return getRoSI(signal).getRobustness();
     }
 
     /**
@@ -73,17 +87,7 @@ public abstract class STLCost implements Function<Word<List<Double>>, Double> {
      * @param signal a {@link net.automatalib.words.Word} object.
      * @return a {@link RoSI} object.
      */
-    public abstract RoSI getRoSI(Word<List<Double>> signal);
-
-    private static STLCost parseSTLImpl(String stlFormula,
-                                        org.group_mmm.STLVisitor visitor) {
-        CharStream stream = CharStreams.fromString(stlFormula);
-        org.group_mmm.STLLexer lexer = new org.group_mmm.STLLexer(stream);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        org.group_mmm.STLParser parser = new org.group_mmm.STLParser(tokens);
-        ParseTree tree = parser.expr();
-        return (STLCost) visitor.visit(tree);
-    }
+    public abstract RoSI getRoSI(IOSignal signal);
 
     boolean isNonTemporal() {
         return nonTemporal;

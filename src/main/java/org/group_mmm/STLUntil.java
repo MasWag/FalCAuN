@@ -1,8 +1,5 @@
 package org.group_mmm;
 
-import net.automatalib.words.Word;
-
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,11 +21,11 @@ public class STLUntil extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    public RoSI getRoSI(Word<List<Double>> signal) {
+    public RoSI getRoSI(IOSignal signal) {
         return getRoSIRaw(signal).assignMax(new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
     }
 
-    public RoSI getRoSIRaw(Word<List<Double>> signal) {
+    public RoSI getRoSIRaw(IOSignal signal) {
         RoSI result = new RoSI(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
 
         for (int i = 0; i < signal.length(); i++) {

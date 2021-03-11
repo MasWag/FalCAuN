@@ -14,14 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(JUnitQuickcheck.class)
 public class STLAndTest {
-    private STLCost formula = new STLAnd(
-            new STLAtomic(0, STLAtomic.Operation.gt, 20.0),
-            new STLAtomic(0, STLAtomic.Operation.lt, 100.0));
+    private final STLCost formula = new STLAnd(
+            new STLOutputAtomic(0, STLAbstractAtomic.Operation.gt, 20.0),
+            new STLOutputAtomic(0, STLAbstractAtomic.Operation.lt, 100.0));
 
     @Property
     public void andIsMin(@InRange(min = "0.0", max = "200.0") double value) {
-        Word<List<Double>> input = Word.fromLetter(Collections.singletonList(value));
-        double result = formula.apply(input);
+        Word<List<Double>> outputSignal = Word.fromLetter(Collections.singletonList(value));
+        Word<List<Double>> inputSignal = Word.fromLetter(Collections.emptyList());
+        IOSignal signal = new IOSignal(inputSignal, outputSignal);
+        double result = formula.apply(signal);
         assertEquals(min(value - 20.0, 100.0 - value), result);
     }
 }

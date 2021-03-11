@@ -1,8 +1,5 @@
 package org.group_mmm;
 
-import net.automatalib.words.Word;
-
-import java.util.List;
 import java.util.Set;
 
 abstract class STLTemporalOp extends STLCost {
@@ -19,7 +16,7 @@ abstract class STLTemporalOp extends STLCost {
      * @param signal a {@link net.automatalib.words.Word} object.
      * @return a RoSI object.
      */
-    abstract public RoSI getRoSIRaw(Word<List<Double>> signal);
+    abstract public RoSI getRoSIRaw(IOSignal signal);
 
     /**
      * <p>getRoSIRawLen.</p>
@@ -28,7 +25,7 @@ abstract class STLTemporalOp extends STLCost {
      * @param length the length to compute the RoSI
      * @return a RoSI object.
      */
-    abstract public RoSI getRoSIRawWithLen(Word<List<Double>> signal, int length);
+    abstract public RoSI getRoSIRawWithLen(IOSignal signal, int length);
 
     /**
      * {@inheritDoc}
