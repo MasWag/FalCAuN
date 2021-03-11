@@ -20,8 +20,8 @@ class STLCostTest {
     @BeforeEach
     void setUp() {
         concreteExpected = Arrays.asList(
-                "[] ( signal(0) < 120.000000 )",
-                "[] ( ( signal(2) == 3.000000 ) -> ( signal(0) > 20.000000 ) )"
+                "[] ( output(0) < 120.000000 )",
+                "[] ( ( output(2) == 3.000000 ) -> ( output(0) > 20.000000 ) )"
         );
         abstractExpected = Arrays.asList(
                 "[] ( ( output == \"aaa\" ) || ( output == \"aac\" ) || ( output == \"bab\" ) || ( output == \"aab\" ) || ( output == \"baa\" ) || ( output == \"bac\" ) )",
@@ -36,11 +36,11 @@ class STLCostTest {
         gearMap.put('b', 3.0);
         List<Map<Character, Double>> outputMapper = Arrays.asList(velocityMap, rotationMap, gearMap);
         List<Character> largest = Arrays.asList('c', 'a', 'c');
-        List<STLAtomic> atomics = new ArrayList<>();
-        atomics.add(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
-        atomics.add(new STLAtomic(2, STLAtomic.Operation.eq, 3));
-        atomics.add(new STLAtomic(0, STLAtomic.Operation.gt, 20));
-        for (STLAtomic atomic : atomics) {
+        List<STLOutputAtomic> atomics = new ArrayList<>();
+        atomics.add(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 120.0));
+        atomics.add(new STLOutputAtomic(2, STLOutputAtomic.Operation.eq, 3));
+        atomics.add(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 20));
+        for (STLOutputAtomic atomic : atomics) {
             atomic.setAtomic(outputMapper, largest);
         }
 
@@ -68,7 +68,7 @@ class STLCostTest {
 
     @Nested
     class Bug201906171356 {
-        Word<List<Double>> input;
+        IOSignal input;
 
         @BeforeEach
         void setUp() {
@@ -88,23 +88,23 @@ class STLCostTest {
             builder.append(new ArrayList<>(Arrays.asList(82.83787200700355, 3062.240095871121, 4.0)));
             builder.append(new ArrayList<>(Arrays.asList(85.75230478701785, 3117.4431309247016, 4.0)));
             builder.append(new ArrayList<>(Arrays.asList(88.39317330844652, 3165.812526140048, 4.0)));
-            input = builder.toWord();
+            input = new IOSignal(builder.toWord(), builder.toWord());
             assert input.size() == 15;
         }
 
         @Test
         void ATExampleS4() {
             STLCost costFunc =
-                    new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
-                            new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14));
+                    new STLOr(new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
+                            new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
             assertNotEquals(POSITIVE_INFINITY, costFunc.apply(input));
         }
 
         @Test
         void ATExampleS4AndTextRepl() {
             STLCost costFuncExt =
-                    new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
-                            new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14));
+                    new STLOr(new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
+                            new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
             STLCost costFunc = STLCost.parseSTL("([]_[0,13] (signal(0) < 100)) || ([]_[14,14] (signal(0) > 65.0))");
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
@@ -112,7 +112,7 @@ class STLCostTest {
 
     @Nested
     class Bug20200427 {
-        Word<List<Double>> input;
+        IOSignal input;
 
         @BeforeEach
         void setUp() {
@@ -133,20 +133,20 @@ class STLCostTest {
             builder.append(new ArrayList<>(Arrays.asList(85.75230478701785, 3117.4431309247016, 4.0)));
             builder.append(new ArrayList<>(Arrays.asList(88.39317330844652, 3165.812526140048, 4.0)));
             builder.append(new ArrayList<>(Arrays.asList(88.39317330844652, 3165.812526140048, 4.0)));
-            input = builder.toWord();
+            input = new IOSignal(builder.toWord(), builder.toWord());
             assert input.size() == 16;
         }
 
         @Test
         void AT6() {
             STLCost costFunc1Atomic =
-                    new STLAtomic(1, STLAtomic.Operation.lt, 3000);
+                    new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 3000);
             STLTemporalOp costFunc1Global =
                     new STLGlobal(costFunc1Atomic);
             STLCost costFunc1 =
                     new STLSub(costFunc1Global, 0, 15);
             STLCost costFunc2 =
-                    new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 35.0)), 0, 2);
+                    new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2);
             STLCost costFunc = new STLImply(costFunc1, costFunc2);
 
             RoSI robustness1Atomic = costFunc1Atomic.getRoSI(input);
@@ -173,8 +173,8 @@ class STLCostTest {
         @Test
         void AT6TextRepl() {
             STLCost costFuncExt =
-                    new STLImply(new STLSub(new STLGlobal(new STLAtomic(1, STLAtomic.Operation.lt, 3000)), 0, 15),
-                            new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 35.0)), 0, 2));
+                    new STLImply(new STLSub(new STLGlobal(new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 3000)), 0, 15),
+                            new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2));
             STLCost costFunc = STLCost.parseSTL("((alw_[0, 15] (signal(1) < 3000.0)) -> (alw_[0, 2] (signal(0) < 35.0)))");
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
@@ -182,7 +182,7 @@ class STLCostTest {
 
     @Nested
     class Bug20210308 {
-        Word<List<Double>> input;
+        IOSignal input;
 
         @BeforeEach
         void setUp() {
@@ -202,15 +202,16 @@ class STLCostTest {
             builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -58.35149062499834, -43.05281562500275, -32.23796875000258, -22.245231249999495)));
             builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -55.222240624999515, -45.372640625001864, -34.033787500002234, -18.915256250000677)));
             builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -58.495021874998656, -43.38252812500288, -31.858421875002815, -22.020599999999433)));
-            input = builder.toWord();
-            input.stream().forEach(line -> line.add(line.get(4) - line.get(3)));
-            assert Objects.requireNonNull(input.getSymbol(0)).size() == 6;
+            Word<List<Double>> inputWord = builder.toWord();
+            inputWord.stream().forEach(line -> line.add(line.get(4) - line.get(3)));
+            input = new IOSignal(inputWord, inputWord);
+            assert Objects.requireNonNull(input.getOutputSymbol(0)).size() == 6;
         }
 
         @Test
         void CC4() {
             STLCost costFunc1Atomic =
-                    new STLAtomic(5, STLAtomic.Operation.gt, 8);
+                    new STLOutputAtomic(5, STLOutputAtomic.Operation.gt, 8);
             STLTemporalOp costFunc1Global =
                     new STLGlobal(costFunc1Atomic);
             STLCost costFunc1 =

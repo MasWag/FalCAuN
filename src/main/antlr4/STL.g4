@@ -27,10 +27,14 @@ expr
      ;
 
 atomic
-       : SIGNAL LPAREN signalID=NATURAL RPAREN operator=EQ value
-       | SIGNAL LPAREN signalID=NATURAL RPAREN operator=LT value
-       | SIGNAL LPAREN signalID=NATURAL RPAREN operator=GT value
-       | SIGNAL LPAREN signalID=NATURAL RPAREN operator=NE value
+       : OUTPUT LPAREN signalID=NATURAL RPAREN operator=EQ value
+       | OUTPUT LPAREN signalID=NATURAL RPAREN operator=LT value
+       | OUTPUT LPAREN signalID=NATURAL RPAREN operator=GT value
+       | OUTPUT LPAREN signalID=NATURAL RPAREN operator=NE value
+       | INPUT LPAREN signalID=NATURAL RPAREN operator=EQ value
+       | INPUT LPAREN signalID=NATURAL RPAREN operator=LT value
+       | INPUT LPAREN signalID=NATURAL RPAREN operator=GT value
+       | INPUT LPAREN signalID=NATURAL RPAREN operator=NE value
        ;
 
 value
@@ -72,4 +76,5 @@ FLOAT : NATURAL '.' [0-9]+;
 //([1-9][0-9]*('.'[0-9]+)?) | ('0.'[0-9]+);
 LPAREN : '(';
 RPAREN : ')';
-SIGNAL : 'signal';
+INPUT : 'input';
+OUTPUT : 'signal' | 'output';

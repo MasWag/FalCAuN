@@ -116,17 +116,18 @@ public class SimulinkRandomTester {
 
             try {
                 Word<List<Double>> concreteOutput = this.rawSimulink.execute(concreteInput);
+                IOSignal concreteSignal = new IOSignal(concreteInput, concreteOutput);
                 LOGGER.debug("Abstract input: " + abstractInput);
                 LOGGER.debug("Concrete output: " + concreteOutput);
                 Iterator<Integer> it = unfalsifiedIndex.iterator();
                 while (it.hasNext()) {
                     int i = it.next();
-                    LOGGER.debug("Robustness: " + costFunc.get(i).apply(concreteOutput));
-                    if (costFunc.get(i).apply(concreteOutput) < 0) {
+                    LOGGER.debug("Robustness: " + costFunc.get(i).apply(concreteSignal));
+                    if (costFunc.get(i).apply(concreteSignal) < 0) {
                         LOGGER.info("Property_violated: " + properties.get(i));
                         LOGGER.info("Counter example for property: " + abstractInput);
                         LOGGER.info("Concrete output: " + concreteOutput);
-                        LOGGER.info("Robustness: " + costFunc.get(i).apply(concreteOutput));
+                        LOGGER.info("Robustness: " + costFunc.get(i).apply(concreteSignal));
 
                         cexInput.add(abstractInput);
                         cexProperty.add(properties.get(i));

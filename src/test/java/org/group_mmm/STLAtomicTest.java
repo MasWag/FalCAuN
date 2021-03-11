@@ -14,8 +14,8 @@ class STLAtomicTest {
 
     @Test
     void applyEmpty() {
-        Word<List<Double>> signal = Word.epsilon();
-        STLCost formula = new STLAtomic(0, STLAtomic.Operation.lt, 10);
+        IOSignal signal = new IOSignal(Word.epsilon(), Word.epsilon());
+        STLCost formula = new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 10);
         double expected = Double.POSITIVE_INFINITY;
         double actual = formula.apply(signal);
 
@@ -27,9 +27,9 @@ class STLAtomicTest {
         WordBuilder<List<Double>> builder = new WordBuilder<>();
         builder.append(new ArrayList<>(Collections.singletonList(0.0)));
         Word<List<Double>> signal = builder.toWord();
-        STLCost formula = new STLAtomic(0, STLAtomic.Operation.ne, 2);
+        STLCost formula = new STLOutputAtomic(0, STLOutputAtomic.Operation.ne, 2);
         double expected = 2;
-        double actual = formula.apply(signal);
+        double actual = formula.apply(new IOSignal(signal, signal));
 
         assertEquals(expected, actual);
     }

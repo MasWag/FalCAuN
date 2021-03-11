@@ -1,24 +1,21 @@
 package org.group_mmm;
 
 import de.learnlib.api.oracle.MembershipOracle;
-import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AutotransExampleTest {
-    static void executeRun(AutotransExample exampleAT, Function<Word<List<Double>>, Double> costFunc, boolean useHillClimbing, boolean useSA, boolean resetWord, String dotName) throws Exception {
+    static void executeRun(AutotransExample exampleAT, STLCost costFunc, boolean useHillClimbing, boolean useSA, boolean resetWord, String dotName) throws Exception {
         exampleAT.constructVerifier();
 
         if (useHillClimbing) {
@@ -30,7 +27,7 @@ class AutotransExampleTest {
         }
     }
 
-    static void executeRun(AutotransExample exampleAT, Function<Word<List<Double>>, Double> costFunc, Kind kind, boolean resetWord, String dotName) throws Exception {
+    static void executeRun(AutotransExample exampleAT, STLCost costFunc, Kind kind, boolean resetWord, String dotName) throws Exception {
         exampleAT.constructVerifier();
 
         switch (kind) {
@@ -62,7 +59,7 @@ class AutotransExampleTest {
 
         assertFalse(exampleAT.getVerifier().run());
 
-        FileWriter writer = new FileWriter(new File(dotName));
+        FileWriter writer = new FileWriter(dotName);
         exampleAT.getVerifier().writeDOTLearnedMealy(writer);
         writer.close();
 
@@ -348,7 +345,7 @@ class AutotransExampleTest {
             ArrayList<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', 'X'));
             exampleAT.setLargest(largest);
 
-            STLAtomic atomic = new STLAtomic(1, STLAtomic.Operation.lt, 4500.0);
+            STLOutputAtomic atomic = new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 4500.0);
 
             atomic.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
@@ -433,7 +430,7 @@ class AutotransExampleTest {
             //exampleAT.getVerifier().addRandomWalkEQOracle(0.1, 100, new Random());
             assertFalse(exampleAT.getVerifier().run());
 
-            FileWriter writer = new FileWriter(new File("./runS1Learned.dot"));
+            FileWriter writer = new FileWriter("./runS1Learned.dot");
             exampleAT.getVerifier().writeDOTLearnedMealy(writer);
             writer.close();
 
@@ -527,7 +524,7 @@ class AutotransExampleTest {
             exampleAT.setLargest(largest);
 
             String expected = "[]((output==\"aXX\")||(output==\"cXX\")||(output==\"bXX\"))";
-            STLAtomic atomic = new STLAtomic(0, STLAtomic.Operation.lt, 120.0);
+            STLOutputAtomic atomic = new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 120.0);
             atomic.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
             atomic.setLargest(largest);
@@ -564,7 +561,7 @@ class AutotransExampleTest {
 
             boolean resetWord = false;
 
-            Function<Word<List<Double>>, Double> costFunc = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
+            STLCost costFunc = new STLGlobal(new STLOutputAtomic(0, STLAbstractAtomic.Operation.lt, 120.0));
 
             executeRun(exampleAT, costFunc, kind, resetWord, "./runS1Learned.dot");
         }
@@ -613,9 +610,9 @@ class AutotransExampleTest {
             boolean useGA = false;
             boolean resetWord = false;
 
-            Function<Word<List<Double>>, Double> costFunc =
-                    new STLGlobal(new STLImply(new STLAtomic(2, STLAtomic.Operation.eq, 3),
-                            new STLAtomic(0, STLAtomic.Operation.gt, 20)));
+            STLCost costFunc =
+                    new STLGlobal(new STLImply(new STLOutputAtomic(2, STLAbstractAtomic.Operation.eq, 3),
+                            new STLOutputAtomic(0, STLAbstractAtomic.Operation.gt, 20)));
 
             executeRun(exampleAT, costFunc, useHillClimbing, useGA, resetWord, "./runS2Learned.dot");
         }
@@ -653,11 +650,11 @@ class AutotransExampleTest {
             boolean useGA = false;
             boolean resetWord = false;
 
-            Function<Word<List<Double>>, Double> costFuncS1 = new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 120.0));
+            STLCost costFuncS1 = new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 120.0));
 
-            Function<Word<List<Double>>, Double> costFuncS2 =
-                    new STLGlobal(new STLImply(new STLAtomic(2, STLAtomic.Operation.eq, 3),
-                            new STLAtomic(0, STLAtomic.Operation.gt, 20)));
+            STLCost costFuncS2 =
+                    new STLGlobal(new STLImply(new STLOutputAtomic(2, STLOutputAtomic.Operation.eq, 3),
+                            new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 20)));
 
             if (useHillClimbing) {
                 exampleAT.getVerifier().addHillClimbingEQOracle(costFuncS1,
@@ -678,7 +675,7 @@ class AutotransExampleTest {
 
             assertFalse(exampleAT.getVerifier().run());
 
-            FileWriter writer = new FileWriter(new File("./runS1-S2Learned.dot"));
+            FileWriter writer = new FileWriter("./runS1-S2Learned.dot");
             exampleAT.getVerifier().writeDOTLearnedMealy(writer);
             writer.close();
 
@@ -712,8 +709,8 @@ class AutotransExampleTest {
             boolean resetWord = false;
 
             STLCost costFunc =
-                    new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
-                            new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14));
+                    new STLOr(new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
+                            new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
 
             executeRun(exampleAT, costFunc, kind, resetWord, "./runS4Learned.dot");
         }
@@ -761,8 +758,8 @@ class AutotransExampleTest {
 
             STLCost costFunc = new STLGlobal(
                     new STLOr(
-                            new STLAtomic(1, STLAtomic.Operation.lt, 4770),
-                            new STLNext(new STLAtomic(1, STLAtomic.Operation.gt, 600.0), true)
+                            new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 4770),
+                            new STLNext(new STLOutputAtomic(1, STLOutputAtomic.Operation.gt, 600.0), true)
                     ));
 
             executeRun(exampleAT, costFunc, useHillClimbing, useSA, resetWord, "./runS5Learned.dot");
@@ -801,12 +798,12 @@ class AutotransExampleTest {
                             exampleAT.constructS5(4770.0, 600.0))));
 
             List<STLCost> costFuncList = Arrays.asList(
-                    new STLOr(new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.lt, 100)), 0, 13),
-                            new STLSub(new STLGlobal(new STLAtomic(0, STLAtomic.Operation.gt, 65.0)), 14, 14)),
+                    new STLOr(new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
+                            new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14)),
                     new STLGlobal(
                             new STLOr(
-                                    new STLAtomic(1, STLAtomic.Operation.lt, 4770),
-                                    new STLNext(new STLAtomic(1, STLAtomic.Operation.gt, 600.0), true))));
+                                    new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 4770),
+                                    new STLNext(new STLOutputAtomic(1, STLOutputAtomic.Operation.gt, 600.0), true))));
 
 
             exampleAT.constructVerifier();
@@ -822,7 +819,7 @@ class AutotransExampleTest {
 
             assertFalse(exampleAT.getVerifier().run());
 
-            FileWriter writer = new FileWriter(new File("./runS4andS5Learned.dot"));
+            FileWriter writer = new FileWriter("./runS4andS5Learned.dot");
             exampleAT.getVerifier().writeDOTLearnedMealy(writer);
             writer.close();
 
@@ -887,8 +884,8 @@ class AutotransExampleTest {
             List<Character> largest = new ArrayList<>(Arrays.asList('c', 'X', 'X'));
             exampleAT.setLargest(largest);
 
-            STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 90.0);
-            STLAtomic lowVelocity = new STLAtomic(0, STLAtomic.Operation.gt, 30.0);
+            STLOutputAtomic highVelocity = new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 90.0);
+            STLOutputAtomic lowVelocity = new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 30.0);
 
             highVelocity.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
@@ -969,8 +966,8 @@ class AutotransExampleTest {
             List<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
             exampleAT.setLargest(largest);
 
-            STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 90.0);
-            STLAtomic lowVelocity = new STLAtomic(0, STLAtomic.Operation.gt, 30.0);
+            STLOutputAtomic highVelocity = new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 90.0);
+            STLOutputAtomic lowVelocity = new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 30.0);
 
             highVelocity.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));
@@ -1017,8 +1014,8 @@ class AutotransExampleTest {
             List<Character> largest = new ArrayList<>(Arrays.asList('f', 'X', 'X'));
             exampleAT.setLargest(largest);
 
-            STLAtomic highVelocity = new STLAtomic(0, STLAtomic.Operation.lt, 100.0);
-            STLAtomic lowVelocity = new STLAtomic(0, STLAtomic.Operation.gt, 65.0);
+            STLOutputAtomic highVelocity = new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100.0);
+            STLOutputAtomic lowVelocity = new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0);
 
             highVelocity.setOutputMapper(new ArrayList<>(
                     Arrays.asList(velocityMapper, rotationMapper, gearMapper)));

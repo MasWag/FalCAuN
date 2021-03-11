@@ -1,9 +1,6 @@
 package org.group_mmm;
 
-import net.automatalib.words.Word;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,13 +19,17 @@ public class STLImply extends STLCost {
     }
 
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public RoSI getRoSI(Word<List<Double>> signal) {
+    public RoSI getRoSI(IOSignal signal) {
         return subFml1.getRoSI(signal).assignNegate().assignMax(subFml2.getRoSI(signal));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void constructAtomicStrings() {
         if (this.nonTemporal) {

@@ -1,11 +1,9 @@
 package org.group_mmm;
 
 import ch.qos.logback.classic.Logger;
-import net.automatalib.words.Word;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class STLSub extends STLCost {
@@ -27,7 +25,7 @@ public class STLSub extends STLCost {
     }
 
     @Override
-    public RoSI getRoSI(Word<List<Double>> signal) {
+    public RoSI getRoSI(IOSignal signal) {
         if (from >= signal.size()) {
             // If the signal is too short
             return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
