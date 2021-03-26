@@ -4,16 +4,12 @@ import de.learnlib.acex.analyzers.AcexAnalyzers;
 import de.learnlib.algorithms.ttt.mealy.TTTLearnerMealy;
 import de.learnlib.api.SUL;
 import de.learnlib.api.algorithm.LearningAlgorithm;
-import de.learnlib.api.logging.LoggingPropertyOracle;
-import de.learnlib.api.oracle.EmptinessOracle;
-import de.learnlib.api.oracle.InclusionOracle;
 import de.learnlib.api.oracle.MembershipOracle;
 import de.learnlib.api.oracle.PropertyOracle;
-import de.learnlib.oracle.emptiness.MealyBFEmptinessOracle;
 import de.learnlib.oracle.equivalence.*;
 import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
-import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import de.learnlib.util.Experiment;
+import lombok.Getter;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.modelcheckers.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
@@ -48,13 +44,13 @@ class BlackBoxVerifier {
     private Alphabet<String> inputAlphabet;
     private LearningAlgorithm.MealyLearner<String, String> learner;
     private EQOracleChain.MealyEQOracleChain<String, String> eqOracle;
-    private List<String> properties;
+    @Getter
+    private AdaptiveSTLUpdater properties;
     private List<Word<String>> cexInput;
     private List<String> cexProperty;
     private List<Word<String>> cexOutput;
     private ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
-    private ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> ltlFormulas;
-    private ArrayList<TimeoutEQOracle<String, String>> timeoutOracles = new ArrayList<>();
+    private List<TimeoutEQOracle<String, String>> timeoutOracles = new ArrayList<>();
     private Long timeout = null;
 
     /**
@@ -62,7 +58,7 @@ class BlackBoxVerifier {
      * @param properties    The LTL properties to be verified. What we verify is the conjunction of the properties.
      * @param inputAlphabet The input alphabet.
      */
-    BlackBoxVerifier(MembershipOracle.MealyMembershipOracle<String, String> memOracle, SUL<String, String> verifiedSystem, List<String> properties, Alphabet<String> inputAlphabet) {
+    BlackBoxVerifier(MembershipOracle.MealyMembershipOracle<String, String> memOracle, SUL<String, String> verifiedSystem, AdaptiveSTLUpdater properties, Alphabet<String> inputAlphabet) {
         this.properties = properties;
         this.inputAlphabet = inputAlphabet;
         this.memOracle = memOracle;
@@ -77,30 +73,8 @@ class BlackBoxVerifier {
         modelChecker = new LTSminMonitorIOBuilder<String, String>()
                 .withString2Input(EDGE_PARSER).withString2Output(EDGE_PARSER).create();
 
-        // create an emptiness oracle, that is used to disprove properties
-        EmptinessOracle.MealyEmptinessOracle<String, String>
-                emptinessOracle = new MealyBFEmptinessOracle<>(memOracle, multiplier);
-
-        // create an inclusion oracle, that is used to find counterexamples to hypotheses
-        InclusionOracle.MealyInclusionOracle<String, String>
-                inclusionOracle = new MealyBFInclusionOracle<>(memOracle, multiplier);
-
-        // create an LTL property oracle, that also logs stuff
-        this.ltlFormulas = new ArrayList<>();
-        for (String property : properties) {
-            PropertyOracle.MealyPropertyOracle<String, String, String> ltl =
-                    new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
-                            new MealyFinitePropertyOracle<>(property, inclusionOracle, emptinessOracle, modelChecker));
-            ltlFormulas.add(ltl);
-        }
-
         // create an equivalence oracle, that first searches for a counter example using the ltl properties, and next
-        this.eqOracle = new EQOracleChain.MealyEQOracleChain<>(
-                new CExFirstOracle.MealyCExFirstOracle<>(ltlFormulas));
-    }
-
-    ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
-        return ltlFormulas;
+        this.eqOracle = new EQOracleChain.MealyEQOracleChain<>(this.properties);
     }
 
     /**
@@ -138,11 +112,11 @@ class BlackBoxVerifier {
     void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
         if (Objects.nonNull(timeout)) {
             TimeoutEQOracle<String, String> timeoutOracle = new TimeoutEQOracle<>(
-                    new StopDisprovedEQOracle<>(eqOracle, this.ltlFormulas), timeout);
+                    new StopDisprovedEQOracle<>(eqOracle, this.properties), timeout);
             this.eqOracle.addOracle(timeoutOracle);
             timeoutOracles.add(timeoutOracle);
         } else {
-            this.eqOracle.addOracle(new StopDisprovedEQOracle<>(eqOracle, this.ltlFormulas));
+            this.eqOracle.addOracle(new StopDisprovedEQOracle<>(eqOracle, this.properties));
         }
     }
 
@@ -238,7 +212,7 @@ class BlackBoxVerifier {
         cexInput = new ArrayList<>();
         cexOutput = new ArrayList<>();
         boolean isVerified = true;
-        for (String property : properties) {
+        for (String property : properties.getLTLProperties()) {
             cexProperty.add(property);
 
             final MealyMachine<?, String, ?, String> cexMealyCandidate =

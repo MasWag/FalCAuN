@@ -24,7 +24,7 @@ public class AutotransExample {
     private List<Map<Character, Double>> outputMapper;
     private List<Character> largest;
     private SimulinkVerifier verifier;
-    private List<String> properties;
+    private AdaptiveSTLUpdater properties;
     private SimulinkSULMapper mapper;
     private List<Function<List<Double>, Double>> sigMap = new ArrayList<>();
 
@@ -146,11 +146,11 @@ public class AutotransExample {
         return verifier;
     }
 
-    public List<String> getProperties() {
+    public AdaptiveSTLUpdater getProperties() {
         return properties;
     }
 
-    void setProperties(List<String> properties) {
+    void setProperties(AdaptiveSTLUpdater properties) {
         this.properties = properties;
     }
 

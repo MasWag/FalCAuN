@@ -63,6 +63,10 @@ public abstract class STLCost implements Function<IOSignal, Double> {
      */
     public abstract String toAbstractString();
 
+    public String toLTLString() {
+        return this.toAbstractString();
+    }
+
     private static STLCost parseSTLImpl(String stlFormula,
                                         org.group_mmm.STLVisitor<STLCost> visitor) {
         CharStream stream = CharStreams.fromString(stlFormula);

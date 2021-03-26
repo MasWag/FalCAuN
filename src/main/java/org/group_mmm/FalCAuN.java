@@ -2,7 +2,6 @@ package org.group_mmm;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import de.learnlib.api.oracle.PropertyOracle;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
@@ -127,7 +126,7 @@ public class FalCAuN {
                 argParser.getInitScript(),
                 argParser.getParamNames(),
                 argParser.getStepTime(),
-                ltlString,
+                new StaticSTLList(stl),
                 sulMapper);
 
         if (Objects.nonNull(argParser.getTimeout())) {
@@ -142,10 +141,7 @@ public class FalCAuN {
         }
         switch (argParser.getEquiv()) {
             case HC:
-                for (int i = 0; i < stl.size(); i++) {
-                    PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
-                    verifier.addHillClimbingEQOracle(stl.get(i), argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord, ltlOracle);
-                }
+                verifier.addHillClimbingEQOracleAll(argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord);
                 break;
             case WP:
                 verifier.addWpMethodEQOracle(argParser.getMaxDepth());
@@ -154,16 +150,10 @@ public class FalCAuN {
                 verifier.addRandomWordEQOracle(argParser.getLength(), argParser.getLength(), argParser.getMaxTest(), new Random(), 1);
                 break;
             case SA:
-                for (int i = 0; i < stl.size(); i++) {
-                    PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
-                    verifier.addSAEQOracle(stl.get(i), argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord, argParser.getAlpha(), ltlOracle);
-                }
+                verifier.addSAEQOracleAll(argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord, argParser.getAlpha());
                 break;
             case GA:
-                for (int i = 0; i < stl.size(); i++) {
-                    PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle = verifier.getLtlFormulas().get(i);
-                    verifier.addGAEQOracle(stl.get(i), argParser.getLength(), argParser.getMaxTest(), argParser.getSelectionKind(), argParser.getPopulationSize(), argParser.getCrossoverProb(), argParser.getMutationProb(), ltlOracle);
-                }
+                verifier.addGAEQOracleAll(argParser.getLength(), argParser.getMaxTest(), argParser.getSelectionKind(), argParser.getPopulationSize(), argParser.getCrossoverProb(), argParser.getMutationProb());
                 break;
             case PURE_RANDOM:
                 SimulinkRandomTester tester = new SimulinkRandomTester(
