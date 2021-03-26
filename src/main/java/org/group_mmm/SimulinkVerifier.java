@@ -40,7 +40,7 @@ public class SimulinkVerifier {
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
-    public SimulinkVerifier(String initScript, List<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
+    public SimulinkVerifier(String initScript, List<String> paramName, double signalStep, AdaptiveSTLUpdater properties, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
         this.signalStep = signalStep;
         this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
@@ -53,6 +53,7 @@ public class SimulinkVerifier {
         this.mappedSimulink = SULCache.createTreeCache(this.abstractInputAlphabet, this.mappedSimulink);
         // create a regular membership oracle
         this.memOracle = new SimulinkMembershipOracle(rawSimulink, this.mapper);
+        properties.setMemOracle(memOracle);
         verifier = new BlackBoxVerifier(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
     }
 
@@ -137,6 +138,19 @@ public class SimulinkVerifier {
                 new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
 
+    public void addHillClimbingEQOracleAll(int length,
+                                           Random random,
+                                           int maxTests,
+                                           int generationSize,
+                                           int childrenSize,
+                                           boolean resetWord) {
+        for (int i = 0; i < this.getProperties().size(); i++) {
+            this.addHillClimbingEQOracle(this.getProperties().getSTLProperties().get(i),
+                    length, random, maxTests, generationSize, childrenSize, resetWord, this.getProperties().list().get(i));
+
+        }
+    }
+
     /**
      * <p>addSAEQOracle.</p>
      *
@@ -161,15 +175,6 @@ public class SimulinkVerifier {
                               PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
         this.addSimulinkEqOracle(costFunc, oracle ->
                 new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
-    }
-
-    /**
-     * <p>getLtlFormulas.</p>
-     *
-     * @return a {@link java.util.ArrayList} object.
-     */
-    public ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
-        return verifier.getLtlFormulas();
     }
 
     void addMutateSelectEQOracle(STLCost costFunc,
@@ -306,5 +311,23 @@ public class SimulinkVerifier {
 
     public int getSimulinkCountForEqTest() {
         return evaluationCountables.getEvaluateCount();
+    }
+
+    public AdaptiveSTLUpdater getProperties() {
+        return this.verifier.getProperties();
+    }
+
+    public void addSAEQOracleAll(int length, Random random, int maxTest, int generationSize, int childrenSize, boolean resetWord, double alpha) {
+        for (int i = 0; i < this.getProperties().size(); i++) {
+            this.addSAEQOracle(this.getProperties().getSTLProperties().get(i),
+                    length, random, maxTest, generationSize, childrenSize, resetWord, alpha, this.getProperties().list().get(i));
+        }
+    }
+
+    public void addGAEQOracleAll(int length, int maxTest, ArgParser.GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProb) {
+        for (int i = 0; i < this.getProperties().size(); i++) {
+            this.addGAEQOracle(this.getProperties().getSTLProperties().get(i),
+                    length, maxTest, selectionKind, populationSize, crossoverProb, mutationProb, this.getProperties().list().get(i));
+        }
     }
 }

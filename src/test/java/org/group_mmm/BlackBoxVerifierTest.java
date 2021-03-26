@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class BlackBoxVerifierTest {
     private final Alphabet<String> inputAlphabet = new ArrayAlphabet<>("a");
     private List<String> properties;
-    private SUL<String, String> sul;
     private BlackBoxVerifier verifier;
 
     @BeforeEach
@@ -40,9 +39,9 @@ class BlackBoxVerifierTest {
                 from("q1").
                 on("a").withOutput("2").to("q0").
                 create();
-        this.sul = new MealySimulatorSUL<>(mealy);
+        SUL<String, String> sul = new MealySimulatorSUL<>(mealy);
         MembershipOracle.MealyMembershipOracle<String, String> memOracle = new SULOracle<>(sul);
-        verifier = new BlackBoxVerifier(memOracle, this.sul, properties, inputAlphabet);
+        verifier = new BlackBoxVerifier(memOracle, sul, new StaticLTLList(properties), inputAlphabet);
     }
 
     @Test
