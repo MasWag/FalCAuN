@@ -57,8 +57,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
 
     @Override
     public List<PropertyOracle<String, ? super MealyMachine<?, String, ?, String>, ?, Word<String>>> getPropertyOracles() {
-        return this.getSTLProperties().stream().map(stl ->
-                new MealyFinitePropertyOracle<>(stl.toAbstractString(), inclusionOracle, emptinessOracle, modelChecker)).collect(Collectors.toList());
+        return this.stream().collect(Collectors.toList());
     }
 
     @Override
@@ -74,7 +73,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
             throw new NullPointerException();
         }
         return this.getSTLProperties().stream().map(stl ->
-                new MealyFinitePropertyOracle<>(stl.toAbstractString(), inclusionOracle, emptinessOracle, modelChecker));
+                new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker));
     }
 
     @Override
@@ -87,12 +86,29 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         return this.getSTLProperties().size();
     }
 
+    /**
+     * Find a counter example using the current list of STL formulas
+     */
     @Nullable
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(@NotNull MealyMachine<?, String, ?, String> hypothesis, @NotNull Collection<? extends String> inputs) {
-        DefaultQuery<String, Word<String>> result = this.getPropertyOracles().stream().map(propertyOracle ->
-                propertyOracle.findCounterExample(hypothesis, inputs)).findFirst().orElse(null);
+        DefaultQuery<String, Word<String>> result = null;
+        for (int i = 0; i < this.size(); i++) {
+            result = this.getPropertyOracles().get(i).findCounterExample(hypothesis, inputs);
+            if (Objects.nonNull(result)) {
+                this.notifyFalsifiedProperty(i);
+                break;
+            }
+        }
         assert !Objects.nonNull(result) || this.isCounterExample(hypothesis, result.getInput(), result.getOutput());
         return result;
+    }
+
+    /**
+     * Notify that this.getLTLProperties.get(i) is falsified by the currently learned model.
+     *
+     * @param i The index of the falsified LTL formula
+     */
+    protected void notifyFalsifiedProperty(int i) {
     }
 }

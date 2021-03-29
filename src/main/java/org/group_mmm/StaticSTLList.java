@@ -5,6 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * List of STL/LTL formulas without update
+ *
+ * @author Masaki Waga
+ * @see BlackBoxVerifier
+ * @see SimulinkVerifier
+ */
 public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
     private final List<STLCost> STLproperties;
 

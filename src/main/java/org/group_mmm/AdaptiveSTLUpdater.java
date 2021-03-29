@@ -8,7 +8,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Interface for potentially adaptive set of STL formulas
+ *
+ * @author Masaki Waga
+ * @see BlackBoxVerifier
+ * @see SimulinkVerifier
+ */
 public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<String, String> {
+    /**
+     * Returns the current list of STL formulas
+     */
     List<STLCost> getSTLProperties();
 
     /**
