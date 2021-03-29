@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 /**
  * Pure Random Tester of a Simulink model
  *
- * @author Masaki Waga <masaki@gmail.com>
+ * @author Masaki Waga
  */
 public class SimulinkRandomTester {
     protected SUL<List<Double>, List<Double>> simulink;
