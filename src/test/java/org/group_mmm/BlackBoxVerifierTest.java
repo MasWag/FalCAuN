@@ -19,11 +19,13 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.*;
 
 class BlackBoxVerifierTest {
     private final Alphabet<String> inputAlphabet = new ArrayAlphabet<>("a");
     private List<String> properties;
     private BlackBoxVerifier verifier;
+    StaticLTLList ltlList;
 
     @BeforeEach
     void setUp() {
@@ -41,7 +43,7 @@ class BlackBoxVerifierTest {
                 create();
         SUL<String, String> sul = new MealySimulatorSUL<>(mealy);
         MembershipOracle.MealyMembershipOracle<String, String> memOracle = new SULOracle<>(sul);
-        StaticLTLList ltlList = new StaticLTLList(properties);
+        ltlList = spy(new StaticLTLList(properties));
         ltlList.setMemOracle(memOracle);
         verifier = new BlackBoxVerifier(memOracle, sul, ltlList, inputAlphabet);
     }
@@ -49,6 +51,18 @@ class BlackBoxVerifierTest {
     @Test
     void run() {
         assertFalse(verifier.run());
+    }
+
+    @Test
+    void notifyFalsifiedProperty() {
+        for (int i = 0; i < 4; i++) {
+            doCallRealMethod().when(ltlList).notifyFalsifiedProperty(i);
+        }
+        assertFalse(verifier.run());
+        verify(ltlList, times(0)).notifyFalsifiedProperty(0);
+        verify(ltlList, times(0)).notifyFalsifiedProperty(1);
+        verify(ltlList, times(0)).notifyFalsifiedProperty(2);
+        verify(ltlList, times(1)).notifyFalsifiedProperty(3);
     }
 
     @Test

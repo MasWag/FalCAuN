@@ -60,6 +60,7 @@ class BlackBoxVerifier {
      */
     BlackBoxVerifier(MembershipOracle.MealyMembershipOracle<String, String> memOracle, SUL<String, String> verifiedSystem, AdaptiveSTLUpdater properties, Alphabet<String> inputAlphabet) {
         this.properties = properties;
+        this.properties.setInputAlphabet(inputAlphabet);
         this.inputAlphabet = inputAlphabet;
         this.memOracle = memOracle;
         this.verifiedSystem = verifiedSystem;

@@ -8,10 +8,12 @@ import de.learnlib.api.query.DefaultQuery;
 import de.learnlib.oracle.emptiness.MealyBFEmptinessOracle;
 import de.learnlib.oracle.equivalence.MealyBFInclusionOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.modelcheckers.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
+import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +40,8 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     protected ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
     protected InclusionOracle.MealyInclusionOracle<String, String> inclusionOracle;
     protected MembershipOracle.MealyMembershipOracle<String, String> memOracle;
+    @Setter
+    protected Alphabet<String> inputAlphabet;
 
     public AbstractAdaptiveSTLUpdater() {
         // Create model checker
@@ -96,11 +100,19 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         for (int i = 0; i < this.size(); i++) {
             result = this.getPropertyOracles().get(i).findCounterExample(hypothesis, inputs);
             if (Objects.nonNull(result)) {
-                this.notifyFalsifiedProperty(i);
                 break;
             }
         }
-        assert !Objects.nonNull(result) || this.isCounterExample(hypothesis, result.getInput(), result.getOutput());
+        assert Objects.isNull(result) || this.isCounterExample(hypothesis, result.getInput(), result.getOutput());
+        if (Objects.isNull(result)) {
+            for (int i = 0; i < this.size(); i++) {
+                final MealyMachine<?, String, ?, String> cexMealyCandidate =
+                        modelChecker.findCounterExample(hypothesis, this.inputAlphabet, this.getLTLProperties().get(i));
+                if (Objects.nonNull(cexMealyCandidate)) {
+                    this.notifyFalsifiedProperty(i);
+                }
+            }
+        }
         return result;
     }
 
