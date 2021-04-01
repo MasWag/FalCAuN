@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<String, String> {
     /**
      * Returns the current list of STL formulas
+     * The result may change only after the call of findCounterExample
      */
     List<STLCost> getSTLProperties();
 
