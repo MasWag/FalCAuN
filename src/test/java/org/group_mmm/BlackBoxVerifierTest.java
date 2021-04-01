@@ -41,7 +41,9 @@ class BlackBoxVerifierTest {
                 create();
         SUL<String, String> sul = new MealySimulatorSUL<>(mealy);
         MembershipOracle.MealyMembershipOracle<String, String> memOracle = new SULOracle<>(sul);
-        verifier = new BlackBoxVerifier(memOracle, sul, new StaticLTLList(properties), inputAlphabet);
+        StaticLTLList ltlList = new StaticLTLList(properties);
+        ltlList.setMemOracle(memOracle);
+        verifier = new BlackBoxVerifier(memOracle, sul, ltlList, inputAlphabet);
     }
 
     @Test
@@ -75,6 +77,7 @@ class BlackBoxVerifierTest {
         expected.add("1");
 
         assertFalse(verifier.run());
+        System.out.println(verifier.getCexOutput());
         assertEquals(expected.toWord(), verifier.getCexOutput().stream().filter(Objects::nonNull).findFirst().orElse(null));
     }
 
