@@ -3,6 +3,7 @@ package org.group_mmm;
 import de.learnlib.api.oracle.BlackBoxOracle;
 import de.learnlib.api.oracle.MembershipOracle;
 import de.learnlib.api.oracle.PropertyOracle;
+import net.automatalib.words.Alphabet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -45,4 +46,6 @@ public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<S
      * Set new membership oracle. This is necessary to call list() and stream()
      */
     void setMemOracle(@NotNull MembershipOracle.MealyMembershipOracle<String, String> memOracle);
+
+    void setInputAlphabet(Alphabet<String> inputAlphabet);
 }
