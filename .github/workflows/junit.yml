@@ -16,6 +16,7 @@ jobs:
           java-version: '8'
           java-package: jdk
           architecture: x64
+          distribution: 'adopt'
       - name: Install LTSMin
         run: |
           wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz
