@@ -11,11 +11,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/setup-java@v2
         with:
           java-version: '8'
           java-package: jdk
           architecture: x64
+          distribution: 'adopt'
       - name: Install LTSMin
         run: |
           wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz
