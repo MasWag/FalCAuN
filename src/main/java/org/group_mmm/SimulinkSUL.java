@@ -172,6 +172,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         //matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
         builder.append("ds = Simulink.SimulationData.Dataset;");
         //matlab.eval("ds = Simulink.SimulationData.Dataset;");
+        assert signalDimension == previousInput.size() : "input signal dimension is wrong";
         for (int i = 0; i < signalDimension; i++) {
             double[] tmp = previousInput.get(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
@@ -249,7 +250,6 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         if (inputSignal == null) {
             return null;
         }
-
         pre();
         final int numberOfSamples = inputSignal.length();
         final int signalDimension = paramNames.size();
@@ -265,9 +265,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         preventHugeTempFile(builder);
 
         runSimulation(builder, signalStep * numberOfSamples);
-
         matlab.eval(builder.toString());
-
         // get the simulation result and make the result
         double[][] y = matlab.getVariable("y");
         if (Objects.isNull(y) || Objects.isNull(y[0])) {
