@@ -290,4 +290,8 @@ public class SimulinkVerifier {
     public int getSimulinkCount() {
         return this.rawSimulink.getCounter();
     }
+
+    public double getSimulationTimeSecond() {
+        return this.rawSimulink.getSimulationTimeSecond();
+    }
 }

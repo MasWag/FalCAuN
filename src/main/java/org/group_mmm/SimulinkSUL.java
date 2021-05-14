@@ -38,6 +38,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private boolean useFastRestart = true;
     @Getter
     private int counter = 0;
+    private final TimeMeasure simulationTime = new TimeMeasure();
 
     /**
      * Setter of simulinkSimulationStep
@@ -144,7 +145,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
             // Run the simulation
             runSimulation(builder, endTime + signalStep);
 
+            simulationTime.start();
             matlab.eval(builder.toString());
+            simulationTime.stop();
 
             // get the simulation result and make the result
             double[][] y = matlab.getVariable("y");
@@ -265,7 +268,11 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         preventHugeTempFile(builder);
 
         runSimulation(builder, signalStep * numberOfSamples);
+
+        simulationTime.start();
         matlab.eval(builder.toString());
+        simulationTime.stop();
+
         // get the simulation result and make the result
         double[][] y = matlab.getVariable("y");
         if (Objects.isNull(y) || Objects.isNull(y[0])) {
@@ -311,5 +318,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         } finally {
             matlab.close();
         }
+    }
+
+    public double getSimulationTimeSecond() {
+        return this.simulationTime.getSecond();
     }
 }
