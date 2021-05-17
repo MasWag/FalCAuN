@@ -211,11 +211,12 @@ public class FalCAuN {
         }
 
         System.out.println("BBC started");
-        long startTime = System.nanoTime();
+        TimeMeasure totalTime = new TimeMeasure();
+        totalTime.start();
         boolean result = verifier.run();
-        long endTime = System.nanoTime();
+        totalTime.stop();
         System.out.println("BBC finished");
-        System.out.println("BBC Elapsed Time: " + ((endTime - startTime) / 1000000000.0) + " [sec]");
+        System.out.println("BBC Elapsed Time: " + totalTime.getSecond() + " [sec]");
         System.out.println("Simulink Execution: " + verifier.getSimulinkCount() + " times");
         if (result) {
             System.out.println("All the given properties are verified");
@@ -230,6 +231,7 @@ public class FalCAuN {
                     System.out.println("Output: " + verifier.getCexOutput().get(i));
                 }
             }
+            System.out.println("Step time: " + argParser.getStepTime());
         }
 
         if (argParser.getDotFile() != null) {
