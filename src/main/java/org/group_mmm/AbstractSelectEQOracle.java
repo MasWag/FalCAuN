@@ -126,9 +126,10 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
 
             // Evaluate the current samples
             for (Word<String> sample : currentSamples) {
-                evaluateCount++;
                 DefaultQuery<String, Word<String>> query = new DefaultQuery<>(sample);
+                int oldCount = memOracle.getEvaluateCount();
                 Double result = memOracle.processQueryWithCost(query);
+                evaluateCount += memOracle.getEvaluateCount() - oldCount;
                 Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
                 minCost = min(result, minCost);
                 if (!Objects.equals(hypOutput, query.getOutput())) {

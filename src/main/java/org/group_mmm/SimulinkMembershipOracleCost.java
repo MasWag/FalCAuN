@@ -1,6 +1,7 @@
 package org.group_mmm;
 
 import de.learnlib.api.query.Query;
+import lombok.Getter;
 import net.automatalib.incremental.mealy.IncrementalMealyBuilder;
 import net.automatalib.incremental.mealy.tree.IncrementalMealyTreeBuilder;
 import net.automatalib.words.Word;
@@ -12,11 +13,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
+class SimulinkMembershipOracleCost extends SimulinkMembershipOracle implements EvaluationCountable {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracleCost.class);
     private IncrementalMealyBuilder<String, Double> costCache;
     private Function<Word<List<Double>>, Double> costFunc;
     private Set<SimulinkMembershipOracleCost> notifiedSet = new HashSet<>();
+    @Getter
+    private int evaluateCount = 0;
 
     SimulinkMembershipOracleCost(SimulinkSUL simulink, SimulinkSULMapper mapper, Function<Word<List<Double>>, Double> costFunc) {
         super(simulink, mapper);
@@ -47,7 +50,8 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
         WordBuilder<String> abstractOutputBuilder = new WordBuilder<>(abstractInput.size());
         WordBuilder<Double> costBuilder = new WordBuilder<>(abstractInput.size());
 
-        if (!cache.lookup(abstractInput, abstractOutputBuilder) || !costCache.lookup(abstractInput, costBuilder) || costBuilder.toWord().lastSymbol().isInfinite()) {
+        if (!cache.lookup(abstractInput, abstractOutputBuilder) || !costCache.lookup(abstractInput, costBuilder) || Objects.requireNonNull(costBuilder.toWord().lastSymbol()).isInfinite()) {
+            evaluateCount++;
             abstractOutputBuilder.clear();
             costBuilder.clear();
 
@@ -87,7 +91,7 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle {
             tmpCostBuilder.clear();
             costCache.lookup(abstractInput, tmpCostBuilder);
             assert (Objects.equals(tmpCostBuilder.toWord(), costBuilder.toWord()));
-            if (costBuilder.toWord().lastSymbol().isInfinite()) {
+            if (Objects.requireNonNull(costBuilder.toWord().lastSymbol()).isInfinite()) {
                 LOGGER.warn("Infinite robustness is detected. {} {}", costBuilder.toWord().lastSymbol(), abstractInput);
                 LOGGER.warn("Raw Output: {}", concreteOutput);
             }

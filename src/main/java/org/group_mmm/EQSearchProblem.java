@@ -51,14 +51,15 @@ public class EQSearchProblem extends AbstractIntegerProblem implements Evaluatio
     /** {@inheritDoc} */
     @Override
     public void evaluate(IntegerSolution integerSolution) {
-        evaluateCount++;
         WordBuilder<String> currentSample = new WordBuilder<>();
         for (int i = 0; i < integerSolution.getNumberOfVariables(); i++) {
             int value = integerSolution.getVariableValue(i);
             currentSample.append(symbolList.get(value));
         }
         DefaultQuery<String, Word<String>> query = new DefaultQuery<>(currentSample.toWord());
+        int oldCount = memOracle.getEvaluateCount();
         double robustness = memOracle.processQueryWithCost(query);
+        evaluateCount += memOracle.getEvaluateCount() - oldCount;
         integerSolution.setObjective(0, robustness);
         log.trace("Robustness: {}", robustness);
         Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
