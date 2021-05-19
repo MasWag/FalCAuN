@@ -33,6 +33,8 @@ Linux)
   arch=glnxa64
   if java=$(find /usr/lib/jvm/java-8-openjdk* -name java -type f) 2>/dev/null; then
     echo "Java 8 found at $java"
+  elif java=$(find /usr/lib/jvm/java-1.8.0-openjdk* -name java -type f | head -n 1) 2>/dev/null; then
+    echo "Java 8 found at $java"
   else
     echo "Error: Java 8 did not found"
     exit 1
