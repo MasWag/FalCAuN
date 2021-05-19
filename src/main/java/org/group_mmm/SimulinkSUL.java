@@ -38,6 +38,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private boolean useFastRestart = true;
     @Getter
     private int counter = 0;
+    private final TimeMeasure simulationTime = new TimeMeasure();
 
     /**
      * Setter of simulinkSimulationStep
@@ -144,7 +145,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
             // Run the simulation
             runSimulation(builder, endTime + signalStep);
 
+            simulationTime.start();
             matlab.eval(builder.toString());
+            simulationTime.stop();
 
             // get the simulation result and make the result
             double[][] y = matlab.getVariable("y");
@@ -172,6 +175,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         //matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
         builder.append("ds = Simulink.SimulationData.Dataset;");
         //matlab.eval("ds = Simulink.SimulationData.Dataset;");
+        assert signalDimension == previousInput.size() : "input signal dimension is wrong";
         for (int i = 0; i < signalDimension; i++) {
             double[] tmp = previousInput.get(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
@@ -249,7 +253,6 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         if (inputSignal == null) {
             return null;
         }
-
         pre();
         final int numberOfSamples = inputSignal.length();
         final int signalDimension = paramNames.size();
@@ -266,7 +269,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
         runSimulation(builder, signalStep * numberOfSamples);
 
+        simulationTime.start();
         matlab.eval(builder.toString());
+        simulationTime.stop();
 
         // get the simulation result and make the result
         double[][] y = matlab.getVariable("y");
@@ -313,5 +318,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         } finally {
             matlab.close();
         }
+    }
+
+    public double getSimulationTimeSecond() {
+        return this.simulationTime.getSecond();
     }
 }

@@ -1,6 +1,8 @@
 package org.group_mmm;
 
 import ch.qos.logback.classic.Level;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.modelcheckers.ltsmin.LTSminUtil;
 import org.apache.commons.cli.*;
@@ -10,34 +12,54 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 class ArgParser {
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ArgParser.class);
-    private GASelectionKind selectionKind = null;
-    private Options options = new Options();
-    private HelpFormatter help = new HelpFormatter();
-    private boolean quit = false;
-    private boolean verbose;
-    private String stlFile;
-    private String stlFormula;
-    private String inputMapperFile;
-    private String outputMapperFile;
-    private EquivType equiv;
-
-    private String etfFile;
-
-    private String dotFile;
-    private double stepTime;
-    private int length;
-    private String initScript;
-    private List<String> paramNames;
-    private int maxTest = 50000;
-    private Integer populationSize = null;
-    private Double alpha = null;
-    private Long timeout = null;
-    private Double mutationProb = null;
-    private Double crossoverProb = null;
-    private int maxDepth;
+    private final Options options = new Options();
+    private final HelpFormatter help = new HelpFormatter();
+    @Getter
     SignalMapper sigMap;
+    @Getter
+    private GASelectionKind selectionKind = null;
+    @Getter
+    private boolean quit = false;
+    @Getter
+    private boolean verbose;
+    @Getter
+    private String stlFile;
+    @Getter
+    private String stlFormula;
+    @Getter
+    private String inputMapperFile;
+    @Getter
+    private String outputMapperFile;
+    @Getter
+    private EquivType equiv;
+    @Getter
+    private String etfFile;
+    @Getter
+    private String dotFile;
+    @Getter
+    private double stepTime;
+    @Getter
+    private int length;
+    @Getter
+    private String initScript;
+    @Getter
+    private List<String> paramNames;
+    @Getter
+    private int maxTest = 50000;
+    @Getter
+    private Integer populationSize = null;
+    @Getter
+    private Double alpha = null;
+    @Getter
+    private Long timeout = null;
+    @Getter
+    private Double mutationProb = null;
+    @Getter
+    private Double crossoverProb = null;
+    @Getter
+    private int maxDepth;
 
     ArgParser(String[] args) throws MissingOptionException, IOException {
         options.addOption("h", "help", false, "Print a help message");
@@ -152,7 +174,7 @@ class ArgParser {
         if (cl.hasOption('M')) {
             maxTest = Integer.parseInt(cl.getOptionValue('M'));
         } else {
-            LOGGER.debug("We use the default value {} for maxTest", maxTest);
+            log.debug("We use the default value {} for maxTest", maxTest);
         }
 
         if (cl.hasOption('E')) {
@@ -221,16 +243,8 @@ class ArgParser {
             throw new MissingOptionException("equiv must be specified");
         }
 
-        if (cl.hasOption('o')) {
-            dotFile = cl.getOptionValue('o');
-        } else {
-            dotFile = null;
-        }
-        if (cl.hasOption("output-etf")) {
-            etfFile = cl.getOptionValue("output-etf");
-        } else {
-            etfFile = null;
-        }
+        dotFile = cl.getOptionValue('o', null);
+        etfFile = cl.getOptionValue("output-etf", null);
         if (cl.hasOption("signal-mapper")) {
             sigMap = SignalMapper.parse(cl.getOptionValue("signal-mapper"));
         } else {
@@ -238,96 +252,8 @@ class ArgParser {
         }
     }
 
-    GASelectionKind getSelectionKind() {
-        return selectionKind;
-    }
-
-    int getMaxDepth() {
-        return maxDepth;
-    }
-
-    int getPopulationSize() {
-        return populationSize;
-    }
-
-    String getEtfFile() {
-        return etfFile;
-    }
-
-    Long getTimeout() {
-        return timeout;
-    }
-
-    double getAlpha() {
-        return alpha;
-    }
-
-    double getMutationProb() {
-        return mutationProb;
-    }
-
-    double getCrossoverProb() {
-        return crossoverProb;
-    }
-
-    int getMaxTest() {
-        return maxTest;
-    }
-
-    String getInitScript() {
-        return initScript;
-    }
-
-    List<String> getParamNames() {
-        return paramNames;
-    }
-
-    double getStepTime() {
-        return stepTime;
-    }
-
-    int getLength() {
-        return length;
-    }
-
-    boolean isQuit() {
-        return quit;
-    }
-
     private void showHelp() {
         help.printHelp("falcaun", options);
-    }
-
-    boolean isVerbose() {
-        return verbose;
-    }
-
-    String getStlFile() {
-        return stlFile;
-    }
-
-    String getStlFormula() {
-        return stlFormula;
-    }
-
-    String getInputMapperFile() {
-        return inputMapperFile;
-    }
-
-    String getOutputMapperFile() {
-        return outputMapperFile;
-    }
-
-    EquivType getEquiv() {
-        return equiv;
-    }
-
-    String getDotFile() {
-        return dotFile;
-    }
-
-    SignalMapper getSigMap() {
-        return sigMap;
     }
 
     private void showVersion() {

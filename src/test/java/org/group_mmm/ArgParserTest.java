@@ -482,7 +482,7 @@ class ArgParserTest {
                 assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
                 assertEquals(ArgParser.EquivType.SA, argParser.getEquiv());
                 assertEquals("stl.txt", argParser.getStlFile());
-                assertEquals(0.2, argParser.getAlpha());
+                assertEquals(0.2, (double) argParser.getAlpha());
                 assertNull(argParser.getStlFormula());
             }
 

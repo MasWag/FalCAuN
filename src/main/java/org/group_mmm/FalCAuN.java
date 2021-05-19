@@ -6,6 +6,7 @@ import de.learnlib.api.oracle.PropertyOracle;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
 import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
+import net.automatalib.words.Word;
 import org.apache.commons.cli.MissingOptionException;
 import org.slf4j.LoggerFactory;
 
@@ -196,11 +197,7 @@ public class FalCAuN {
                     System.out.println("The following properties are falsified");
                     for (int i = 0; i < tester.getCexAbstractInput().size(); i++) {
                         if (tester.getCexAbstractInput().get(i) != null) {
-                            System.out.println("Property STL: " + stl.get(i));
-                            System.out.println("Property LTL: " + tester.getCexProperty().get(i));
-                            System.out.println("Concrete Input: " + tester.getCexConcreteInput().get(i));
-                            System.out.println("Abstract Input: " + tester.getCexAbstractInput().get(i));
-                            System.out.println("Output: " + tester.getCexOutput().get(i));
+                            printResult(stl, i, tester.getCexProperty(), tester.getCexConcreteInput(), tester.getCexAbstractInput(), tester.getCexOutput(), verifier);
                         }
                     }
                 }
@@ -211,25 +208,24 @@ public class FalCAuN {
         }
 
         System.out.println("BBC started");
-        long startTime = System.nanoTime();
+        TimeMeasure totalTime = new TimeMeasure();
+        totalTime.start();
         boolean result = verifier.run();
-        long endTime = System.nanoTime();
+        totalTime.stop();
         System.out.println("BBC finished");
-        System.out.println("BBC Elapsed Time: " + ((endTime - startTime) / 1000000000.0) + " [sec]");
+        System.out.println("BBC Elapsed Time: " + totalTime.getSecond() + " [sec]");
         System.out.println("Simulink Execution: " + verifier.getSimulinkCount() + " times");
+        System.out.println("Simulink Execution Time: " + verifier.getSimulationTimeSecond() + " [sec]");
         if (result) {
             System.out.println("All the given properties are verified");
         } else {
             System.out.println("The following properties are falsified");
             for (int i = 0; i < verifier.getCexAbstractInput().size(); i++) {
-                if (verifier.getCexAbstractInput().get(i) != null) {
-                    System.out.println("Property STL: " + stl.get(i));
-                    System.out.println("Property LTL: " + verifier.getCexProperty().get(i));
-                    System.out.println("Concrete Input: " + verifier.getCexConcreteInput().get(i));
-                    System.out.println("Abstract Input: " + verifier.getCexAbstractInput().get(i));
-                    System.out.println("Output: " + verifier.getCexOutput().get(i));
+                if (Objects.nonNull(verifier.getCexAbstractInput().get(i))) {
+                    printResult(stl, i, verifier.getCexProperty(), verifier.getCexConcreteInput(), verifier.getCexAbstractInput(), verifier.getCexOutput(), verifier);
                 }
             }
+            System.out.println("Step time: " + argParser.getStepTime());
         }
 
         if (argParser.getDotFile() != null) {
@@ -243,5 +239,13 @@ public class FalCAuN {
             verifier.writeETFLearnedMealy(outputStream);
             outputStream.close();
         }
+    }
+
+    private static void printResult(List<STLCost> stl, int i, List<String> cexProperty, List<Word<List<Double>>> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput, SimulinkVerifier verifier) {
+        System.out.println("Property STL: " + stl.get(i));
+        System.out.println("Property LTL: " + cexProperty.get(i));
+        System.out.println("Concrete Input: " + cexConcreteInput.get(i));
+        System.out.println("Abstract Input: " + cexAbstractInput.get(i));
+        System.out.println("Output: " + cexOutput.get(i));
     }
 }
