@@ -28,14 +28,15 @@ import java.util.List;
  * Equivalence query using genetic algorithm
  *
  * @author Masaki Waga
- * 
+ *
  * <p>We use uniform crossover and random mutation.</p>
  */
-class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String> {
-    private Algorithm<IntegerSolution> algorithm;
-    private EQSearchProblem problem;
+class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String>,
+        EvaluationCountable.MealyEquivalenceOracle<String, String> {
+    private final Algorithm<IntegerSolution> algorithm;
+    private final EQSearchProblem problem;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(GAEQOracle.class);
-    private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
+    private final PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
 
     GAEQOracle(SimulinkMembershipOracleCost memOracle, int length, int maxEvaluations, ArgParser.GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
 
@@ -102,5 +103,9 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
         }
         LOGGER.debug("Counter example is NOT found :(");
         return null;
+    }
+
+    public int getEvaluateCount() {
+        return problem.getEvaluateCount();
     }
 }

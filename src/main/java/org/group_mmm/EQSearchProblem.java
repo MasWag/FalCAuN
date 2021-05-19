@@ -1,10 +1,11 @@
 package org.group_mmm;
 
 import de.learnlib.api.query.DefaultQuery;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
-import org.slf4j.LoggerFactory;
 import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
 import org.uma.jmetal.solution.IntegerSolution;
 
@@ -17,14 +18,16 @@ import java.util.Objects;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class EQSearchProblem extends AbstractIntegerProblem {
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EQSearchProblem.class);
+@Slf4j
+public class EQSearchProblem extends AbstractIntegerProblem implements EvaluationCountable {
     private List<? extends String> symbolList;
-    private SimulinkMembershipOracleCost memOracle;
+    private final SimulinkMembershipOracleCost memOracle;
     private MealyMachine<?, String, ?, String> hypothesis;
-    private int length;
+    private final int length;
     private DefaultQuery<String, Word<String>> cexQuery;
     private boolean stopped = false;
+    @Getter
+    private int evaluateCount = 0;
 
     EQSearchProblem(SimulinkMembershipOracleCost memOracle, int length) {
         this.memOracle = memOracle;
@@ -48,6 +51,7 @@ public class EQSearchProblem extends AbstractIntegerProblem {
     /** {@inheritDoc} */
     @Override
     public void evaluate(IntegerSolution integerSolution) {
+        evaluateCount++;
         WordBuilder<String> currentSample = new WordBuilder<>();
         for (int i = 0; i < integerSolution.getNumberOfVariables(); i++) {
             int value = integerSolution.getVariableValue(i);
@@ -56,10 +60,10 @@ public class EQSearchProblem extends AbstractIntegerProblem {
         DefaultQuery<String, Word<String>> query = new DefaultQuery<>(currentSample.toWord());
         double robustness = memOracle.processQueryWithCost(query);
         integerSolution.setObjective(0, robustness);
-        LOGGER.trace("Robustness: {}", robustness);
+        log.trace("Robustness: {}", robustness);
         Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
         if (!Objects.equals(hypOutput, query.getOutput())) {
-            LOGGER.info("CEX with Robustness: {}", robustness);
+            log.info("CEX with Robustness: {}", robustness);
             stopped = true;
             cexQuery = query;
         }

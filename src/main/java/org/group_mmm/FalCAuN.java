@@ -216,6 +216,8 @@ public class FalCAuN {
         System.out.println("BBC Elapsed Time: " + totalTime.getSecond() + " [sec]");
         System.out.println("Simulink Execution: " + verifier.getSimulinkCount() + " times");
         System.out.println("Simulink Execution Time: " + verifier.getSimulationTimeSecond() + " [sec]");
+        System.out.println("Simulink Execution for Equivalence Testing: " + verifier.getSimulinkCountForEqTest() + " times");
+
         if (result) {
             System.out.println("All the given properties are verified");
         } else {

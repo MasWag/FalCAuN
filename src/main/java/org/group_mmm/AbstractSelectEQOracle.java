@@ -5,6 +5,7 @@ import com.google.common.collect.TreeMultimap;
 import de.learnlib.api.oracle.EquivalenceOracle;
 import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.api.query.DefaultQuery;
+import lombok.Getter;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.commons.util.collections.CollectionsUtil;
 import net.automatalib.words.Word;
@@ -24,7 +25,8 @@ import static com.google.common.primitives.Doubles.min;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String> {
+public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String>,
+        EvaluationCountable.MealyEquivalenceOracle<String, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSelectEQOracle.class);
     Random random;
     int generationSize;
@@ -36,6 +38,8 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     private boolean resetWord;
     private List<Word<String>> currentSamples = new ArrayList<>(generationSize);
     private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
+    @Getter
+    private int evaluateCount = 0;
 
     AbstractSelectEQOracle(SimulinkMembershipOracleCost memOracle,
                            int length,
@@ -94,7 +98,9 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Nullable
     @ParametersAreNonnullByDefault
     @Override
@@ -120,6 +126,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
 
             // Evaluate the current samples
             for (Word<String> sample : currentSamples) {
+                evaluateCount++;
                 DefaultQuery<String, Word<String>> query = new DefaultQuery<>(sample);
                 Double result = memOracle.processQueryWithCost(query);
                 Word<String> hypOutput = hypothesis.computeOutput(query.getInput());

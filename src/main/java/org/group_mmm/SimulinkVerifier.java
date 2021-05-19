@@ -27,6 +27,7 @@ public class SimulinkVerifier {
     private BlackBoxVerifier verifier;
     private SimulinkMembershipOracle memOracle;
     private List<SimulinkMembershipOracleCost> memOracleCosts = new ArrayList<>();
+    private final EvaluationCountable.Sum evaluationCountables = new EvaluationCountable.Sum();
 
     /**
      * <p>Constructor for SimulinkVerifier.</p>
@@ -59,14 +60,15 @@ public class SimulinkVerifier {
 
     void addSimulinkEqOracle(Function<Word<List<Double>>, Double> costFunc,
                              Function<SimulinkMembershipOracleCost,
-                                     PropertyOracle.MealyEquivalenceOracle<String, String>> constructor) {
+                                     ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
         // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
         SimulinkMembershipOracleCost oracle =
                 new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
         memOracleCosts.add(oracle);
-
-        this.verifier.addEqOracle(constructor.apply(oracle));
+        EvaluationCountable.MealyEquivalenceOracle<String, String> eqOracle = constructor.apply(oracle);
+        evaluationCountables.add(eqOracle);
+        this.verifier.addEqOracle(eqOracle);
     }
 
     void addWpMethodEQOracle(int maxDepth) {
@@ -293,5 +295,9 @@ public class SimulinkVerifier {
 
     public double getSimulationTimeSecond() {
         return this.rawSimulink.getSimulationTimeSecond();
+    }
+
+    public int getSimulinkCountForEqTest() {
+        return evaluationCountables.getEvaluateCount();
     }
 }
