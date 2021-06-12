@@ -69,6 +69,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
     static private void appendSignalStep(List<List<Double>> previousInput, List<Double> signalStep) {
         for (int i = 0; i < signalStep.size(); i++) {
+            // In the beginning, we use signalStep for time 0 and time 0 + signalStep
             if (previousInput.size() <= i) {
                 previousInput.add(new ArrayList<>());
                 assert previousInput.size() == i + 1;
