@@ -33,7 +33,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private MatlabEngine matlab;
     private List<String> paramNames;
     private Double endTime = 0.0;
-    private SimulinkInputSignal inputSignal;
+    private SimulinkSignal inputSignal;
     private boolean isInitial = true;
     private boolean useFastRestart = true;
     @Getter
@@ -81,7 +81,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     @Override
     public void pre() {
         endTime = 0.0;
-        inputSignal = new SimulinkInputSignal(signalStep);
+        inputSignal = new SimulinkSignal(signalStep);
         isInitial = true;
     }
 

@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SimulinkInputSignal {
+/**
+ * Signal of Simulink
+ */
+public class SimulinkSignal {
     protected double timeStep;
-    protected List<List<Double>> inputValues = new ArrayList<>();
+    protected List<List<Double>> signalValues = new ArrayList<>();
     protected List<Double> timestamps = new ArrayList<>();
 
-    SimulinkInputSignal(double timeStep) {
+    SimulinkSignal(double timeStep) {
         this.timeStep = timeStep;
     }
 
@@ -21,8 +24,8 @@ public class SimulinkInputSignal {
         } else {
             this.timestamps.add(this.duration() + timeStep);
         }
-        this.inputValues.add(inputValue);
-        assert inputValues.size() == timestamps.size();
+        this.signalValues.add(inputValue);
+        assert signalValues.size() == timestamps.size();
         return true;
     }
 
@@ -30,16 +33,19 @@ public class SimulinkInputSignal {
         for (List<Double> inputValue : inputValues) {
             this.add(inputValue);
         }
-        assert this.inputValues.size() == timestamps.size();
+        assert this.signalValues.size() == timestamps.size();
     }
 
     public void addAll(Word<? extends List<Double>> inputValues) {
         for (List<Double> inputValue : inputValues) {
             this.add(inputValue);
         }
-        assert this.inputValues.size() == timestamps.size();
+        assert this.signalValues.size() == timestamps.size();
     }
 
+    /**
+     * Returns the duration of the signal
+     */
     public double duration() {
         if (this.timestamps.isEmpty()) {
             return 0.0;
@@ -50,12 +56,12 @@ public class SimulinkInputSignal {
 
     @Override
     public String toString() {
-        assert inputValues.size() == timestamps.size();
+        assert signalValues.size() == timestamps.size();
         StringBuilder builder = new StringBuilder();
         builder.append('[');
         for (int i = 0; i < size(); i++) {
             builder.append(timestamps.get(i));
-            for (Double value : inputValues.get(i)) {
+            for (Double value : signalValues.get(i)) {
                 builder.append(' ');
                 builder.append(value);
             }
@@ -67,31 +73,54 @@ public class SimulinkInputSignal {
         return builder.toString();
     }
 
+    /**
+     * Return the length of the signal
+     */
     public int size() {
-        assert inputValues.size() == timestamps.size();
+        assert signalValues.size() == timestamps.size();
         return timestamps.size();
     }
 
+    /**
+     * Return the dimension of the signal
+     *
+     * @return It returns the dimension of the signal if the input value is already set. Otherwise, it returns null.
+     */
     public Integer dimension() {
-        if (inputValues.isEmpty()) {
+        if (signalValues.isEmpty()) {
             return null;
         } else {
-            return inputValues.get(0).size();
+            return signalValues.get(0).size();
         }
     }
 
+    /**
+     * Clear the signal
+     */
     public void clear() {
-        this.inputValues.clear();
+        this.signalValues.clear();
         this.timestamps.clear();
     }
 
+    /**
+     * Return the value of the index-th control point of the signal
+     *
+     * @param index The index
+     * @return It returns the value of the index-th control point of the signal.
+     */
     public List<Double> get(int index) {
-        return this.inputValues.get(index);
+        return this.signalValues.get(index);
     }
 
+    /**
+     * Return the signal values of the index-th signal
+     *
+     * @param index The index
+     * @return It returns the signal values of the index-th signal.
+     */
     public List<Double> dimensionGet(int index) {
         List<Double> result = new ArrayList<>();
-        for (List<Double> inputValue : inputValues) {
+        for (List<Double> inputValue : signalValues) {
             result.add(inputValue.get(index));
         }
         return result;

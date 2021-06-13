@@ -243,7 +243,7 @@ public class FalCAuN {
         }
     }
 
-    private static void printResult(List<STLCost> stl, int i, List<String> cexProperty, List<SimulinkInputSignal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
+    private static void printResult(List<STLCost> stl, int i, List<String> cexProperty, List<SimulinkSignal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
         System.out.println("Property STL: " + stl.get(i));
         System.out.println("Property LTL: " + cexProperty.get(i));
         System.out.println("Concrete Input: " + cexConcreteInput.get(i));

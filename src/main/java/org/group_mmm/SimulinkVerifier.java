@@ -212,10 +212,10 @@ public class SimulinkVerifier {
         return verifier.getCexInput();
     }
 
-    List<SimulinkInputSignal> getCexConcreteInput() {
-        List<SimulinkInputSignal> result = new ArrayList<>();
+    List<SimulinkSignal> getCexConcreteInput() {
+        List<SimulinkSignal> result = new ArrayList<>();
         for (Word<String> abstractCex : this.getCexAbstractInput()) {
-            result.add(new SimulinkInputSignal(this.signalStep));
+            result.add(new SimulinkSignal(this.signalStep));
             result.get(result.size() - 1).addAll(this.mapper.mapInput(abstractCex));
         }
         return result;
