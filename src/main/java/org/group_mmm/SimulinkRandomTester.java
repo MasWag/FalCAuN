@@ -8,12 +8,12 @@ import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.stream.IntStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Pure Random Tester of a Simulink model
@@ -35,6 +35,7 @@ public class SimulinkRandomTester {
     private int length;
     private Random random = new Random();
     private List<String> properties;
+    private double signalStep;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SimulinkRandomTester.class);
 
     /**
@@ -52,6 +53,7 @@ public class SimulinkRandomTester {
         this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
+        this.signalStep = signalStep;
 
         this.properties = properties;
 
@@ -76,8 +78,13 @@ public class SimulinkRandomTester {
         return cexInput;
     }
 
-    List<Word<List<Double>>> getCexConcreteInput() {
-        return this.mapper.mapInputs(getCexAbstractInput());
+    List<SimulinkInputSignal> getCexConcreteInput() {
+        List<SimulinkInputSignal> result = new ArrayList<>();
+        for (Word<String> abstractCex : this.getCexAbstractInput()) {
+            result.add(new SimulinkInputSignal(this.signalStep));
+            result.get(result.size() - 1).addAll(this.mapper.mapInput(abstractCex));
+        }
+        return result;
     }
 
 

@@ -1,6 +1,7 @@
 package org.group_mmm;
 
 import de.learnlib.mapper.api.SULMapper;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
@@ -75,10 +76,16 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
         log.debug("sigMap size: " + sigMap.size());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Double> mapInput(String s) {
         return (s == null) ? null : inputMapper.get(s);
+    }
+
+    public Word<List<Double>> mapInput(@NonNull Word<String> abstractInput) {
+        return Word.fromList(abstractInput.stream().map(this::mapInput).collect(Collectors.toList()));
     }
 
     List<Word<List<Double>>> mapInputs(List<Word<String>> abstractInputs) {
@@ -87,7 +94,9 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
         ).collect(Collectors.toList());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String mapOutput(List<Double> concreteOutput) {
         // System.out.println("AF: " + concreteOutput.get(0));
