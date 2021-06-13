@@ -33,7 +33,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private MatlabEngine matlab;
     private List<String> paramNames;
     private Double endTime = 0.0;
-    private List<List<Double>> previousInput;
+    private SimulinkInputSignal previousInput;
     private boolean isInitial = true;
     private boolean useFastRestart = true;
     @Getter
@@ -67,20 +67,6 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         matlab.eval(initScript);
     }
 
-    static private void appendSignalStep(List<List<Double>> previousInput, List<Double> signalStep) {
-        for (int i = 0; i < signalStep.size(); i++) {
-            // In the beginning, we use signalStep for time 0 and time 0 + signalStep
-            if (previousInput.size() <= i) {
-                previousInput.add(new ArrayList<>());
-                assert previousInput.size() == i + 1;
-                previousInput.get(i).add(signalStep.get(i));
-                previousInput.get(i).add(signalStep.get(i));
-            } else {
-                previousInput.get(i).add(signalStep.get(i));
-            }
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -95,7 +81,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     @Override
     public void pre() {
         endTime = 0.0;
-        previousInput = new ArrayList<>();
+        previousInput = new SimulinkInputSignal(signalStep);
         isInitial = true;
     }
 
@@ -122,7 +108,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         List<Double> result;
         LOGGER.trace("Input: " + inputSignal);
 
-        appendSignalStep(previousInput, inputSignal);
+        previousInput.add(inputSignal);
         try {
             // Make the input signal
             int numberOfSamples = (int) (endTime * 1 / signalStep) + 1;
@@ -176,9 +162,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         //matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
         builder.append("ds = Simulink.SimulationData.Dataset;");
         //matlab.eval("ds = Simulink.SimulationData.Dataset;");
-        assert signalDimension == previousInput.size() : "input signal dimension is wrong";
+        assert signalDimension == previousInput.dimension() : "input signal dimension is wrong";
         for (int i = 0; i < signalDimension; i++) {
-            double[] tmp = previousInput.get(i).stream().mapToDouble(Double::doubleValue).toArray();
+            double[] tmp = previousInput.dimensionGet(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
             builder.append("input").append(i).append(" = timeseries(tmp").append(i).append(", timeVector);");
             //matlab.eval("input = timeseries(tmp, timeVector);");
@@ -257,9 +243,8 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         pre();
         final int numberOfSamples = inputSignal.length();
         final int signalDimension = paramNames.size();
-        for (List<Double> signalStep : inputSignal) {
-            appendSignalStep(previousInput, signalStep);
-        }
+        previousInput.addAll(inputSignal);
+
         StringBuilder builder = new StringBuilder();
 
         makeDataSet(numberOfSamples, signalDimension, builder);
