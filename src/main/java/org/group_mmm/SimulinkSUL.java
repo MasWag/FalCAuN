@@ -33,7 +33,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     private MatlabEngine matlab;
     private List<String> paramNames;
     private Double endTime = 0.0;
-    private SimulinkInputSignal previousInput;
+    private SimulinkInputSignal inputSignal;
     private boolean isInitial = true;
     private boolean useFastRestart = true;
     @Getter
@@ -81,7 +81,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     @Override
     public void pre() {
         endTime = 0.0;
-        previousInput = new SimulinkInputSignal(signalStep);
+        inputSignal = new SimulinkInputSignal(signalStep);
         isInitial = true;
     }
 
@@ -90,7 +90,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
      */
     @Override
     public void post() {
-        previousInput.clear();
+        inputSignal.clear();
         endTime = 0.0;
         isInitial = true;
     }
@@ -108,12 +108,11 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         List<Double> result;
         LOGGER.trace("Input: " + inputSignal);
 
-        previousInput.add(inputSignal);
+        this.inputSignal.add(inputSignal);
         try {
             // Make the input signal
-            int numberOfSamples = (int) (endTime * 1 / signalStep) + 1;
             StringBuilder builder = new StringBuilder();
-            makeDataSet(numberOfSamples, inputSignal.size(), builder);
+            makeDataSet(builder);
 
             configureSimulink(builder);
             preventHugeTempFile(builder);
@@ -155,16 +154,13 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         return result;
     }
 
-    private void makeDataSet(int numberOfSamples, int signalDimension, StringBuilder builder) throws ExecutionException, InterruptedException {
-        builder.append("numberOfSamples = ").append(numberOfSamples).append(";");
-        //matlab.putVariable("numberOfSamples", (double) numberOfSamples);
-        builder.append("timeVector = (0:numberOfSamples) * signalStep;");
+    private void makeDataSet(StringBuilder builder) throws ExecutionException, InterruptedException {
+        builder.append("timeVector = ").append(inputSignal.timestamps).append(";");
         //matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
         builder.append("ds = Simulink.SimulationData.Dataset;");
         //matlab.eval("ds = Simulink.SimulationData.Dataset;");
-        assert signalDimension == previousInput.dimension() : "input signal dimension is wrong";
-        for (int i = 0; i < signalDimension; i++) {
-            double[] tmp = previousInput.dimensionGet(i).stream().mapToDouble(Double::doubleValue).toArray();
+        for (int i = 0; i < inputSignal.dimension(); i++) {
+            double[] tmp = inputSignal.dimensionGet(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
             builder.append("input").append(i).append(" = timeseries(tmp").append(i).append(", timeVector);");
             //matlab.eval("input = timeseries(tmp, timeVector);");
@@ -241,26 +237,34 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
             return null;
         }
         pre();
-        final int numberOfSamples = inputSignal.length();
-        final int signalDimension = paramNames.size();
-        previousInput.addAll(inputSignal);
+        this.inputSignal.addAll(inputSignal);
 
         StringBuilder builder = new StringBuilder();
 
-        makeDataSet(numberOfSamples, signalDimension, builder);
+        makeDataSet(builder);
 
         configureSimulink(builder);
 
         preventHugeTempFile(builder);
 
-        runSimulation(builder, signalStep * numberOfSamples);
+        runSimulation(builder, this.inputSignal.duration());
 
         simulationTime.start();
         matlab.eval(builder.toString());
         simulationTime.stop();
 
         // get the simulation result and make the result
-        double[][] y = matlab.getVariable("y");
+        double[][] y;
+        if (this.inputSignal.duration() == 0.0) {
+            double[] tmpY = matlab.getVariable("y");
+            if (Objects.isNull(tmpY)) {
+                y = null;
+            } else {
+                y = new double[][]{tmpY};
+            }
+        } else {
+            y = matlab.getVariable("y");
+        }
         if (Objects.isNull(y) || Objects.isNull(y[0])) {
             if (this.useFastRestart) {
                 this.useFastRestart = false;
@@ -275,7 +279,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         //convert double[][] to Word<ArrayList<Double>
         WordBuilder<List<Double>> result = new WordBuilder<>();
 
-        for (double[] outputStep : ArrayUtils.subarray(y, 1, y.length)) {
+        for (double[] outputStep: y) {
             result.append(Arrays.asList(ArrayUtils.toObject(outputStep)));
         }
 

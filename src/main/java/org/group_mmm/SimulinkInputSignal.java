@@ -16,11 +16,11 @@ public class SimulinkInputSignal {
     }
 
     public boolean add(List<Double> inputValue) {
-        if (inputValues.isEmpty()) {
+        if (this.timestamps.isEmpty()) {
             this.timestamps.add(0.0);
-            this.inputValues.add(inputValue);
+        } else {
+            this.timestamps.add(this.duration() + timeStep);
         }
-        this.timestamps.add(this.duration() + timeStep);
         this.inputValues.add(inputValue);
         assert inputValues.size() == timestamps.size();
         return true;
