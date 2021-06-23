@@ -30,10 +30,10 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
      * If this value is too large, Simulink can abort due to an computation error. In that case, you should make this value larger.
      */
     private double simulinkSimulationStep = 0.0025;
-    private MatlabEngine matlab;
-    private List<String> paramNames;
+    private final MatlabEngine matlab;
+    private final List<String> paramNames;
     private Double endTime = 0.0;
-    private List<List<Double>> previousInput;
+    private SimulinkSignal inputSignal;
     private boolean isInitial = true;
     private boolean useFastRestart = true;
     @Getter
@@ -67,19 +67,6 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         matlab.eval(initScript);
     }
 
-    static private void appendSignalStep(List<List<Double>> previousInput, List<Double> signalStep) {
-        for (int i = 0; i < signalStep.size(); i++) {
-            if (previousInput.size() <= i) {
-                previousInput.add(new ArrayList<>());
-                assert previousInput.size() == i + 1;
-                previousInput.get(i).add(signalStep.get(i));
-                previousInput.get(i).add(signalStep.get(i));
-            } else {
-                previousInput.get(i).add(signalStep.get(i));
-            }
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -94,7 +81,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     @Override
     public void pre() {
         endTime = 0.0;
-        previousInput = new ArrayList<>();
+        inputSignal = new SimulinkSignal(signalStep);
         isInitial = true;
     }
 
@@ -103,7 +90,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
      */
     @Override
     public void post() {
-        previousInput.clear();
+        inputSignal.clear();
         endTime = 0.0;
         isInitial = true;
     }
@@ -121,12 +108,11 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         List<Double> result;
         LOGGER.trace("Input: " + inputSignal);
 
-        appendSignalStep(previousInput, inputSignal);
+        this.inputSignal.add(inputSignal);
         try {
             // Make the input signal
-            int numberOfSamples = (int) (endTime * 1 / signalStep) + 1;
             StringBuilder builder = new StringBuilder();
-            makeDataSet(numberOfSamples, inputSignal.size(), builder);
+            makeDataSet(builder);
 
             configureSimulink(builder);
             preventHugeTempFile(builder);
@@ -168,16 +154,13 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         return result;
     }
 
-    private void makeDataSet(int numberOfSamples, int signalDimension, StringBuilder builder) throws ExecutionException, InterruptedException {
-        builder.append("numberOfSamples = ").append(numberOfSamples).append(";");
-        //matlab.putVariable("numberOfSamples", (double) numberOfSamples);
-        builder.append("timeVector = (0:numberOfSamples) * signalStep;");
+    private void makeDataSet(StringBuilder builder) throws ExecutionException, InterruptedException {
+        builder.append("timeVector = ").append(inputSignal.timestamps).append(";");
         //matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
         builder.append("ds = Simulink.SimulationData.Dataset;");
         //matlab.eval("ds = Simulink.SimulationData.Dataset;");
-        assert signalDimension == previousInput.size() : "input signal dimension is wrong";
-        for (int i = 0; i < signalDimension; i++) {
-            double[] tmp = previousInput.get(i).stream().mapToDouble(Double::doubleValue).toArray();
+        for (int i = 0; i < inputSignal.dimension(); i++) {
+            double[] tmp = inputSignal.dimensionGet(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
             builder.append("input").append(i).append(" = timeseries(tmp").append(i).append(", timeVector);");
             //matlab.eval("input = timeseries(tmp, timeVector);");
@@ -245,6 +228,10 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     }
 
     /**
+     * Execute the Simulink model by feeding inputSignal
+     * <p>
+     * For inputSignal = a1, a2, ..., an, we construct a timed word w = (a1, 0), (a2, T), (a3, 2 * T), ... (an, (n - 1) * T) and execute the Simulink model by feeding the piecewise-linear interpolation of w.
+     *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
      */
@@ -254,27 +241,34 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
             return null;
         }
         pre();
-        final int numberOfSamples = inputSignal.length();
-        final int signalDimension = paramNames.size();
-        for (List<Double> signalStep : inputSignal) {
-            appendSignalStep(previousInput, signalStep);
-        }
+        this.inputSignal.addAll(inputSignal);
+
         StringBuilder builder = new StringBuilder();
 
-        makeDataSet(numberOfSamples, signalDimension, builder);
+        makeDataSet(builder);
 
         configureSimulink(builder);
 
         preventHugeTempFile(builder);
 
-        runSimulation(builder, signalStep * numberOfSamples);
+        runSimulation(builder, this.inputSignal.duration());
 
         simulationTime.start();
         matlab.eval(builder.toString());
         simulationTime.stop();
 
         // get the simulation result and make the result
-        double[][] y = matlab.getVariable("y");
+        double[][] y;
+        if (this.inputSignal.duration() == 0.0) {
+            double[] tmpY = matlab.getVariable("y");
+            if (Objects.isNull(tmpY)) {
+                y = null;
+            } else {
+                y = new double[][]{tmpY};
+            }
+        } else {
+            y = matlab.getVariable("y");
+        }
         if (Objects.isNull(y) || Objects.isNull(y[0])) {
             if (this.useFastRestart) {
                 this.useFastRestart = false;
@@ -289,7 +283,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         //convert double[][] to Word<ArrayList<Double>
         WordBuilder<List<Double>> result = new WordBuilder<>();
 
-        for (double[] outputStep : ArrayUtils.subarray(y, 1, y.length)) {
+        for (double[] outputStep: y) {
             result.append(Arrays.asList(ArrayUtils.toObject(outputStep)));
         }
 

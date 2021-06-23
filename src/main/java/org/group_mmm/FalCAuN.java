@@ -197,7 +197,7 @@ public class FalCAuN {
                     System.out.println("The following properties are falsified");
                     for (int i = 0; i < tester.getCexAbstractInput().size(); i++) {
                         if (tester.getCexAbstractInput().get(i) != null) {
-                            printResult(stl, i, tester.getCexProperty(), tester.getCexConcreteInput(), tester.getCexAbstractInput(), tester.getCexOutput(), verifier);
+                            printResult(stl, i, tester.getCexProperty(), tester.getCexConcreteInput(), tester.getCexAbstractInput(), tester.getCexOutput());
                         }
                     }
                 }
@@ -224,7 +224,7 @@ public class FalCAuN {
             System.out.println("The following properties are falsified");
             for (int i = 0; i < verifier.getCexAbstractInput().size(); i++) {
                 if (Objects.nonNull(verifier.getCexAbstractInput().get(i))) {
-                    printResult(stl, i, verifier.getCexProperty(), verifier.getCexConcreteInput(), verifier.getCexAbstractInput(), verifier.getCexOutput(), verifier);
+                    printResult(stl, i, verifier.getCexProperty(), verifier.getCexConcreteInput(), verifier.getCexAbstractInput(), verifier.getCexOutput());
                 }
             }
             System.out.println("Step time: " + argParser.getStepTime());
@@ -243,7 +243,7 @@ public class FalCAuN {
         }
     }
 
-    private static void printResult(List<STLCost> stl, int i, List<String> cexProperty, List<Word<List<Double>>> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput, SimulinkVerifier verifier) {
+    private static void printResult(List<STLCost> stl, int i, List<String> cexProperty, List<SimulinkSignal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
         System.out.println("Property STL: " + stl.get(i));
         System.out.println("Property LTL: " + cexProperty.get(i));
         System.out.println("Concrete Input: " + cexConcreteInput.get(i));

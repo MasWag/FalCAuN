@@ -28,19 +28,21 @@ public class SimulinkVerifier {
     private SimulinkMembershipOracle memOracle;
     private List<SimulinkMembershipOracleCost> memOracleCosts = new ArrayList<>();
     private final EvaluationCountable.Sum evaluationCountables = new EvaluationCountable.Sum();
+    private double signalStep;
 
     /**
      * <p>Constructor for SimulinkVerifier.</p>
      *
      * @param initScript The MATLAB script called at first. You have to define mdl in the script.
      * @param paramName  The list of input parameters.
-     * @param signalStep The signal step in the simulatin
+     * @param signalStep The signal step in the simulation
      * @param properties The LTL properties to be verified
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
     public SimulinkVerifier(String initScript, List<String> paramName, double signalStep, List<String> properties, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
+        this.signalStep = signalStep;
         this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
@@ -210,8 +212,13 @@ public class SimulinkVerifier {
         return verifier.getCexInput();
     }
 
-    List<Word<List<Double>>> getCexConcreteInput() {
-        return this.mapper.mapInputs(getCexAbstractInput());
+    List<SimulinkSignal> getCexConcreteInput() {
+        List<SimulinkSignal> result = new ArrayList<>();
+        for (Word<String> abstractCex : this.getCexAbstractInput()) {
+            result.add(new SimulinkSignal(this.signalStep));
+            result.get(result.size() - 1).addAll(this.mapper.mapInput(abstractCex));
+        }
+        return result;
     }
 
 
