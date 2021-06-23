@@ -30,8 +30,8 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
      * If this value is too large, Simulink can abort due to an computation error. In that case, you should make this value larger.
      */
     private double simulinkSimulationStep = 0.0025;
-    private MatlabEngine matlab;
-    private List<String> paramNames;
+    private final MatlabEngine matlab;
+    private final List<String> paramNames;
     private Double endTime = 0.0;
     private SimulinkSignal inputSignal;
     private boolean isInitial = true;
@@ -228,6 +228,10 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
     }
 
     /**
+     * Execute the Simulink model by feeding inputSignal
+     * <p>
+     * For inputSignal = a1, a2, ..., an, we construct a timed word w = (a1, 0), (a2, T), (a3, 2 * T), ... (an, (n - 1) * T) and execute the Simulink model by feeding the piecewise-linear interpolation of w.
+     *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
      */
