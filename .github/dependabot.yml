@@ -13,3 +13,16 @@ updates:
   - MasWag
   labels:
   - dependencies
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "20:00"
+  open-pull-requests-limit: 10
+  target-branch: master
+  reviewers:
+  - MasWag
+  assignees:
+  - MasWag
+  labels:
+  - dependencies
