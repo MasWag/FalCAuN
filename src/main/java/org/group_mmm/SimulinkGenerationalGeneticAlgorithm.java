@@ -3,10 +3,10 @@ package org.group_mmm;
 import de.learnlib.api.oracle.PropertyOracle;
 import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GenerationalGeneticAlgorithm;
-import org.uma.jmetal.operator.crossover.CrossoverOperator;
-import org.uma.jmetal.operator.mutation.MutationOperator;
-import org.uma.jmetal.operator.selection.SelectionOperator;
-import org.uma.jmetal.solution.integersolution.IntegerSolution;
+import org.uma.jmetal.operator.CrossoverOperator;
+import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.SelectionOperator;
+import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 
 import java.util.List;

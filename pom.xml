@@ -303,7 +303,7 @@
         <dependency>
             <groupId>org.uma.jmetal</groupId>
             <artifactId>jmetal-core</artifactId>
-            <version>5.10</version>
+            <version>5.9</version>
         </dependency>
         <dependency>
             <groupId>org.uma.jmetal</groupId>
@@ -315,11 +315,7 @@
             <artifactId>jmetal-problem</artifactId>
             <version>5.9</version>
         </dependency>
-        <dependency>
-            <groupId>org.uma.jmetal</groupId>
-            <artifactId>jmetal-example</artifactId>
-            <version>5.10</version>
-        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -336,7 +332,7 @@
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.2</version>
         </dependency>
     </dependencies>
 </project>

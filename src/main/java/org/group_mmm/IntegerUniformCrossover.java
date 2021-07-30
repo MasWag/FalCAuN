@@ -1,7 +1,7 @@
 package org.group_mmm;
 
-import org.uma.jmetal.operator.crossover.CrossoverOperator;
-import org.uma.jmetal.solution.integersolution.IntegerSolution;
+import org.uma.jmetal.operator.CrossoverOperator;
+import org.uma.jmetal.solution.IntegerSolution;
 
 import java.util.ArrayList;
 import java.util.List;

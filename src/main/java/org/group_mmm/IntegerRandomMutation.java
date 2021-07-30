@@ -1,8 +1,8 @@
 package org.group_mmm;
 
 import org.jetbrains.annotations.NotNull;
-import org.uma.jmetal.operator.mutation.MutationOperator;
-import org.uma.jmetal.solution.integersolution.IntegerSolution;
+import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.solution.IntegerSolution;
 
 import java.util.Objects;
 import java.util.Random;

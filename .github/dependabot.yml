@@ -28,3 +28,4 @@ updates:
     - dependencies
   ignore:
     - dependency-name: "org.uma.jmetal*"
+    - dependency-name: "jmetal-*"
