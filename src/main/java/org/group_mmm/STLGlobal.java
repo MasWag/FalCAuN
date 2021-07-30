@@ -51,4 +51,11 @@ public class STLGlobal extends STLTemporalOp {
     public String toString() {
         return String.format("[] ( %s )", subFml.toString());
     }
+
+    /**
+     * <p>getSubFml.</p>
+     *
+     * @return a {@link STLCost} object.
+     */
+    public STLCost getSubFml() { return this.subFml; }
 }

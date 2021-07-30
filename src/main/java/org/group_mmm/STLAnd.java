@@ -68,4 +68,11 @@ class STLAnd extends STLCost {
         }
     }
 
+    /**
+     * <p>getSubFmls.</p>
+     *
+     * @return {@link STLCost} list object.
+     */
+    public List<STLCost> getSubFmls() { return this.subFmls; }
+
 }

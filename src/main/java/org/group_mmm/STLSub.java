@@ -82,4 +82,25 @@ public class STLSub extends STLCost {
 
         return String.join(op, subFmls);
     }
+
+    /**
+     * <p>getSubFml.</p>
+     *
+     * @return a {@link STLTemporalOp} object.
+     */
+    public STLTemporalOp getSubFml() { return this.subFml; }
+
+    /**
+     * <p>getFrom.</p>
+     *
+     * @return a int of 'from'.
+     */
+    public int getFrom() { return this.from; }
+
+    /**
+     * <p>getTo.</p>
+     *
+     * @return a int of 'to'.
+     */
+    public int getTo() { return this.to; }
 }

@@ -72,4 +72,18 @@ public class STLUntil extends STLCost {
     public String toAbstractString() {
         return "( " + this.left.toAbstractString() + " ) U ( " + this.right.toAbstractString() + " )";
     }
+
+    /**
+     * <p>getLeft.</p>
+     *
+     * @return a left {@link STLCost} object.
+     */
+    public STLCost getLeft() { return this.left; }
+
+    /**
+     * <p>getRight.</p>
+     *
+     * @return a right {@link STLCost} object.
+     */
+    public STLCost getRight() { return this.right; }
 }
