@@ -122,11 +122,18 @@ public class FalCAuN {
             log.warn("Size of the longest LTL string is " + maxLTLLength + ". This is probably too long.");
         }
 
+        AdaptiveSTLUpdater adaptiveSTLUpdater;
+        if (argParser.isAdaptiveSTL()) {
+            adaptiveSTLUpdater = new AdaptiveSTLList(stl);
+        } else {
+            adaptiveSTLUpdater = new StaticSTLList(stl);
+        }
+
         SimulinkVerifier verifier = new SimulinkVerifier(
                 argParser.getInitScript(),
                 argParser.getParamNames(),
                 argParser.getStepTime(),
-                new StaticSTLList(stl),
+                adaptiveSTLUpdater,
                 sulMapper);
 
         if (Objects.nonNull(argParser.getTimeout())) {

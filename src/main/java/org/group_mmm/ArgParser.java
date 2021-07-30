@@ -37,6 +37,7 @@ class ArgParser {
     private Double mutationProb = null;
     private Double crossoverProb = null;
     private int maxDepth;
+    private boolean adaptiveSTL = false;
     SignalMapper sigMap;
 
     ArgParser(String[] args) throws MissingOptionException, IOException {
@@ -64,6 +65,7 @@ class ArgParser {
         options.addOption(null, "ga-mutation-prob", true, "The mutation probability for genetic algorithm (should be [0,1])");
         options.addOption(null, "ga-selection-kind", true, "Specify the selection method in GA");
         options.addOption(null, "wp-max-depth", true, "Specify the maximum depth in Wp");
+        options.addOption(null, "adaptive-stl", false, "Use adaptive STL updater");
 
         DefaultParser parser = new DefaultParser();
         CommandLine cl;
@@ -236,6 +238,9 @@ class ArgParser {
         } else {
             sigMap = new SignalMapper();
         }
+        if (cl.hasOption("adaptive-stl")) {
+            adaptiveSTL = true;
+        }
     }
 
     GASelectionKind getSelectionKind() {
@@ -329,6 +334,8 @@ class ArgParser {
     SignalMapper getSigMap() {
         return sigMap;
     }
+
+    boolean isAdaptiveSTL() { return adaptiveSTL; }
 
     private void showVersion() {
         System.out.println(ArgParser.class.getPackage().getImplementationTitle() + " version " + ArgParser.class.getPackage().getImplementationVersion());
