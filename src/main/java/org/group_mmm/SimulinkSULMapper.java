@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
-import net.automatalib.words.impl.SimpleAlphabet;
+import net.automatalib.words.impl.GrowingMapAlphabet;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -130,10 +130,10 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
     }
 
     Alphabet<String> constructAbstractAlphabet() {
-        return new SimpleAlphabet<>(this.inputMapper.keySet());
+        return new GrowingMapAlphabet<>(this.inputMapper.keySet());
     }
 
     Alphabet<List<Double>> constructConcreteAlphabet() {
-        return new SimpleAlphabet<>(this.inputMapper.values());
+        return new GrowingMapAlphabet<>(this.inputMapper.values());
     }
 }

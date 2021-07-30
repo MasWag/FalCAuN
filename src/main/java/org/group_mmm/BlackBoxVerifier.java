@@ -47,7 +47,7 @@ class BlackBoxVerifier {
     private List<MealyMachine<?, String, ?, String>> cexMealy;
     private Alphabet<String> inputAlphabet;
     private LearningAlgorithm.MealyLearner<String, String> learner;
-    private EQOracleChain.MealyEQOracleChain<String, String> eqOracle;
+    private MealyEQOracleChain<String, String> eqOracle;
     private List<String> properties;
     private List<Word<String>> cexInput;
     private List<String> cexProperty;
@@ -95,8 +95,8 @@ class BlackBoxVerifier {
         }
 
         // create an equivalence oracle, that first searches for a counter example using the ltl properties, and next
-        this.eqOracle = new EQOracleChain.MealyEQOracleChain<>(
-                new CExFirstOracle.MealyCExFirstOracle<>(ltlFormulas));
+        this.eqOracle = new MealyEQOracleChain<>(
+                new MealyCExFirstOracle<>(ltlFormulas));
     }
 
     ArrayList<PropertyOracle.MealyPropertyOracle<String, String, String>> getLtlFormulas() {
@@ -113,7 +113,7 @@ class BlackBoxVerifier {
     }
 
     void addWpMethodEQOracle(int maxDepth) {
-        addEqOracle(new WpMethodEQOracle.MealyWpMethodEQOracle<>(memOracle, maxDepth));
+        addEqOracle(new MealyWpMethodEQOracle<>(memOracle, maxDepth));
     }
 
     void addBFOracle(double multiplier) {
@@ -121,7 +121,7 @@ class BlackBoxVerifier {
     }
 
     void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
-        addEqOracle(new RandomWordsEQOracle.MealyRandomWordsEQOracle<>(
+        addEqOracle(new MealyRandomWordsEQOracle<>(
                 memOracle, minLength, maxLength, maxTests, random, batchSize));
     }
 
@@ -131,7 +131,7 @@ class BlackBoxVerifier {
     }
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
-        addEqOracle(new CompleteExplorationEQOracle.MealyCompleteExplorationEQOracle<>(
+        addEqOracle(new MealyCompleteExplorationEQOracle<>(
                 memOracle, minDepth, maxDepth, batchSize));
     }
 

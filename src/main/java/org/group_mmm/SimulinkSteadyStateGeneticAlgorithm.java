@@ -3,10 +3,10 @@ package org.group_mmm;
 import de.learnlib.api.oracle.PropertyOracle;
 import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.SteadyStateGeneticAlgorithm;
-import org.uma.jmetal.operator.CrossoverOperator;
-import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.operator.SelectionOperator;
-import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.operator.crossover.CrossoverOperator;
+import org.uma.jmetal.operator.mutation.MutationOperator;
+import org.uma.jmetal.operator.selection.SelectionOperator;
+import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 
 import java.util.List;
@@ -22,13 +22,20 @@ public class SimulinkSteadyStateGeneticAlgorithm extends SteadyStateGeneticAlgor
     private EQSearchProblem problem;
     private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
 
-    SimulinkSteadyStateGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize, CrossoverOperator<IntegerSolution> crossoverOperator, MutationOperator<IntegerSolution> mutationOperator, SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator, SolutionListEvaluator<IntegerSolution> evaluator, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    SimulinkSteadyStateGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize,
+                                        CrossoverOperator<IntegerSolution> crossoverOperator,
+                                        MutationOperator<IntegerSolution> mutationOperator,
+                                        SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator,
+                                        SolutionListEvaluator<IntegerSolution> evaluator,
+                                        PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
         super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator);
         this.problem = problem;
         this.ltlOracle = ltlOracle;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean isStoppingConditionReached() {
         if (super.isStoppingConditionReached()) {
@@ -40,7 +47,7 @@ public class SimulinkSteadyStateGeneticAlgorithm extends SteadyStateGeneticAlgor
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * Create initial population only for the initial run
      */
     @Override

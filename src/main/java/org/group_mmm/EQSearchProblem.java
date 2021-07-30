@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
-import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
-import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.problem.integerproblem.impl.AbstractIntegerProblem;
+import org.uma.jmetal.solution.integersolution.IntegerSolution;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,15 +37,17 @@ public class EQSearchProblem extends AbstractIntegerProblem implements Evaluatio
         setName("EQSearchProblem");
 
         List<Integer> lowerLimit = Collections.nCopies(length, 0);
+        List<Integer> upperLimit = Collections.nCopies(length, Integer.MAX_VALUE);
 
-        setLowerLimit(lowerLimit);
+        setVariableBounds(lowerLimit, upperLimit);
     }
 
     void setSymbolList(List<? extends String> symbolList) {
+        List<Integer> lowerLimit = Collections.nCopies(length, 0);
         List<Integer> upperLimit = Collections.nCopies(length, symbolList.size() - 1);
 
         this.symbolList = symbolList;
-        setUpperLimit(upperLimit);
+        setVariableBounds(lowerLimit, upperLimit);
     }
 
     /** {@inheritDoc} */
@@ -53,7 +55,7 @@ public class EQSearchProblem extends AbstractIntegerProblem implements Evaluatio
     public void evaluate(IntegerSolution integerSolution) {
         WordBuilder<String> currentSample = new WordBuilder<>();
         for (int i = 0; i < integerSolution.getNumberOfVariables(); i++) {
-            int value = integerSolution.getVariableValue(i);
+            int value = integerSolution.getVariables().get(i);
             currentSample.append(symbolList.get(value));
         }
         DefaultQuery<String, Word<String>> query = new DefaultQuery<>(currentSample.toWord());

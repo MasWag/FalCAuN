@@ -1,8 +1,8 @@
 package org.group_mmm;
 
 import org.jetbrains.annotations.NotNull;
-import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.operator.mutation.MutationOperator;
+import org.uma.jmetal.solution.integersolution.IntegerSolution;
 
 import java.util.Objects;
 import java.util.Random;
@@ -50,7 +50,7 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
             if (this.random.nextDouble() < mutationProbability) {
                 int positionToChange = this.random.nextInt(solution.getNumberOfVariables() - 1);
                 Integer newValue = random.nextInt(solution.getUpperBound(i) + 1) + solution.getLowerBound(i);
-                solution.setVariableValue(positionToChange, newValue);
+                solution.getVariables().set(positionToChange, newValue);
             }
         }
         return solution;
