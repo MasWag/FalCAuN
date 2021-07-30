@@ -31,4 +31,9 @@ public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
     public List<STLCost> getSTLProperties() {
         return STLproperties;
     }
+
+    @Override
+    protected void notifyFalsifiedProperty(int i) {
+        this.STLproperties.remove(i);
+    }
 }
