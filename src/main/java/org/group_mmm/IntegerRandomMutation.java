@@ -50,7 +50,7 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
             if (this.random.nextDouble() < mutationProbability) {
                 int positionToChange = this.random.nextInt(solution.getNumberOfVariables() - 1);
                 Integer newValue = random.nextInt(solution.getUpperBound(i) + 1) + solution.getLowerBound(i);
-                solution.getVariables().set(positionToChange, newValue);
+                solution.setVariableValue(positionToChange, newValue);
             }
         }
         return solution;

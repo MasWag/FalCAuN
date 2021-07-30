@@ -50,9 +50,9 @@ public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolutio
         offspring.add((IntegerSolution) integerSolutions.get(1).copy());
         for (int i = 0; i < integerSolutions.get(0).getNumberOfVariables(); i++) {
             if (Math.random() < crossoverProbability) {
-                int tmp = offspring.get(0).getVariables().get(i);
-                offspring.get(0).getVariables().set(i, offspring.get(1).getVariables().get(i));
-                offspring.get(1).getVariables().set(i, tmp);
+                int tmp = offspring.get(0).getVariableValue(i);
+                offspring.get(0).setVariableValue(i, offspring.get(1).getVariableValue(i));
+                offspring.get(1).setVariableValue(i, tmp);
             }
         }
         return offspring;
