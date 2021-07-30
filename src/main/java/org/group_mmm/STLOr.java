@@ -71,4 +71,11 @@ public class STLOr extends STLCost {
                     s -> "( " + s + " )").collect(Collectors.joining(" || "));
         }
     }
+
+    /**
+     * <p>getSubFmls.</p>
+     *
+     * @return {@link STLCost} list object.
+     */
+    public List<STLCost> getSubFmls() { return this.subFmls; }
 }

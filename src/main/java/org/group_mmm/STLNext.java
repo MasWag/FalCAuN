@@ -66,4 +66,11 @@ public class STLNext extends STLCost {
     public String toString() {
         return String.format("X ( %s )", subFml.toString());
     }
+
+    /**
+     * <p>getSubFml.</p>
+     *
+     * @return a {@link STLCost} object.
+     */
+    public STLCost getSubFml() { return this.subFml; }
 }

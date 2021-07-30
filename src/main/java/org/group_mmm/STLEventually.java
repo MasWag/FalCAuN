@@ -52,5 +52,12 @@ public class STLEventually extends STLTemporalOp {
     public String toAbstractString() {
         return String.format("<> ( %s )", subFml.toAbstractString());
     }
+
+    /**
+     * <p>getSubFml.</p>
+     *
+     * @return a {@link STLCost} object.
+     */
+    public STLCost getSubFml() { return this.subFml; }
 }
 
