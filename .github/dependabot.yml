@@ -21,8 +21,10 @@ updates:
   open-pull-requests-limit: 10
   target-branch: master
   reviewers:
-  - MasWag
+    - MasWag
   assignees:
-  - MasWag
+    - MasWag
   labels:
-  - dependencies
+    - dependencies
+  ignore:
+    - dependency-name: "org.uma.jmetal*"
