@@ -1,0 +1,1 @@
+[] ((signal(2) > 2) || ((signal(2) < 2) U (signal(0) > 30)))
