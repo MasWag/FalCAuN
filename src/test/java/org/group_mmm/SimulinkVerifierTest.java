@@ -19,19 +19,19 @@ class SimulinkVerifierTest {
 	  - Pedal_Angle: [8.8 90.0]
       - Engine_Speed: [900.0 1100.0]
      */
-    private final List<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
+    private final List<String> paramNames = Arrays.asList("Pedal Angle", "Engine Speed");
     private final Double signalStep = 10.0;
     private SimulinkVerifier verifier;
     private List<String> properties;
     private SimulinkSULMapper mapper;
-    private List<Function<List<Double>, Double>> sigMap = new ArrayList<>();
-    private List<String> propertyZHA19_AFC1 = new ArrayList<>(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
+    private List<Function<List<Double>, Double>> sigMap = Collections.emptyList();
+    private List<String> propertyZHA19_AFC1 = Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")");
 
 
     @BeforeEach
     void setUp() {
         // [] (velocity < 30)
-        properties = new ArrayList<>(Collections.singletonList("[] (output == \"a00\")"));
+        properties = Collections.singletonList("[] (output == \"a00\")");
 
         // Construct the mapper
         List<Map<Character, Double>> inputMapper;
@@ -62,6 +62,7 @@ class SimulinkVerifierTest {
         try {
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
             verifier.setSimulationStep(0.0001);
+            verifier.addWpMethodEQOracle(3);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
@@ -247,10 +248,12 @@ class SimulinkVerifierTest {
     }
 
     @Test
+    @Disabled
     void getCexInput() {
     }
 
     @Test
+    @Disabled
     void getCexOutput() {
     }
 }
