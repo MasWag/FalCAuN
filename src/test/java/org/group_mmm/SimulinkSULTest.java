@@ -2,10 +2,7 @@ package org.group_mmm;
 
 import net.automatalib.words.Word;
 import org.junit.Ignore;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -163,6 +160,7 @@ class SimulinkSULTest {
     }
 
     @Nested
+    @Disabled // SC benchmark requires Deep Learning toolkit of MATLAB.
     class SC {
         private final String PWD = System.getenv("PWD");
         private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; mdl = 'steamcondense_RNN_22'; load_system(mdl)";
