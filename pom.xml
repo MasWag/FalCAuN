@@ -289,14 +289,15 @@
         <dependency>
             <groupId>com.pholser</groupId>
             <artifactId>junit-quickcheck-core</artifactId>
-            <version>1.0</version>
+            <version>0.9.5</version>
             <scope>test</scope>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.pholser/junit-quickcheck-generators -->
         <dependency>
             <groupId>com.pholser</groupId>
             <artifactId>junit-quickcheck-generators</artifactId>
-            <version>1.0</version>
+            <version>0.9.5</version>
             <scope>test</scope>
         </dependency>
 
