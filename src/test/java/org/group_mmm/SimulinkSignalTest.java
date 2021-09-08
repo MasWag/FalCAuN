@@ -31,36 +31,36 @@ class SimulinkSignalTest {
     void add() {
         assertEquals(0, this.inputSignal.size());
         this.inputSignal.add(this.rawInput.get(0));
-        assertEquals(2, this.inputSignal.size());
+        assertEquals(1, this.inputSignal.size());
         this.inputSignal.add(this.rawInput.get(1));
-        assertEquals(3, this.inputSignal.size());
+        assertEquals(2, this.inputSignal.size());
     }
 
     @Test
     void addAll() {
         assertEquals(0, this.inputSignal.size());
         this.inputSignal.addAll(rawInput);
-        assertEquals(rawInput.size() + 1, this.inputSignal.size());
+        assertEquals(rawInput.size(), this.inputSignal.size());
     }
 
     @Test
     void testAddAll() {
         assertEquals(0, this.inputSignal.size());
         this.inputSignal.addAll(Word.fromList(rawInput));
-        assertEquals(rawInput.size() + 1, this.inputSignal.size());
+        assertEquals(rawInput.size(), this.inputSignal.size());
     }
 
     @Test
     void duration() {
         assertEquals(0.0, this.inputSignal.duration());
         this.inputSignal.addAll(rawInput);
-        assertEquals(20.0, this.inputSignal.duration());
+        assertEquals(18.0, this.inputSignal.duration());
     }
 
     @Test
     void testToString() {
         this.inputSignal.addAll(this.rawInput);
-        String expectedString = "[0.0 100.0 0.0; 2.0 100.0 0.0; 4.0 100.0 0.0; 6.0 100.0 0.0; 8.0 100.0 0.0; 10.0 100.0 0.0; 12.0 100.0 0.0; 14.0 100.0 0.0; 16.0 100.0 0.0; 18.0 100.0 0.0; 20.0 0.0 0.0]";
+        String expectedString = "[0.0 100.0 0.0; 2.0 100.0 0.0; 4.0 100.0 0.0; 6.0 100.0 0.0; 8.0 100.0 0.0; 10.0 100.0 0.0; 12.0 100.0 0.0; 14.0 100.0 0.0; 16.0 100.0 0.0; 18.0 0.0 0.0]";
         assertEquals(expectedString, this.inputSignal.toString());
     }
 
@@ -68,15 +68,15 @@ class SimulinkSignalTest {
     void size() {
         assertEquals(0, this.inputSignal.size());
         this.inputSignal.add(this.rawInput.get(0));
-        assertEquals(2, this.inputSignal.size());
+        assertEquals(1, this.inputSignal.size());
         this.inputSignal.add(this.rawInput.get(1));
-        assertEquals(3, this.inputSignal.size());
+        assertEquals(2, this.inputSignal.size());
     }
 
     @Test
     void clear() {
         this.inputSignal.addAll(rawInput);
-        assertEquals(rawInput.size() + 1, this.inputSignal.size());
+        assertEquals(rawInput.size(), this.inputSignal.size());
         this.inputSignal.clear();
         assertEquals(0, this.inputSignal.size());
     }
@@ -84,10 +84,10 @@ class SimulinkSignalTest {
     @Test
     void get() {
         this.inputSignal.addAll(rawInput);
-        assertEquals(rawInput.size() + 1, this.inputSignal.size());
+        assertEquals(rawInput.size(), this.inputSignal.size());
         assertEquals(rawInput.get(0), this.inputSignal.get(0));
         for (int i = 0; i < rawInput.size(); i++) {
-            assertEquals(rawInput.get(i), this.inputSignal.get(i + 1));
+            assertEquals(rawInput.get(i), this.inputSignal.get(i));
         }
     }
 }

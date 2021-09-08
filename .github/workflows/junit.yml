@@ -38,7 +38,7 @@ jobs:
         run: mvn dependency:go-offline
 
       - name: Test with Maven
-        run: mvn test -Dtest=BlackBoxVerifierTest,ArgParserTest,InputMapperReaderTest,OutputMapperReaderTest,STLAtomicTest,STLCostTest,STLParserTest,STLSubTest,STLUntilTest -DskipTests=false
+        run: mvn test -Dtest=BlackBoxVerifierTest,ArgParserTest,InputMapperReaderTest,OutputMapperReaderTest,STLAtomicTest,STLCostTest,STLParserTest,STLSubTest,STLUntilTest,SimulinkSignalTest -DskipTests=false
 
       - name: Upload the test coverage to Codecov
         uses: codecov/codecov-action@v2.0.2
