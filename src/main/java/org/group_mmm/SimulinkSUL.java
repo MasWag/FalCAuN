@@ -129,14 +129,14 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
 
             // Run the simulation
-            runSimulation(builder, endTime + signalStep);
+            runSimulation(builder, this.inputSignal.duration());
 
             simulationTime.start();
             matlab.eval(builder.toString());
             simulationTime.stop();
 
             // get the simulation result and make the result
-            double[][] y = matlab.getVariable("y");
+            double[][] y = this.getResult();
 
             result = new ArrayList<>(Arrays.asList(ArrayUtils.toObject(y[y.length - 1])));
         } catch (Exception e) {
@@ -227,6 +227,21 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         counter++;
     }
 
+    protected double[][] getResult() throws ExecutionException, InterruptedException {
+        double[][] y;
+        if (this.inputSignal.duration() == 0.0) {
+            double[] tmpY = matlab.getVariable("y");
+            if (Objects.isNull(tmpY)) {
+                y = null;
+            } else {
+                y = new double[][]{tmpY};
+            }
+        } else {
+            y = matlab.getVariable("y");
+        }
+        return y;
+    }
+
     /**
      * Execute the Simulink model by feeding inputSignal
      * <p>
@@ -258,17 +273,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         simulationTime.stop();
 
         // get the simulation result and make the result
-        double[][] y;
-        if (this.inputSignal.duration() == 0.0) {
-            double[] tmpY = matlab.getVariable("y");
-            if (Objects.isNull(tmpY)) {
-                y = null;
-            } else {
-                y = new double[][]{tmpY};
-            }
-        } else {
-            y = matlab.getVariable("y");
-        }
+        double[][] y = this.getResult();
         if (Objects.isNull(y) || Objects.isNull(y[0])) {
             if (this.useFastRestart) {
                 this.useFastRestart = false;
