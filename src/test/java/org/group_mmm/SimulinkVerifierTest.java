@@ -62,7 +62,7 @@ class SimulinkVerifierTest {
         try {
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
             verifier.setSimulationStep(0.0001);
-            verifier.addWpMethodEQOracle(3);
+            verifier.addWpMethodEQOracle(1);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
