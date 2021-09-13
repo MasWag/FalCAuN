@@ -33,7 +33,8 @@ Usage
 **-i** *script*, **--init** *script* The initial script of MATLAB <br />
 **-p** *param1 param2 ... paramN*, **--param-names** *param1 param2 ... paramN* The parameter names of the Simulink
 model <br />
-**-M** *test-size*, **--max-test** *test-size* The maximum test size
+**-M** *test-size*, **--max-test** *test-size* The maximum test size <br />
+**--disable-adaptive-stl** Disable the adaptive STL updater in [Shijubo+, RV'21]
 
 ### Options Specific to the Equivalence Testing
 
@@ -215,6 +216,14 @@ atomic : signal(NATURAL) == value
        | signal(NATURAL) < value
        | signal(NATURAL) > value
        | signal(NATURAL) != value
+       | input(NATURAL) == value
+       | input(NATURAL) < value
+       | input(NATURAL) > value
+       | input(NATURAL) != value
+       | output(NATURAL) == value
+       | output(NATURAL) < value
+       | output(NATURAL) > value
+       | output(NATURAL) != value
 
 value : -? NATURAL | -? FLOAT
 
@@ -235,3 +244,10 @@ FAQ
 - FalCAuN says ``infinite robustness''. What should I do?
     - It can be because the generated signal is too short for the temporal formula. Please make "--signal-length" as
       long as the time window of the STL formulas.
+
+
+References
+----------
+
+- [Shijubo+, RV'21] Efficient Black-Box Checking via Model Checking with Strengthened Specifications. Junya Shijubo, Masaki Waga, and Kohei Suenaga
+- [Waga, HSCC'20] Falsification of cyber-physical systems with robustness-guided black-box checking. Masaki Waga
