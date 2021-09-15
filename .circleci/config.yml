@@ -20,7 +20,9 @@ jobs:
       - restore_cache:
           key: FalCAuN-{{ checksum "pom.xml" }}
       - run: MATLAB_HOME=/usr/local/MATLAB/R2020b mvn clean
-      - run: MATLAB_HOME=/usr/local/MATLAB/R2020b mvn install -DskipTests=false
+      - run:
+          command: MATLAB_HOME=/usr/local/MATLAB/R2020b mvn install -DskipTests=false
+          no_output_timeout: 30m
       - store_artifacts:
           path:  target
       - save_cache:
