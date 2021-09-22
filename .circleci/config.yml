@@ -16,13 +16,14 @@ jobs:
             sudo cp -r v3.1.0/* /usr
       - openjdk-install/openjdk
       - matlab/install:
-          release: R2020b
+          release: R2020a
       - restore_cache:
           key: FalCAuN-{{ checksum "pom.xml" }}
-      - run: MATLAB_HOME=/usr/local/MATLAB/R2020b mvn clean
+      - run: MATLAB_HOME=/usr/local/MATLAB/R2020a mvn clean
       - run:
-          command: MATLAB_HOME=/usr/local/MATLAB/R2020b mvn install -DskipTests=false
-          no_output_timeout: 30m
+          command: MATLAB_HOME=/usr/local/MATLAB/R2020a mvn install -DskipTests=True
+      - run:
+          command: MATLAB_HOME=/usr/local/MATLAB/R2020a mvn test -DskipTests=False
       - store_artifacts:
           path:  target
       - save_cache:
