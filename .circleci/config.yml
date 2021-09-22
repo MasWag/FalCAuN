@@ -23,7 +23,7 @@ jobs:
       - run:
           command: MATLAB_HOME=/usr/local/MATLAB/R2020a mvn install -DskipTests=True
       - run:
-          command: MATLAB_HOME=/usr/local/MATLAB/R2020a mvn test -Dtest='!SimulinkVerifierTest,!SimulinkSULTest' -DskipTests=False
+          command: MATLAB_HOME=/usr/local/MATLAB/R2020a mvn test -Dtest='!%regex[SimulinkVerifierTest|SimulinkSULTest]' -DskipTests=False
       - store_artifacts:
           path:  target
       - save_cache:
