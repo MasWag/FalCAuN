@@ -26,6 +26,8 @@ class BlackBoxVerifierTest {
     private List<String> properties;
     private BlackBoxVerifier verifier;
     StaticLTLList ltlList;
+    MembershipOracle.MealyMembershipOracle<String, String> memOracle;
+    SUL<String, String> sul;
 
     @BeforeEach
     void setUp() {
@@ -41,8 +43,8 @@ class BlackBoxVerifierTest {
                 from("q1").
                 on("a").withOutput("2").to("q0").
                 create();
-        SUL<String, String> sul = new MealySimulatorSUL<>(mealy);
-        MembershipOracle.MealyMembershipOracle<String, String> memOracle = new SULOracle<>(sul);
+        sul = new MealySimulatorSUL<>(mealy);
+        memOracle = new SULOracle<>(sul);
         ltlList = spy(new StaticLTLList(properties));
         ltlList.setMemOracle(memOracle);
         verifier = new BlackBoxVerifier(memOracle, sul, ltlList, inputAlphabet);

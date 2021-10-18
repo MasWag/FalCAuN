@@ -2,25 +2,28 @@ package org.group_mmm;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.function.Function;
 
 import static java.lang.Math.abs;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.group_mmm.STLCost.parseSTL;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SimulinkVerifierTest {
     private final String PWD = System.getenv("PWD");
-    private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAFC;";
+    private String initScript;
     /*
        The range should be as follows.
 	  - Pedal_Angle: [8.8 90.0]
       - Engine_Speed: [900.0 1100.0]
      */
     private final List<String> paramNames = Arrays.asList("Pedal Angle", "Engine Speed");
-    private final Double signalStep = 10.0;
+    private Double signalStep = 10.0;
     private SimulinkVerifier verifier;
     private AdaptiveSTLUpdater properties;
     private SimulinkSULMapper mapper;
@@ -30,9 +33,10 @@ class SimulinkVerifierTest {
 
     @BeforeEach
     void setUp() {
+        initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAFC;";
         // [] (velocity < 30)
         properties = new StaticLTLList(Collections.singletonList("[] (output == \"a00\")"));
-
+        signalStep = 10.0;
         // Construct the mapper
         List<Map<Character, Double>> inputMapper;
         List<Map<Character, Double>> outputMapper;
@@ -255,5 +259,60 @@ class SimulinkVerifierTest {
     @Test
     @Disabled
     void getCexOutput() {
+    }
+
+    @Nested
+    class AutoTrans {
+        List<Map<Character, Double>> inputMapper;
+        List<Map<Character, Double>> outputMapper;
+        List<Character> largest;
+
+        @BeforeEach
+        void setUp() {
+            initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAT;";
+            signalStep = 2.0;
+
+            // Construct the mapper
+            {
+                Map<Character, Double> mapper1 = new HashMap<>();
+                mapper1.put('a', 00.0);
+                mapper1.put('b', 100.0);
+                Map<Character, Double> mapper2 = new HashMap<>();
+                mapper2.put('a', 0.0);
+                mapper2.put('b', 325.0);
+                inputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
+            }
+            {
+                Map<Character, Double> mapper1 = new HashMap<>();
+                mapper1.put('a', 120.0);
+                Map<Character, Double> mapper2 = new HashMap<>();
+                mapper2.put('a', 4750.0);
+                Map<Character, Double> mapper3 = new HashMap<>();
+
+                outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
+                largest = new ArrayList<>(Arrays.asList('b', 'b', 'a'));
+            }
+            mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        }
+
+        @Test
+        void setTimeout() throws Exception {
+            // generate properties
+            String stlString = "alw_[0, 5] (signal(1) < 4750)";
+            STLCost stl = parseSTL(stlString, inputMapper, outputMapper, largest);
+            String ltl = stl.toLTLString();
+            properties = new StaticSTLList(Collections.singletonList(stl));
+            // define the verifier
+            verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+            verifier.addGAEQOracleAll(25, 1000, ArgParser.GASelectionKind.Tournament,
+                    50, 0.9, 0.01);
+            // set timeout
+            long timeout = 10 * 60;
+            verifier.setTimeout(timeout);
+            long startTime = System.nanoTime();
+            assertTrue(verifier.run());
+            long duration = (System.nanoTime() - startTime) / 1000 / 1000 / 1000;
+            assertThat("Execution time", duration, greaterThan(timeout));
+        }
     }
 }
