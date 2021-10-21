@@ -1,9 +1,6 @@
 package org.group_mmm;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.function.Function;
@@ -300,7 +297,6 @@ class SimulinkVerifierTest {
             // generate properties
             String stlString = "alw_[0, 5] (signal(1) < 4750)";
             STLCost stl = parseSTL(stlString, inputMapper, outputMapper, largest);
-            String ltl = stl.toLTLString();
             properties = new StaticSTLList(Collections.singletonList(stl));
             // define the verifier
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
@@ -313,6 +309,38 @@ class SimulinkVerifierTest {
             assertTrue(verifier.run());
             long duration = (System.nanoTime() - startTime) / 1000 / 1000 / 1000;
             assertThat("Execution time", duration, greaterThan(timeout));
+        }
+
+        @Nested
+        class AT1Run {
+            STLCost stl;
+
+            @BeforeEach
+            void setUp() {
+                String stlString = "alw_[0, 10] (signal(0) < 120)";
+                stl = parseSTL(stlString, inputMapper, outputMapper, largest);
+            }
+
+            @Test
+            void runStatic() {
+                // generate properties
+                properties = new StaticSTLList(Collections.singletonList(stl));
+            }
+
+            @Test
+            void runAdaptive() {
+                // generate properties
+                properties = new AdaptiveSTLList(Collections.singletonList(stl));
+            }
+
+            @AfterEach
+            void tearDown() throws Exception {
+                // define the verifier
+                verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+                verifier.addGAEQOracleAll(25, 1000, ArgParser.GASelectionKind.Tournament,
+                        50, 0.9, 0.01);
+                assertFalse(verifier.run());
+            }
         }
     }
 }
