@@ -317,7 +317,7 @@ class SimulinkVerifierTest {
 
             @BeforeEach
             void setUp() {
-                String stlString = "alw_[0, 10] (signal(0) < 120)";
+                String stlString = "alw_[0, 20] (signal(0) < 120)";
                 stl = parseSTL(stlString, inputMapper, outputMapper, largest);
             }
 
