@@ -33,7 +33,10 @@ public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
     }
 
     @Override
-    protected void notifyFalsifiedProperty(int i) {
-        this.STLproperties.remove(i);
+    protected void notifyFalsifiedProperty(List<Integer> falsifiedIndices) {
+        falsifiedIndices.sort(Collections.reverseOrder());
+        for (int i : falsifiedIndices) {
+            this.STLproperties.remove(i);
+        }
     }
 }

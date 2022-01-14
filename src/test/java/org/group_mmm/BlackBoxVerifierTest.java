@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,14 +58,12 @@ class BlackBoxVerifierTest {
 
     @Test
     void notifyFalsifiedProperty() {
-        for (int i = 0; i < 4; i++) {
-            doCallRealMethod().when(ltlList).notifyFalsifiedProperty(i);
-        }
+        doCallRealMethod().when(ltlList).notifyFalsifiedProperty(Arrays.asList(0,1,2,3));
         assertFalse(verifier.run());
-        verify(ltlList, times(0)).notifyFalsifiedProperty(0);
-        verify(ltlList, times(0)).notifyFalsifiedProperty(1);
-        verify(ltlList, times(0)).notifyFalsifiedProperty(2);
-        verify(ltlList, times(1)).notifyFalsifiedProperty(3);
+        verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(0));
+        verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(1));
+        verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(2));
+        verify(ltlList, times(1)).notifyFalsifiedProperty(Collections.singletonList(3));
     }
 
     @Test

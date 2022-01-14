@@ -18,6 +18,7 @@ import net.automatalib.words.Word;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -105,13 +106,15 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         }
         assert Objects.isNull(result) || this.isCounterExample(hypothesis, result.getInput(), result.getOutput());
         if (Objects.isNull(result)) {
+            List<Integer> falsifiedIndices = new ArrayList<>();
             for (int i = 0; i < this.size(); i++) {
                 final MealyMachine<?, String, ?, String> cexMealyCandidate =
                         modelChecker.findCounterExample(hypothesis, this.inputAlphabet, this.getLTLProperties().get(i));
                 if (Objects.nonNull(cexMealyCandidate)) {
-                    this.notifyFalsifiedProperty(i);
+                    falsifiedIndices.add(i);
                 }
             }
+            this.notifyFalsifiedProperty(falsifiedIndices);
         }
         return result;
     }
@@ -119,8 +122,8 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     /**
      * Notify that this.getLTLProperties.get(i) is falsified by the currently learned model.
      *
-     * @param i The index of the falsified LTL formula
+     * @param falsifiedIndices The set of indices of the falsified LTL formulas
      */
-    protected void notifyFalsifiedProperty(int i) {
+    protected void notifyFalsifiedProperty(List<Integer> falsifiedIndices) {
     }
 }

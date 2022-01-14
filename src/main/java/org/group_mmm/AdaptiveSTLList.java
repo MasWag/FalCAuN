@@ -13,11 +13,12 @@ import java.util.function.Function;
 
 public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
     private final List<STLCost> STLproperties;
-    private final STLCost targetSTL;
+    private final List<STLCost> targetSTLs;
+    private final List<List<STLCost>> strengthenedSTLproperties;
 
-    private final List<STLCost> candidateSTLproperties;
+    private final List<List<STLCost>> candidateSTLproperties;
+    private final List<List<IntervalSTL>> intervalSTLproperties;
     private final List<STLCost> falsifiedSTLproperties;
-    private final List<IntervalSTL> intervalSTLproperties;
 
     public AdaptiveSTLList() {
         this(Collections.emptySet());
@@ -32,66 +33,107 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
      */
     public AdaptiveSTLList(Collection<? extends STLCost> STLproperties) {
         // list of STL/LTL formulas to be model-checked
-        this.STLproperties = new ArrayList<>(STLproperties);
-        // target STL/LTL formula to adaptively strengthen
-        this.targetSTL = this.STLproperties.get(this.STLproperties.size() - 1);
+        // target STL/LTL formulas to adaptively strengthen
+        this.targetSTLs = new ArrayList<>(STLproperties);
+        // list of strengthened STL/LTL formulas to be model-checked
+        this.strengthenedSTLproperties = new ArrayList<>();
 
-        // syntactically strengthen a targetSTL
-        this.candidateSTLproperties = generateStrengthenedSTL(targetSTL);
-        if (this.candidateSTLproperties.size() > 0) {
-            // if there exists any candidate, add one to STLproperties and model-check against it.
-            this.STLproperties.add(0, this.candidateSTLproperties.remove(0));
-        }
-        // change intervals of temporal operators in targetSTL
-        this.intervalSTLproperties = initializeIntervalSTLproperties(targetSTL);
-        for(int i = 0; i < this.intervalSTLproperties.size(); i++) {
-            this.STLproperties.add(i, intervalSTLproperties.get(i).strengthInit());
+        this.candidateSTLproperties = new ArrayList<>();
+        this.intervalSTLproperties = new ArrayList<>();
+        for(int targetIdx = 0; targetIdx < targetSTLs.size(); targetIdx++) {
+            // syntactically strengthen targetSTLs
+            this.strengthenedSTLproperties.add(new ArrayList<>());
+            this.candidateSTLproperties.add(generateStrengthenedSTL(targetSTLs.get(targetIdx)));
+            if (this.candidateSTLproperties.get(targetIdx).size() > 0) {
+                // if there exists any candidate, add one to STLproperties and model-check against it.
+                this.strengthenedSTLproperties.get(targetIdx).add(0, this.candidateSTLproperties.get(targetIdx).remove(0));
+            }
+            // change intervals of temporal operators in targetSTL
+            this.intervalSTLproperties.add(initializeIntervalSTLproperties(targetSTLs.get(targetIdx)));
+            for(int j = 0; j < this.intervalSTLproperties.get(targetIdx).size(); j++) {
+                this.strengthenedSTLproperties.get(targetIdx).add(j, intervalSTLproperties.get(targetIdx).get(j).strengthInit());
+            }
         }
 
+        this.falsifiedSTLproperties = new ArrayList<>();
+
+        this.STLproperties = new ArrayList<>();
+        this.strengthenedSTLproperties.forEach(this.STLproperties::addAll);
+        this.STLproperties.addAll(this.targetSTLs);
         System.out.println("STLproperties ::=");
         this.STLproperties.forEach(s -> System.out.println("STL: " + s.toString()));
-        this.falsifiedSTLproperties = new ArrayList<>();
     }
 
     @Override
     public List<STLCost> getSTLProperties() {
-        return STLproperties;
+        return this.STLproperties;
     }
 
     @Override
-    protected void notifyFalsifiedProperty(int i) {
-        if (this.STLproperties.get(i) == this.targetSTL) {
-            // if targetSTL is falsified, stop BBC
-            System.out.println("STLproperty is falsified: " + this.STLproperties.get(i).toString());
-            System.out.println("All STLproperties are falsified");
-            this.falsifiedSTLproperties.addAll(this.STLproperties);
-            this.STLproperties.clear();
-            return;
+    protected void notifyFalsifiedProperty(List<Integer> falsifiedIndices) {
+        // remove all STL/LTL formula that is falsified from STLproperties
+        falsifiedIndices.sort(Collections.reverseOrder());
+        List<STLCost> falsifiedSTLs = new ArrayList<>();
+        for (int falsifiedIdx : falsifiedIndices) {
+            STLCost falsifiedSTL = this.STLproperties.remove(falsifiedIdx);
+            this.falsifiedSTLproperties.add(falsifiedSTL);
+            falsifiedSTLs.add(falsifiedSTL);
         }
 
-        // remove an STL/LTL formula that is falsified
-        STLCost falsifiedSTL = this.STLproperties.remove(i);
-        this.falsifiedSTLproperties.add(falsifiedSTL);
-        System.out.println("Adaptive STLproperty is falsified: " + falsifiedSTL.toString());
-
-
-        if (i < this.intervalSTLproperties.size()) {
-            // if the falsified formula is generated by changing intervals, change intervals to make it stronger
-            STLCost next = this.intervalSTLproperties.get(i).nextStrengthedSTL();
-            if (Objects.isNull(next)) {
-                this.intervalSTLproperties.remove(i);
-            } else {
-                this.STLproperties.add(i, next);
-                System.out.println("Adaptive STLproperty(interval) is added: " + next.toString());
+        // if any targetSTL is falsified, remove all strengthened properties generated from the STL
+        falsifiedIndices.sort(Collections.reverseOrder());
+        for (STLCost falsifiedSTL : falsifiedSTLs) {
+            boolean isTarget = false;
+            for (int targetIdx = this.targetSTLs.size() - 1; targetIdx >= 0; targetIdx--) {
+                if (falsifiedSTL.equals(targetSTLs.get(targetIdx))) {
+                    // if a targetSTL is falsified, remove it
+                    isTarget = true;
+                    System.out.println("STLproperty is falsified: " + falsifiedSTL);
+                    this.targetSTLs.remove(targetIdx);
+                    this.candidateSTLproperties.remove(targetIdx);
+                    this.intervalSTLproperties.remove(targetIdx);
+                    this.strengthenedSTLproperties.remove(targetIdx);
+                    if (this.targetSTLs.size() == 0) {
+                        System.out.println("All STLproperties are falsified");
+                        this.falsifiedSTLproperties.addAll(this.STLproperties);
+                        this.STLproperties.clear();
+                        return;
+                    }
+                }
             }
-        } else {
-            // pick a next STL/LTL formula from candidateSTLproperties
-            if (this.candidateSTLproperties.size() > 0) {
-                STLCost newSTL = nextStrengthenedSTL();
-                this.STLproperties.add(i, newSTL);
-                System.out.println("Adaptive STLproperty(other) is added: " + newSTL.toString());
+            if (!isTarget) {
+                // when the falsifiedSTL is a strengthened property
+                System.out.println("Adaptive STLproperty is falsified: " + falsifiedSTL);
+                for (int targetIdx = 0; targetIdx < this.strengthenedSTLproperties.size(); targetIdx++) {
+                    int pos = this.strengthenedSTLproperties.get(targetIdx).indexOf(falsifiedSTL);
+                    if (pos != -1) {
+                        this.strengthenedSTLproperties.get(targetIdx).remove(pos);
+                        if (pos < this.intervalSTLproperties.get(targetIdx).size()) {
+                            // if the falsified formula is generated by changing intervals, change intervals to make it stronger
+                            STLCost next = this.intervalSTLproperties.get(targetIdx).get(pos).nextStrengthedSTL();
+                            if (Objects.isNull(next)) {
+                                this.intervalSTLproperties.get(targetIdx).remove(pos);
+                            } else {
+                                this.strengthenedSTLproperties.get(targetIdx).add(pos, next);
+                                System.out.println("Adaptive STLproperty(interval) is added: " + next.toString());
+                            }
+                        } else {
+                            // pick a next STL/LTL formula from candidateSTLproperties
+                            if (this.candidateSTLproperties.get(targetIdx).size() > 0) {
+                                STLCost newSTL = nextStrengthenedSTL(targetIdx);
+                                this.strengthenedSTLproperties.get(targetIdx).add(pos, newSTL);
+                                System.out.println("Adaptive STLproperty(other) is added: " + newSTL.toString());
+                            }
+                        }
+                    }
+                }
             }
+
         }
+
+        this.STLproperties.clear();
+        this.strengthenedSTLproperties.forEach(this.STLproperties::addAll);
+        this.STLproperties.addAll(this.targetSTLs);
         System.out.println("Adaptive STLproperties ::");
         this.STLproperties.forEach(s -> System.out.println("STL: " + s.toString()));
     }
@@ -209,8 +251,8 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         return Collections.emptyList();
     }
 
-    private STLCost nextStrengthenedSTL() {
-        return this.candidateSTLproperties.remove(0);
+    private STLCost nextStrengthenedSTL(int targetIdx) {
+        return this.candidateSTLproperties.get(targetIdx).remove(0);
     }
 
     private static class IntervalSTL {
