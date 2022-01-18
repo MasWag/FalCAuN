@@ -125,7 +125,7 @@ public class FalCAuN {
 
         AdaptiveSTLUpdater adaptiveSTLUpdater;
         if (argParser.isAdaptiveSTL()) {
-            adaptiveSTLUpdater = new AdaptiveSTLList(stl);
+            adaptiveSTLUpdater = new AdaptiveSTLList(stl, argParser.getLength());
         } else {
             adaptiveSTLUpdater = new StaticSTLList(stl);
         }

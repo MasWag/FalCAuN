@@ -9,11 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class AdaptiveSTLListTest {
     List<STLCost> stlList;
     AdaptiveSTLList adaptiveSTLList;
+    int timeWindow = 30;
 
     @Test
     void strengthenEventually() {
         stlList = Collections.singletonList(STLCost.parseSTL("[] (<> output(0) < 1.5)"));
-        adaptiveSTLList = new AdaptiveSTLList(stlList);
+        adaptiveSTLList = new AdaptiveSTLList(stlList, timeWindow);
 
         List<STLCost> expected = new ArrayList<>(Arrays.asList(
                 STLCost.parseSTL("[] ([] (output(0) < 1.5))"),
@@ -48,7 +49,7 @@ class AdaptiveSTLListTest {
     @Test
     void strengthenOr() {
         stlList = Collections.singletonList(STLCost.parseSTL("(output(0) < 1.5) && ((output(1) > 2.0) || (output(2) < 2.5))"));
-        adaptiveSTLList = new AdaptiveSTLList(stlList);
+        adaptiveSTLList = new AdaptiveSTLList(stlList, timeWindow);
 
         List<STLCost> expected = new ArrayList<>(Arrays.asList(
                 STLCost.parseSTL("(output(0) < 1.5) && ((output(1) > 2.0) && (output(2) < 2.5))"),
@@ -69,7 +70,7 @@ class AdaptiveSTLListTest {
     @Test
     void strengthenUntil() {
         stlList = Collections.singletonList(STLCost.parseSTL("((output(0) < 3.0) U (output(1) > 3.5)) && (output(2) < 4.0)"));
-        adaptiveSTLList = new AdaptiveSTLList(stlList);
+        adaptiveSTLList = new AdaptiveSTLList(stlList, timeWindow);
         List<STLCost> expected = new ArrayList<>(Arrays.asList(
                 STLCost.parseSTL("(([] (output(0) < 3.0)) && ([] (output(1) > 3.5))) && (output(2) < 4.0)"),
                 STLCost.parseSTL("((output(0) < 3.0) U (output(1) > 3.5)) && (output(2) < 4.0)")
@@ -103,7 +104,7 @@ class AdaptiveSTLListTest {
     @Test
     void strengthenGlobalInterval() {
         stlList = Collections.singletonList(STLCost.parseSTL("([]_[0, 4] (output(0) < 4.5)) && (output(1) > 5.0)"));
-        adaptiveSTLList = new AdaptiveSTLList(stlList);
+        adaptiveSTLList = new AdaptiveSTLList(stlList, timeWindow);
 
         List<STLCost> expected = new ArrayList<>(Arrays.asList(
                 STLCost.parseSTL("([] (output(0) < 4.5)) && (output(1) > 5.0)"),
@@ -152,7 +153,7 @@ class AdaptiveSTLListTest {
     @Test
     void strengthenEventuallyInterval() {
         stlList = Collections.singletonList(STLCost.parseSTL("(output(0) < 5.5) && (<>_[2, 10] (output(1) > 6.0))"));
-        adaptiveSTLList = new AdaptiveSTLList(stlList);
+        adaptiveSTLList = new AdaptiveSTLList(stlList, timeWindow);
 
         List<STLCost> expected = new ArrayList<>(Arrays.asList(
                 STLCost.parseSTL("(output(0) < 5.5) && ([] (output(1) > 6.0))"),
@@ -229,7 +230,7 @@ class AdaptiveSTLListTest {
     @Test
     void strengthenNext() {
         stlList = Collections.singletonList(STLCost.parseSTL("(X (output(0) < 6.5)) && (output(1) > 7.0)"));
-        adaptiveSTLList = new AdaptiveSTLList(stlList);
+        adaptiveSTLList = new AdaptiveSTLList(stlList, timeWindow);
 
         ArrayList<STLCost> expected = new ArrayList<>(Arrays.asList(
                 STLCost.parseSTL("([] (output(0) < 6.5)) && (output(1) > 7.0)"),
@@ -278,7 +279,7 @@ class AdaptiveSTLListTest {
     @Test
     void strengthenCompoundSTL() {
         stlList = Collections.singletonList(STLCost.parseSTL("([]_[3, 10] (output(1) > 2.2)) && ([] (<> output(2) < 5.1))"));
-        adaptiveSTLList = new AdaptiveSTLList(stlList);
+        adaptiveSTLList = new AdaptiveSTLList(stlList, timeWindow);
         ArrayList<STLCost> expected = new ArrayList<>(Arrays.asList(
                 STLCost.parseSTL("([] ( output(1) > 2.200000 )) && [] ( <> ( output(2) < 5.100000 ) )"),
                 STLCost.parseSTL("([]_[3, 10] ( output(1) > 2.200000 )) && [] ( [] ( output(2) < 5.100000 ) )"),
@@ -334,7 +335,7 @@ class AdaptiveSTLListTest {
                 STLCost.parseSTL("(output(0) > 2.0) || (output(1) < 2.5)"),
                 STLCost.parseSTL("(output(0) > 7.0) U (output(1) < 6.6)"),
                 STLCost.parseSTL("(X (output(0) < 3.5)) && (<> output(1) > 9.0)"));
-        adaptiveSTLList = new AdaptiveSTLList(stlList);
+        adaptiveSTLList = new AdaptiveSTLList(stlList, timeWindow);
         List<STLCost> expected = Arrays.asList(
                 STLCost.parseSTL("(output(0) > 2.0) && (output(1) < 2.5)"),
                 STLCost.parseSTL("([] output(0) > 7.0) && ([] output(1) < 6.6)"),

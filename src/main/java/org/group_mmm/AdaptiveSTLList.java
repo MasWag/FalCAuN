@@ -22,6 +22,8 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
     private final List<List<IntervalSTL>> intervalSTLproperties;
     // list of STLs that are falsified during BBC
     private final List<STLCost> falsifiedSTLproperties;
+    // time window of adaptive STL update (default is 30)
+    private int timeWindow = 30;
 
     public AdaptiveSTLList() {
         this(Collections.emptySet());
@@ -30,17 +32,19 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
     public AdaptiveSTLList(STLCost propertyOracle) {
         this(Collections.singleton(propertyOracle));
     }
+    public AdaptiveSTLList(Collection<? extends STLCost> STLproperties) { this(STLproperties, 30); };
 
     /**
      * @param STLproperties The list of STL/LTL formulas to verify
+     * @param timeWindow a time window of STL formulas
      */
-    public AdaptiveSTLList(Collection<? extends STLCost> STLproperties) {
-        // list of STL/LTL formulas to be model-checked
+    public AdaptiveSTLList(Collection<? extends STLCost> STLproperties, int timeWindow) {
         // target STL/LTL formulas to adaptively strengthen
         this.targetSTLs = new ArrayList<>(STLproperties);
+        this.timeWindow = timeWindow;
+
         // list of strengthened STL/LTL formulas to be model-checked
         this.strengthenedSTLproperties = new ArrayList<>();
-
         this.candidateSTLproperties = new ArrayList<>();
         this.intervalSTLproperties = new ArrayList<>();
         for(int targetIdx = 0; targetIdx < targetSTLs.size(); targetIdx++) {
@@ -201,13 +205,13 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         if (stl instanceof STLSub) {
             STLCost subFml = ((STLSub) stl).getSubFml();
             List<IntervalSTL> ret = new ArrayList<>();
-            ret.add(new IntervalSTL((STLSub) stl, frame));
+            ret.add(new IntervalSTL((STLSub) stl, frame, timeWindow));
             return ret;
         }
         if (stl instanceof STLNext) {
             STLCost subFml = ((STLNext) stl).getSubFml();
             List<IntervalSTL> ret = new ArrayList<>();
-            ret.add(new IntervalSTL(new STLSub(new STLGlobal(subFml),1,1), frame));
+            ret.add(new IntervalSTL(new STLSub(new STLGlobal(subFml),1,1), frame, timeWindow));
             return ret;
         }
         return new ArrayList<>();
@@ -270,17 +274,19 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
     private static class IntervalSTL {
         public STLSub stl;
         public Function<STLCost, STLCost> frame;
+        private final int timeWindow;
         private boolean isSTLEventually;
         private boolean isAssignedCurrent = false;
         private boolean isEventuallyInterval = false;
         private final int defaultFrom, defaultTo;
         private int currentFrom, currentTo;
 
-        public IntervalSTL(STLSub stl, Function<STLCost, STLCost> frame) {
+        public IntervalSTL(STLSub stl, Function<STLCost, STLCost> frame, int timeWindow) {
             this.stl = stl;
             this.defaultFrom = stl.getFrom();
             this.defaultTo = stl.getTo();
             this.frame = frame;
+            this.timeWindow = timeWindow;
 
             STLCost subFml = this.stl.getSubFml();
             this.isSTLEventually = subFml instanceof STLEventually;
@@ -310,15 +316,15 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
             if (!isAssignedCurrent) {
                 isAssignedCurrent = true;
                 this.currentFrom = 0;
-                this.currentTo = 15;
+                this.currentTo = this.timeWindow / 2;
                 STLTemporalOp subFml = this.stl.getSubFml();
                 if (subFml instanceof STLGlobal) {
                     this.currentFrom = this.defaultFrom * 3 / 4;
-                    this.currentTo = this.defaultTo + ((30 - this.defaultTo) / 2);
+                    this.currentTo = this.defaultTo + ((this.timeWindow - this.defaultTo) / 2);
                     return this.frame.apply(new STLSub(subFml, currentFrom, currentTo));
                 } else if (subFml instanceof STLEventually) {
                     this.currentFrom = this.defaultFrom / 2;
-                    this.currentTo = this.defaultFrom + ((30 - this.defaultFrom) / 2);
+                    this.currentTo = this.defaultFrom + ((this.timeWindow - this.defaultFrom) / 2);
                     STLCost subFml2 = ((STLEventually) subFml).getSubFml();
                     return this.frame.apply(new STLSub(new STLGlobal(subFml2), currentFrom, currentTo));
                 }
