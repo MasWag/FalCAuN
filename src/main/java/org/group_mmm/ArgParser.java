@@ -61,7 +61,7 @@ class ArgParser {
     @Getter
     private int maxDepth;
     @Getter
-    private boolean adaptiveSTL = false;
+    private boolean adaptiveSTL = true;
 
     ArgParser(String[] args) throws MissingOptionException, IOException {
         options.addOption("h", "help", false, "Print a help message");
@@ -88,7 +88,7 @@ class ArgParser {
         options.addOption(null, "ga-mutation-prob", true, "The mutation probability for genetic algorithm (should be [0,1])");
         options.addOption(null, "ga-selection-kind", true, "Specify the selection method in GA");
         options.addOption(null, "wp-max-depth", true, "Specify the maximum depth in Wp");
-        options.addOption(null, "adaptive-stl", false, "Use adaptive STL updater");
+        options.addOption(null, "disable-adaptive-stl", false, "Disable the adaptive STL updater");
 
         DefaultParser parser = new DefaultParser();
         CommandLine cl;
@@ -253,8 +253,8 @@ class ArgParser {
         } else {
             sigMap = new SignalMapper();
         }
-        if (cl.hasOption("adaptive-stl")) {
-            adaptiveSTL = true;
+        if (cl.hasOption("disable-adaptive-stl")) {
+            adaptiveSTL = false;
         }
     }
 
