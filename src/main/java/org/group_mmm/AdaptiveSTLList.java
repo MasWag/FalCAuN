@@ -1,5 +1,7 @@
 package org.group_mmm;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
 import java.util.function.Function;
 
@@ -10,7 +12,7 @@ import java.util.function.Function;
  * @see BlackBoxVerifier
  * @see SimulinkVerifier
  */
-
+@Slf4j
 public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
     private final List<STLCost> STLProperties; // list of STL formulas to be model-checked in current step of BBC
     private final List<STLCost> targetSTLs; // list of STL formulas that are targets of falsification
@@ -71,8 +73,8 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         this.STLProperties = new ArrayList<>();
         this.strengthenedSTLProperties.forEach(this.STLProperties::addAll);
         this.STLProperties.addAll(this.targetSTLs);
-        System.out.println("STLProperties ::=");
-        this.STLProperties.forEach(s -> System.out.println("STL: " + s.toString()));
+        log.debug("STLProperties ::=");
+        this.STLProperties.forEach(s -> log.debug("STL: " + s.toString()));
     }
 
     /**
@@ -159,13 +161,13 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
                 if (falsifiedSTL.equals(targetSTLs.get(targetIdx))) {
                     // if a targetSTL is falsified, remove it
                     isTarget = true;
-                    System.out.println("STLProperty is falsified: " + falsifiedSTL);
+                    log.info("STLProperty is falsified: " + falsifiedSTL);
                     this.targetSTLs.remove(targetIdx);
                     this.candidateSTLProperties.remove(targetIdx);
                     this.intervalSTLProperties.remove(targetIdx);
                     this.strengthenedSTLProperties.remove(targetIdx);
                     if (this.targetSTLs.size() == 0) {
-                        System.out.println("All STLProperties are falsified");
+                        log.info("All STLProperties are falsified");
                         this.falsifiedSTLProperties.addAll(this.STLProperties);
                         this.STLProperties.clear();
                         return;
@@ -174,7 +176,7 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
             }
             if (!isTarget) {
                 // when the falsifiedSTL is a strengthened property
-                System.out.println("Adaptive STLProperty is falsified: " + falsifiedSTL);
+                log.debug("Adaptive STLProperty is falsified: " + falsifiedSTL);
                 for (int targetIdx = 0; targetIdx < this.strengthenedSTLProperties.size(); targetIdx++) {
                     int pos = this.strengthenedSTLProperties.get(targetIdx).indexOf(falsifiedSTL);
                     if (pos != -1) {
@@ -186,14 +188,14 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
                                 this.intervalSTLProperties.get(targetIdx).remove(pos);
                             } else {
                                 this.strengthenedSTLProperties.get(targetIdx).add(pos, next);
-                                System.out.println("Adaptive STLProperty(interval) is added: " + next);
+                                log.debug("Adaptive STLProperty(interval) is added: " + next);
                             }
                         } else {
                             // pick a next STL/LTL formula from candidateSTLProperties
                             if (this.candidateSTLProperties.get(targetIdx).size() > 0) {
                                 STLCost newSTL = nextStrengthenedSTL(targetIdx);
                                 this.strengthenedSTLProperties.get(targetIdx).add(pos, newSTL);
-                                System.out.println("Adaptive STLProperty(other) is added: " + newSTL.toString());
+                                log.debug("Adaptive STLProperty(other) is added: " + newSTL.toString());
                             }
                         }
                     }
@@ -205,8 +207,8 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         this.STLProperties.clear();
         this.strengthenedSTLProperties.forEach(this.STLProperties::addAll);
         this.STLProperties.addAll(this.targetSTLs);
-        System.out.println("Adaptive STLproperties ::");
-        this.STLProperties.forEach(s -> System.out.println("STL: " + s.toString()));
+        log.debug("Adaptive STLproperties ::");
+        this.STLProperties.forEach(s -> log.debug("STL: " + s.toString()));
     }
 
     /**
