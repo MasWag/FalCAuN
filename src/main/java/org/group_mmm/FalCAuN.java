@@ -125,8 +125,10 @@ public class FalCAuN {
 
         AdaptiveSTLUpdater adaptiveSTLUpdater;
         if (argParser.isAdaptiveSTL()) {
+            log.info("adaptive STL updater is enabled");
             adaptiveSTLUpdater = new AdaptiveSTLList(stl, argParser.getLength());
         } else {
+            log.info("adaptive STL updater is disabled");
             adaptiveSTLUpdater = new StaticSTLList(stl);
         }
 
@@ -139,12 +141,12 @@ public class FalCAuN {
 
         if (Objects.nonNull(argParser.getTimeout())) {
             if (argParser.isVerbose()) {
-                System.out.println("Timeout is set: " + argParser.getTimeout() + " seconds.");
+                log.debug("Timeout is set: " + argParser.getTimeout() + " seconds.");
             }
             verifier.setTimeout(argParser.getTimeout());
         } else {
             if (argParser.isVerbose()) {
-                System.out.println("Timeout is not set");
+                log.debug("Timeout is not set");
             }
         }
         switch (argParser.getEquiv()) {
