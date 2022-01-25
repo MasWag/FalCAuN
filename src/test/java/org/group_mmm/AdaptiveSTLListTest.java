@@ -1,10 +1,14 @@
 package org.group_mmm;
 
-import java.util.*;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AdaptiveSTLListTest {
     List<STLCost> stlList;
@@ -218,7 +222,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
-        expected = new ArrayList<>(Arrays.asList(
+        expected = new ArrayList<>(Collections.singletonList(
                 STLCost.parseSTL("(output(0) < 5.5) && (<>_[2, 10] (output(1) > 6.0))")
         ));
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
@@ -267,7 +271,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
-        expected = new ArrayList<>(Arrays.asList(
+        expected = new ArrayList<>(Collections.singletonList(
                 STLCost.parseSTL("(X (output(0) < 6.5)) && (output(1) > 7.0)")
         ));
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
@@ -318,7 +322,7 @@ class AdaptiveSTLListTest {
         ));
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
-        adaptiveSTLList.notifyFalsifiedProperty(Arrays.asList(0));
+        adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
         expected = new ArrayList<>(Arrays.asList(
                 STLCost.parseSTL("([]_[2, 11] ( output(1) > 2.200000 )) && [] ( <> ( output(2) < 5.100000 ) )"),
                 STLCost.parseSTL("([]_[3, 10] ( output(1) > 2.200000 )) && [] ( <> ( output(2) < 5.100000 ) )")
@@ -375,7 +379,7 @@ class AdaptiveSTLListTest {
         );
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
-        adaptiveSTLList.notifyFalsifiedProperty(Arrays.asList(1));
+        adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(1));
         expected = Arrays.asList(
                 STLCost.parseSTL("([]_[0, 8] (output(0) < 3.5)) && (<> output(1) > 9.0)"),
                 STLCost.parseSTL("(X (output(0) < 3.5)) && (<> output(1) > 9.0)")

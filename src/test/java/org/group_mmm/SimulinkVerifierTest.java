@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 import static org.group_mmm.STLCost.parseSTL;
@@ -340,6 +341,47 @@ class SimulinkVerifierTest {
                 verifier.addGAEQOracleAll(25, 1000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
+            }
+        }
+
+
+        @Nested
+        class AT1AndAT2Run {
+            List<STLCost> stlList;
+
+            @BeforeEach
+            void setUp() {
+                List<String> stlStringList = Arrays.asList(
+                        "alw_[0, 20] (signal(0) < 120)",
+                        "alw_[0, 5] (signal(1) < 4750)");
+                stlList = stlStringList.stream().map(stlString ->
+                        parseSTL(stlString, inputMapper, outputMapper, largest)).collect(Collectors.toList());
+            }
+
+            @Test
+            void runStatic() throws Exception {
+                // generate properties
+                properties = new StaticSTLList(stlList);
+                verify();
+            }
+
+            @Test
+            void runAdaptive() throws Exception {
+                // generate properties
+                properties = new AdaptiveSTLList(stlList);
+                verify();
+            }
+
+            void verify() throws Exception {
+                // define the verifier
+                verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+                verifier.addGAEQOracleAll(25, 1000, ArgParser.GASelectionKind.Tournament,
+                        50, 0.9, 0.01);
+                assertFalse(verifier.run());
+                // Confirm that the number of the properties is correctly handled
+                assertEquals(2, verifier.getCexProperty().size());
+                // Confirm that the number of the counterexamples is correctly handled
+                assertEquals(2, (int) verifier.getCexAbstractInput().stream().filter(Objects::nonNull).count());
             }
         }
     }
