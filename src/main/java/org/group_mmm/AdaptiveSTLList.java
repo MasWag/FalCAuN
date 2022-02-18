@@ -15,6 +15,7 @@ import java.util.function.Function;
 @Slf4j
 public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
     private final List<STLCost> STLProperties; // list of STL formulas to be model-checked in current step of BBC
+    private final List<STLCost> initialSTLs; // list of initial STL formulas
     private final List<STLCost> targetSTLs; // list of STL formulas that are targets of falsification
     private final List<List<STLCost>> strengthenedSTLProperties; // list of strengthened STL formulas for each target STL
 
@@ -45,6 +46,8 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
      * @param timeWindow    The maximum time window of the STL formulas. This is typically the number of steps in each simulation.
      */
     public AdaptiveSTLList(Collection<? extends STLCost> STLProperties, int timeWindow) {
+        // save original STL formulas to recover when BBC is finished
+        this.initialSTLs = new ArrayList<>(STLProperties);
         // target STL/LTL formulas to adaptively strengthen
         this.targetSTLs = new ArrayList<>(STLProperties);
         this.timeWindow = timeWindow;
@@ -170,6 +173,7 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
                         log.info("All STLProperties are falsified");
                         this.falsifiedSTLProperties.addAll(this.STLProperties);
                         this.STLProperties.clear();
+                        this.STLProperties.addAll(this.initialSTLs);
                         return;
                     }
                 }
