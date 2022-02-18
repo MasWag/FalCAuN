@@ -47,7 +47,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
-        assertTrue(adaptiveSTLList.getSTLProperties().isEmpty());
+        assertEquals(stlList.toString(), adaptiveSTLList.getSTLProperties().toString());
     }
 
     @Test
@@ -68,7 +68,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
-        assertTrue(adaptiveSTLList.getSTLProperties().isEmpty());
+        assertEquals(stlList.toString(), adaptiveSTLList.getSTLProperties().toString());
     }
 
     @Test
@@ -102,7 +102,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
-        assertTrue(adaptiveSTLList.getSTLProperties().isEmpty());
+        assertEquals(stlList.toString(), adaptiveSTLList.getSTLProperties().toString());
     }
 
     @Test
@@ -151,7 +151,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
-        assertTrue(adaptiveSTLList.getSTLProperties().isEmpty());
+        assertEquals(stlList.toString(), adaptiveSTLList.getSTLProperties().toString());
     }
 
     @Test
@@ -228,7 +228,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
-        assertTrue(adaptiveSTLList.getSTLProperties().isEmpty());
+        assertEquals(stlList.toString(), adaptiveSTLList.getSTLProperties().toString());
     }
 
     @Test
@@ -277,7 +277,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Collections.singletonList(0));
-        assertTrue(adaptiveSTLList.getSTLProperties().isEmpty());
+        assertEquals(stlList.toString(), adaptiveSTLList.getSTLProperties().toString());
     }
 
     @Test
@@ -330,7 +330,7 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Arrays.asList(0,1));
-        assertTrue(adaptiveSTLList.getSTLProperties().isEmpty());
+        assertEquals(stlList.toString(), adaptiveSTLList.getSTLProperties().toString());
     }
 
     @Test
@@ -387,6 +387,6 @@ class AdaptiveSTLListTest {
         assertEquals(expected.toString(), adaptiveSTLList.getSTLProperties().toString());
 
         adaptiveSTLList.notifyFalsifiedProperty(Arrays.asList(0, 1));
-        assertTrue(adaptiveSTLList.getSTLProperties().isEmpty());
+        assertEquals(stlList.toString(), adaptiveSTLList.getSTLProperties().toString());
     }
 }
