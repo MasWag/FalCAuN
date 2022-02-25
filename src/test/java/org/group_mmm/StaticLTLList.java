@@ -1,14 +1,18 @@
 package org.group_mmm;
 
 import de.learnlib.api.oracle.PropertyOracle;
+import de.learnlib.api.query.DefaultQuery;
+import de.learnlib.oracle.equivalence.CExFirstOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.automatalib.automata.transducers.MealyMachine;
+import net.automatalib.words.Word;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -39,6 +43,27 @@ class StaticLTLList extends AbstractAdaptiveSTLUpdater {
         }
         return this.getLTLProperties().stream().map(ltl ->
                 new MealyFinitePropertyOracle<>(ltl, inclusionOracle, emptinessOracle, modelChecker));
+    }
+
+    /**
+     * Find a counter example using the current list of STL formulas
+     *
+     * @see CExFirstOracle ::findCounterExample
+     */
+    @Nullable
+    @Override
+    public DefaultQuery<String, Word<String>> findCounterExample(@NotNull MealyMachine<?, String, ?, String> hypothesis, @NotNull Collection<? extends String> inputs) {
+        List<Integer> falsifiedIndices = new ArrayList<>();
+        DefaultQuery<String, Word<String>> result = null;
+        for (int i = 0; i < this.size(); i++) {
+            result = this.stream().collect(Collectors.toList()).get(i).findCounterExample(hypothesis, inputs);
+            if (Objects.nonNull(result)) {
+                falsifiedIndices.add(i);
+            }
+        }
+        this.notifyFalsifiedProperty(falsifiedIndices);
+
+        return result;
     }
 
     @Override

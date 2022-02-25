@@ -140,15 +140,17 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         // remove all STL/LTL formula that is falsified from STLProperties
         falsifiedIndices.sort(Collections.reverseOrder());
         List<STLCost> falsifiedSTLs = new ArrayList<>();
+        List<Integer> removedIndices = new ArrayList<>();
         for (int falsifiedIdx : falsifiedIndices) {
             STLCost falsifiedSTL = this.getSTLProperties().get(falsifiedIdx);
-            // We remove the STL formula only if it is not a target formula.
-            if (!targetSTLs.contains(falsifiedSTL)) {
-                this.removeSTLProperty(falsifiedIdx);
+            // We remove the STL formula only if it is not an initial formula.
+            if (!initialSTLs.contains(falsifiedSTL)) {
+                removedIndices.add(falsifiedIdx);
             }
             this.falsifiedSTLProperties.add(falsifiedSTL);
             falsifiedSTLs.add(falsifiedSTL);
         }
+        this.removeSTLProperties(removedIndices);
 
         // if any targetSTL is falsified, remove all strengthened properties generated from the STL
         falsifiedIndices.sort(Collections.reverseOrder());
@@ -394,6 +396,6 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
 
     @Override
     public boolean allDisproved() {
-        return this.falsifiedSTLProperties.containsAll(this.targetSTLs);
+        return this.falsifiedSTLProperties.containsAll(this.initialSTLs);
     }
 }

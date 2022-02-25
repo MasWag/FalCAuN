@@ -20,10 +20,7 @@ import net.automatalib.words.Word;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -89,7 +86,15 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
 
     public void removeSTLProperty(int index) {
         this.getSTLProperties().remove(index);
+        if (!initialized) {
+            log.warn("STL property list is not initialized yet. This should happen only in testing.");
+            return;
+        }
         this.propertyOracles.remove(index);
+    }
+
+    public void removeSTLProperties(Collection<Integer> indices) {
+        indices.stream().sorted(Comparator.reverseOrder()).forEach(this::removeSTLProperty);
     }
 
     @Override
@@ -102,13 +107,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         return this.getSTLProperties().stream().map(STLCost::toLTLString).collect(Collectors.toList());
     }
 
-    //@ requires inclusionOracle != null && emptinessOracle != null
-    @Override
-    public Stream<PropertyOracle.MealyPropertyOracle<String, String, String>> stream() {
-        if (Objects.isNull(inclusionOracle) || Objects.isNull(emptinessOracle)) {
-            log.warn("AbstractAdaptiveSTLUpdater::stream is called before setting inclusionOracle or emptinessOracle");
-            throw new NullPointerException();
-        }
+    private void initializePropertyOracles() {
         if (!initialized) {
             STLProperties.forEach(stl ->
                     propertyOracles.add(
@@ -116,6 +115,17 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
                                     new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker))));
             initialized = true;
         }
+    }
+
+    //@ requires inclusionOracle != null && emptinessOracle != null
+    @Override
+    public Stream<PropertyOracle.MealyPropertyOracle<String, String, String>> stream() {
+        if (Objects.isNull(inclusionOracle) || Objects.isNull(emptinessOracle)) {
+            log.warn("AbstractAdaptiveSTLUpdater::stream is called before setting inclusionOracle or emptinessOracle");
+            throw new NullPointerException();
+        }
+        initializePropertyOracles();
+        assert STLProperties.size() == propertyOracles.size();
         return propertyOracles.stream();
     }
 
@@ -140,7 +150,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         List<Integer> falsifiedIndices = new ArrayList<>();
         DefaultQuery<String, Word<String>> result = null;
         for (int i = 0; i < this.size(); i++) {
-            result = this.getPropertyOracles().get(i).findCounterExample(hypothesis, inputs);
+            result = this.propertyOracles.get(i).findCounterExample(hypothesis, inputs);
             if (Objects.nonNull(result)) {
                 falsifiedIndices.add(i);
             }
