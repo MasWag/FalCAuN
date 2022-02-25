@@ -13,7 +13,7 @@ import java.util.List;
  * @see SimulinkVerifier
  */
 public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
-    private final List<STLCost> STLproperties;
+    private final List<STLCost> STLProperties;
 
     public StaticSTLList() {
         this(Collections.emptySet());
@@ -23,20 +23,12 @@ public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
         this(Collections.singleton(propertyOracle));
     }
 
-    public StaticSTLList(Collection<? extends STLCost> STLproperties) {
-        this.STLproperties = new ArrayList<>(STLproperties);
+    public StaticSTLList(Collection<? extends STLCost> STLProperties) {
+        this.STLProperties = new ArrayList<>(STLProperties);
     }
 
     @Override
     public List<STLCost> getSTLProperties() {
-        return STLproperties;
-    }
-
-    @Override
-    protected void notifyFalsifiedProperty(List<Integer> falsifiedIndices) {
-        falsifiedIndices.sort(Collections.reverseOrder());
-        for (int i : falsifiedIndices) {
-            this.STLproperties.remove(i);
-        }
+        return STLProperties;
     }
 }

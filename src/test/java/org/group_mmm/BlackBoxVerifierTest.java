@@ -58,12 +58,13 @@ class BlackBoxVerifierTest {
 
     @Test
     void notifyFalsifiedProperty() {
-        doCallRealMethod().when(ltlList).notifyFalsifiedProperty(Arrays.asList(0,1,2,3));
+        doCallRealMethod().when(ltlList).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
         assertFalse(verifier.run());
         verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(0));
         verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(1));
         verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(2));
-        verify(ltlList, times(1)).notifyFalsifiedProperty(Collections.singletonList(3));
+        verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(3));
+        verify(ltlList, times(0)).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
     }
 
     @Test

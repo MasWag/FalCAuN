@@ -151,7 +151,11 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         falsifiedIndices.sort(Collections.reverseOrder());
         List<STLCost> falsifiedSTLs = new ArrayList<>();
         for (int falsifiedIdx : falsifiedIndices) {
-            STLCost falsifiedSTL = this.STLProperties.remove(falsifiedIdx);
+            STLCost falsifiedSTL = this.STLProperties.get(falsifiedIdx);
+            // We remove the STL formula only if it is not a target formula.
+            if (!targetSTLs.contains(falsifiedSTL)) {
+                this.STLProperties.remove(falsifiedIdx);
+            }
             this.falsifiedSTLProperties.add(falsifiedSTL);
             falsifiedSTLs.add(falsifiedSTL);
         }
@@ -289,7 +293,7 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         public STLSub stl;
         public Function<STLCost, STLCost> frame;
         private final int timeWindow;
-        private boolean isSTLEventually;
+        private final boolean isSTLEventually;
         private boolean isAssignedCurrent = false;
         private boolean isEventuallyInterval = false;
         private final int defaultFrom, defaultTo;

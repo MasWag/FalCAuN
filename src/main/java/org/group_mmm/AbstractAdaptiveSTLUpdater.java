@@ -6,6 +6,7 @@ import de.learnlib.api.oracle.MembershipOracle;
 import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.api.query.DefaultQuery;
 import de.learnlib.oracle.emptiness.MealyBFEmptinessOracle;
+import de.learnlib.oracle.equivalence.CExFirstOracle;
 import de.learnlib.oracle.equivalence.MealyBFInclusionOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import lombok.Setter;
@@ -93,34 +94,30 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
 
     /**
      * Find a counter example using the current list of STL formulas
+     *
+     * @see CExFirstOracle::findCounterExample
      */
     @Nullable
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(@NotNull MealyMachine<?, String, ?, String> hypothesis, @NotNull Collection<? extends String> inputs) {
+        List<Integer> falsifiedIndices = new ArrayList<>();
         DefaultQuery<String, Word<String>> result = null;
         for (int i = 0; i < this.size(); i++) {
             result = this.getPropertyOracles().get(i).findCounterExample(hypothesis, inputs);
             if (Objects.nonNull(result)) {
-                break;
+                falsifiedIndices.add(i);
             }
         }
-        assert Objects.isNull(result) || this.isCounterExample(hypothesis, result.getInput(), result.getOutput());
-        if (Objects.isNull(result)) {
-            List<Integer> falsifiedIndices = new ArrayList<>();
-            for (int i = 0; i < this.size(); i++) {
-                final MealyMachine<?, String, ?, String> cexMealyCandidate =
-                        modelChecker.findCounterExample(hypothesis, this.inputAlphabet, this.getLTLProperties().get(i));
-                if (Objects.nonNull(cexMealyCandidate)) {
-                    falsifiedIndices.add(i);
-                }
-            }
-            this.notifyFalsifiedProperty(falsifiedIndices);
-        }
+        this.notifyFalsifiedProperty(falsifiedIndices);
+
         return result;
     }
 
     /**
      * Notify that this.getLTLProperties.get(i) is falsified by the currently learned model.
+     * <p>
+     * Typically, we can generate a new adaptive formula.
+     * Note: we should not remove the original formula by this.
      *
      * @param falsifiedIndices The set of indices of the falsified LTL formulas
      */
