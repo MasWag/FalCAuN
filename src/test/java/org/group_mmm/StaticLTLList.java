@@ -22,11 +22,6 @@ class StaticLTLList extends AbstractAdaptiveSTLUpdater {
     }
 
     @Override
-    public List<STLCost> getSTLProperties() {
-        return null;
-    }
-
-    @Override
     public List<String> getLTLProperties() {
         return ltlProperties;
     }

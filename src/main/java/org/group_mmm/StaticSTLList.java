@@ -10,7 +10,6 @@ import java.util.*;
  * @see SimulinkVerifier
  */
 public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
-    private final List<STLCost> STLProperties;
     Set<Integer> disprovedIndices = new HashSet<>();
 
     public StaticSTLList() {
@@ -22,17 +21,13 @@ public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
     }
 
     public StaticSTLList(Collection<? extends STLCost> STLProperties) {
-        this.STLProperties = new ArrayList<>(STLProperties);
+        super();
+        this.addSTLProperties(STLProperties);
     }
 
     @Override
     public boolean allDisproved() {
-        return STLProperties.size() == disprovedIndices.size();
-    }
-
-    @Override
-    public List<STLCost> getSTLProperties() {
-        return STLProperties;
+        return getSTLProperties().size() == disprovedIndices.size();
     }
 
     @Override

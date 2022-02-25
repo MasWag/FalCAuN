@@ -14,7 +14,6 @@ import java.util.function.Function;
  */
 @Slf4j
 public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
-    private final List<STLCost> STLProperties; // list of STL formulas to be model-checked in current step of BBC
     private final List<STLCost> initialSTLs; // list of initial STL formulas
     private final List<STLCost> targetSTLs; // list of STL formulas that are targets of falsification
     private final List<List<STLCost>> strengthenedSTLProperties; // list of strengthened STL formulas for each target STL
@@ -73,11 +72,10 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
 
         this.falsifiedSTLProperties = new ArrayList<>();
 
-        this.STLProperties = new ArrayList<>();
-        this.strengthenedSTLProperties.forEach(this.STLProperties::addAll);
-        this.STLProperties.addAll(this.targetSTLs);
+        this.strengthenedSTLProperties.forEach(this::addSTLProperties);
+        this.addSTLProperties(this.targetSTLs);
         log.debug("STLProperties ::=");
-        this.STLProperties.forEach(s -> log.debug("STL: " + s.toString()));
+        this.getSTLProperties().forEach(s -> log.debug("STL: " + s.toString()));
     }
 
     /**
@@ -131,14 +129,6 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         return Collections.emptyList();
     }
 
-    /**
-     * Returns the current list of STL formulas
-     * The result may change only after the call of findCounterExample
-     */
-    @Override
-    public List<STLCost> getSTLProperties() {
-        return this.STLProperties;
-    }
 
     /**
      * Notify that subset of this.getLTLProperties are falsified by the currently learned model.
@@ -151,10 +141,10 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
         falsifiedIndices.sort(Collections.reverseOrder());
         List<STLCost> falsifiedSTLs = new ArrayList<>();
         for (int falsifiedIdx : falsifiedIndices) {
-            STLCost falsifiedSTL = this.STLProperties.get(falsifiedIdx);
+            STLCost falsifiedSTL = this.getSTLProperties().get(falsifiedIdx);
             // We remove the STL formula only if it is not a target formula.
             if (!targetSTLs.contains(falsifiedSTL)) {
-                this.STLProperties.remove(falsifiedIdx);
+                this.removeSTLProperty(falsifiedIdx);
             }
             this.falsifiedSTLProperties.add(falsifiedSTL);
             falsifiedSTLs.add(falsifiedSTL);
@@ -175,9 +165,6 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
                     this.strengthenedSTLProperties.remove(targetIdx);
                     if (this.targetSTLs.size() == 0) {
                         log.info("All STLProperties are falsified");
-                        this.falsifiedSTLProperties.addAll(this.STLProperties);
-                        this.STLProperties.clear();
-                        this.STLProperties.addAll(this.initialSTLs);
                         return;
                     }
                 }
@@ -212,11 +199,9 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
 
         }
 
-        this.STLProperties.clear();
-        this.strengthenedSTLProperties.forEach(this.STLProperties::addAll);
-        this.STLProperties.addAll(this.targetSTLs);
+        this.strengthenedSTLProperties.forEach(this::addSTLProperties);
         log.debug("Adaptive STLproperties ::");
-        this.STLProperties.forEach(s -> log.debug("STL: " + s.toString()));
+        this.getSTLProperties().forEach(s -> log.debug("STL: " + s.toString()));
     }
 
     /**

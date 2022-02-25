@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import de.learnlib.api.logging.LoggingPropertyOracle;
 import de.learnlib.api.oracle.EmptinessOracle;
 import de.learnlib.api.oracle.InclusionOracle;
 import de.learnlib.api.oracle.MembershipOracle;
@@ -44,6 +45,14 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     protected MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     @Setter
     protected Alphabet<String> inputAlphabet;
+    private final List<STLCost> STLProperties = new ArrayList<>();
+    private final List<PropertyOracle.MealyPropertyOracle<String, String, String>> propertyOracles = new ArrayList<>();
+    boolean initialized = false;
+
+    @Override
+    public List<PropertyOracle<String, ? super MealyMachine<?, String, ?, String>, ?, Word<String>>> getPropertyOracles() {
+        return new ArrayList<>(propertyOracles);
+    }
 
     public AbstractAdaptiveSTLUpdater() {
         // Create model checker
@@ -61,9 +70,31 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         inclusionOracle = new MealyBFInclusionOracle<>(this.memOracle, multiplier);
     }
 
+    public void addSTLProperty(STLCost stl) {
+        if (STLProperties.contains(stl)) {
+            return;
+        }
+        this.STLProperties.add(stl);
+        if (initialized && Objects.nonNull(inclusionOracle) && Objects.nonNull(emptinessOracle)) {
+            propertyOracles.add(
+                    new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
+                            new MealyFinitePropertyOracle<>(
+                                    stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker)));
+        }
+    }
+
+    public void addSTLProperties(Collection<? extends STLCost> stlCollection) {
+        stlCollection.forEach(this::addSTLProperty);
+    }
+
+    public void removeSTLProperty(int index) {
+        this.getSTLProperties().remove(index);
+        this.propertyOracles.remove(index);
+    }
+
     @Override
-    public List<PropertyOracle<String, ? super MealyMachine<?, String, ?, String>, ?, Word<String>>> getPropertyOracles() {
-        return this.stream().collect(Collectors.toList());
+    final public List<STLCost> getSTLProperties() {
+        return STLProperties;
     }
 
     @Override
@@ -75,11 +106,17 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     @Override
     public Stream<PropertyOracle.MealyPropertyOracle<String, String, String>> stream() {
         if (Objects.isNull(inclusionOracle) || Objects.isNull(emptinessOracle)) {
-            log.error("AbstractAdaptiveSTLUpdater::stream is called before setting inclusionOracle or emptinessOracle");
+            log.warn("AbstractAdaptiveSTLUpdater::stream is called before setting inclusionOracle or emptinessOracle");
             throw new NullPointerException();
         }
-        return this.getSTLProperties().stream().map(stl ->
-                new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker));
+        if (!initialized) {
+            STLProperties.forEach(stl ->
+                    propertyOracles.add(
+                            new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
+                                    new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker))));
+            initialized = true;
+        }
+        return propertyOracles.stream();
     }
 
     @Override
