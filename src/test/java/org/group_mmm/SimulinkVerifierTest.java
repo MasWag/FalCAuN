@@ -25,8 +25,8 @@ class SimulinkVerifierTest {
     private SimulinkVerifier verifier;
     private AdaptiveSTLUpdater properties;
     private SimulinkSULMapper mapper;
-    private List<Function<List<Double>, Double>> sigMap = Collections.emptyList();
-    private AdaptiveSTLUpdater propertyZHA19_AFC1 = new StaticLTLList(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
+    private final List<Function<List<Double>, Double>> sigMap = Collections.emptyList();
+    private final AdaptiveSTLUpdater propertyZHA19_AFC1 = new StaticLTLList(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
 
 
     @BeforeEach
@@ -260,7 +260,7 @@ class SimulinkVerifierTest {
     }
 
     @Nested
-    class AutoTrans {
+    class AutoTransTest {
         List<Map<Character, Double>> inputMapper;
         List<Map<Character, Double>> outputMapper;
         List<Character> largest;
@@ -313,7 +313,7 @@ class SimulinkVerifierTest {
         }
 
         @Nested
-        class AT1Run {
+        class AT1Test {
             STLCost stl;
 
             @BeforeEach
@@ -346,7 +346,7 @@ class SimulinkVerifierTest {
 
 
         @Nested
-        class AT1AndAT2Run {
+        class AT1AndAT2Test {
             List<STLCost> stlList;
 
             @BeforeEach
