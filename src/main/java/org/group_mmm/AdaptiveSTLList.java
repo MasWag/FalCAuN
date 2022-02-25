@@ -406,4 +406,9 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
             return null;
         }
     }
+
+    @Override
+    public boolean allDisproved() {
+        return this.falsifiedSTLProperties.containsAll(this.targetSTLs);
+    }
 }

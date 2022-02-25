@@ -39,6 +39,11 @@ public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<S
     Stream<PropertyOracle.MealyPropertyOracle<String, String, String>> stream();
 
     /**
+     * Returns if all the properties are disproved
+     */
+    boolean allDisproved();
+
+    /**
      * Returns the number of the current list of STL formulas
      */
     int size();

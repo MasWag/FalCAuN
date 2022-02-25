@@ -1,7 +1,6 @@
 package org.group_mmm;
 
 import de.learnlib.api.oracle.EquivalenceOracle;
-import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.api.query.DefaultQuery;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automata.transducers.MealyMachine;
@@ -43,7 +42,7 @@ public class StopDisprovedEQOracle<I, O> implements EquivalenceOracle.MealyEquiv
     @Override
     @ParametersAreNonnullByDefault
     public DefaultQuery<I, Word<O>> findCounterExample(MealyMachine<?, I, ?, O> hypothesis, Collection<? extends I> inputs) {
-        if (ltlOracles.stream().allMatch(PropertyOracle.MealyPropertyOracle::isDisproved)) {
+        if (ltlOracles.allDisproved()) {
             log.debug("A counterexample is already found!!");
             return null;
         } else {

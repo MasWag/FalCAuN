@@ -1,9 +1,6 @@
 package org.group_mmm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * List of STL/LTL formulas without update
@@ -14,6 +11,7 @@ import java.util.List;
  */
 public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
     private final List<STLCost> STLProperties;
+    Set<Integer> disprovedIndices = new HashSet<>();
 
     public StaticSTLList() {
         this(Collections.emptySet());
@@ -28,7 +26,18 @@ public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
     }
 
     @Override
+    public boolean allDisproved() {
+        return STLProperties.size() == disprovedIndices.size();
+    }
+
+    @Override
     public List<STLCost> getSTLProperties() {
         return STLProperties;
+    }
+
+    @Override
+    protected void notifyFalsifiedProperty(List<Integer> falsifiedIndices) {
+        super.notifyFalsifiedProperty(falsifiedIndices);
+        disprovedIndices.addAll(falsifiedIndices);
     }
 }
