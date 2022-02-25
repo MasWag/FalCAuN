@@ -8,12 +8,12 @@ import net.automatalib.automata.transducers.MealyMachine;
 import net.automatalib.words.Word;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNullableByDefault;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 
 
 /**
- * Am equivalence oracle to add isDisproved in addition to the original oracle.
+ * Wraps an equivalence oracle so that the equivalence oracle is skipped if all the LTL oracles are disproved.
  *
  * @param <I> Input symbol
  * @param <O> Output symbol
@@ -34,16 +34,20 @@ public class StopDisprovedEQOracle<I, O> implements EquivalenceOracle.MealyEquiv
         this.ltlOracles = ltlOracles;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This function skip running an equivalence query if all the LTL oracles are disproved.
+     */
     @Nullable
     @Override
-    @ParametersAreNullableByDefault
-    public DefaultQuery<I, Word<O>> findCounterExample(MealyMachine<?, I, ?, O> objects, Collection<? extends I> collection) {
+    @ParametersAreNonnullByDefault
+    public DefaultQuery<I, Word<O>> findCounterExample(MealyMachine<?, I, ?, O> hypothesis, Collection<? extends I> inputs) {
         if (ltlOracles.stream().allMatch(PropertyOracle.MealyPropertyOracle::isDisproved)) {
             log.debug("A counterexample is already found!!");
             return null;
         } else {
-            return eqOracle.findCounterExample(objects, collection);
+            return eqOracle.findCounterExample(hypothesis, inputs);
         }
     }
 }
