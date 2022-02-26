@@ -59,4 +59,9 @@ public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<S
     void setMemOracle(@NotNull MembershipOracle.MealyMembershipOracle<String, String> memOracle);
 
     void setInputAlphabet(Alphabet<String> inputAlphabet);
+
+    /**
+     * Returns if the formula is not yet falsified
+     */
+    boolean newlyFalsifiedFormula(int index);
 }

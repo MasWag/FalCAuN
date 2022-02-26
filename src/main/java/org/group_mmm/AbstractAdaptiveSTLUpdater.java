@@ -142,22 +142,26 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     /**
      * Find a counter example using the current list of STL formulas
      *
+     * @return A query of counterexample if a new counterexample is found. Otherwise, it returns null.
      * @see CExFirstOracle::findCounterExample
      */
     @Nullable
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(@NotNull MealyMachine<?, String, ?, String> hypothesis, @NotNull Collection<? extends String> inputs) {
         List<Integer> falsifiedIndices = new ArrayList<>();
-        DefaultQuery<String, Word<String>> result = null;
+        DefaultQuery<String, Word<String>> newFalsifiedResult = null;
         for (int i = 0; i < this.size(); i++) {
-            result = this.propertyOracles.get(i).findCounterExample(hypothesis, inputs);
+            DefaultQuery<String, Word<String>> result = this.propertyOracles.get(i).findCounterExample(hypothesis, inputs);
             if (Objects.nonNull(result)) {
                 falsifiedIndices.add(i);
+                if (newlyFalsifiedFormula(i)) {
+                    newFalsifiedResult = result;
+                }
             }
         }
         this.notifyFalsifiedProperty(falsifiedIndices);
 
-        return result;
+        return newFalsifiedResult;
     }
 
     /**
