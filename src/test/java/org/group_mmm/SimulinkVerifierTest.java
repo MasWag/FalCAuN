@@ -319,7 +319,7 @@ class SimulinkVerifierTest {
 
             @BeforeEach
             void setUp() {
-                String stlString = "alw_[0, 10] (signal(0) < 120)";
+                String stlString = "alw_[0, 20] (signal(0) < 120)";
                 stl = parseSTL(stlString, inputMapper, outputMapper, largest);
             }
 
@@ -339,7 +339,7 @@ class SimulinkVerifierTest {
             void tearDown() throws Exception {
                 // define the verifier
                 verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
-                verifier.addGAEQOracleAll(25, 1000, ArgParser.GASelectionKind.Tournament,
+                verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
             }
