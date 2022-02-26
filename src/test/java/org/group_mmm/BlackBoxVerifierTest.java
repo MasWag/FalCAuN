@@ -13,10 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,31 +22,41 @@ import static org.mockito.Mockito.*;
 
 class BlackBoxVerifierTest {
     private final Alphabet<String> inputAlphabet = new ArrayAlphabet<>("a");
-    private List<String> properties;
+    StaticSTLList stlList;
     private BlackBoxVerifier verifier;
-    StaticLTLList ltlList;
+    private List<STLCost> falsifiedProperties;
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     SUL<String, String> sul;
 
     @BeforeEach
     void setUp() {
-        properties = Arrays.asList("X X X output == \"2\"",
-                "output == \"1\"",
-                "[] (output == \"2\" -> X output == \"1\")",
-                "X X output == \"2\"");
+        List<STLOutputAtomic> events = new ArrayList<>();
+        events.add(new STLOutputAtomic(0, STLAbstractAtomic.Operation.lt, 1.0));
+        events.add(new STLOutputAtomic(0, STLAbstractAtomic.Operation.gt, 1.0));
+        events.get(0).setAtomic(Collections.singletonList(Collections.singletonMap('a', 1.0)), Collections.singletonList('b'));
+        events.get(1).setAtomic(Collections.singletonList(Collections.singletonMap('a', 1.0)), Collections.singletonList('b'));
+
+        List<STLCost> properties = Arrays.asList(
+                new STLNext(new STLNext(new STLNext(events.get(1), true), true), true),
+                events.get(0),
+                new STLGlobal(new STLImply(events.get(1), new STLNext(events.get(0), true))),
+                new STLNext(new STLNext(events.get(1), true), true));
+        falsifiedProperties = new ArrayList<>();
+        falsifiedProperties.add(properties.get(3));
         CompactMealy<String, String> mealy = new CompactMealy<>(inputAlphabet);
         mealy = AutomatonBuilders.forMealy(mealy).
                 withInitial("q0").
                 from("q0").
-                on("a").withOutput("1").to("q1").
+                on("a").withOutput("a").to("q1").
                 from("q1").
-                on("a").withOutput("2").to("q0").
+                on("a").withOutput("b").to("q0").
                 create();
         sul = new MealySimulatorSUL<>(mealy);
         memOracle = new SULOracle<>(sul);
-        ltlList = spy(new StaticLTLList(properties));
-        ltlList.setMemOracle(memOracle);
-        verifier = new BlackBoxVerifier(memOracle, sul, ltlList, inputAlphabet);
+        stlList = spy(new StaticSTLList(properties));
+        stlList.setMemOracle(memOracle);
+        verifier = new BlackBoxVerifier(memOracle, sul, stlList, inputAlphabet);
+        stlList.stream();
     }
 
     @Test
@@ -58,19 +66,19 @@ class BlackBoxVerifierTest {
 
     @Test
     void notifyFalsifiedProperty() {
-        doCallRealMethod().when(ltlList).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
+        doCallRealMethod().when(stlList).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
         assertFalse(verifier.run());
-        verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(0));
-        verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(1));
-        verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(2));
-        verify(ltlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(3));
-        verify(ltlList, times(0)).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
+        verify(stlList, times(1)).notifyFalsifiedProperty(Collections.singletonList(0));
+        verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(1));
+        verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(2));
+        verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(3));
+        verify(stlList, times(0)).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
     }
 
     @Test
     void getCexProperty() {
         assertFalse(verifier.run());
-        assertEquals(properties, verifier.getCexProperty());
+        assertEquals(falsifiedProperties.stream().map(Objects::toString).collect(Collectors.toList()), verifier.getCexProperty());
     }
 
     @Test
@@ -88,9 +96,9 @@ class BlackBoxVerifierTest {
     @Test
     void getCexOutput() {
         WordBuilder<String> expected = new WordBuilder<>();
-        expected.add("1");
-        expected.add("2");
-        expected.add("1");
+        expected.add("a");
+        expected.add("b");
+        expected.add("a");
 
         assertFalse(verifier.run());
         System.out.println(verifier.getCexOutput());
@@ -122,8 +130,8 @@ class BlackBoxVerifierTest {
                 "\"a\"\n" +
                 "end sort\n" +
                 "begin sort output\n" +
-                "\"1\"\n" +
-                "\"2\"\n" +
+                "\"a\"\n" +
+                "\"b\"\n" +
                 "end sort\n";
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         verifier.writeETFLearnedMealy(stream);
