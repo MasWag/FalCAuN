@@ -38,19 +38,19 @@ class BlackBoxVerifier {
     private static final Function<String, String> EDGE_PARSER = s -> s;
     final private double multiplier = 1.0;
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
-    private SUL<String, String> verifiedSystem;
+    private final SUL<String, String> verifiedSystem;
     private MealyMachine<?, String, ?, String> learnedMealy;
     private List<MealyMachine<?, String, ?, String>> cexMealy;
-    private Alphabet<String> inputAlphabet;
-    private LearningAlgorithm.MealyLearner<String, String> learner;
-    private EQOracleChain.MealyEQOracleChain<String, String> eqOracle;
+    private final Alphabet<String> inputAlphabet;
+    private final LearningAlgorithm.MealyLearner<String, String> learner;
+    private final EQOracleChain.MealyEQOracleChain<String, String> eqOracle;
     @Getter
-    private AdaptiveSTLUpdater properties;
+    private final AdaptiveSTLUpdater properties;
     private List<Word<String>> cexInput;
     private List<String> cexProperty;
     private List<Word<String>> cexOutput;
-    private ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
-    private List<TimeoutEQOracle<String, String>> timeoutOracles = new ArrayList<>();
+    private final ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
+    private final List<TimeoutEQOracle<String, String>> timeoutOracles = new ArrayList<>();
     private Long timeout = null;
 
     /**
@@ -208,6 +208,9 @@ class BlackBoxVerifier {
      * @return Returns {@code true} if and only if the black-box system is verified i.e., no counter example is found for any system.
      */
     private boolean processMealy() {
+        // Reset the list of properties to the initial one
+        properties.reset();
+
         cexMealy = new ArrayList<>();
         cexProperty = new ArrayList<>();
         cexInput = new ArrayList<>();

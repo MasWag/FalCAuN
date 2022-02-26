@@ -76,4 +76,9 @@ class StaticLTLList extends AbstractAdaptiveSTLUpdater {
     public boolean allDisproved() {
         return ltlProperties.size() == disprovedIndices.size();
     }
+
+    @Override
+    public void reset() {
+        // Since we do not add any STL formula, we do not need to reset.
+    }
 }

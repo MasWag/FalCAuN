@@ -49,6 +49,11 @@ public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<S
     int size();
 
     /**
+     * Reset the list of the STL formulas to the initial one.
+     */
+    void reset();
+
+    /**
      * Set new membership oracle. This is necessary to call list() and stream()
      */
     void setMemOracle(@NotNull MembershipOracle.MealyMembershipOracle<String, String> memOracle);

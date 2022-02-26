@@ -398,4 +398,19 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
     public boolean allDisproved() {
         return this.falsifiedSTLProperties.containsAll(this.initialSTLs);
     }
+
+    /***
+     * Remove all the non-initial STL formulas
+     */
+    @Override
+    public void reset() {
+        List<Integer> nonInitialIndices = new ArrayList<>();
+        for (int i = 0; i < size(); i++) {
+            STLCost stl = this.getSTLProperties().get(i);
+            if (!initialSTLs.contains(stl)) {
+                nonInitialIndices.add(i);
+            }
+        }
+        this.removeSTLProperties(nonInitialIndices);
+    }
 }

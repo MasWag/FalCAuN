@@ -35,4 +35,9 @@ public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
         super.notifyFalsifiedProperty(falsifiedIndices);
         disprovedIndices.addAll(falsifiedIndices);
     }
+
+    @Override
+    public void reset() {
+        // Since we do not add any STL formula, we do not need to reset.
+    }
 }
