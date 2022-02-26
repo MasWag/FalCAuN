@@ -86,7 +86,7 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
     @ParametersAreNonnullByDefault
     public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> symbolList) {
         if (isDisproved()) {
-            LOGGER.debug("A counterexample is already found!!");
+            LOGGER.info("The specification is already disproved!!");
             return null;
         }
         // Fail fast on empty inputs
@@ -98,10 +98,10 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
         problem.setSymbolList(new ArrayList<>(symbolList));
         new AlgorithmRunner.Executor(algorithm).execute();
         if (problem.isStopped()) {
-            LOGGER.debug("Counter example is found !! {}", problem.getCexQuery());
+            LOGGER.info("Counter example is found!! {}", problem.getCexQuery());
             return problem.getCexQuery();
         }
-        LOGGER.debug("Counter example is NOT found :(");
+        LOGGER.info("Counter example is NOT found :(");
         return null;
     }
 

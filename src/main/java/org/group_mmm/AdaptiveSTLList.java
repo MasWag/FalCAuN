@@ -416,6 +416,6 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
 
     @Override
     public boolean newlyFalsifiedFormula(int index) {
-        return this.falsifiedSTLProperties.contains(this.getSTLProperties().get(index));
+        return !this.falsifiedSTLProperties.contains(this.getSTLProperties().get(index));
     }
 }

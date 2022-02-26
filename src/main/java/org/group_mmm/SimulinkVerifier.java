@@ -19,16 +19,13 @@ import java.util.function.Function;
  */
 public class SimulinkVerifier {
     protected SUL<List<Double>, List<Double>> simulink;
-    private SimulinkSUL rawSimulink;
-    private Alphabet<String> abstractInputAlphabet;
-    private Alphabet<List<Double>> concreteInputAlphabet;
-    private SimulinkSULMapper mapper;
-    private SUL<String, String> mappedSimulink;
-    private BlackBoxVerifier verifier;
-    private SimulinkMembershipOracle memOracle;
-    private List<SimulinkMembershipOracleCost> memOracleCosts = new ArrayList<>();
+    private final SimulinkSUL rawSimulink;
+    private final SimulinkSULMapper mapper;
+    private final BlackBoxVerifier verifier;
+    private final SimulinkMembershipOracle memOracle;
+    private final List<SimulinkMembershipOracleCost> memOracleCosts = new ArrayList<>();
     private final EvaluationCountable.Sum evaluationCountables = new EvaluationCountable.Sum();
-    private double signalStep;
+    private final double signalStep;
 
     /**
      * <p>Constructor for SimulinkVerifier.</p>
@@ -44,19 +41,22 @@ public class SimulinkVerifier {
         this.mapper = mapper;
         this.signalStep = signalStep;
         this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
-        this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
-        this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
+        Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
+        Alphabet<String> abstractInputAlphabet = mapper.constructAbstractAlphabet();
 
-        this.simulink = SULCache.createTreeCache(this.concreteInputAlphabet, rawSimulink);
+        this.simulink = SULCache.createTreeCache(concreteInputAlphabet, rawSimulink);
 
-        this.mappedSimulink = new MappedSUL<>(mapper, simulink);
-        this.mappedSimulink = SULCache.createTreeCache(this.abstractInputAlphabet, this.mappedSimulink);
+        SUL<String, String> mappedSimulink = new MappedSUL<>(mapper, simulink);
+        mappedSimulink = SULCache.createTreeCache(abstractInputAlphabet, mappedSimulink);
         // create a regular membership oracle
         this.memOracle = new SimulinkMembershipOracle(rawSimulink, this.mapper);
         properties.setMemOracle(memOracle);
         verifier = new BlackBoxVerifier(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
     }
 
+    /**
+     * Returns the falsified STL formulas in the string representation.
+     */
     List<String> getCexProperty() {
         return verifier.getCexProperty();
     }

@@ -216,11 +216,12 @@ class BlackBoxVerifier {
         cexInput = new ArrayList<>();
         cexOutput = new ArrayList<>();
         boolean isVerified = true;
-        for (String property : properties.getLTLProperties()) {
-            cexProperty.add(property);
+        for (STLCost stlProperty : properties.getSTLProperties()) {
+            String ltlProperty = stlProperty.toLTLString();
+            cexProperty.add(stlProperty.toString());
 
             final MealyMachine<?, String, ?, String> cexMealyCandidate =
-                    modelChecker.findCounterExample(learnedMealy, this.inputAlphabet, property);
+                    modelChecker.findCounterExample(learnedMealy, this.inputAlphabet, ltlProperty);
             if (!Objects.isNull(cexMealyCandidate)) {
                 // We found the counter example Mealy machine.
                 cexMealy.add(cexMealyCandidate);

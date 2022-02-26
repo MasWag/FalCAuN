@@ -142,7 +142,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     /**
      * Find a counter example using the current list of STL formulas
      *
-     * @return A query of counterexample if a new counterexample is found. Otherwise, it returns null.
+     * @return A query of counterexample if a counterexample is found. Otherwise, it returns null.
      * @see CExFirstOracle::findCounterExample
      */
     @Nullable
@@ -155,6 +155,8 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
             if (Objects.nonNull(result)) {
                 falsifiedIndices.add(i);
                 if (newlyFalsifiedFormula(i)) {
+                    newFalsifiedResult = result;
+                } else if (Objects.isNull(newFalsifiedResult)) {
                     newFalsifiedResult = result;
                 }
             }
