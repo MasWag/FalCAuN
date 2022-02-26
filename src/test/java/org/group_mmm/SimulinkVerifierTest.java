@@ -297,16 +297,17 @@ class SimulinkVerifierTest {
         @Test
         void setTimeout() throws Exception {
             // generate properties
-            String stlString = "alw_[0, 5] (signal(1) < 4750)";
+            String stlString = "alw_[0, 3] (signal(1) < 4750)";
             STLCost stl = parseSTL(stlString, inputMapper, outputMapper, largest);
             properties = new StaticSTLList(Collections.singletonList(stl));
             // define the verifier
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+            // set timeout
+            long timeout = 5 * 60;
+            verifier.setTimeout(timeout);
+            // add equivalence oracle
             verifier.addGAEQOracleAll(25, 1000, ArgParser.GASelectionKind.Tournament,
                     50, 0.9, 0.01);
-            // set timeout
-            long timeout = 10 * 60;
-            verifier.setTimeout(timeout);
             long startTime = System.nanoTime();
             assertTrue(verifier.run());
             long duration = (System.nanoTime() - startTime) / 1000 / 1000 / 1000;
