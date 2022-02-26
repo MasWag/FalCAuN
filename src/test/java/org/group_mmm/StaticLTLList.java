@@ -81,9 +81,4 @@ class StaticLTLList extends AbstractAdaptiveSTLUpdater {
     public void reset() {
         // Since we do not add any STL formula, we do not need to reset.
     }
-
-    @Override
-    public boolean newlyFalsifiedFormula(int index) {
-        return !disprovedIndices.contains(index);
-    }
 }

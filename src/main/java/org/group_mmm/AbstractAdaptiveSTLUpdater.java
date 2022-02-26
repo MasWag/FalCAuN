@@ -51,11 +51,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         return new ArrayList<>(propertyOracles);
     }
 
-    public AbstractAdaptiveSTLUpdater() {
-        // Create model checker
-        modelChecker = new LTSminMonitorIOBuilder<String, String>()
-                .withString2Input(EDGE_PARSER).withString2Output(EDGE_PARSER).create();
-    }
+    private final List<STLCost> reportedFormulas = new ArrayList<>();
 
     public void setMemOracle(@NotNull MembershipOracle.MealyMembershipOracle<String, String> memOracle) {
         this.memOracle = memOracle;
@@ -67,17 +63,9 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         inclusionOracle = new MealyBFInclusionOracle<>(this.memOracle, multiplier);
     }
 
-    public void addSTLProperty(STLCost stl) {
-        if (STLProperties.contains(stl)) {
-            return;
-        }
-        this.STLProperties.add(stl);
-        if (initialized && Objects.nonNull(inclusionOracle) && Objects.nonNull(emptinessOracle)) {
-            propertyOracles.add(
-                    new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
-                            new MealyFinitePropertyOracle<>(
-                                    stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker)));
-        }
+    public AbstractAdaptiveSTLUpdater() {
+        // Create model checker
+        modelChecker = new LTSminMonitorIOBuilder<String, String>().withString2Input(EDGE_PARSER).withString2Output(EDGE_PARSER).create();
     }
 
     public void addSTLProperties(Collection<? extends STLCost> stlCollection) {
@@ -107,13 +95,13 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         return this.getSTLProperties().stream().map(STLCost::toLTLString).collect(Collectors.toList());
     }
 
-    private void initializePropertyOracles() {
-        if (!initialized) {
-            STLProperties.forEach(stl ->
-                    propertyOracles.add(
-                            new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
-                                    new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker))));
-            initialized = true;
+    public void addSTLProperty(STLCost stl) {
+        if (STLProperties.contains(stl)) {
+            return;
+        }
+        this.STLProperties.add(stl);
+        if (initialized && Objects.nonNull(inclusionOracle) && Objects.nonNull(emptinessOracle)) {
+            propertyOracles.add(new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker)));
         }
     }
 
@@ -139,6 +127,17 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         return this.getSTLProperties().size();
     }
 
+    private void initializePropertyOracles() {
+        if (!initialized) {
+            STLProperties.forEach(stl -> propertyOracles.add(new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker))));
+            initialized = true;
+        }
+    }
+
+    public final boolean newlyFalsifiedFormula(STLCost stlFormula) {
+        return !reportedFormulas.contains(stlFormula);
+    }
+
     /**
      * Find a counter example using the current list of STL formulas
      *
@@ -150,20 +149,26 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     public DefaultQuery<String, Word<String>> findCounterExample(@NotNull MealyMachine<?, String, ?, String> hypothesis, @NotNull Collection<? extends String> inputs) {
         List<Integer> falsifiedIndices = new ArrayList<>();
         DefaultQuery<String, Word<String>> newFalsifiedResult = null;
+        DefaultQuery<String, Word<String>> falsifiedResult = null;
         for (int i = 0; i < this.size(); i++) {
             DefaultQuery<String, Word<String>> result = this.propertyOracles.get(i).findCounterExample(hypothesis, inputs);
             if (Objects.nonNull(result)) {
                 falsifiedIndices.add(i);
-                if (newlyFalsifiedFormula(i)) {
+                if (newlyFalsifiedFormula(getSTLProperties().get(i))) {
+                    // We report a new falsified formula if exists
                     newFalsifiedResult = result;
-                } else if (Objects.isNull(newFalsifiedResult)) {
-                    newFalsifiedResult = result;
+                    reportedFormulas.add(getSTLProperties().get(i));
+                    break;
                 }
+                falsifiedResult = result;
             }
         }
         this.notifyFalsifiedProperty(falsifiedIndices);
-
-        return newFalsifiedResult;
+        if (Objects.nonNull(newFalsifiedResult)) {
+            return newFalsifiedResult;
+        } else {
+            return falsifiedResult;
+        }
     }
 
     /**

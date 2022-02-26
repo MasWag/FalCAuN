@@ -63,5 +63,5 @@ public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<S
     /**
      * Returns if the formula is not yet falsified
      */
-    boolean newlyFalsifiedFormula(int index);
+    boolean newlyFalsifiedFormula(STLCost stlFormula);
 }

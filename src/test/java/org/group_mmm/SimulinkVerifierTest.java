@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 import static java.lang.Math.abs;
 import static org.group_mmm.STLCost.parseSTL;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimulinkVerifierTest {
@@ -353,8 +354,8 @@ class SimulinkVerifierTest {
             @BeforeEach
             void setUp() {
                 List<String> stlStringList = Arrays.asList(
-                        "alw_[0, 10] (signal(0) < 120)",
-                        "alw_[0, 5] (signal(1) < 4750)");
+                        "alw_[0, 20] (signal(0) < 120)",
+                        "alw_[0, 10] (signal(1) < 4750)");
                 stlList = stlStringList.stream().map(stlString ->
                         parseSTL(stlString, inputMapper, outputMapper, largest)).collect(Collectors.toList());
                 expectedStlStringList = stlList.stream().map(Object::toString).collect(Collectors.toList());
@@ -377,13 +378,14 @@ class SimulinkVerifierTest {
             void verify() throws Exception {
                 // define the verifier
                 verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
-                verifier.addGAEQOracleAll(10, 1000, ArgParser.GASelectionKind.Tournament,
+                verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
                 // Confirm that the number of the properties is correctly handled
-                assertEquals(2, verifier.getCexProperty().size());
                 assertThat("All the given properties should be reported as counterexamples",
-                        verifier.getCexProperty(), is(containsInAnyOrder(expectedStlStringList)));
+                        verifier.getCexProperty(),
+                        containsInAnyOrder(expectedStlStringList.get(0), expectedStlStringList.get(1)));
+                assertEquals(2, verifier.getCexProperty().size());
                 // Confirm that the number of the counterexamples is correctly handled
                 assertEquals(2, (int) verifier.getCexAbstractInput().stream().filter(Objects::nonNull).count());
             }
