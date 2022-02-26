@@ -122,7 +122,7 @@ abstract public class STLAbstractAtomic extends STLCost {
     }
 
     @Override
-    Set<String> getAtomicStrings() {
+    public Set<String> getAtomicStrings() {
         if (atomicStrings == null) {
             constructAtomicStrings();
         }

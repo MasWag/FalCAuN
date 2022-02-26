@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import lombok.Getter;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -16,12 +17,10 @@ import java.util.function.Function;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public abstract class STLCost implements Function<IOSignal, Double> {
+    @Getter
     boolean nonTemporal;
+    @Getter
     Set<String> atomicStrings;
-
-    Set<String> getAtomicStrings() {
-        return atomicStrings;
-    }
 
     /**
      * <p>parseSTL.</p>
@@ -93,7 +92,19 @@ public abstract class STLCost implements Function<IOSignal, Double> {
      */
     public abstract RoSI getRoSI(IOSignal signal);
 
-    boolean isNonTemporal() {
-        return nonTemporal;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        STLCost stlCost = (STLCost) o;
+
+        return this.hashCode() == stlCost.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        // Hash code is implemented based on the string representation.
+        return this.toString().hashCode();
     }
 }

@@ -380,6 +380,7 @@ class SimulinkVerifierTest {
                 assertFalse(verifier.run());
                 // Confirm that the number of the properties is correctly handled
                 assertEquals(2, verifier.getCexProperty().size());
+                assertTrue(stlList.stream().map(Objects::toString).collect(Collectors.toList()).containsAll(verifier.getCexProperty()));
                 // Confirm that the number of the counterexamples is correctly handled
                 assertEquals(2, (int) verifier.getCexAbstractInput().stream().filter(Objects::nonNull).count());
             }

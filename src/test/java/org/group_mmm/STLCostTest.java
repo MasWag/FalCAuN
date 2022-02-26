@@ -66,8 +66,17 @@ class STLCostTest {
         }
     }
 
+    @Test
+    void equalityTest() {
+        List<STLCost> formulas = new ArrayList<>();
+        formulas.add(STLCost.parseSTL("[] ( output(0) < 120.000000 )"));
+        formulas.add(STLCost.parseSTL("[] ( output(0) < 120.000000 )"));
+        // STL Formulas are considered the same if they have the same string representation
+        assertEquals(formulas.get(0), formulas.get(1));
+    }
+
     @Nested
-    class Bug201906171356 {
+    class Bug201906171356Test {
         IOSignal input;
 
         @BeforeEach
@@ -111,7 +120,7 @@ class STLCostTest {
     }
 
     @Nested
-    class Bug20200427 {
+    class Bug20200427Test {
         IOSignal input;
 
         @BeforeEach
@@ -181,7 +190,7 @@ class STLCostTest {
     }
 
     @Nested
-    class Bug20210308 {
+    class Bug20210308Test {
         IOSignal input;
 
         @BeforeEach
