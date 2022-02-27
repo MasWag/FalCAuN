@@ -109,9 +109,9 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         LOGGER.trace("Input: " + inputSignal);
 
         this.inputSignal.add(inputSignal);
+        StringBuilder builder = new StringBuilder();
         try {
             // Make the input signal
-            StringBuilder builder = new StringBuilder();
             makeDataSet(builder);
 
             configureSimulink(builder);
@@ -140,7 +140,8 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
             result = new ArrayList<>(Arrays.asList(ArrayUtils.toObject(y[y.length - 1])));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LOGGER.error("There was an error in the simulation: {}", e.getMessage());
+            LOGGER.error("The executed script was: {}", builder);
             assert false;
             throw new SULException(e);
         }

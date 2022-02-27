@@ -33,8 +33,6 @@ class SimulinkVerifierTest {
     @BeforeEach
     void setUp() {
         initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAFC;";
-        // [] (velocity < 30)
-        properties = new StaticLTLList(Collections.singletonList("[] (output == \"a00\")"));
         signalStep = 10.0;
         // Construct the mapper
         List<Map<Character, Double>> inputMapper;
@@ -61,6 +59,10 @@ class SimulinkVerifierTest {
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
         mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+
+        // [] (velocity < 10)
+        properties = new StaticSTLList(Collections.singletonList(
+                STLCost.parseSTL("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
 
         try {
             verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
@@ -246,7 +248,7 @@ class SimulinkVerifierTest {
     @Test
     void getCexProperty() {
         assertFalse(verifier.run());
-        List<String> expected = Collections.singletonList("[] (output == \"a00\")");
+        List<String> expected = properties.getSTLProperties().stream().map(Object::toString).collect(Collectors.toList());
         assertEquals(expected, verifier.getCexProperty());
     }
 

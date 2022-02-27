@@ -108,11 +108,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     //@ requires inclusionOracle != null && emptinessOracle != null
     @Override
     public Stream<PropertyOracle.MealyPropertyOracle<String, String, String>> stream() {
-        if (Objects.isNull(inclusionOracle) || Objects.isNull(emptinessOracle)) {
-            log.warn("AbstractAdaptiveSTLUpdater::stream is called before setting inclusionOracle or emptinessOracle");
-            throw new NullPointerException();
-        }
-        initializePropertyOracles();
+        confirmInitialization();
         assert STLProperties.size() == propertyOracles.size();
         return propertyOracles.stream();
     }
@@ -127,9 +123,17 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         return this.getSTLProperties().size();
     }
 
-    private void initializePropertyOracles() {
+    private void confirmInitialization() {
+        if (Objects.isNull(inclusionOracle) || Objects.isNull(emptinessOracle)) {
+            log.error("AbstractAdaptiveSTLUpdater::confirmInitialization is called before setting inclusionOracle or emptinessOracle");
+            throw new NullPointerException();
+        }
         if (!initialized) {
-            STLProperties.forEach(stl -> propertyOracles.add(new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker))));
+            STLProperties.forEach(stl ->
+                    propertyOracles.add(
+                            new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
+                                    new MealyFinitePropertyOracle<>(stl.toLTLString(),
+                                            inclusionOracle, emptinessOracle, modelChecker))));
             initialized = true;
         }
     }
@@ -147,6 +151,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     @Nullable
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(@NotNull MealyMachine<?, String, ?, String> hypothesis, @NotNull Collection<? extends String> inputs) {
+        confirmInitialization();
         List<Integer> falsifiedIndices = new ArrayList<>();
         DefaultQuery<String, Word<String>> newFalsifiedResult = null;
         DefaultQuery<String, Word<String>> falsifiedResult = null;
