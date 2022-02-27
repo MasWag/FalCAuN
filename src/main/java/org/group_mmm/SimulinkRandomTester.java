@@ -3,6 +3,7 @@ package org.group_mmm;
 import de.learnlib.api.SUL;
 import de.learnlib.filter.cache.sul.SULCache;
 import de.learnlib.mapper.MappedSUL;
+import lombok.Getter;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
 import net.automatalib.words.WordBuilder;
@@ -29,8 +30,11 @@ public class SimulinkRandomTester {
     private SUL<String, String> mappedSimulink;
     private List<STLCost> costFunc;
     private long timeout;
+    @Getter
     private List<Word<String>> cexInput;
-    private List<String> cexProperty;
+    @Getter
+    private List<STLCost> cexProperty;
+    @Getter
     private List<Word<String>> cexOutput;
     private int length;
     private Random random = new Random();
@@ -74,26 +78,13 @@ public class SimulinkRandomTester {
         this.timeout = timeout;
     }
 
-    List<Word<String>> getCexAbstractInput() {
-        return cexInput;
-    }
-
     List<SimulinkSignal> getCexConcreteInput() {
         List<SimulinkSignal> result = new ArrayList<>();
-        for (Word<String> abstractCex : this.getCexAbstractInput()) {
+        for (Word<String> abstractCex : this.getCexInput()) {
             result.add(new SimulinkSignal(this.signalStep));
             result.get(result.size() - 1).addAll(this.mapper.mapInput(abstractCex));
         }
         return result;
-    }
-
-
-    List<Word<String>> getCexOutput() {
-        return cexOutput;
-    }
-
-    List<String> getCexProperty() {
-        return cexProperty;
     }
 
     /**
@@ -130,7 +121,7 @@ public class SimulinkRandomTester {
                         LOGGER.info("Robustness: " + costFunc.get(i).apply(concreteSignal));
 
                         cexInput.add(abstractInput);
-                        cexProperty.add(properties.get(i));
+                        cexProperty.add(costFunc.get(i));
                         cexOutput.add(Word.fromList(
                                 concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList())));
                         it.remove();

@@ -248,7 +248,7 @@ class SimulinkVerifierTest {
     @Test
     void getCexProperty() {
         assertFalse(verifier.run());
-        List<String> expected = properties.getSTLProperties().stream().map(Object::toString).collect(Collectors.toList());
+        List<STLCost> expected = properties.getSTLProperties();
         assertEquals(expected, verifier.getCexProperty());
     }
 

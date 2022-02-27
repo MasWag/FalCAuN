@@ -68,17 +68,17 @@ class BlackBoxVerifierTest {
     void notifyFalsifiedProperty() {
         doCallRealMethod().when(stlList).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
         assertFalse(verifier.run());
-        verify(stlList, times(1)).notifyFalsifiedProperty(Collections.singletonList(0));
+        verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(0));
         verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(1));
         verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(2));
-        verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(3));
+        verify(stlList, times(1)).notifyFalsifiedProperty(Collections.singletonList(3));
         verify(stlList, times(0)).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
     }
 
     @Test
     void getCexProperty() {
         assertFalse(verifier.run());
-        assertEquals(falsifiedProperties.stream().map(Objects::toString).collect(Collectors.toList()), verifier.getCexProperty());
+        assertEquals(falsifiedProperties, verifier.getCexProperty());
     }
 
     @Test

@@ -46,8 +46,11 @@ class BlackBoxVerifier {
     private final EQOracleChain.MealyEQOracleChain<String, String> eqOracle;
     @Getter
     private final AdaptiveSTLUpdater properties;
+    @Getter
     private List<Word<String>> cexInput;
-    private List<String> cexProperty;
+    @Getter
+    private List<STLCost> cexProperty;
+    @Getter
     private List<Word<String>> cexOutput;
     private final ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
     private final List<TimeoutEQOracle<String, String>> timeoutOracles = new ArrayList<>();
@@ -128,18 +131,6 @@ class BlackBoxVerifier {
      */
     void setTimeout(long timeout) {
         this.timeout = timeout;
-    }
-
-    List<String> getCexProperty() {
-        return cexProperty;
-    }
-
-    List<Word<String>> getCexInput() {
-        return cexInput;
-    }
-
-    List<Word<String>> getCexOutput() {
-        return cexOutput;
     }
 
     /**
@@ -224,7 +215,7 @@ class BlackBoxVerifier {
             if (!Objects.isNull(cexMealyCandidate)) {
                 // We found the counter example Mealy machine.
                 cexMealy.add(cexMealyCandidate);
-                cexProperty.add(stlProperty.toString());
+                cexProperty.add(stlProperty);
                 List<Word<String>> cexInputs = stateCover(cexMealyCandidate, this.inputAlphabet);
                 Word<String> currentInput = cexInputs.get(cexInputs.size() - 1);
                 cexInput.add(currentInput);

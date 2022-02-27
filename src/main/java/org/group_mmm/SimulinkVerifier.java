@@ -57,7 +57,7 @@ public class SimulinkVerifier {
     /**
      * Returns the falsified STL formulas in the string representation.
      */
-    List<String> getCexProperty() {
+    List<STLCost> getCexProperty() {
         return verifier.getCexProperty();
     }
 

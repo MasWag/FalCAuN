@@ -75,6 +75,8 @@ public class FalCAuN {
         }
 
         if (!argParser.isVerbose()) {
+            Logger MainLogger = (Logger) log;
+            MainLogger.setLevel(Level.INFO);
             Logger LTSminVersionLogger = (Logger) LoggerFactory.getLogger(LTSminVersion.class);
             LTSminVersionLogger.setLevel(Level.INFO);
             Logger AbstractLTSminLogger = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
@@ -93,11 +95,10 @@ public class FalCAuN {
         outputMapperReader.parse();
         List<Character> largest = outputMapperReader.getLargest();
         List<Map<Character, Double>> outputMapper = outputMapperReader.getOutputMapper();
-        if (argParser.isVerbose()) {
-            System.out.println("InputMapper: " + inputMapper);
-            System.out.println("OutputMapper: " + outputMapper);
-            System.out.println("Largest: " + largest);
-        }
+        log.debug("InputMapper: " + inputMapper);
+        log.debug("OutputMapper: " + outputMapper);
+        log.debug("Largest: " + largest);
+
         SimulinkSULMapper sulMapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, argParser.getSigMap());
 
         // Parse STL formulas
@@ -115,8 +116,8 @@ public class FalCAuN {
             ltlString.add(fml.toAbstractString());
         }
         if (argParser.isVerbose()) {
-            System.out.println("STL formulas: " + stl);
-            System.out.println("LTL formulas: " + ltlString);
+            log.debug("STL formulas: " + stl);
+            log.debug("LTL formulas: " + ltlString);
         }
         int maxLTLLength = ltlString.stream().map(String::length).max(Integer::compareTo).orElse(0);
         if (maxLTLLength >= 8194) {
@@ -176,27 +177,27 @@ public class FalCAuN {
                         sulMapper);
                 if (Objects.nonNull(argParser.getTimeout())) {
                     if (argParser.isVerbose()) {
-                        System.out.println("Timeout is set: " + argParser.getTimeout() + " seconds.");
+                        log.debug("Timeout is set: " + argParser.getTimeout() + " seconds.");
                     }
                     tester.setTimeout(argParser.getTimeout());
                 } else {
                     if (argParser.isVerbose()) {
-                        System.out.println("Timeout is not set");
+                        log.debug("Timeout is not set");
                     }
                 }
-                System.out.println("Pure random started");
+                log.info("Pure random started");
                 long startTime = System.nanoTime();
                 boolean result = tester.run();
                 long endTime = System.nanoTime();
-                System.out.println("Pure random finished");
-                System.out.println("Pure random Elapsed Time: " + ((endTime - startTime) / 1000000000.0) + " [sec]");
+                log.info("Pure random finished");
+                log.info("Pure random Elapsed Time: " + ((endTime - startTime) / 1000000000.0) + " [sec]");
                 if (result) {
-                    System.out.println("All the given properties are verified");
+                    log.info("All the given properties are verified");
                 } else {
-                    System.out.println("The following properties are falsified");
-                    for (int i = 0; i < tester.getCexAbstractInput().size(); i++) {
-                        if (tester.getCexAbstractInput().get(i) != null) {
-                            printResult(stl, i, tester.getCexProperty(), tester.getCexConcreteInput(), tester.getCexAbstractInput(), tester.getCexOutput());
+                    log.info("The following properties are falsified");
+                    for (int i = 0; i < tester.getCexInput().size(); i++) {
+                        if (tester.getCexInput().get(i) != null) {
+                            printResult(i, tester.getCexProperty(), tester.getCexConcreteInput(), tester.getCexInput(), tester.getCexOutput());
                         }
                     }
                 }
@@ -206,27 +207,27 @@ public class FalCAuN {
             printEquivSetting(argParser, stl);
         }
 
-        System.out.println("BBC started");
+        log.info("BBC started");
         TimeMeasure totalTime = new TimeMeasure();
         totalTime.start();
         boolean result = verifier.run();
         totalTime.stop();
-        System.out.println("BBC finished");
-        System.out.println("BBC Elapsed Time: " + totalTime.getSecond() + " [sec]");
-        System.out.println("Simulink Execution: " + verifier.getSimulinkCount() + " times");
-        System.out.println("Simulink Execution Time: " + verifier.getSimulationTimeSecond() + " [sec]");
-        System.out.println("Simulink Execution for Equivalence Testing: " + verifier.getSimulinkCountForEqTest() + " times");
+        log.info("BBC finished");
+        log.info("BBC Elapsed Time: " + totalTime.getSecond() + " [sec]");
+        log.info("Simulink Execution: " + verifier.getSimulinkCount() + " times");
+        log.info("Simulink Execution Time: " + verifier.getSimulationTimeSecond() + " [sec]");
+        log.info("Simulink Execution for Equivalence Testing: " + verifier.getSimulinkCountForEqTest() + " times");
 
         if (result) {
-            System.out.println("All the given properties are verified");
+            log.info("All the given properties are verified");
         } else {
-            System.out.println("The following properties are falsified");
+            log.info("The following properties are falsified");
             for (int i = 0; i < verifier.getCexAbstractInput().size(); i++) {
                 if (Objects.nonNull(verifier.getCexAbstractInput().get(i))) {
-                    printResult(stl, i, verifier.getCexProperty(), verifier.getCexConcreteInput(), verifier.getCexAbstractInput(), verifier.getCexOutput());
+                    printResult(i, verifier.getCexProperty(), verifier.getCexConcreteInput(), verifier.getCexAbstractInput(), verifier.getCexOutput());
                 }
             }
-            System.out.println("Step time: " + argParser.getStepTime());
+            log.info("Step time: " + argParser.getStepTime());
         }
 
         if (argParser.getDotFile() != null) {
@@ -242,11 +243,11 @@ public class FalCAuN {
         }
     }
 
-    private static void printResult(List<STLCost> stl, int i, List<String> cexProperty, List<SimulinkSignal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
-        System.out.println("Property STL: " + stl.get(i));
-        System.out.println("Property LTL: " + cexProperty.get(i));
-        System.out.println("Concrete Input: " + cexConcreteInput.get(i));
-        System.out.println("Abstract Input: " + cexAbstractInput.get(i));
-        System.out.println("Output: " + cexOutput.get(i));
+    private static void printResult(int i, List<STLCost> cexProperties, List<SimulinkSignal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
+        log.info("Property STL: {}", cexProperties.get(i).toString());
+        log.info("Property LTL: {}", cexProperties.get(i).toLTLString());
+        log.info("Concrete Input: {}", cexConcreteInput.get(i));
+        log.info("Abstract Input: {}", cexAbstractInput.get(i));
+        log.info("Output: {}", cexOutput.get(i));
     }
 }
