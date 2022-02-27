@@ -175,7 +175,6 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         for (int i = 0; i < this.size(); i++) {
             DefaultQuery<String, Word<String>> result = this.propertyOracles.get(i).findCounterExample(hypothesis, inputs);
             if (Objects.nonNull(result)) {
-                log.debug("this.propertyOracles.get(i).isDisproved(): {}", this.propertyOracles.get(i).isDisproved());
                 boolean isTrueCounterExample = this.propertyOracles.get(i).isDisproved();
                 if (Objects.isNull(falsifiedResult)) {
                     falsifiedResult = result;
