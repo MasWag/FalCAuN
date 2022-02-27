@@ -221,11 +221,6 @@ class BlackBoxVerifier {
                 cexInput.add(currentInput);
                 cexOutput.add(cexMealyCandidate.computeOutput(currentInput));
                 isVerified = false;
-            } else {
-                // We could not find the counter example Mealy machine.
-                cexMealy.add(null);
-                cexInput.add(null);
-                cexOutput.add(null);
             }
         }
 
