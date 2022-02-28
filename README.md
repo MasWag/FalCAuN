@@ -238,6 +238,13 @@ Javadoc
 The source code is partially commented using the Javadoc syntax. The document can be generated
 under `./target/site/apidocs/` by `mvn javadoc:javadoc`.
 
+Contributors
+------------
+
+- Masaki Waga: 2019--
+- Junya Shijubo: 2021--
+
+
 FAQ
 ---
 
