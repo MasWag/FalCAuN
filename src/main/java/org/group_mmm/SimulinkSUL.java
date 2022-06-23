@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
  */
-class SimulinkSUL implements SUL<List<Double>, SimulinkSUL.IOSignalPiece> {
+class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkSUL.class);
     private final Double signalStep;
     /**
@@ -324,13 +324,4 @@ class SimulinkSUL implements SUL<List<Double>, SimulinkSUL.IOSignalPiece> {
         return this.simulationTime.getSecond();
     }
 
-    static class IOSignalPiece {
-        @Getter
-        final private List<Double> inputSignal, outputSignal;
-
-        public IOSignalPiece(List<Double> inputSignal, List<Double> outputSignal) {
-            this.inputSignal = inputSignal;
-            this.outputSignal = outputSignal;
-        }
-    }
 }

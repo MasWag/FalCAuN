@@ -25,8 +25,8 @@ public class IOSignal {
         return size();
     }
 
-    public Stream<SimulinkSUL.IOSignalPiece> stream() {
-        return Streams.zip(inputSignal.stream(), outputSignal.stream(), SimulinkSUL.IOSignalPiece::new);
+    public Stream<IOSignalPiece> stream() {
+        return Streams.zip(inputSignal.stream(), outputSignal.stream(), IOSignalPiece::new);
     }
 
     public List<IOSignal> prefixes(boolean longestFirst) {

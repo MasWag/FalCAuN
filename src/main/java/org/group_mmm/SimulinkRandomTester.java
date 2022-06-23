@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
  * @author Masaki Waga
  */
 public class SimulinkRandomTester {
-    protected SUL<List<Double>, SimulinkSUL.IOSignalPiece> simulink;
+    protected SUL<List<Double>, IOSignalPiece> simulink;
     private final SimulinkSUL rawSimulink;
     private final Alphabet<String> abstractInputAlphabet;
     private final SimulinkSULMapper mapper;

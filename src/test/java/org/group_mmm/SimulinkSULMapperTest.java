@@ -1,7 +1,6 @@
 package org.group_mmm;
 
 import net.automatalib.words.Word;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -66,7 +65,7 @@ class SimulinkSULMapperTest {
         expected.put(new ArrayList<>(Arrays.asList(113.0, 200.0)), "00n");
 
         for (Map.Entry<List<Double>, String> test : expected.entrySet()) {
-            String result = mapper.mapOutput(new SimulinkSUL.IOSignalPiece(Collections.emptyList(), test.getKey()));
+            String result = mapper.mapOutput(new IOSignalPiece(Collections.emptyList(), test.getKey()));
             assertEquals(test.getValue(), result);
         }
     }
@@ -87,8 +86,8 @@ class SimulinkSULMapperTest {
             mapper2.put('c', 100.0);
             inputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
         }
-        Function<SimulinkSUL.IOSignalPiece, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
-        List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
+        Function<IOSignalPiece, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
+        List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
         List<Map<Character, Double>> outputMapper;
         List<Character> largest;
         {

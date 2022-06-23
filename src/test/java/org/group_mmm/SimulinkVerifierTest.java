@@ -26,7 +26,7 @@ class SimulinkVerifierTest {
     private SimulinkVerifier verifier;
     private AdaptiveSTLUpdater properties;
     private SimulinkSULMapper mapper;
-    private final List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap = Collections.emptyList();
+    private final List<Function<IOSignalPiece, Double>> sigMap = Collections.emptyList();
     private final AdaptiveSTLUpdater propertyZHA19_AFC1 = new StaticLTLList(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
 
 
@@ -119,9 +119,9 @@ class SimulinkVerifierTest {
             engineSpeedMapper.put('k', 1100.0);
             inputMapper = new ArrayList<>(Arrays.asList(pedalAngleMapper, engineSpeedMapper));
         }
-        Function<SimulinkSUL.IOSignalPiece, Double> mu = a -> abs(a.getOutputSignal().get(0) -
+        Function<IOSignalPiece, Double> mu = a -> abs(a.getOutputSignal().get(0) -
                 a.getOutputSignal().get(1)) / a.getOutputSignal().get(1);
-        List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
+        List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
         {
             Map<Character, Double> afMapper = new HashMap<>();
             afMapper.put('a', 10.0);
@@ -203,9 +203,9 @@ class SimulinkVerifierTest {
             engineSpeedMapper.put('k', 1100.0);
             inputMapper = new ArrayList<>(Arrays.asList(pedalAngleMapper, engineSpeedMapper));
         }
-        Function<SimulinkSUL.IOSignalPiece, Double> mu =
+        Function<IOSignalPiece, Double> mu =
                 a -> abs(a.getOutputSignal().get(0) - a.getOutputSignal().get(1)) / a.getOutputSignal().get(1);
-        List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
+        List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
         {
             Map<Character, Double> afMapper = new HashMap<>();
             afMapper.put('a', 10.0);

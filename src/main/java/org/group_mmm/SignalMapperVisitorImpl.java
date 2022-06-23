@@ -2,7 +2,6 @@ package org.group_mmm;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -14,12 +13,12 @@ import static java.lang.Math.abs;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class SignalMapperVisitorImpl extends org.group_mmm.SignalMapperBaseVisitor<Function<SimulinkSUL.IOSignalPiece, Double>> {
+public class SignalMapperVisitorImpl extends org.group_mmm.SignalMapperBaseVisitor<Function<IOSignalPiece, Double>> {
     /**
      * {@inheritDoc}
      */
     @Override
-    public Function<SimulinkSUL.IOSignalPiece, Double> visitExpr(org.group_mmm.SignalMapperParser.ExprContext ctx) {
+    public Function<IOSignalPiece, Double> visitExpr(org.group_mmm.SignalMapperParser.ExprContext ctx) {
         if (ctx.atomic() != null) {
             // atomic
             log.trace("atomic");
@@ -64,7 +63,7 @@ public class SignalMapperVisitorImpl extends org.group_mmm.SignalMapperBaseVisit
      * {@inheritDoc}
      */
     @Override
-    public Function<SimulinkSUL.IOSignalPiece, Double> visitAtomic(org.group_mmm.SignalMapperParser.AtomicContext ctx) {
+    public Function<IOSignalPiece, Double> visitAtomic(org.group_mmm.SignalMapperParser.AtomicContext ctx) {
         if (ctx.signalID != null) {
             int sigIndex = Integer.parseInt(ctx.signalID.getText());
             if (Objects.nonNull(ctx.INPUT())) {

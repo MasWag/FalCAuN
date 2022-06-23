@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, SimulinkSUL.IOSignalPiece> {
+public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, IOSignalPiece> {
     private Map<String, List<Double>> inputMapper;
     private List<Character> largestOutputs;
     private SignalMapper sigMap;
@@ -98,7 +98,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
      * {@inheritDoc}
      */
     @Override
-    public String mapOutput(SimulinkSUL.IOSignalPiece concreteIO) {
+    public String mapOutput(IOSignalPiece concreteIO) {
         List<Double> concreteOutput = concreteIO.getOutputSignal();
         // System.out.println("AF: " + concreteOutput.get(0));
         StringBuilder result = new StringBuilder(concreteOutputs.size());
@@ -122,7 +122,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
         return result.toString();
     }
 
-    public List<Double> mapConcrete(SimulinkSUL.IOSignalPiece concreteIO) {
+    public List<Double> mapConcrete(IOSignalPiece concreteIO) {
         List<Double> concreteOutput = concreteIO.getOutputSignal();
         List<Double> result = new ArrayList<>(concreteOutput);
         for (int i = 0; i < sigMap.size(); i++) {

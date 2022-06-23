@@ -18,7 +18,7 @@ import java.util.function.Function;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class SimulinkVerifier {
-    protected SUL<List<Double>, SimulinkSUL.IOSignalPiece> simulink;
+    protected SUL<List<Double>, IOSignalPiece> simulink;
     private final SimulinkSUL rawSimulink;
     private final SimulinkSULMapper mapper;
     private final BlackBoxVerifier verifier;
