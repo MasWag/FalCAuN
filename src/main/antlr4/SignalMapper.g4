@@ -15,6 +15,7 @@ expr
      | left=expr PLUS right=expr
      | left=expr MINUS right=expr
      | LPAREN expr RPAREN
+     | ABS expr
      ;
 
 atomic
@@ -47,3 +48,4 @@ LPAREN : '(';
 RPAREN : ')';
 INPUT : 'input';
 OUTPUT : 'signal' | 'output';
+ABS : 'abs' | 'ABS';

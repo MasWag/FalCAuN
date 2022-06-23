@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.lang.Math.abs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -44,14 +45,16 @@ class SignalMapperTest {
     @Test
     void parse() throws IOException {
         sigMap = SignalMapper.parse(sigMapName);
-        assertEquals(3, sigMap.size());
+        assertEquals(4, sigMap.size());
         assertEquals(2.0 + 0.4, sigMap.apply(0,
                 new SimulinkSUL.IOSignalPiece(Collections.emptyList(), concreteSignal)));
         assertEquals(-4.2 - 0.4 * 2.0, sigMap.apply(1,
                 new SimulinkSUL.IOSignalPiece(Collections.emptyList(), concreteSignal)));
         assertEquals(0.5 + 2.0, sigMap.apply(2,
                 new SimulinkSUL.IOSignalPiece(Collections.singletonList(0.5), concreteSignal)));
-        assertThrows(IndexOutOfBoundsException.class, () -> sigMap.apply(3,
+        assertEquals(abs(2.0 - 4.2), sigMap.apply(3,
+                new SimulinkSUL.IOSignalPiece(Collections.emptyList(), concreteSignal)));
+        assertThrows(IndexOutOfBoundsException.class, () -> sigMap.apply(4,
                 new SimulinkSUL.IOSignalPiece(Collections.emptyList(), concreteSignal)));
     }
 }

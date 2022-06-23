@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static java.lang.Math.abs;
+
 /**
  * <p>STLVisitorImpl class.</p>
  *
@@ -47,6 +49,11 @@ public class SignalMapperVisitorImpl extends org.group_mmm.SignalMapperBaseVisit
             log.trace("paren");
             assert ctx.expr().size() == 1;
             return visitExpr(ctx.expr(0));
+        }else if (ctx.ABS() != null) {
+            // Paren
+            log.trace("abs");
+            assert ctx.expr().size() == 1;
+            return (concreteSignal) -> abs(visitExpr(ctx.expr(0)).apply(concreteSignal));
         }
 
         log.error("Unimplemented formula!!");
