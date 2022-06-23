@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
  */
-class SimulinkSUL implements SUL<List<Double>, List<Double>> {
+class SimulinkSUL implements SUL<List<Double>, SimulinkSUL.IOSignalPiece> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkSUL.class);
     private final Double signalStep;
     /**
@@ -100,7 +100,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
      */
     @Nullable
     @Override
-    public List<Double> step(@Nullable List<Double> inputSignal) throws SULException {
+    public IOSignalPiece step(@Nullable List<Double> inputSignal) throws SULException {
         assert (isInitial && endTime == 0) || (endTime > 0.0);
         if (inputSignal == null) {
             return null;
@@ -152,7 +152,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
         assert endTime > 0.0;
         LOGGER.trace("Output: " + result);
 
-        return result;
+        return new IOSignalPiece(inputSignal, result);
     }
 
     private void makeDataSet(StringBuilder builder) throws ExecutionException, InterruptedException {
@@ -304,7 +304,7 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
      */
     @Nonnull
     @Override
-    public SUL<List<Double>, List<Double>> fork() throws UnsupportedOperationException {
+    public SUL<List<Double>, IOSignalPiece> fork() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
@@ -322,5 +322,15 @@ class SimulinkSUL implements SUL<List<Double>, List<Double>> {
 
     public double getSimulationTimeSecond() {
         return this.simulationTime.getSecond();
+    }
+
+    static class IOSignalPiece {
+        @Getter
+        final private List<Double> inputSignal, outputSignal;
+
+        public IOSignalPiece(List<Double> inputSignal, List<Double> outputSignal) {
+            this.inputSignal = inputSignal;
+            this.outputSignal = outputSignal;
+        }
     }
 }

@@ -22,13 +22,11 @@ import java.util.stream.IntStream;
  * @author Masaki Waga
  */
 public class SimulinkRandomTester {
-    protected SUL<List<Double>, List<Double>> simulink;
-    private SimulinkSUL rawSimulink;
-    private Alphabet<String> abstractInputAlphabet;
-    private Alphabet<List<Double>> concreteInputAlphabet;
-    private SimulinkSULMapper mapper;
-    private SUL<String, String> mappedSimulink;
-    private List<STLCost> costFunc;
+    protected SUL<List<Double>, SimulinkSUL.IOSignalPiece> simulink;
+    private final SimulinkSUL rawSimulink;
+    private final Alphabet<String> abstractInputAlphabet;
+    private final SimulinkSULMapper mapper;
+    private final List<STLCost> costFunc;
     private long timeout;
     @Getter
     private List<Word<String>> cexInput;
@@ -36,10 +34,10 @@ public class SimulinkRandomTester {
     private List<STLCost> cexProperty;
     @Getter
     private List<Word<String>> cexOutput;
-    private int length;
-    private Random random = new Random();
-    private List<String> properties;
-    private double signalStep;
+    private final int length;
+    private final Random random = new Random();
+    private final List<String> properties;
+    private final double signalStep;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SimulinkRandomTester.class);
 
     /**
@@ -55,16 +53,16 @@ public class SimulinkRandomTester {
     public SimulinkRandomTester(String initScript, List<String> paramName, int length, double signalStep, List<String> properties, List<STLCost> costFunc, SimulinkSULMapper mapper) throws Exception {
         this.mapper = mapper;
         this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
-        this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
+        Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
         this.signalStep = signalStep;
 
         this.properties = properties;
 
-        this.simulink = SULCache.createTreeCache(this.concreteInputAlphabet, rawSimulink);
+        this.simulink = SULCache.createTreeCache(concreteInputAlphabet, rawSimulink);
         this.length = length;
-        this.mappedSimulink = new MappedSUL<>(mapper, simulink);
-        this.mappedSimulink = SULCache.createTreeCache(this.abstractInputAlphabet, this.mappedSimulink);
+        SUL<String, String> mappedSimulink = new MappedSUL<>(mapper, simulink);
+        mappedSimulink = SULCache.createTreeCache(this.abstractInputAlphabet, mappedSimulink);
         this.costFunc = costFunc;
         assert (costFunc.size() == properties.size());
     }
@@ -123,7 +121,7 @@ public class SimulinkRandomTester {
                         cexInput.add(abstractInput);
                         cexProperty.add(costFunc.get(i));
                         cexOutput.add(Word.fromList(
-                                concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList())));
+                                concreteSignal.stream().map(mapper::mapOutput).collect(Collectors.toList())));
                         it.remove();
                         LOGGER.debug("cexInput size: " + cexInput.size());
                     }

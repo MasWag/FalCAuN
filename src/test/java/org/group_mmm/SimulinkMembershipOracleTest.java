@@ -27,7 +27,7 @@ class SimulinkMembershipOracleTest {
     private SimulinkSULMapper mapper;
     private List<Function<List<Double>, Double>> sigMap = new ArrayList<>();
     private SimulinkSUL simulink;
-    private MappedSUL<String, String, List<Double>, List<Double>> mappedSimulink;
+    private MappedSUL<String, String, List<Double>, SimulinkSUL.IOSignalPiece> mappedSimulink;
     private MembershipOracle.MealyMembershipOracle<String, String> sulOracle, directOracle;
     private Alphabet<String> abstractInputAlphabet;
     private Alphabet<List<Double>> concreteInputAlphabet;
