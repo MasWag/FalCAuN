@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 public class SignalMapper {
-    final private List<Function<List<Double>, Double>> sigMap;
+    final private List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap;
 
     public SignalMapper() {
         this.sigMap = Collections.emptyList();
@@ -30,7 +30,7 @@ public class SignalMapper {
 
 
     //@ requires 0 <= index < size()
-    public double apply(int index, List<Double> concreteSignal) {
+    public double apply(int index, SimulinkSUL.IOSignalPiece concreteSignal) {
         return this.sigMap.get(index).apply(concreteSignal);
     }
 
@@ -40,19 +40,18 @@ public class SignalMapper {
     }
 
     public static SignalMapper parse(String filename) throws IOException {
-        List<Function<List<Double>, Double>> rawList = new BufferedReader(
+        List<Function<SimulinkSUL.IOSignalPiece, Double>> rawList = new BufferedReader(
                 new InputStreamReader(new FileInputStream(filename))).lines().map(SignalMapper::lineParse).collect(Collectors.toList());
 
         return new SignalMapper(rawList);
     }
 
-    static Function<List<Double>, Double> lineParse(String line) {
-        org.group_mmm.SignalMapperVisitor<Function<List<Double>, Double>> visitor = new SignalMapperVisitorImpl();
+    static Function<SimulinkSUL.IOSignalPiece, Double> lineParse(String line) {
+        org.group_mmm.SignalMapperVisitor<Function<SimulinkSUL.IOSignalPiece, Double>> visitor = new SignalMapperVisitorImpl();
         return parseSignalMapperImpl(line, visitor);
     }
 
-    private static Function<List<Double>, Double> parseSignalMapperImpl(String line,
-                                                                        org.group_mmm.SignalMapperVisitor<Function<List<Double>, Double>> visitor) {
+    private static Function<SimulinkSUL.IOSignalPiece, Double> parseSignalMapperImpl(String line, org.group_mmm.SignalMapperVisitor<Function<SimulinkSUL.IOSignalPiece, Double>> visitor) {
         CharStream stream = CharStreams.fromString(line);
         org.group_mmm.SignalMapperLexer lexer = new org.group_mmm.SignalMapperLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

@@ -87,8 +87,8 @@ class SimulinkSULMapperTest {
             mapper2.put('c', 100.0);
             inputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
         }
-        Function<List<Double>, Double> diff = a -> a.get(0) - a.get(1);
-        List<Function<List<Double>, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
+        Function<SimulinkSUL.IOSignalPiece, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
+        List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
         List<Map<Character, Double>> outputMapper;
         List<Character> largest;
         {

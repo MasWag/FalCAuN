@@ -26,7 +26,7 @@ public class AutotransExample {
     private SimulinkVerifier verifier;
     private AdaptiveSTLUpdater properties;
     private SimulinkSULMapper mapper;
-    private List<Function<List<Double>, Double>> sigMap = new ArrayList<>();
+    private List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap = new ArrayList<>();
 
     AutotransExample(double signalStep) {
         this.signalStep = signalStep;
@@ -158,11 +158,11 @@ public class AutotransExample {
         return mapper;
     }
 
-    public List<Function<List<Double>, Double>> getSigMap() {
+    public List<Function<SimulinkSUL.IOSignalPiece, Double>> getSigMap() {
         return sigMap;
     }
 
-    public void setSigMap(List<Function<List<Double>, Double>> sigMap) {
+    public void setSigMap(List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap) {
         this.sigMap = sigMap;
         mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(this.sigMap));
     }

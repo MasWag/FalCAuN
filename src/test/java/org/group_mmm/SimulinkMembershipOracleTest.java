@@ -25,7 +25,7 @@ class SimulinkMembershipOracleTest {
     private final Double signalStep = 10.0;
     private List<String> properties;
     private SimulinkSULMapper mapper;
-    private List<Function<List<Double>, Double>> sigMap = new ArrayList<>();
+    private List<Function<SimulinkSUL.IOSignalPiece, Double>> sigMap = new ArrayList<>();
     private SimulinkSUL simulink;
     private MappedSUL<String, String, List<Double>, SimulinkSUL.IOSignalPiece> mappedSimulink;
     private MembershipOracle.MealyMembershipOracle<String, String> sulOracle, directOracle;

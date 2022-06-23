@@ -109,7 +109,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
             if (i < concreteOutput.size()) {
                 cOuti = concreteOutput.get(i);
             } else {
-                cOuti = sigMap.apply(i - concreteOutput.size(), concreteOutput);
+                cOuti = sigMap.apply(i - concreteOutput.size(), concreteIO);
             }
             int searchResult = Collections.binarySearch(concreteOutputs.get(i), cOuti);
             int index = searchResult >= 0 ? searchResult : ~searchResult;
@@ -126,7 +126,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
         List<Double> concreteOutput = concreteIO.getOutputSignal();
         List<Double> result = new ArrayList<>(concreteOutput);
         for (int i = 0; i < sigMap.size(); i++) {
-            result.add(sigMap.apply(i, concreteOutput));
+            result.add(sigMap.apply(i, concreteIO));
         }
         return result;
     }
