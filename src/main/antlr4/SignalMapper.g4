@@ -15,10 +15,12 @@ expr
      | left=expr PLUS right=expr
      | left=expr MINUS right=expr
      | LPAREN expr RPAREN
+     | ABS expr
      ;
 
 atomic
-       : SIGNAL LPAREN signalID=NATURAL RPAREN
+       : INPUT LPAREN signalID=NATURAL RPAREN
+       | OUTPUT LPAREN signalID=NATURAL RPAREN
        | value
        ;
 
@@ -44,4 +46,6 @@ FLOAT : NATURAL '.' [0-9]+;
 //([1-9][0-9]*('.'[0-9]+)?) | ('0.'[0-9]+);
 LPAREN : '(';
 RPAREN : ')';
-SIGNAL : 'signal';
+INPUT : 'input';
+OUTPUT : 'signal' | 'output';
+ABS : 'abs' | 'ABS';

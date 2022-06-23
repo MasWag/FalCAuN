@@ -1,9 +1,11 @@
 package org.group_mmm;
 
+import com.google.common.collect.Streams;
 import lombok.Getter;
 import net.automatalib.words.Word;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Getter
 public class IOSignal {
@@ -21,6 +23,10 @@ public class IOSignal {
 
     public int length() {
         return size();
+    }
+
+    public Stream<IOSignalPiece> stream() {
+        return Streams.zip(inputSignal.stream(), outputSignal.stream(), IOSignalPiece::new);
     }
 
     public List<IOSignal> prefixes(boolean longestFirst) {

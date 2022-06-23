@@ -1,2 +1,4 @@
 signal(0) + signal(2)
 signal(1) - signal(2) * signal(0)
+input(0) + output(0)
+abs(signal(0) + signal(1))

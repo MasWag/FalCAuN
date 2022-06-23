@@ -68,7 +68,7 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle implements E
             IOSignal concreteSignal = new IOSignal(concreteInput, concreteOutput);
             List<Double> robustness = concreteSignal.prefixes(false).stream()
                     .map(word -> new IOSignal(word.getInputSignal(),
-                            Word.fromList(word.getOutputSignal().stream().map(mapper::mapConcrete).collect(Collectors.toList()))))
+                            Word.fromList(word.stream().map(mapper::mapConcrete).collect(Collectors.toList()))))
                     .map(costFunc).collect(Collectors.toList())
                     .subList(1, concreteInput.length() + 1); // remove the additional element by prefixes
             assert concreteOutput.size() == abstractInput.size();
@@ -76,7 +76,7 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle implements E
             costBuilder.append(robustness);
 
             abstractOutputBuilder.append(
-                    concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList()));
+                    concreteSignal.stream().map(mapper::mapOutput).collect(Collectors.toList()));
 
             assert concreteOutput.size() == abstractOutputBuilder.size();
 
@@ -107,7 +107,7 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle implements E
         super.cacheInsert(abstractInput, abstractOutput);
         Word<Double> robustness = Word.fromList(concreteSignal.prefixes(false).stream()
                 .map(word -> new IOSignal(word.getInputSignal(),
-                        Word.fromList(word.getOutputSignal().stream().map(mapper::mapConcrete).collect(Collectors.toList()))))
+                        Word.fromList(word.stream().map(mapper::mapConcrete).collect(Collectors.toList()))))
                 .map(costFunc).collect(Collectors.toList())
                 .subList(1, abstractInput.length() + 1)); // remove the additional element by prefixes
         costCache.insert(abstractInput, robustness);

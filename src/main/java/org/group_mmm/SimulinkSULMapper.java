@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, List<Double>> {
+public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, IOSignalPiece> {
     private Map<String, List<Double>> inputMapper;
     private List<Character> largestOutputs;
     private SignalMapper sigMap;
@@ -98,7 +98,8 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
      * {@inheritDoc}
      */
     @Override
-    public String mapOutput(List<Double> concreteOutput) {
+    public String mapOutput(IOSignalPiece concreteIO) {
+        List<Double> concreteOutput = concreteIO.getOutputSignal();
         // System.out.println("AF: " + concreteOutput.get(0));
         StringBuilder result = new StringBuilder(concreteOutputs.size());
         assert concreteOutputs.size() == sigMap.size() + concreteOutput.size();
@@ -108,7 +109,7 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
             if (i < concreteOutput.size()) {
                 cOuti = concreteOutput.get(i);
             } else {
-                cOuti = sigMap.apply(i - concreteOutput.size(), concreteOutput);
+                cOuti = sigMap.apply(i - concreteOutput.size(), concreteIO);
             }
             int searchResult = Collections.binarySearch(concreteOutputs.get(i), cOuti);
             int index = searchResult >= 0 ? searchResult : ~searchResult;
@@ -121,10 +122,11 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
         return result.toString();
     }
 
-    public List<Double> mapConcrete(List<Double> concreteOutput) {
+    public List<Double> mapConcrete(IOSignalPiece concreteIO) {
+        List<Double> concreteOutput = concreteIO.getOutputSignal();
         List<Double> result = new ArrayList<>(concreteOutput);
         for (int i = 0; i < sigMap.size(); i++) {
-            result.add(sigMap.apply(i, concreteOutput));
+            result.add(sigMap.apply(i, concreteIO));
         }
         return result;
     }

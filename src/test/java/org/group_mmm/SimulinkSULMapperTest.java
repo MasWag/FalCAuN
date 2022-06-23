@@ -12,10 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SimulinkSULMapperTest {
 
     private List<Map<Character, Double>> inputMapper;
-    private List<Map<Character, Double>> outputMapper;
-    private List<Character> largest;
     private SimulinkSULMapper mapper;
-    private List<Function<List<Double>, Double>> sigMap;
 
 
     @Test
@@ -68,7 +65,7 @@ class SimulinkSULMapperTest {
         expected.put(new ArrayList<>(Arrays.asList(113.0, 200.0)), "00n");
 
         for (Map.Entry<List<Double>, String> test : expected.entrySet()) {
-            String result = mapper.mapOutput(test.getKey());
+            String result = mapper.mapOutput(new IOSignalPiece(Collections.emptyList(), test.getKey()));
             assertEquals(test.getValue(), result);
         }
     }
@@ -89,8 +86,10 @@ class SimulinkSULMapperTest {
             mapper2.put('c', 100.0);
             inputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
         }
-        Function<List<Double>, Double> diff = a -> a.get(0) - a.get(1);
-        sigMap = new ArrayList<>(Collections.singletonList(diff));
+        Function<IOSignalPiece, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
+        List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
+        List<Map<Character, Double>> outputMapper;
+        List<Character> largest;
         {
             Map<Character, Double> mapper1 = new HashMap<>();
             mapper1.put('a', 10.0);
