@@ -64,7 +64,7 @@ class NumericMembershipOracleTest {
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
         this.mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
-        this.simulink = new SimulinkSUL(initScript, paramNames, signalStep);
+        this.simulink = new SimulinkSUL(initScript, paramNames, signalStep, 0.0025);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
 

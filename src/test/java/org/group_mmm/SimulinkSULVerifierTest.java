@@ -65,7 +65,7 @@ class SimulinkSULVerifierTest {
                 STLCost.parseSTL("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
 
         try {
-            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
+            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
             verifier.setSimulationStep(0.0001);
             verifier.addWpMethodEQOracle(1);
         } catch (Exception e) {
@@ -159,7 +159,7 @@ class SimulinkSULVerifierTest {
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         try {
-            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, propertyZHA19_AFC1, mapper);
+            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, propertyZHA19_AFC1, mapper);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
@@ -243,7 +243,7 @@ class SimulinkSULVerifierTest {
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         try {
-            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, propertyZHA19_AFC1, mapper);
+            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, propertyZHA19_AFC1, mapper);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
@@ -310,7 +310,7 @@ class SimulinkSULVerifierTest {
             STLCost stl = parseSTL(stlString, inputMapper, outputMapper, largest);
             properties = new StaticSTLList(Collections.singletonList(stl));
             // define the verifier
-            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
+            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
             // set timeout
             long timeout = 2 * 60;
             verifier.setTimeout(timeout);
@@ -348,7 +348,7 @@ class SimulinkSULVerifierTest {
             @AfterEach
             void tearDown() throws Exception {
                 // define the verifier
-                verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
+                verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
                 verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
@@ -387,8 +387,8 @@ class SimulinkSULVerifierTest {
 
             void verify() throws Exception {
                 // define the verifier
-                verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
-                verifier.addGAEQOracleAll(20, 10000, ArgParser.GASelectionKind.Tournament,
+                verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
+                verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
                 // Confirm that the number of the properties is correctly handled

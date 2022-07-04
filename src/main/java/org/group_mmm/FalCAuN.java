@@ -137,6 +137,7 @@ public class FalCAuN {
                 argParser.getInitScript(),
                 argParser.getParamNames(),
                 argParser.getStepTime(),
+                argParser.getSimulinkSimulationStep(),
                 adaptiveSTLUpdater,
                 sulMapper);
 

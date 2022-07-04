@@ -62,6 +62,8 @@ class ArgParser {
     private int maxDepth;
     @Getter
     private boolean adaptiveSTL = true;
+    @Getter
+    Double simulinkSimulationStep = 0.0025;
 
     ArgParser(String[] args) throws MissingOptionException, IOException {
         options.addOption("h", "help", false, "Print a help message");
@@ -89,6 +91,7 @@ class ArgParser {
         options.addOption(null, "ga-selection-kind", true, "Specify the selection method in GA");
         options.addOption(null, "wp-max-depth", true, "Specify the maximum depth in Wp");
         options.addOption(null, "disable-adaptive-stl", false, "Disable the adaptive STL updater");
+        options.addOption(null, "simulink-simulation-step", true, "The simulation step of Simulink model. This is 0.0025 by default.");
 
         DefaultParser parser = new DefaultParser();
         CommandLine cl;
@@ -255,6 +258,9 @@ class ArgParser {
         }
         if (cl.hasOption("disable-adaptive-stl")) {
             adaptiveSTL = false;
+        }
+        if (cl.hasOption("simulink-simulation-step")) {
+            simulinkSimulationStep = Double.parseDouble(cl.getOptionValue("simulink-simulation-step"));
         }
     }
 

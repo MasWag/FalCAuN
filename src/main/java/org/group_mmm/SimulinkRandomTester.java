@@ -51,7 +51,7 @@ public class SimulinkRandomTester {
      */
     public SimulinkRandomTester(String initScript, List<String> paramName, int length, double signalStep, List<String> properties, List<STLCost> costFunc, NumericSULMapper mapper) throws Exception {
         this.mapper = mapper;
-        this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
+        this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep, 0.0025);
         Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
         this.signalStep = signalStep;

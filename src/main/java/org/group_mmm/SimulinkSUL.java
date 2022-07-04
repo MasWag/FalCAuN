@@ -30,7 +30,7 @@ class SimulinkSUL implements NumericSUL {
      * <p>
      * If this value is too large, Simulink can abort due to an computation error. In that case, you should make this value larger.
      */
-    private double simulinkSimulationStep = 0.0025;
+    private double simulinkSimulationStep;
     private final MatlabEngine matlab;
     private final List<String> paramNames;
     private Double endTime = 0.0;
@@ -50,10 +50,11 @@ class SimulinkSUL implements NumericSUL {
         this.simulinkSimulationStep = simulinkSimulationStep;
     }
 
-    SimulinkSUL(String initScript, List<String> paramNames, Double signalStep) throws InterruptedException, ExecutionException {
+    SimulinkSUL(String initScript, List<String> paramNames, Double signalStep, Double simulinkSimulationStep) throws InterruptedException, ExecutionException {
         // Load System here
         this.paramNames = paramNames;
         this.signalStep = signalStep;
+        this.simulinkSimulationStep = simulinkSimulationStep;
         String[] engines = MatlabEngine.findMatlab();
         if (engines.length == 0) {
             matlab = MatlabEngine.startMatlab();

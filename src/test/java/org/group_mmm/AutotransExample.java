@@ -460,6 +460,6 @@ public class AutotransExample {
     }
 
     void constructVerifier() throws Exception {
-        verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
+        verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
     }
 }

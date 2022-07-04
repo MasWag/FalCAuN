@@ -15,7 +15,7 @@ class SimulinkSULTest {
     private SimulinkSUL sul;
 
     void setUp(String initScript, List<String> paramNames, double signalStep) throws Exception {
-        this.sul = new SimulinkSUL(initScript, paramNames, signalStep);
+        this.sul = new SimulinkSUL(initScript, paramNames, signalStep, 0.0025);
     }
 
     @AfterEach

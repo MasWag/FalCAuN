@@ -135,6 +135,9 @@ class ArgParserTest {
         args.add("--wp-max-depth=10");
     }
 
+    private void addSimulinkSimulationStep() {
+        args.add("--simulink-simulation-step=0.01");
+    }
     private void parse() throws MissingOptionException, IOException {
         argParser = new ArgParser(args.toArray(new String[0]));
     }
@@ -403,6 +406,7 @@ class ArgParserTest {
                 assertEquals("[] (signal(0) > 100)", argParser.getStlFormula());
                 assertNull(argParser.getStlFile());
                 assertNull(argParser.getTimeout());
+                assertEquals(0.0025, argParser.getSimulinkSimulationStep());
             }
 
             @Test
@@ -546,6 +550,32 @@ class ArgParserTest {
                 assertEquals("stl.txt", argParser.getStlFile());
                 assertEquals(ArgParser.GASelectionKind.Tournament, argParser.getSelectionKind());
                 assertNull(argParser.getStlFormula());
+            }
+
+            @Test
+            void simulinkSimulationStep() throws MissingOptionException, IOException {
+                addSTLString();
+                addInputMapper();
+                addOutputMapper();
+                addHC();
+                addLength();
+                addStepTime();
+                addParamNames();
+                addInitScript();
+                addSimulinkSimulationStep();
+                parse();
+                quitExpect = false;
+                verboseExpected = false;
+                assertNull(argParser.getDotFile());
+                assertEquals("initAT", argParser.getInitScript());
+                assertEquals(Arrays.asList("throttle", "brake"), argParser.getParamNames());
+                assertEquals("input.mapper.txt", argParser.getInputMapperFile());
+                assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
+                assertEquals(ArgParser.EquivType.HC, argParser.getEquiv());
+                assertEquals("[] (signal(0) > 100)", argParser.getStlFormula());
+                assertNull(argParser.getStlFile());
+                assertNull(argParser.getTimeout());
+                assertEquals(0.01, argParser.getSimulinkSimulationStep());
             }
         }
     }
