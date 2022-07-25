@@ -218,7 +218,7 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
             builder.append("in = in.setModelParameter('SaveOutput', 'on');");
             builder.append("in = in.setModelParameter('OutputSaveName', 'yout');");
             builder.append("in = in.setModelParameter('SaveTime', 'on');");
-            builder.append("in = in.setModelParameter('OutputTimeName', 'tout');");
+            builder.append("in = in.setModelParameter('TimeSaveName', 'tout');");
         }
         builder.append("in = in.setModelParameter('LoadInitialState', 'off');");
 
