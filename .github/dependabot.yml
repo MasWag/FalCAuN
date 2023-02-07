@@ -29,3 +29,4 @@ updates:
   ignore:
     - dependency-name: "org.uma.jmetal*"
     - dependency-name: "com.pholser:junit-quickcheck-*"
+    - dependency-name: "org.mockito-mockito-*"
