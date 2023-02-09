@@ -17,26 +17,32 @@ if [ -z "$MATLAB_HOME" ]; then
   exit 1
 fi
 
+# Check the MATLAB version
+MATLAB_VERSION=$(echo "$MATLAB_HOME" | grep -o 'R[0-9]\+[ab]')
+if expr "$MATLAB_VERSION" \< R2021a > /dev/null 2>&1; then
+    printf "Warning: You are using MATLAB %s. This may be too old\n" "$MATLAB_VERSION"
+fi
+
 case "$(uname)" in
 Darwin)
   arch=maci64
-  if java="$(/usr/libexec/java_home -v '1.8')/bin/java"; then
-    echo "Java 8 found at $java"
-  elif java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '1.8')/bin/java"; then
-    echo "Java 8 found at $java"
+  if java="$(/usr/libexec/java_home -v '11')/bin/java"; then
+    echo "Java 11 found at $java"
+  elif java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '11')/bin/java"; then
+    echo "Java 11 found at $java"
   else
-    echo "Error: Java 8 did not found"
+    echo "Error: Java 11 did not found"
     exit 1
   fi
   ;;
 Linux)
   arch=glnxa64
-  if java=$(find /usr/lib/jvm/java-8-openjdk* -name java -type f) 2>/dev/null; then
-    echo "Java 8 found at $java"
-  elif java=$(find /usr/lib/jvm/java-1.8.0-openjdk* -name java -type f | head -n 1) 2>/dev/null; then
-    echo "Java 8 found at $java"
+  if java=$(find /usr/lib/jvm/java-11-openjdk* -name java -type f) 2>/dev/null; then
+    echo "Java 11 found at $java"
+  elif java=$(find /usr/lib/jvm/java-1.11.0-openjdk* -name java -type f | head -n 1) 2>/dev/null; then
+    echo "Java 11 found at $java"
   else
-    echo "Error: Java 8 did not found"
+    echo "Error: Java 11 did not found"
     exit 1
   fi
   ;;

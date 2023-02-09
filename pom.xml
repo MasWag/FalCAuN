@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <junit.jupiter.version>5.9.2</junit.jupiter.version>
         <skipTests>true</skipTests>
     </properties>
