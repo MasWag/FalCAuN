@@ -383,12 +383,12 @@ class SimulinkVerifierTest {
             void verify() throws Exception {
                 // define the verifier
                 verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
-                verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
+                verifier.addGAEQOracleAll(20, 10000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
                 // Confirm that the number of the properties is correctly handled
                 assertThat("All the given properties should be reported as counterexamples",
-                        verifier.getCexProperty(),
+                        verifier.getCexProperty().stream().map(Object::toString).collect(Collectors.toList()),
                         containsInAnyOrder(expectedStlStringList.get(0), expectedStlStringList.get(1)));
                 assertEquals(2, verifier.getCexProperty().size());
                 // Confirm that the number of the counterexamples is correctly handled
