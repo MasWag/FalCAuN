@@ -62,19 +62,19 @@ FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works o
 
 ### Requirements
 
-- Java 8
+- Java 11
 - Maven
 - LTSMin 3.1.0
   - This is not officially released yet.
   - You can download it from [HERE](https://github.com/Meijuh/ltsmin/releases/tag/v3.1.0).
 - MATLAB/Simulink
-  - We tested with MATLAB R2018b but any later version should be fine.
+  - We tested with MATLAB R2021b but any later version should be fine.
 
 ### Instructions
 
 #### 0. Install the Requirements
 
-You need to install the aforementioned requirements. For example, on Ubuntu, you can install Java 8 and Maven by the following command.
+You need to install the aforementioned requirements. For example, on Ubuntu, you can install Java 11 and Maven by the following command.
 
 ```sh
 sudo apt-get install maven openjdk-8-jdk-headless -y

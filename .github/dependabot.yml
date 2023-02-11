@@ -30,4 +30,3 @@ updates:
     - dependency-name: "org.uma.jmetal*"
     - dependency-name: "com.pholser:junit-quickcheck-*"
     - dependency-name: "org.mockito-mockito-*"
-    - dependency-name: "org.antlr-antlr4-*"
