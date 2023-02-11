@@ -1,7 +1,6 @@
 version: 2.1
 orbs:
   matlab: mathworks/matlab@0.11.0
-  java11: drift/java11@0.1.2
 jobs:
   build:
     working_directory: ~/FalCAuN
@@ -14,7 +13,12 @@ jobs:
             wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz
             tar xvf ltsmin-v3.1.0-linux.tgz
             sudo cp -r v3.1.0/* /usr
-      - java11/install-java11-and-maven36
+      - run:
+          name: Install OpenJDK 11
+          command: |
+            sudo apt-get update && sudo apt-get install openjdk-11-jdk maven -y
+            sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
       - matlab/install:
           release: R2022b
       - restore_cache:
