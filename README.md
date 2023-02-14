@@ -58,7 +58,7 @@ When you use GA, SA, or WP for the equivalence testing, you have to specify the 
 Installation
 ------------
 
-FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works on many UNIX-like operating systems. We tested FalCAuN on macOS 10.15 Catalina, Ubuntu 18.04, and Arch Linux.
+FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works on many UNIX-like operating systems. We tested FalCAuN on macOS 12.6 Monterey, Ubuntu 22.04, and Arch Linux.
 
 ### Requirements
 
@@ -77,7 +77,7 @@ FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works o
 You need to install the aforementioned requirements. For example, on Ubuntu, you can install Java 11 and Maven by the following command.
 
 ```sh
-sudo apt-get install maven openjdk-8-jdk-headless -y
+sudo apt-get install maven openjdk-11-jdk-headless -y
 ```
 
 You have to manually install LTSMin 3.1.0 and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 by the following commands.
@@ -97,7 +97,7 @@ We assume that the environment variable `MATLAB_HOME` shows where MATLAB is inst
 ```sh
 export MATLAB_HOME=<path/to/matlab/home>
 ## Example:
-# export MATLAB_HOME=/usr/local/MATLAB/R2018b/
+# export MATLAB_HOME=/usr/local/MATLAB/R2021b/
 ```
 
 #### 2. Build and Install FalCAuN
