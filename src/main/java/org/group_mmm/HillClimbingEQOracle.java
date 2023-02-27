@@ -39,11 +39,11 @@ public class HillClimbingEQOracle extends AbstractSelectEQOracle {
      */
     Stream<Word<String>> neighborhoodStream(Word<String> input) {
         List<Integer> indices = IntStream.range(0, input.length()).boxed().collect(Collectors.toList());
-        Collections.shuffle(indices);
+        Collections.shuffle(indices, this.random);
         return indices.stream().flatMap(
                 index -> {
                     List<String> symbolList = new ArrayList<>(this.symbolList);
-                    Collections.shuffle(symbolList);
+                    Collections.shuffle(symbolList, this.random);
                     return symbolList.stream().filter(s -> !s.equals(input.getSymbol(index))).map(s ->
                     {
                         List<String> tmp = input.stream().collect(Collectors.toList());
