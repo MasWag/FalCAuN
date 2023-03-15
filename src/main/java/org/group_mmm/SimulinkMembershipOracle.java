@@ -55,7 +55,8 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
                 try {
                     concreteOutput = simulink.execute(concreteInput);
                 } catch (Exception e) {
-                    LOGGER.error(e.getMessage());
+                    LOGGER.error("An error occurred in SimulinkSUL::execute: {}", e.getMessage());
+                    e.printStackTrace();
                     return;
                 }
                 assert concreteOutput.size() == concreteInput.size();

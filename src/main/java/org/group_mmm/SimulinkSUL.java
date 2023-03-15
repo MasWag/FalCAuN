@@ -224,21 +224,28 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
 
         // Execute the simulation
         builder.append("simOut = sim(in);");
-        builder.append("y = simOut.get('yout');");
+        // We handle the output as double.
+        builder.append("y = double(simOut.get('yout'));");
         counter++;
     }
 
     protected double[][] getResult() throws ExecutionException, InterruptedException {
         double[][] y;
-        if (this.inputSignal.duration() == 0.0) {
-            double[] tmpY = matlab.getVariable("y");
-            if (Objects.isNull(tmpY)) {
-                y = null;
+        try {
+            if (this.inputSignal.duration() == 0.0) {
+                double[] tmpY = matlab.getVariable("y");
+                if (Objects.isNull(tmpY)) {
+                    LOGGER.error("The simulation output is null");
+                    y = null;
+                } else {
+                    y = new double[][]{tmpY};
+                }
             } else {
-                y = new double[][]{tmpY};
+                y = matlab.getVariable("y");
             }
-        } else {
-            y = matlab.getVariable("y");
+        } catch (Exception e) {
+            LOGGER.error("There was an error in the simulation: {}", e.getMessage());
+            throw e;
         }
         return y;
     }
@@ -270,6 +277,7 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
         runSimulation(builder, this.inputSignal.duration());
 
         simulationTime.start();
+        LOGGER.trace(builder.toString());
         matlab.eval(builder.toString());
         simulationTime.stop();
 
