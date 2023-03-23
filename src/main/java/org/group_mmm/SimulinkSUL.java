@@ -63,8 +63,12 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
         matlab.eval("clear;");
         matlab.eval("warning('off', 'Simulink:LoadSave:EncodingMismatch')");
         matlab.putVariable("signalStep", signalStep);
-
-        matlab.eval(initScript);
+        try {
+            matlab.eval(initScript);
+        } catch (Exception e) {
+            LOGGER.error("An error occurred during running the initial script. This also happens if the engine is not correctly installed.");
+            throw e;
+        }
     }
 
     /**
