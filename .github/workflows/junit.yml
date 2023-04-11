@@ -41,7 +41,7 @@ jobs:
         run: mvn test -DskipTests=False
 
       - name: Upload the test coverage to Codecov
-        uses: codecov/codecov-action@v3.1.1
+        uses: codecov/codecov-action@v3.1.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./target/my-reports
