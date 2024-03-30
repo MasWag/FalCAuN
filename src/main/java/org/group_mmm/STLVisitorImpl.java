@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,32 +17,19 @@ import static org.group_mmm.STLAbstractAtomic.Operation.*;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
+public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor<STLCost> {
     private List<Map<Character, Double>> inputMapper;
     private List<Map<Character, Double>> outputMapper;
     private List<Character> largest;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Object visitInterval(org.group_mmm.STLParser.IntervalContext ctx) {
-        int from = Integer.parseInt(ctx.left.getText());
-        int to = Integer.parseInt(ctx.right.getText());
-
-        return new AbstractMap.SimpleEntry<>(from, to);
-    }
 
     private STLCost handleInterval(STLTemporalOp subFml, org.group_mmm.STLParser.IntervalContext ctx) {
 
         if (ctx == null) {
             return subFml;
         } else {
-            log.trace("Bounded Globally");
-            @SuppressWarnings("unchecked")
-            AbstractMap.SimpleEntry<Integer, Integer> interval = (AbstractMap.SimpleEntry<Integer, Integer>) visitInterval(ctx);
-            int from = interval.getKey();
-            int to = interval.getValue();
+            log.trace("Bounded Globally or Eventually");
+            int from = Integer.parseInt(ctx.left.getText());
+            int to = Integer.parseInt(ctx.right.getText());
             return new STLSub(subFml, from, to);
         }
     }
@@ -52,56 +38,93 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
      * {@inheritDoc}
      */
     @Override
-    public Object visitExpr(org.group_mmm.STLParser.ExprContext ctx) {
+    public STLCost visitExpr(org.group_mmm.STLParser.ExprContext ctx) {
         if (ctx.atomic() != null) {
             // atomic
             log.trace("atomic");
             return visitAtomic(ctx.atomic());
-        } else if (ctx.OR() != null) {
-            // or
-            log.trace("or");
-            assert ctx.expr().size() == 2;
-            return new STLOr((STLCost) visitExpr(ctx.expr(0)), (STLCost) visitExpr(ctx.expr(1)));
-        } else if (ctx.AND() != null) {
-            // and
-            log.trace("and");
-            assert ctx.expr().size() == 2;
-            return new STLAnd((STLCost) visitExpr(ctx.expr(0)), (STLCost) visitExpr(ctx.expr(1)));
-        } else if (ctx.IMPLY() != null) {
-            // imply
-            log.trace("imply");
-            assert ctx.expr().size() == 2;
-            return new STLImply((STLCost) visitExpr(ctx.left), (STLCost) visitExpr(ctx.right));
-        } else if (ctx.NEXT() != null) {
-            // Next
-            log.trace("next");
-            assert ctx.expr().size() == 1;
-            return new STLNext((STLCost) visitExpr(ctx.expr(0)), true);
-        } else if (ctx.GLOBALLY() != null) {
-            // Globally
-            log.trace("Globally");
-            assert ctx.expr().size() == 1;
-            STLGlobal global = new STLGlobal((STLCost) visitExpr(ctx.expr(0)));
-
-            return handleInterval(global, ctx.interval());
-        } else if (ctx.EVENTUALLY() != null) {
-            // Eventually
-            log.trace("Eventually");
-            assert ctx.expr().size() == 1;
-            STLEventually eventually = new STLEventually((STLCost) visitExpr(ctx.expr(0)));
-
-            return handleInterval(eventually, ctx.interval());
-        } else if (ctx.UNTIL() != null) {
-            // Until
-            log.trace("Until");
-            assert ctx.expr().size() == 2;
-            STLUntil until = new STLUntil((STLCost) visitExpr(ctx.expr(0)), (STLCost) visitExpr(ctx.expr(1)));
-
-            if (ctx.interval() != null) {
-                log.error("Bounded until is not implemented yet");
-                return null;
+        } else if (ctx.binaryOperator() != null) {
+            // Binary operators without interval
+            STLCost left = visitExpr(ctx.left);
+            STLCost right = visitExpr(ctx.right);
+            if (ctx.binaryOperator().OR() != null) {
+                log.trace("or");
+                return new STLOr(left, right);
+            } else if (ctx.binaryOperator().AND() != null) {
+                log.trace("and");
+                return new STLAnd(left, right);
+            } else if (ctx.binaryOperator().IMPLY() != null) {
+                log.trace("imply");
+                return new STLImply(left, right);
+            } else if (ctx.binaryOperator().binaryTemporalOperator().UNTIL() != null) {
+                log.trace("until");
+                return new STLUntil(left, right);
+            } else if (ctx.binaryOperator().binaryTemporalOperator().RELEASE() != null) {
+                log.trace("release");
+                return new STLRelease(left, right);
             } else {
-                return until;
+                log.error("Unimplemented formula!!");
+                throw new UnsupportedOperationException("Unimplemented formula");
+            }
+        } else if (ctx.unaryOperator() != null) {
+            // Unary operators without interval
+            assert ctx.expr().size() == 1;
+            STLCost expr = visitExpr(ctx.expr(0));
+            if (ctx.unaryOperator().NEXT() != null) {
+                log.trace("next");
+                return new STLNext(expr, true);
+            } else if (ctx.unaryOperator().unaryTemporalOperator().GLOBALLY() != null) {
+                log.trace("Globally");
+                return new STLGlobal(expr);
+            } else if (ctx.unaryOperator().unaryTemporalOperator().EVENTUALLY() != null) {
+                log.trace("Eventually");
+                return new STLEventually(expr);
+            } else {
+                log.error("Unimplemented formula!!");
+                throw new UnsupportedOperationException("Unimplemented formula");
+            }
+        } else if (ctx.unaryTemporalOperator() != null) {
+            // Unary operators with interval
+            assert ctx.expr().size() == 1;
+            STLCost expr = visitExpr(ctx.expr(0));
+            if (ctx.unaryTemporalOperator().GLOBALLY() != null) {
+                log.trace("Globally");
+                STLGlobal global = new STLGlobal(expr);
+
+                return handleInterval(global, ctx.interval());
+            } else if (ctx.unaryTemporalOperator().EVENTUALLY() != null) {
+                log.trace("Eventually");
+                STLEventually eventually = new STLEventually(visitExpr(ctx.expr(0)));
+
+                return handleInterval(eventually, ctx.interval());
+            }
+        } else if (ctx.binaryTemporalOperator() != null) {
+            // Binary operators with interval
+            STLCost left = visitExpr(ctx.left);
+            STLCost right = visitExpr(ctx.right);
+            if (ctx.binaryTemporalOperator().UNTIL() != null) {
+                log.trace("Until");
+                STLUntil until = new STLUntil(left, right);
+
+                if (ctx.interval() != null) {
+                    log.error("Bounded until is not implemented yet");
+                    return null;
+                } else {
+                    return until;
+                }
+            } else if (ctx.binaryTemporalOperator().RELEASE() != null) {
+                log.trace("Release");
+                STLRelease release = new STLRelease(left, right);
+
+                if (ctx.interval() != null) {
+                    log.error("Bounded release is not implemented yet");
+                    return null;
+                } else {
+                    return release;
+                }
+            } else {
+                log.error("Unimplemented formula!!");
+                throw new UnsupportedOperationException("Unimplemented formula");
             }
         } else if (ctx.LPAREN() != null) {
             // Paren
@@ -118,11 +141,11 @@ public class STLVisitorImpl extends org.group_mmm.STLBaseVisitor {
      * {@inheritDoc}
      */
     @Override
-    public Object visitAtomic(org.group_mmm.STLParser.AtomicContext ctx) {
+    public STLCost visitAtomic(org.group_mmm.STLParser.AtomicContext ctx) {
         int sigIndex = Integer.parseInt(ctx.signalID.getText());
 
         STLAbstractAtomic.Operation op;
-        switch (ctx.operator.getText()) {
+        switch (ctx.comparisonOperator().getText()) {
             case "==":
                 op = eq;
                 break;

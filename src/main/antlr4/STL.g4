@@ -3,7 +3,6 @@ grammar STL;
 @header {
 package org.group_mmm;
 
-import java.util.AbstractMap;
 import org.group_mmm.STLListener;
 import org.group_mmm.STLVisitor;
 import org.group_mmm.STLParser;
@@ -12,40 +11,38 @@ import org.group_mmm.STLParser;
 
 expr
      : atomic
-     | left=expr AND right=expr
-     | left=expr OR right=expr
-     | left=expr IMPLY right=expr
-     | NOT expr
-     | GLOBALLY expr
-     | EVENTUALLY expr
-     | NEXT expr
-     | left=expr UNTIL right=expr
-     | GLOBALLY UNDER interval expr
-     | EVENTUALLY UNDER interval expr
-     | left=expr UNTIL UNDER interval right=expr
+     | left=expr binaryOperator right=expr
+     | unaryOperator expr
+     | unaryTemporalOperator UNDER interval expr
+     | left=expr binaryTemporalOperator UNDER interval right=expr
      | LPAREN expr RPAREN
      ;
 
 atomic
-       : OUTPUT LPAREN signalID=NATURAL RPAREN operator=EQ value
-       | OUTPUT LPAREN signalID=NATURAL RPAREN operator=LT value
-       | OUTPUT LPAREN signalID=NATURAL RPAREN operator=GT value
-       | OUTPUT LPAREN signalID=NATURAL RPAREN operator=NE value
-       | INPUT LPAREN signalID=NATURAL RPAREN operator=EQ value
-       | INPUT LPAREN signalID=NATURAL RPAREN operator=LT value
-       | INPUT LPAREN signalID=NATURAL RPAREN operator=GT value
-       | INPUT LPAREN signalID=NATURAL RPAREN operator=NE value
+       : OUTPUT LPAREN signalID=NATURAL RPAREN comparisonOperator value
+       | INPUT LPAREN signalID=NATURAL RPAREN comparisonOperator value
        ;
+
+unaryOperator : NOT | NEXT | unaryTemporalOperator;
+
+unaryTemporalOperator : GLOBALLY | EVENTUALLY ;
+
+binaryOperator : AND | OR | IMPLY | binaryTemporalOperator ;
+
+binaryTemporalOperator : UNTIL | RELEASE ;
+
+comparisonOperator : EQ | LT | GT | NE ;
 
 value
       : MINUS? NATURAL
       | MINUS? FLOAT
       ;
 
+// Defines an interval between two natural numbers. We only support closed intervals.
 interval
          : LBRACKET left=NATURAL COMMA right=NATURAL RBRACKET;
 
-
+// Lexer rules for various tokens used in the grammar.
 NEWLINE
     : '\r'? '\n' -> skip
     ;
@@ -61,6 +58,7 @@ COMMA:  ',';
 GLOBALLY : '[]' | 'alw' | 'G';
 EVENTUALLY : '<>' | 'ev' | 'F';
 UNTIL : 'U';
+RELEASE : 'R';
 NEXT: 'X';
 OR :  '||';
 AND :  '&&';
@@ -73,7 +71,6 @@ GT :  '>';
 NATURAL  : [1-9][0-9]* | '0';
 MINUS : '-';
 FLOAT : NATURAL '.' [0-9]+;
-//([1-9][0-9]*('.'[0-9]+)?) | ('0.'[0-9]+);
 LPAREN : '(';
 RPAREN : ')';
 INPUT : 'input';

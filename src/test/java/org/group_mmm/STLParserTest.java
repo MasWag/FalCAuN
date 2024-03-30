@@ -65,7 +65,8 @@ class STLParserTest {
                     "[] ((signal(2) != 4 && X (signal(2) == 4)) -> []_[0,1] (signal(2) == 4))",
                     "[] ((signal(2) == 3) -> signal(0) > 20)", // S2
                     "alw((signal(1) < 4770) || (X (signal(1) > 600)))", // S5
-                    "(signal(0) > 100) U (signal(1) < 20)" // Until
+                    "(signal(0) > 100) U (signal(1) < 20)", // Until
+                    "(signal(0) > 100) R (signal(1) < 20)" // Release
             );
             expectedList = Arrays.asList(
                     new STLOutputAtomic(0, lt, 10.0),
@@ -95,7 +96,8 @@ class STLParserTest {
                             new STLOr(
                                     new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 4770),
                                     new STLNext(new STLOutputAtomic(1, STLOutputAtomic.Operation.gt, 600.0), true))),
-                    new STLUntil(new STLOutputAtomic(0, gt, 100), new STLOutputAtomic(1, lt, 20))
+                    new STLUntil(new STLOutputAtomic(0, gt, 100), new STLOutputAtomic(1, lt, 20)),
+                    new STLRelease(new STLOutputAtomic(0, gt, 100), new STLOutputAtomic(1, lt, 20))
             );
 
             assert inputs.size() == expectedList.size();
@@ -131,33 +133,6 @@ class STLParserTest {
                 STLCost result = parseSTL(inputs.get(i), inputMapper, outputMapper, largest);
                 Assertions.assertThat(result.toAbstractString()).contains("output == ");
                 assertEquals(expectedList.get(i).toString(), result.toString());
-            }
-        }
-    }
-
-    @Test
-    void interval() {
-        List<String> inputs = Arrays.asList(
-                "[10,20]",
-                "(10,20]");
-        List<AbstractMap.SimpleEntry<Integer, Integer>> expecteds = Arrays.asList(
-                new AbstractMap.SimpleEntry<>(10, 20),
-                null);
-
-
-        for (int i = 0; i < inputs.size(); i++) {
-            CharStream stream = CharStreams.fromString(inputs.get(i));
-            org.group_mmm.STLLexer lexer = new org.group_mmm.STLLexer(stream);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            org.group_mmm.STLParser parser = new org.group_mmm.STLParser(tokens);
-            ParseTree tree = parser.interval();
-
-            org.group_mmm.STLVisitor visitor = new STLVisitorImpl();
-
-            if (expecteds.get(i) == null) {
-                assertThrows(NullPointerException.class, () -> visitor.visit(tree));
-            } else {
-                assertEquals(expecteds.get(i), visitor.visit(tree));
             }
         }
     }
