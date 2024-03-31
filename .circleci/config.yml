@@ -21,13 +21,12 @@ jobs:
             sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
       - matlab/install:
           release: R2024a
+          products: Simulink
       - restore_cache:
           key: FalCAuN-{{ checksum "pom.xml" }}
-      - run: MATLAB_HOME=/usr/local/MATLAB/R2024a mvn clean
-      - run:
-          command: MATLAB_HOME=/usr/local/MATLAB/R2024a mvn install -DskipTests=True
-      - run:
-          command: MATLAB_HOME=/usr/local/MATLAB/R2024a mvn test -Dtest='!%regex[.*Simulink((SULVerifier)|(SUL)|(MembershipOracle))Test.*]' -DskipTests=False
+      - run: MATLAB_HOME=/tmp/matlab_root mvn clean
+      - run: MATLAB_HOME=/tmp/matlab_root mvn install -DskipTests=True
+      - run: MATLAB_HOME=/tmp/matlab_root mvn test -Dtest='!%regex[.*Simulink((SULVerifier)|(SUL)|(MembershipOracle))Test.*]' -DskipTests=False
       - store_artifacts:
           path: target
       - save_cache:
