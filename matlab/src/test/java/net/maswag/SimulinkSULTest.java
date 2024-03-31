@@ -1,6 +1,6 @@
 package net.maswag;
 
-import net.automatalib.words.Word;
+import net.automatalib.word.Word;
 import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 

@@ -1,20 +1,19 @@
 package net.maswag;
 
-import de.learnlib.api.SUL;
-import de.learnlib.api.oracle.MembershipOracle;
-import de.learnlib.driver.util.MealySimulatorSUL;
+import de.learnlib.driver.simulator.MealySimulatorSUL;
+import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.membership.SULOracle;
-import net.automatalib.automata.transducers.impl.compact.CompactMealy;
-import net.automatalib.util.automata.builders.AutomatonBuilders;
-import net.automatalib.words.Alphabet;
-import net.automatalib.words.WordBuilder;
-import net.automatalib.words.impl.ArrayAlphabet;
+import de.learnlib.sul.SUL;
+import net.automatalib.alphabet.Alphabet;
+import net.automatalib.alphabet.ArrayAlphabet;
+import net.automatalib.automaton.transducer.CompactMealy;
+import net.automatalib.util.automaton.builder.AutomatonBuilders;
+import net.automatalib.word.WordBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

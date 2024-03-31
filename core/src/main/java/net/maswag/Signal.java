@@ -1,7 +1,7 @@
 package net.maswag;
 
 import lombok.Getter;
-import net.automatalib.words.Word;
+import net.automatalib.word.Word;
 
 import java.util.ArrayList;
 import java.util.Collection;

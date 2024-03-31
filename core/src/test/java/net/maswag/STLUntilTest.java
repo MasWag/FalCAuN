@@ -1,6 +1,6 @@
 package net.maswag;
 
-import net.automatalib.words.WordBuilder;
+import net.automatalib.word.WordBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,33 +1,30 @@
 package net.maswag;
 
-import de.learnlib.acex.analyzers.AcexAnalyzers;
-import de.learnlib.algorithms.ttt.mealy.TTTLearnerMealy;
-import de.learnlib.api.SUL;
-import de.learnlib.api.algorithm.LearningAlgorithm;
-import de.learnlib.api.oracle.MembershipOracle;
-import de.learnlib.api.oracle.PropertyOracle;
+import de.learnlib.acex.AcexAnalyzers;
+import de.learnlib.algorithm.ttt.mealy.TTTLearnerMealy;
+import de.learnlib.sul.SUL;
+import de.learnlib.algorithm.LearningAlgorithm;
+import de.learnlib.oracle.MembershipOracle;
+import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.oracle.equivalence.*;
 import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
 import de.learnlib.util.Experiment;
 import lombok.Getter;
-import net.automatalib.automata.transducers.MealyMachine;
-import net.automatalib.modelcheckers.ltsmin.monitor.LTSminMonitorIOBuilder;
+import net.automatalib.automaton.transducer.MealyMachine;
+import net.automatalib.modelchecker.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
 import net.automatalib.serialization.dot.GraphDOT;
 import net.automatalib.serialization.etf.writer.Mealy2ETFWriterIO;
 import net.automatalib.visualization.Visualization;
-import net.automatalib.words.Alphabet;
-import net.automatalib.words.Word;
+import net.automatalib.alphabet.Alphabet;
+import net.automatalib.word.Word;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
-import static net.automatalib.util.automata.Automata.stateCover;
+import static net.automatalib.util.automaton.Automata.stateCover;
 
 /**
  * Verifier of a black-box system
@@ -44,7 +41,7 @@ class BlackBoxVerifier {
     private List<MealyMachine<?, String, ?, String>> cexMealy;
     private final Alphabet<String> inputAlphabet;
     private final LearningAlgorithm.MealyLearner<String, String> learner;
-    private final EQOracleChain.MealyEQOracleChain<String, String> eqOracle;
+    private final MealyEQOracleChain<String, String> eqOracle;
     @Getter
     private final AdaptiveSTLUpdater properties;
     @Getter
@@ -79,11 +76,11 @@ class BlackBoxVerifier {
                 .withString2Input(EDGE_PARSER).withString2Output(EDGE_PARSER).create();
 
         // create an equivalence oracle, that first searches for a counter example using the ltl properties, and next
-        this.eqOracle = new EQOracleChain.MealyEQOracleChain<>(this.properties);
+        this.eqOracle = new MealyEQOracleChain<>(this.properties);
     }
 
     void addWpMethodEQOracle(int maxDepth) {
-        addEqOracle(new WpMethodEQOracle.MealyWpMethodEQOracle<>(memOracle, maxDepth));
+        addEqOracle(new MealyWpMethodEQOracle<>(memOracle, maxDepth));
     }
 
     void addBFOracle(double multiplier) {
@@ -91,7 +88,7 @@ class BlackBoxVerifier {
     }
 
     void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
-        addEqOracle(new RandomWordsEQOracle.MealyRandomWordsEQOracle<>(
+        addEqOracle(new MealyRandomWordsEQOracle<>(
                 memOracle, minLength, maxLength, maxTests, random, batchSize));
     }
 
@@ -101,7 +98,7 @@ class BlackBoxVerifier {
     }
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
-        addEqOracle(new CompleteExplorationEQOracle.MealyCompleteExplorationEQOracle<>(
+        addEqOracle(new MealyCompleteExplorationEQOracle<>(
                 memOracle, minDepth, maxDepth, batchSize));
     }
 

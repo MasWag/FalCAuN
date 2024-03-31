@@ -1,6 +1,6 @@
 package net.maswag;
 
-import de.learnlib.api.oracle.PropertyOracle;
+import de.learnlib.oracle.PropertyOracle;
 
 import java.util.ArrayList;
 

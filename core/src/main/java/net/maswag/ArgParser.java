@@ -3,8 +3,8 @@ package net.maswag;
 import ch.qos.logback.classic.Level;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
-import net.automatalib.modelcheckers.ltsmin.LTSminUtil;
+import net.automatalib.modelchecker.ltsmin.AbstractLTSmin;
+import net.automatalib.modelchecker.ltsmin.LTSminUtil;
 import org.apache.commons.cli.*;
 import org.slf4j.LoggerFactory;
 

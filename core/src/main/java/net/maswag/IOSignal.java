@@ -2,7 +2,7 @@ package net.maswag;
 
 import com.google.common.collect.Streams;
 import lombok.Getter;
-import net.automatalib.words.Word;
+import net.automatalib.word.Word;
 
 import java.util.*;
 import java.util.stream.Stream;

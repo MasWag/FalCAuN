@@ -1,11 +1,11 @@
 package net.maswag;
 
-import de.learnlib.api.query.DefaultQuery;
+import de.learnlib.query.DefaultQuery;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.automatalib.automata.transducers.MealyMachine;
-import net.automatalib.words.Word;
-import net.automatalib.words.WordBuilder;
+import net.automatalib.automaton.transducer.MealyMachine;
+import net.automatalib.word.Word;
+import net.automatalib.word.WordBuilder;
 import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
 import org.uma.jmetal.solution.IntegerSolution;
 

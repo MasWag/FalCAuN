@@ -3,9 +3,9 @@ package net.maswag;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import lombok.extern.slf4j.Slf4j;
-import net.automatalib.modelcheckers.ltsmin.AbstractLTSmin;
-import net.automatalib.modelcheckers.ltsmin.LTSminVersion;
-import net.automatalib.words.Word;
+import net.automatalib.modelchecker.ltsmin.LTSminVersion;
+import net.automatalib.modelchecker.ltsmin.AbstractLTSmin;
+import net.automatalib.word.Word;
 import org.apache.commons.cli.MissingOptionException;
 import org.slf4j.LoggerFactory;
 

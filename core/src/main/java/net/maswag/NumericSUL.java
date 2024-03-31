@@ -1,7 +1,7 @@
 package net.maswag;
 
-import de.learnlib.api.SUL;
-import net.automatalib.words.Word;
+import de.learnlib.sul.SUL;
+import net.automatalib.word.Word;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;

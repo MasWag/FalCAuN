@@ -2,14 +2,14 @@ package net.maswag;
 
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.TreeMultimap;
-import de.learnlib.api.oracle.EquivalenceOracle;
-import de.learnlib.api.oracle.PropertyOracle;
-import de.learnlib.api.query.DefaultQuery;
+import de.learnlib.oracle.EquivalenceOracle;
+import de.learnlib.oracle.PropertyOracle;
+import de.learnlib.query.DefaultQuery;
 import lombok.Getter;
-import net.automatalib.automata.transducers.MealyMachine;
-import net.automatalib.commons.util.collections.CollectionsUtil;
-import net.automatalib.words.Word;
-import net.automatalib.words.WordBuilder;
+import net.automatalib.automaton.transducer.MealyMachine;
+import net.automatalib.common.util.collection.CollectionsUtil;
+import net.automatalib.word.Word;
+import net.automatalib.word.WordBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

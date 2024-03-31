@@ -1,6 +1,6 @@
 package net.maswag;
 
-import de.learnlib.api.oracle.PropertyOracle;
+import de.learnlib.oracle.PropertyOracle;
 import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GenerationalGeneticAlgorithm;
 import org.uma.jmetal.operator.CrossoverOperator;

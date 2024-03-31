@@ -1,7 +1,7 @@
 package net.maswag;
 
-import de.learnlib.api.oracle.PropertyOracle;
-import net.automatalib.words.Word;
+import de.learnlib.oracle.PropertyOracle;
+import net.automatalib.word.Word;
 
 import java.util.ArrayList;
 import java.util.Collections;

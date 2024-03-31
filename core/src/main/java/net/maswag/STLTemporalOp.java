@@ -13,7 +13,7 @@ abstract class STLTemporalOp extends STLCost {
     /**
      * <p>getRoSIRaw.</p>
      *
-     * @param signal a {@link net.automatalib.words.Word} object.
+     * @param signal a {@link net.automatalib.word.Word} object.
      * @return a RoSI object.
      */
     abstract public RoSI getRoSIRaw(IOSignal signal);
@@ -21,7 +21,7 @@ abstract class STLTemporalOp extends STLCost {
     /**
      * <p>getRoSIRawLen.</p>
      *
-     * @param signal a {@link net.automatalib.words.Word} object.
+     * @param signal a {@link net.automatalib.word.Word} object.
      * @param length the length to compute the RoSI
      * @return a RoSI object.
      */

@@ -1,16 +1,18 @@
 package net.maswag;
 
-import de.learnlib.api.SUL;
-import de.learnlib.api.oracle.PropertyOracle;
-import de.learnlib.filter.cache.sul.SULCache;
+import net.maswag.EvaluationCountable.MealyEquivalenceOracle;
+import de.learnlib.sul.SUL;
+import de.learnlib.oracle.PropertyOracle.MealyPropertyOracle;
 import de.learnlib.mapper.MappedSUL;
-import net.automatalib.words.Alphabet;
-import net.automatalib.words.Word;
+import net.automatalib.alphabet.Alphabet;
+import net.automatalib.word.Word;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.function.Function;
+
+import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
 
 /**
  * Verifier of a NumericSUL
@@ -43,10 +45,10 @@ public class NumericSULVerifier {
         Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
         Alphabet<String> abstractInputAlphabet = mapper.constructAbstractAlphabet();
 
-        this.simulink = SULCache.createTreeCache(concreteInputAlphabet, rawSUL);
+        this.simulink = createTreeCache(concreteInputAlphabet, rawSUL);
 
         SUL<String, String> mappedSimulink = new MappedSUL<>(mapper, simulink);
-        mappedSimulink = SULCache.createTreeCache(abstractInputAlphabet, mappedSimulink);
+        mappedSimulink = createTreeCache(abstractInputAlphabet, mappedSimulink);
         // create a regular membership oracle
         this.memOracle = new NumericMembershipOracle(rawSUL, this.mapper);
         properties.setMemOracle(memOracle);
@@ -62,13 +64,13 @@ public class NumericSULVerifier {
 
     void addSimulinkEqOracle(STLCost costFunc,
                              Function<NumericMembershipOracleCost,
-                                     ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
+                                     ? extends MealyEquivalenceOracle<String, String>> constructor) {
         // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
         NumericMembershipOracleCost oracle =
                 new NumericMembershipOracleCost(this.rawSUL, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
         memOracleCosts.add(oracle);
-        EvaluationCountable.MealyEquivalenceOracle<String, String> eqOracle = constructor.apply(oracle);
+        MealyEquivalenceOracle<String, String> eqOracle = constructor.apply(oracle);
         evaluationCountables.add(eqOracle);
         this.verifier.addEqOracle(eqOracle);
     }
@@ -123,7 +125,7 @@ public class NumericSULVerifier {
      * @param generationSize a int.
      * @param childrenSize   a int.
      * @param resetWord      a boolean.
-     * @param ltlOracle      a {@link de.learnlib.api.oracle.PropertyOracle.MealyPropertyOracle} object.
+     * @param ltlOracle      a {@link de.learnlib.oracle.PropertyOracle.MealyPropertyOracle} object.
      */
     public void addHillClimbingEQOracle(STLCost costFunc,
                                         int length,
@@ -132,7 +134,7 @@ public class NumericSULVerifier {
                                         int generationSize,
                                         int childrenSize,
                                         boolean resetWord,
-                                        PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+                                        MealyPropertyOracle<String, String, String> ltlOracle) {
         this.addSimulinkEqOracle(costFunc, oracle ->
                 new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
@@ -161,7 +163,7 @@ public class NumericSULVerifier {
      * @param childrenSize   a int.
      * @param resetWord      a boolean.
      * @param alpha          a double.
-     * @param ltlOracle      a {@link de.learnlib.api.oracle.PropertyOracle.MealyPropertyOracle} object.
+     * @param ltlOracle      a {@link de.learnlib.oracle.PropertyOracle.MealyPropertyOracle} object.
      */
     public void addSAEQOracle(STLCost costFunc,
                               int length,
@@ -171,7 +173,7 @@ public class NumericSULVerifier {
                               int childrenSize,
                               boolean resetWord,
                               double alpha,
-                              PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+                              MealyPropertyOracle<String, String, String> ltlOracle) {
         this.addSimulinkEqOracle(costFunc, oracle ->
                 new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
     }
@@ -207,7 +209,7 @@ public class NumericSULVerifier {
                        int generationSize,
                        double crossoverProb,
                        double mutationProbability, // e.g., 1.0 / length
-                       PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+                       MealyPropertyOracle<String, String, String> ltlOracle) {
         this.addSimulinkEqOracle(costFunc, oracle ->
                 new GAEQOracle(oracle, length, maxTests, selectionKind, generationSize, crossoverProb, mutationProbability, ltlOracle));
     }

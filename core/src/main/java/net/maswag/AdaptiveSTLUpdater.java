@@ -1,9 +1,10 @@
 package net.maswag;
 
-import de.learnlib.api.oracle.BlackBoxOracle;
-import de.learnlib.api.oracle.MembershipOracle;
-import de.learnlib.api.oracle.PropertyOracle;
-import net.automatalib.words.Alphabet;
+import de.learnlib.oracle.BlackBoxOracle;
+import de.learnlib.oracle.InclusionOracle;
+import de.learnlib.oracle.MembershipOracle;
+import de.learnlib.oracle.PropertyOracle;
+import net.automatalib.alphabet.Alphabet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
  * @see BlackBoxVerifier
  * @see NumericSULVerifier
  */
-public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<String, String> {
+public interface AdaptiveSTLUpdater extends InclusionOracle.MealyInclusionOracle<String, String>, BlackBoxOracle.MealyBlackBoxOracle<String, String> {
     /**
      * Returns the current list of STL formulas
      * The result may change only after the call of findCounterExample

@@ -1,11 +1,10 @@
 package net.maswag;
 
-import de.learnlib.api.SUL;
-import de.learnlib.filter.cache.sul.SULCache;
+import de.learnlib.sul.SUL;
 import lombok.Getter;
-import net.automatalib.words.Alphabet;
-import net.automatalib.words.Word;
-import net.automatalib.words.WordBuilder;
+import net.automatalib.alphabet.Alphabet;
+import net.automatalib.word.Word;
+import net.automatalib.word.WordBuilder;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
@@ -14,6 +13,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
 
 /**
  * Pure Random Tester of a Simulink model
@@ -58,7 +59,7 @@ public class SimulinkRandomTester {
 
         this.properties = properties;
 
-        this.simulink = SULCache.createTreeCache(concreteInputAlphabet, rawSimulink);
+        this.simulink = createTreeCache(concreteInputAlphabet, rawSimulink);
         this.length = length;
         this.costFunc = costFunc;
         assert (costFunc.size() == properties.size());

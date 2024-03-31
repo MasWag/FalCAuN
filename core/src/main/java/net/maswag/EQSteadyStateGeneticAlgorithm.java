@@ -1,6 +1,6 @@
 package net.maswag;
 
-import de.learnlib.api.oracle.PropertyOracle;
+import de.learnlib.oracle.PropertyOracle.MealyPropertyOracle;
 import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.SteadyStateGeneticAlgorithm;
 import org.uma.jmetal.operator.CrossoverOperator;
@@ -20,9 +20,9 @@ import java.util.Objects;
 public class EQSteadyStateGeneticAlgorithm extends SteadyStateGeneticAlgorithm<IntegerSolution> {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm.class);
     private EQSearchProblem problem;
-    private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
+    private MealyPropertyOracle<String, String, String> ltlOracle;
 
-    EQSteadyStateGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize, CrossoverOperator<IntegerSolution> crossoverOperator, MutationOperator<IntegerSolution> mutationOperator, SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator, SolutionListEvaluator<IntegerSolution> evaluator, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    EQSteadyStateGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize, CrossoverOperator<IntegerSolution> crossoverOperator, MutationOperator<IntegerSolution> mutationOperator, SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator, SolutionListEvaluator<IntegerSolution> evaluator, MealyPropertyOracle<String, String, String> ltlOracle) {
         super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator);
         this.problem = problem;
         this.ltlOracle = ltlOracle;

@@ -1,14 +1,14 @@
 package net.maswag;
 
-import de.learnlib.api.oracle.EquivalenceOracle;
-import de.learnlib.api.oracle.PropertyOracle;
-import de.learnlib.api.query.DefaultQuery;
+import de.learnlib.oracle.EquivalenceOracle;
+import de.learnlib.oracle.PropertyOracle;
+import de.learnlib.query.DefaultQuery;
 import de.learnlib.oracle.equivalence.CExFirstOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.automatalib.automata.transducers.MealyMachine;
-import net.automatalib.words.Word;
+import net.automatalib.automaton.transducer.MealyMachine;
+import net.automatalib.word.Word;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

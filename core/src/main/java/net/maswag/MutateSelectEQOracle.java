@@ -1,6 +1,6 @@
 package net.maswag;
 
-import net.automatalib.words.Word;
+import net.automatalib.word.Word;
 
 import java.util.ArrayList;
 import java.util.List;

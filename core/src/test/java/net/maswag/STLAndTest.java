@@ -3,7 +3,7 @@ package net.maswag;
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.generator.InRange;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
-import net.automatalib.words.Word;
+import net.automatalib.word.Word;
 import org.junit.runner.RunWith;
 
 import java.util.Collections;

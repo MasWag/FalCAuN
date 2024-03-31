@@ -1,21 +1,21 @@
 package net.maswag;
 
-import de.learnlib.api.logging.LoggingPropertyOracle;
-import de.learnlib.api.oracle.EmptinessOracle;
-import de.learnlib.api.oracle.InclusionOracle;
-import de.learnlib.api.oracle.MembershipOracle;
-import de.learnlib.api.oracle.PropertyOracle;
-import de.learnlib.api.query.DefaultQuery;
+import de.learnlib.oracle.EmptinessOracle;
+import de.learnlib.oracle.InclusionOracle;
+import de.learnlib.oracle.MembershipOracle;
+import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.oracle.emptiness.MealyBFEmptinessOracle;
 import de.learnlib.oracle.equivalence.MealyBFInclusionOracle;
+import de.learnlib.oracle.property.LoggingPropertyOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
+import de.learnlib.query.DefaultQuery;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.automatalib.automata.transducers.MealyMachine;
-import net.automatalib.modelcheckers.ltsmin.monitor.LTSminMonitorIOBuilder;
+import net.automatalib.automaton.transducer.MealyMachine;
+import net.automatalib.modelchecker.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
-import net.automatalib.words.Alphabet;
-import net.automatalib.words.Word;
+import net.automatalib.alphabet.Alphabet;
+import net.automatalib.word.Word;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
