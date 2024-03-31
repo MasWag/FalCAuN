@@ -93,7 +93,7 @@
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
                     <!--suppress UnresolvedMavenProperty -->
-                    <argLine>-Djava.library.path=${env.MATLAB_HOME}/bin/maci64:${env.MATLAB_HOME}/bin/glnxa64</argLine>
+                    <argLine>-Djava.library.path=${env.MATLAB_HOME}/bin/maci64:${env.MATLAB_HOME}/bin/maca64:${env.MATLAB_HOME}/bin/glnxa64</argLine>
                     <skipTests>${skipTests}</skipTests>
                 </configuration>
             </plugin>

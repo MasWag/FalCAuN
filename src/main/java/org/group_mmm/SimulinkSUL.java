@@ -321,15 +321,10 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
     }
 
     /**
-     * {@inheritDoc}
+     * Close the MATLAB engine. This method must be called when the object is no longer used.
      */
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            super.finalize();
-        } finally {
-            matlab.close();
-        }
+    public void close() throws Throwable {
+        matlab.close();
     }
 
     public double getSimulationTimeSecond() {

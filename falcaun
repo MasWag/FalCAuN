@@ -25,7 +25,11 @@ fi
 
 case "$(uname)" in
 Darwin)
-  arch=maci64
+    if [ "$(arch)" = arm64 ]; then
+        arch=maca64
+    else
+        arch=maci64
+    fi
   if java="$(/usr/libexec/java_home -v '11')/bin/java"; then
     echo "Java 11 found at $java"
   elif java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '11')/bin/java"; then

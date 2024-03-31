@@ -58,7 +58,7 @@ When you use GA, SA, or WP for the equivalence testing, you have to specify the 
 Installation
 ------------
 
-FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works on many UNIX-like operating systems. We tested FalCAuN on macOS 12.6 Monterey, Ubuntu 22.04, and Arch Linux.
+FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works on many UNIX-like operating systems. We tested FalCAuN on macOS 14.4.1 Sonoma, Ubuntu 22.04, and Arch Linux.
 
 ### Requirements
 
@@ -68,7 +68,7 @@ FalCAuN is implemented in Java using MATLAB/Simulink. We suppose FalCAuN works o
   - This is not officially released yet.
   - You can download it from [HERE](https://github.com/Meijuh/ltsmin/releases/tag/v3.1.0).
 - MATLAB/Simulink
-  - We tested with MATLAB R2021b but any later version should be fine.
+  - We tested with MATLAB R2024a but any later version should be fine.
 
 ### Instructions
 
@@ -97,7 +97,7 @@ We assume that the environment variable `MATLAB_HOME` shows where MATLAB is inst
 ```sh
 export MATLAB_HOME=<path/to/matlab/home>
 ## Example:
-# export MATLAB_HOME=/usr/local/MATLAB/R2021b/
+# export MATLAB_HOME=/usr/local/MATLAB/R2024a/
 ```
 
 #### 2. Build and Install FalCAuN
@@ -123,9 +123,18 @@ You can also install this script as follows.
 sudo install falcaun /usr/local/bin
 ```
 
+### Installation of LTSMin 3.1.0 on macOS with ARM Processors
+
+FalCAuN works on macOS with ARM Processors, but the set up of LTSMin is a bit tricky because it only support x86\_64. One can still run LTSMin using Rosetta and libtool for x86\_64.
+
+1. Set up Rosetta on the macOS
+2. Install Homebrew for intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
+3. Install `libtool` for x86_64 with `/usr/local/bin/brew install libtool`
+
 ### Notes
 
 - The unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test -DskipTests=false`.
+    - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=(/usr/libexec/java_home -v 11) mvn test -DskipTests=False`.
 
 
 Algorithms for equivalence testing
@@ -242,7 +251,7 @@ Contributors
 ------------
 
 - Masaki Waga: 2019--
-- Junya Shijubo: 2021--
+- Junya Shijubo: 2021--2022
 
 
 FAQ

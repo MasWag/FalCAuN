@@ -20,7 +20,7 @@ class SimulinkSULTest {
 
     @AfterEach
     void teardown() throws Throwable {
-        this.sul.finalize();
+        this.sul.close();
     }
 
     @Nested
