@@ -312,7 +312,7 @@ class SimulinkSULVerifierTest {
             // define the verifier
             verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
             // set timeout
-            long timeout = 5 * 60;
+            long timeout = 2 * 60;
             verifier.setTimeout(timeout);
             // add equivalence oracle
             verifier.addGAEQOracleAll(25, 1000, ArgParser.GASelectionKind.Tournament,
