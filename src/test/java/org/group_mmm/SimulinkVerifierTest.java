@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import com.mathworks.engine.EngineException;
 import org.junit.jupiter.api.*;
 
 import java.util.*;
@@ -72,6 +73,11 @@ class SimulinkVerifierTest {
             System.out.println(e.getMessage());
             assert false;
         }
+    }
+
+    @AfterEach
+    void tearDown() throws EngineException {
+        this.verifier.close();
     }
 
     @Test

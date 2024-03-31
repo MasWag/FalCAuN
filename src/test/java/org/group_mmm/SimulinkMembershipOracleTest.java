@@ -1,10 +1,12 @@
 package org.group_mmm;
 
+import com.mathworks.engine.EngineException;
 import de.learnlib.api.oracle.MembershipOracle;
 import de.learnlib.mapper.MappedSUL;
 import de.learnlib.oracle.membership.SULOracle;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -70,6 +72,11 @@ class SimulinkMembershipOracleTest {
         this.mappedSimulink = new MappedSUL<>(mapper, simulink);
         this.sulOracle = new SULOracle<>(this.mappedSimulink);
         this.directOracle = new SimulinkMembershipOracle(this.simulink, this.mapper);
+    }
+
+    @AfterEach
+    void tearDown() throws EngineException {
+        this.simulink.close();
     }
 
     @Test

@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import com.mathworks.engine.EngineException;
 import de.learnlib.api.SUL;
 import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.filter.cache.sul.SULCache;
@@ -329,5 +330,12 @@ public class SimulinkVerifier {
             this.addGAEQOracle(this.getProperties().getSTLProperties().get(i),
                     length, maxTest, selectionKind, populationSize, crossoverProb, mutationProb, this.getProperties().list().get(i));
         }
+    }
+
+    /**
+     * Close the MATLAB engine. This method must be called when the object is no longer used.
+     */
+    public void close() throws EngineException {
+        this.rawSimulink.close();
     }
 }

@@ -1,5 +1,6 @@
 package org.group_mmm;
 
+import com.mathworks.engine.EngineException;
 import com.mathworks.engine.MatlabEngine;
 import de.learnlib.api.SUL;
 import de.learnlib.api.exception.SULException;
@@ -323,7 +324,7 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
     /**
      * Close the MATLAB engine. This method must be called when the object is no longer used.
      */
-    public void close() throws Throwable {
+    public void close() throws EngineException {
         matlab.close();
     }
 

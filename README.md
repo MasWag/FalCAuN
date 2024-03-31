@@ -135,6 +135,9 @@ FalCAuN works on macOS with ARM Processors, but the set up of LTSMin is a bit tr
 
 - The unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test -DskipTests=false`.
     - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=(/usr/libexec/java_home -v 11) mvn test -DskipTests=False`.
+    - Also, the automatic transmission model requires parameters defined in an example by Mathworks. To load it, you probably need to set up the example by Mathworks and the path beforehand. 
+        - The example by Mathworks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
+        - See `./src/test/resources/MATLAB/initAT.m` for an example to set the path.
 
 
 Algorithms for equivalence testing
