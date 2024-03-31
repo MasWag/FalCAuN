@@ -1,13 +1,12 @@
 package net.maswag;
 
-import ch.qos.logback.classic.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Set;
 
+@Slf4j
 public class STLSub extends STLCost {
-    private final Logger LOGGER = (Logger) LoggerFactory.getLogger(STLSub.class);
 
     private STLTemporalOp subFml;
     private int from, to;

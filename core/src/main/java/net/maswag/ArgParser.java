@@ -1,6 +1,7 @@
 package net.maswag;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin;
@@ -122,7 +123,7 @@ class ArgParser {
             System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO");
         }
         if (cl.hasOption("ltsmin-verbose")) {
-            ch.qos.logback.classic.Logger LTSMinLOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(AbstractLTSmin.class);
+            Logger LTSMinLOGGER = (Logger) LoggerFactory.getLogger(AbstractLTSmin.class.toString());
             LTSMinLOGGER.setLevel(Level.DEBUG);
             LTSminUtil.setVerbose(true);
         } else {
