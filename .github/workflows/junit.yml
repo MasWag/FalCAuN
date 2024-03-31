@@ -31,14 +31,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: remove MATLAB dependencies
-        run: sh ignore_matlab.sh
-
       - name: Build with Maven
-        run: mvn dependency:go-offline
+        run: mvn dependency:go-offline --projects core
 
       - name: Test with Maven
-        run: mvn test -DskipTests=False
+        run: mvn test -DskipTests=False --projects core
 
       - name: Upload the test coverage to Codecov
         uses: codecov/codecov-action@v3.1.1
