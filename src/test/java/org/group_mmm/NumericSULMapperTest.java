@@ -9,10 +9,10 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SimulinkSULMapperTest {
+class NumericSULMapperTest {
 
     private List<Map<Character, Double>> inputMapper;
-    private SimulinkSULMapper mapper;
+    private NumericSULMapper mapper;
 
 
     @Test
@@ -103,6 +103,6 @@ class SimulinkSULMapperTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('0', '0', 'p'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
     }
 }

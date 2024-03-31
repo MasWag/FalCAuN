@@ -38,7 +38,7 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(GAEQOracle.class);
     private final PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
 
-    GAEQOracle(SimulinkMembershipOracleCost memOracle, int length, int maxEvaluations, ArgParser.GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    GAEQOracle(NumericMembershipOracleCost memOracle, int length, int maxEvaluations, ArgParser.GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
 
         this.problem = new EQSearchProblem(memOracle, length);
         CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerUniformCrossover(crossoverProb);
@@ -62,7 +62,7 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
 
         // We use steady state GA because, otherwise, it converged to a suboptimal point. Perhaps we can improve by parameter tuning.
         // See also https://www.researchgate.net/post/Whats_the_difference_between_the_steady_state_genetic_algorithm_and_the_generational_genetic_algorithm
-        this.algorithm = new SimulinkSteadyStateGeneticAlgorithm(
+        this.algorithm = new EQSteadyStateGeneticAlgorithm(
                 problem,
                 maxEvaluations,
                 populationSize,

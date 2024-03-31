@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershipOracle<String, String> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracle.class);
+public class NumericMembershipOracle implements MembershipOracle.MealyMembershipOracle<String, String> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NumericMembershipOracle.class);
 
-    protected final SimulinkSUL simulink;
-    protected final SimulinkSULMapper mapper;
+    protected final NumericSUL sul;
+    protected final NumericSULMapper mapper;
     IncrementalMealyTreeBuilder<String, String> cache;
 
     IncrementalMealyTreeBuilder<String, String> getCache() {
@@ -32,8 +32,8 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
         this.cache = cache;
     }
 
-    SimulinkMembershipOracle(SimulinkSUL simulink, SimulinkSULMapper mapper) {
-        this.simulink = simulink;
+    NumericMembershipOracle(NumericSUL sul, NumericSULMapper mapper) {
+        this.sul = sul;
         this.mapper = mapper;
         this.cache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
     }
@@ -53,7 +53,7 @@ public class SimulinkMembershipOracle implements MembershipOracle.MealyMembershi
 
                 final Word<List<Double>> concreteOutput;
                 try {
-                    concreteOutput = simulink.execute(concreteInput);
+                    concreteOutput = sul.execute(concreteInput);
                 } catch (Exception e) {
                     LOGGER.error("An error occurred in SimulinkSUL::execute: {}", e.getMessage());
                     e.printStackTrace();

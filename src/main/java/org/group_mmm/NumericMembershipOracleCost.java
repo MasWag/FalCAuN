@@ -12,16 +12,16 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-class SimulinkMembershipOracleCost extends SimulinkMembershipOracle implements EvaluationCountable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkMembershipOracleCost.class);
+class NumericMembershipOracleCost extends NumericMembershipOracle implements EvaluationCountable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NumericMembershipOracleCost.class);
     private IncrementalMealyBuilder<String, Double> costCache;
     private STLCost costFunc;
-    private Set<SimulinkMembershipOracleCost> notifiedSet = new HashSet<>();
+    private Set<NumericMembershipOracleCost> notifiedSet = new HashSet<>();
     @Getter
     private int evaluateCount = 0;
 
-    SimulinkMembershipOracleCost(SimulinkSUL simulink, SimulinkSULMapper mapper, STLCost costFunc) {
-        super(simulink, mapper);
+    NumericMembershipOracleCost(NumericSUL sul, NumericSULMapper mapper, STLCost costFunc) {
+        super(sul, mapper);
         this.costFunc = costFunc;
         this.costCache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
     }
@@ -59,7 +59,7 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle implements E
 
             final Word<List<Double>> concreteOutput;
             try {
-                concreteOutput = simulink.execute(concreteInput);
+                concreteOutput = sul.execute(concreteInput);
             } catch (Exception e) {
                 LOGGER.error(e.getMessage());
                 return null;
@@ -86,7 +86,7 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle implements E
             WordBuilder<Double> tmpCostBuilder = new WordBuilder<>();
             costCache.lookup(abstractInput, tmpCostBuilder);
             assert (Objects.equals(tmpCostBuilder.toWord(), costBuilder.toWord()));
-            for (SimulinkMembershipOracleCost notified : notifiedSet) {
+            for (NumericMembershipOracleCost notified : notifiedSet) {
                 notified.cacheInsert(abstractInput, concreteSignal, abstractOutputBuilder.toWord());
             }
             tmpCostBuilder.clear();
@@ -113,11 +113,11 @@ class SimulinkMembershipOracleCost extends SimulinkMembershipOracle implements E
         costCache.insert(abstractInput, robustness);
     }
 
-    boolean addNotified(SimulinkMembershipOracleCost notified) {
+    boolean addNotified(NumericMembershipOracleCost notified) {
         return notifiedSet.add(notified);
     }
 
-    boolean addNotifiedAll(Collection<SimulinkMembershipOracleCost> notified) {
+    boolean addNotifiedAll(Collection<NumericMembershipOracleCost> notified) {
         return notifiedSet.addAll(notified);
     }
 }

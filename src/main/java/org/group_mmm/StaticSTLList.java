@@ -7,7 +7,7 @@ import java.util.*;
  *
  * @author Masaki Waga
  * @see BlackBoxVerifier
- * @see SimulinkVerifier
+ * @see NumericSULVerifier
  */
 public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
     Set<Integer> disprovedIndices = new HashSet<>();

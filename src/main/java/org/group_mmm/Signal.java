@@ -9,12 +9,12 @@ import java.util.List;
 /**
  * Signal of Simulink
  */
-public class SimulinkSignal {
+public class Signal {
     protected double timeStep;
     protected List<List<Double>> signalValues = new ArrayList<>();
     protected List<Double> timestamps = new ArrayList<>();
 
-    SimulinkSignal(double timeStep) {
+    Signal(double timeStep) {
         this.timeStep = timeStep;
     }
 

@@ -32,7 +32,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     int generationSize;
     int childrenSize;
     List<? extends String> symbolList;
-    SimulinkMembershipOracleCost memOracle;
+    NumericMembershipOracleCost memOracle;
     private int length;
     private int maxTests;
     private boolean resetWord;
@@ -41,7 +41,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     @Getter
     private int evaluateCount = 0;
 
-    AbstractSelectEQOracle(SimulinkMembershipOracleCost memOracle,
+    AbstractSelectEQOracle(NumericMembershipOracleCost memOracle,
                            int length,
                            Random random,
                            int maxTests,
@@ -57,7 +57,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
         this.resetWord = resetWord;
     }
 
-    AbstractSelectEQOracle(SimulinkMembershipOracleCost memOracle,
+    AbstractSelectEQOracle(NumericMembershipOracleCost memOracle,
                            int length,
                            Random random,
                            int maxTests,

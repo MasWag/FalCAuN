@@ -4,8 +4,8 @@ import lombok.Getter;
 
 import java.util.List;
 
-class IOSignalPiece {
-    @Getter
+@Getter
+public class IOSignalPiece {
     final private List<Double> inputSignal, outputSignal;
 
     public IOSignalPiece(List<Double> inputSignal, List<Double> outputSignal) {

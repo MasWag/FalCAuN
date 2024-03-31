@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  *
  * @author Masaki Waga
  * @see BlackBoxVerifier
- * @see SimulinkVerifier
+ * @see NumericSULVerifier
  */
 public interface AdaptiveSTLUpdater extends BlackBoxOracle.MealyBlackBoxOracle<String, String> {
     /**

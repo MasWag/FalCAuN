@@ -11,14 +11,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * I/O Mapper between abstract/concrete Simulink model.
+ * I/O Mapper between abstract/concrete NumericSUL.
  * <p>
  * TODO For now, the abstract alphabet is String for simplicity but later, it can be integers to handle more data.
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class SimulinkSULMapper implements SULMapper<String, String, List<Double>, IOSignalPiece> {
+public class NumericSULMapper implements SULMapper<String, String, List<Double>, IOSignalPiece> {
     private Map<String, List<Double>> inputMapper;
     private List<Character> largestOutputs;
     private SignalMapper sigMap;
@@ -34,9 +34,9 @@ public class SimulinkSULMapper implements SULMapper<String, String, List<Double>
      * @param outputMapper   a {@link java.util.List} object.
      * @param sigMap         a {@link java.util.List} object.
      */
-    public SimulinkSULMapper(List<Map<Character, Double>> inputMapper,
-                             List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,
-                             SignalMapper sigMap) {
+    public NumericSULMapper(List<Map<Character, Double>> inputMapper,
+                            List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,
+                            SignalMapper sigMap) {
         Map<String, List<Double>> tmpMapper = new HashMap<>();
 
         for (Map<Character, Double> map : inputMapper) {

@@ -21,7 +21,7 @@ import java.util.Objects;
 @Slf4j
 public class EQSearchProblem extends AbstractIntegerProblem implements EvaluationCountable {
     private List<? extends String> symbolList;
-    private final SimulinkMembershipOracleCost memOracle;
+    private final NumericMembershipOracleCost memOracle;
     private MealyMachine<?, String, ?, String> hypothesis;
     private final int length;
     private DefaultQuery<String, Word<String>> cexQuery;
@@ -29,7 +29,7 @@ public class EQSearchProblem extends AbstractIntegerProblem implements Evaluatio
     @Getter
     private int evaluateCount = 0;
 
-    EQSearchProblem(SimulinkMembershipOracleCost memOracle, int length) {
+    EQSearchProblem(NumericMembershipOracleCost memOracle, int length) {
         this.memOracle = memOracle;
         this.length = length;
         setNumberOfVariables(length);

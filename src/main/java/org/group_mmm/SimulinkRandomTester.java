@@ -2,7 +2,6 @@ package org.group_mmm;
 
 import de.learnlib.api.SUL;
 import de.learnlib.filter.cache.sul.SULCache;
-import de.learnlib.mapper.MappedSUL;
 import lombok.Getter;
 import net.automatalib.words.Alphabet;
 import net.automatalib.words.Word;
@@ -25,7 +24,7 @@ public class SimulinkRandomTester {
     protected SUL<List<Double>, IOSignalPiece> simulink;
     private final SimulinkSUL rawSimulink;
     private final Alphabet<String> abstractInputAlphabet;
-    private final SimulinkSULMapper mapper;
+    private final NumericSULMapper mapper;
     private final List<STLCost> costFunc;
     private long timeout;
     @Getter
@@ -50,7 +49,7 @@ public class SimulinkRandomTester {
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws Exception It can be thrown from the constructor of SimulinkSUL.
      */
-    public SimulinkRandomTester(String initScript, List<String> paramName, int length, double signalStep, List<String> properties, List<STLCost> costFunc, SimulinkSULMapper mapper) throws Exception {
+    public SimulinkRandomTester(String initScript, List<String> paramName, int length, double signalStep, List<String> properties, List<STLCost> costFunc, NumericSULMapper mapper) throws Exception {
         this.mapper = mapper;
         this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
         Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
@@ -61,8 +60,6 @@ public class SimulinkRandomTester {
 
         this.simulink = SULCache.createTreeCache(concreteInputAlphabet, rawSimulink);
         this.length = length;
-        SUL<String, String> mappedSimulink = new MappedSUL<>(mapper, simulink);
-        mappedSimulink = SULCache.createTreeCache(this.abstractInputAlphabet, mappedSimulink);
         this.costFunc = costFunc;
         assert (costFunc.size() == properties.size());
     }
@@ -76,10 +73,10 @@ public class SimulinkRandomTester {
         this.timeout = timeout;
     }
 
-    List<SimulinkSignal> getCexConcreteInput() {
-        List<SimulinkSignal> result = new ArrayList<>();
+    List<Signal> getCexConcreteInput() {
+        List<Signal> result = new ArrayList<>();
         for (Word<String> abstractCex : this.getCexInput()) {
-            result.add(new SimulinkSignal(this.signalStep));
+            result.add(new Signal(this.signalStep));
             result.get(result.size() - 1).addAll(this.mapper.mapInput(abstractCex));
         }
         return result;

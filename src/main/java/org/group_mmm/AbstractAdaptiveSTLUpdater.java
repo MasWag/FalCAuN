@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  *
  * @author Masaki Waga
  * @see BlackBoxVerifier
- * @see SimulinkVerifier
+ * @see NumericSULVerifier
  */
 @Slf4j
 public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {

@@ -9,13 +9,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SimulinkSignalTest {
-    private SimulinkSignal inputSignal;
+class SignalTest {
+    private Signal inputSignal;
     private List<List<Double>> rawInput;
 
     @BeforeEach
     void setUp() {
-        this.inputSignal = new SimulinkSignal(2.0);
+        this.inputSignal = new Signal(2.0);
         rawInput = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             rawInput.add(new ArrayList<>());

@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * Example of the Automatic transmission model in HAF14 (https://easychair.org/publications/open/4bfq)
+ * Example of the Automatic transmission model in <a href="https://easychair.org/publications/open/4bfq">HAF14</a>
  * <p>
  * The AT model two inputs (throttle and brake) and three outputs (velocity, rotation, gear).
  */
@@ -23,9 +23,9 @@ public class AutotransExample {
     private List<Map<Character, Double>> inputMapper;
     private List<Map<Character, Double>> outputMapper;
     private List<Character> largest;
-    private SimulinkVerifier verifier;
+    private NumericSULVerifier verifier;
     private AdaptiveSTLUpdater properties;
-    private SimulinkSULMapper mapper;
+    private NumericSULMapper mapper;
     private List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>();
 
     AutotransExample(double signalStep) {
@@ -85,7 +85,7 @@ public class AutotransExample {
             outputMapper = new ArrayList<>(Arrays.asList(velocityMapper, rotationMapper, gearMapper));
             largest = new ArrayList<>(Arrays.asList('X', 'X', 'X'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         setOutputMaps();
     }
 
@@ -107,7 +107,7 @@ public class AutotransExample {
 
     void setInputMapper(List<Map<Character, Double>> inputMapper) {
         this.inputMapper = inputMapper;
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
     }
 
     List<Map<Character, Double>> getOutputMapper() {
@@ -116,7 +116,7 @@ public class AutotransExample {
 
     void setOutputMapper(List<Map<Character, Double>> outputMapper) {
         this.outputMapper = outputMapper;
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         setOutputMaps();
     }
 
@@ -126,7 +126,7 @@ public class AutotransExample {
 
     void setLargest(List<Character> largest) {
         this.largest = largest;
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         setOutputMaps();
     }
 
@@ -142,7 +142,7 @@ public class AutotransExample {
         return signalStep;
     }
 
-    SimulinkVerifier getVerifier() {
+    NumericSULVerifier getVerifier() {
         return verifier;
     }
 
@@ -154,7 +154,7 @@ public class AutotransExample {
         this.properties = properties;
     }
 
-    public SimulinkSULMapper getMapper() {
+    public NumericSULMapper getMapper() {
         return mapper;
     }
 
@@ -164,7 +164,7 @@ public class AutotransExample {
 
     public void setSigMap(List<Function<IOSignalPiece, Double>> sigMap) {
         this.sigMap = sigMap;
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(this.sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(this.sigMap));
     }
 
     private List<Character> constructSmallerAPs(int index, double threshold) {
@@ -460,6 +460,6 @@ public class AutotransExample {
     }
 
     void constructVerifier() throws Exception {
-        verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+        verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
     }
 }

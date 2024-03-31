@@ -10,7 +10,7 @@ import java.util.function.Function;
  *
  * @author Junya Shijubo
  * @see BlackBoxVerifier
- * @see SimulinkVerifier
+ * @see NumericSULVerifier
  */
 @Slf4j
 public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {

@@ -2,7 +2,7 @@ package org.group_mmm;
 
 import de.learnlib.api.oracle.PropertyOracle;
 import org.slf4j.LoggerFactory;
-import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GenerationalGeneticAlgorithm;
+import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.SteadyStateGeneticAlgorithm;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -13,24 +13,22 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * <p>SimulinkGenerationalGeneticAlgorithm class.</p>
+ * <p>SimulinkSteadyStateGeneticAlgorithm class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class SimulinkGenerationalGeneticAlgorithm extends GenerationalGeneticAlgorithm<IntegerSolution> {
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SimulinkGenerationalGeneticAlgorithm.class);
+public class EQSteadyStateGeneticAlgorithm extends SteadyStateGeneticAlgorithm<IntegerSolution> {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm.class);
     private EQSearchProblem problem;
     private PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
 
-    SimulinkGenerationalGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize, CrossoverOperator<IntegerSolution> crossoverOperator, MutationOperator<IntegerSolution> mutationOperator, SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator, SolutionListEvaluator<IntegerSolution> evaluator, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
-        super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator, evaluator);
+    EQSteadyStateGeneticAlgorithm(EQSearchProblem problem, int maxEvaluations, int populationSize, CrossoverOperator<IntegerSolution> crossoverOperator, MutationOperator<IntegerSolution> mutationOperator, SelectionOperator<List<IntegerSolution>, IntegerSolution> selectionOperator, SolutionListEvaluator<IntegerSolution> evaluator, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+        super(problem, maxEvaluations, populationSize, crossoverOperator, mutationOperator, selectionOperator);
         this.problem = problem;
         this.ltlOracle = ltlOracle;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     protected boolean isStoppingConditionReached() {
         if (super.isStoppingConditionReached()) {
@@ -42,7 +40,7 @@ public class SimulinkGenerationalGeneticAlgorithm extends GenerationalGeneticAlg
 
     /**
      * {@inheritDoc}
-     * <p>
+     *
      * Create initial population only for the initial run
      */
     @Override

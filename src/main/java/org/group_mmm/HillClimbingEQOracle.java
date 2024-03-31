@@ -17,11 +17,11 @@ import java.util.stream.Stream;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class HillClimbingEQOracle extends AbstractSelectEQOracle {
-    HillClimbingEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord) {
+    HillClimbingEQOracle(NumericMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord);
     }
 
-    HillClimbingEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    HillClimbingEQOracle(NumericMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle);
     }
 

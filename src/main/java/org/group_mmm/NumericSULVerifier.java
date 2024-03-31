@@ -1,6 +1,5 @@
 package org.group_mmm;
 
-import com.mathworks.engine.EngineException;
 import de.learnlib.api.SUL;
 import de.learnlib.api.oracle.PropertyOracle;
 import de.learnlib.filter.cache.sul.SULCache;
@@ -14,43 +13,42 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * Verifier of a Simulink model
+ * Verifier of a NumericSUL
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class SimulinkVerifier {
+public class NumericSULVerifier {
     protected SUL<List<Double>, IOSignalPiece> simulink;
-    private final SimulinkSUL rawSimulink;
-    private final SimulinkSULMapper mapper;
+    protected final NumericSUL rawSUL;
+    private final NumericSULMapper mapper;
     private final BlackBoxVerifier verifier;
-    private final SimulinkMembershipOracle memOracle;
-    private final List<SimulinkMembershipOracleCost> memOracleCosts = new ArrayList<>();
+    private final NumericMembershipOracle memOracle;
+    private final List<NumericMembershipOracleCost> memOracleCosts = new ArrayList<>();
     private final EvaluationCountable.Sum evaluationCountables = new EvaluationCountable.Sum();
     private final double signalStep;
 
     /**
      * <p>Constructor for SimulinkVerifier.</p>
      *
-     * @param initScript The MATLAB script called at first. You have to define mdl in the script.
-     * @param paramName  The list of input parameters.
+     * @param rawSUL     The system under test.
      * @param signalStep The signal step in the simulation
      * @param properties The LTL properties to be verified
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
-    public SimulinkVerifier(String initScript, List<String> paramName, double signalStep, AdaptiveSTLUpdater properties, SimulinkSULMapper mapper) throws Exception {
-        this.mapper = mapper;
+    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater properties, NumericSULMapper mapper) throws Exception {
+        this.rawSUL = rawSUL;
         this.signalStep = signalStep;
-        this.rawSimulink = new SimulinkSUL(initScript, paramName, signalStep);
+        this.mapper = mapper;
         Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
         Alphabet<String> abstractInputAlphabet = mapper.constructAbstractAlphabet();
 
-        this.simulink = SULCache.createTreeCache(concreteInputAlphabet, rawSimulink);
+        this.simulink = SULCache.createTreeCache(concreteInputAlphabet, rawSUL);
 
         SUL<String, String> mappedSimulink = new MappedSUL<>(mapper, simulink);
         mappedSimulink = SULCache.createTreeCache(abstractInputAlphabet, mappedSimulink);
         // create a regular membership oracle
-        this.memOracle = new SimulinkMembershipOracle(rawSimulink, this.mapper);
+        this.memOracle = new NumericMembershipOracle(rawSUL, this.mapper);
         properties.setMemOracle(memOracle);
         verifier = new BlackBoxVerifier(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
     }
@@ -63,11 +61,11 @@ public class SimulinkVerifier {
     }
 
     void addSimulinkEqOracle(STLCost costFunc,
-                             Function<SimulinkMembershipOracleCost,
+                             Function<NumericMembershipOracleCost,
                                      ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
         // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
-        SimulinkMembershipOracleCost oracle =
-                new SimulinkMembershipOracleCost(this.rawSimulink, this.mapper, costFunc);
+        NumericMembershipOracleCost oracle =
+                new NumericMembershipOracleCost(this.rawSUL, this.mapper, costFunc);
         oracle.setCache(this.memOracle.getCache());
         memOracleCosts.add(oracle);
         EvaluationCountable.MealyEquivalenceOracle<String, String> eqOracle = constructor.apply(oracle);
@@ -218,10 +216,10 @@ public class SimulinkVerifier {
         return verifier.getCexInput();
     }
 
-    List<SimulinkSignal> getCexConcreteInput() {
-        List<SimulinkSignal> result = new ArrayList<>();
+    List<Signal> getCexConcreteInput() {
+        List<Signal> result = new ArrayList<>();
         for (Word<String> abstractCex : this.getCexAbstractInput()) {
-            result.add(new SimulinkSignal(this.signalStep));
+            result.add(new Signal(this.signalStep));
             result.get(result.size() - 1).addAll(this.mapper.mapInput(abstractCex));
         }
         return result;
@@ -238,8 +236,8 @@ public class SimulinkVerifier {
      * @return Returns {@code true} if and only if the Simulink model is verified i.e., no counter example is found.
      */
     public boolean run() {
-        Set<SimulinkMembershipOracleCost> tmp = new HashSet<>(memOracleCosts);
-        for (SimulinkMembershipOracleCost memOracleCost : memOracleCosts) {
+        Set<NumericMembershipOracleCost> tmp = new HashSet<>(memOracleCosts);
+        for (NumericMembershipOracleCost memOracleCost : memOracleCosts) {
             tmp.remove(memOracleCost);
             memOracleCost.addNotifiedAll(tmp);
         }
@@ -291,23 +289,10 @@ public class SimulinkVerifier {
     }
 
     /**
-     * Modify the simulation step of Simulink.
-     *
-     * @param simulinkSimulationStep The fixed simulation step of Simulink. If this value is too large, Simulink can abort due to an computation error.
-     */
-    public void setSimulationStep(double simulinkSimulationStep) {
-        this.rawSimulink.setSimulationStep(simulinkSimulationStep);
-    }
-
-    /**
      * @return the number of the Simulink executions
      */
     public int getSimulinkCount() {
-        return this.rawSimulink.getCounter();
-    }
-
-    public double getSimulationTimeSecond() {
-        return this.rawSimulink.getSimulationTimeSecond();
+        return this.rawSUL.getCounter();
     }
 
     public int getSimulinkCountForEqTest() {
@@ -335,7 +320,11 @@ public class SimulinkVerifier {
     /**
      * Close the MATLAB engine. This method must be called when the object is no longer used.
      */
-    public void close() throws EngineException {
-        this.rawSimulink.close();
+    public void close() throws Exception {
+        this.rawSUL.close();
+    }
+
+    public double getSimulationTimeSecond() {
+        return this.rawSUL.getSimulationTimeSecond();
     }
 }

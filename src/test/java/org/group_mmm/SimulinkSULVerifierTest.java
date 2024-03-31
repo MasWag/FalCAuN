@@ -1,6 +1,5 @@
 package org.group_mmm;
 
-import com.mathworks.engine.EngineException;
 import org.junit.jupiter.api.*;
 
 import java.util.*;
@@ -14,7 +13,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
 
-class SimulinkVerifierTest {
+class SimulinkSULVerifierTest {
     private final String PWD = System.getenv("PWD");
     private String initScript;
     /*
@@ -24,9 +23,9 @@ class SimulinkVerifierTest {
      */
     private final List<String> paramNames = Arrays.asList("Pedal Angle", "Engine Speed");
     private Double signalStep = 10.0;
-    private SimulinkVerifier verifier;
+    private SimulinkSULVerifier verifier;
     private AdaptiveSTLUpdater properties;
-    private SimulinkSULMapper mapper;
+    private NumericSULMapper mapper;
     private final List<Function<IOSignalPiece, Double>> sigMap = Collections.emptyList();
     private final AdaptiveSTLUpdater propertyZHA19_AFC1 = new StaticLTLList(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
 
@@ -59,14 +58,14 @@ class SimulinkVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         // [] (velocity < 10)
         properties = new StaticSTLList(Collections.singletonList(
                 STLCost.parseSTL("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
 
         try {
-            verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
             verifier.setSimulationStep(0.0001);
             verifier.addWpMethodEQOracle(1);
         } catch (Exception e) {
@@ -76,7 +75,7 @@ class SimulinkVerifierTest {
     }
 
     @AfterEach
-    void tearDown() throws EngineException {
+    void tearDown() throws Exception {
         this.verifier.close();
     }
 
@@ -157,10 +156,10 @@ class SimulinkVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(afMapper, afRefMapper, cmMapper, muMapper));
             largest = new ArrayList<>(Arrays.asList('x', '0', '1', 'h'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         try {
-            verifier = new SimulinkVerifier(initScript, paramNames, signalStep, propertyZHA19_AFC1, mapper);
+            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, propertyZHA19_AFC1, mapper);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
@@ -241,10 +240,10 @@ class SimulinkVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(afMapper, afRefMapper, cmMapper, muMapper));
             largest = new ArrayList<>(Arrays.asList('x', '0', '1', 'h'));
         }
-        mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
 
         try {
-            verifier = new SimulinkVerifier(initScript, paramNames, signalStep, propertyZHA19_AFC1, mapper);
+            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, propertyZHA19_AFC1, mapper);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
@@ -301,7 +300,7 @@ class SimulinkVerifierTest {
                 outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
                 largest = new ArrayList<>(Arrays.asList('b', 'b', 'a'));
             }
-            mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+            mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         }
 
         @Test
@@ -311,7 +310,7 @@ class SimulinkVerifierTest {
             STLCost stl = parseSTL(stlString, inputMapper, outputMapper, largest);
             properties = new StaticSTLList(Collections.singletonList(stl));
             // define the verifier
-            verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
             // set timeout
             long timeout = 5 * 60;
             verifier.setTimeout(timeout);
@@ -349,7 +348,7 @@ class SimulinkVerifierTest {
             @AfterEach
             void tearDown() throws Exception {
                 // define the verifier
-                verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+                verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
                 verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
@@ -388,7 +387,7 @@ class SimulinkVerifierTest {
 
             void verify() throws Exception {
                 // define the verifier
-                verifier = new SimulinkVerifier(initScript, paramNames, signalStep, properties, mapper);
+                verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, properties, mapper);
                 verifier.addGAEQOracleAll(20, 10000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());

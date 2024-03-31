@@ -37,6 +37,7 @@ import static net.automatalib.util.automata.Automata.stateCover;
 class BlackBoxVerifier {
     private static final Function<String, String> EDGE_PARSER = s -> s;
     final private double multiplier = 1.0;
+    @Getter
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     private final SUL<String, String> verifiedSystem;
     private MealyMachine<?, String, ?, String> learnedMealy;
@@ -79,15 +80,6 @@ class BlackBoxVerifier {
 
         // create an equivalence oracle, that first searches for a counter example using the ltl properties, and next
         this.eqOracle = new EQOracleChain.MealyEQOracleChain<>(this.properties);
-    }
-
-    /**
-     * <p>Getter for the field <code>memOracle</code>.</p>
-     *
-     * @return a {@link de.learnlib.api.oracle.MembershipOracle.MealyMembershipOracle} object.
-     */
-    public MembershipOracle.MealyMembershipOracle<String, String> getMemOracle() {
-        return memOracle;
     }
 
     void addWpMethodEQOracle(int maxDepth) {

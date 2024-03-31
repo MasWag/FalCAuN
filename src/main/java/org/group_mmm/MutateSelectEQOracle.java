@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class MutateSelectEQOracle extends AbstractSelectEQOracle {
     private int changeSize;
 
-    MutateSelectEQOracle(SimulinkMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, int changeSize) {
+    MutateSelectEQOracle(NumericMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, int changeSize) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord);
         this.changeSize = changeSize;
     }

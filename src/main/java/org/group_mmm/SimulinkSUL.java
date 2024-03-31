@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
  */
-class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
+class SimulinkSUL implements NumericSUL {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkSUL.class);
     private final Double signalStep;
     /**
@@ -34,7 +34,7 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
     private final MatlabEngine matlab;
     private final List<String> paramNames;
     private Double endTime = 0.0;
-    private SimulinkSignal inputSignal;
+    private Signal inputSignal;
     private boolean isInitial = true;
     private boolean useFastRestart = true;
     @Getter
@@ -86,7 +86,7 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
     @Override
     public void pre() {
         endTime = 0.0;
-        inputSignal = new SimulinkSignal(signalStep);
+        inputSignal = new Signal(signalStep);
         isInitial = true;
     }
 
@@ -263,7 +263,8 @@ class SimulinkSUL implements SUL<List<Double>, IOSignalPiece> {
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
      */
-    Word<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
+    @Override
+    public Word<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
         assert (isInitial && endTime == 0) || (endTime > 0.0);
         if (inputSignal == null) {
             return null;

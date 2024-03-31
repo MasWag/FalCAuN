@@ -85,7 +85,7 @@ public class FalCAuN {
             EQSearchProblemLogger.setLevel(Level.INFO);
             Logger GAEQOracleLogger = (Logger) LoggerFactory.getLogger(GAEQOracle.class);
             GAEQOracleLogger.setLevel(Level.INFO);
-            Logger SimulinkSteadyStateGeneticAlgorithmLogger = (Logger) LoggerFactory.getLogger(SimulinkSteadyStateGeneticAlgorithm.class);
+            Logger SimulinkSteadyStateGeneticAlgorithmLogger = (Logger) LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm.class);
             SimulinkSteadyStateGeneticAlgorithmLogger.setLevel(Level.INFO);
         }
 
@@ -99,7 +99,7 @@ public class FalCAuN {
         log.debug("OutputMapper: " + outputMapper);
         log.debug("Largest: " + largest);
 
-        SimulinkSULMapper sulMapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, argParser.getSigMap());
+        NumericSULMapper sulMapper = new NumericSULMapper(inputMapper, largest, outputMapper, argParser.getSigMap());
 
         // Parse STL formulas
         List<STLCost> stl;
@@ -133,7 +133,7 @@ public class FalCAuN {
             adaptiveSTLUpdater = new StaticSTLList(stl);
         }
 
-        SimulinkVerifier verifier = new SimulinkVerifier(
+        SimulinkSULVerifier verifier = new SimulinkSULVerifier(
                 argParser.getInitScript(),
                 argParser.getParamNames(),
                 argParser.getStepTime(),
@@ -243,7 +243,7 @@ public class FalCAuN {
         }
     }
 
-    private static void printResult(int i, List<STLCost> cexProperties, List<SimulinkSignal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
+    private static void printResult(int i, List<STLCost> cexProperties, List<Signal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
         log.info("Property STL: {}", cexProperties.get(i).toString());
         log.info("Property LTL: {}", cexProperties.get(i).toLTLString());
         log.info("Concrete Input: {}", cexConcreteInput.get(i));

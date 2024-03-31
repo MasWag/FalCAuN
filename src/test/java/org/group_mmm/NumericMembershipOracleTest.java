@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SimulinkMembershipOracleTest {
+class NumericMembershipOracleTest {
     private final String PWD = System.getenv("PWD");
     private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAFC;";
     /*
@@ -26,7 +26,7 @@ class SimulinkMembershipOracleTest {
     private final List<String> paramNames = new ArrayList<>(Arrays.asList("Pedal Angle", "Engine Speed"));
     private final Double signalStep = 10.0;
     private List<String> properties;
-    private SimulinkSULMapper mapper;
+    private NumericSULMapper mapper;
     private List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>();
     private SimulinkSUL simulink;
     private MappedSUL<String, String, List<Double>, IOSignalPiece> mappedSimulink;
@@ -63,7 +63,7 @@ class SimulinkMembershipOracleTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
-        this.mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        this.mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         this.simulink = new SimulinkSUL(initScript, paramNames, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
@@ -71,7 +71,7 @@ class SimulinkMembershipOracleTest {
 
         this.mappedSimulink = new MappedSUL<>(mapper, simulink);
         this.sulOracle = new SULOracle<>(this.mappedSimulink);
-        this.directOracle = new SimulinkMembershipOracle(this.simulink, this.mapper);
+        this.directOracle = new NumericMembershipOracle(this.simulink, this.mapper);
     }
 
     @AfterEach
