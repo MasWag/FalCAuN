@@ -1,11 +1,11 @@
 version: 2.1
 orbs:
-  matlab: mathworks/matlab@0.11.0
+  matlab: mathworks/matlab@1.1.1
 jobs:
   build:
     working_directory: ~/FalCAuN
-    machine: 
-      image: ubuntu-2204:2022.07.1
+    machine:
+      image: ubuntu-2204:2024.01.1
     steps:
       - checkout
       - run:
@@ -20,16 +20,16 @@ jobs:
             sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
             sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
       - matlab/install:
-          release: R2022b
+          release: R2024a
       - restore_cache:
           key: FalCAuN-{{ checksum "pom.xml" }}
-      - run: MATLAB_HOME=/usr/local/MATLAB/R2022b mvn clean
+      - run: MATLAB_HOME=/usr/local/MATLAB/R2024a mvn clean
       - run:
-          command: MATLAB_HOME=/usr/local/MATLAB/R2022b mvn install -DskipTests=True
+          command: MATLAB_HOME=/usr/local/MATLAB/R2024a mvn install -DskipTests=True
       - run:
-          command: MATLAB_HOME=/usr/local/MATLAB/R2022b mvn test -Dtest='!%regex[.*Simulink((Verifier)|(SUL)|(MembershipOracle))Test.*]' -DskipTests=False
+          command: MATLAB_HOME=/usr/local/MATLAB/R2024a mvn test -Dtest='!%regex[.*Simulink((SULVerifier)|(SUL)|(MembershipOracle))Test.*]' -DskipTests=False
       - store_artifacts:
-          path:  target
+          path: target
       - save_cache:
           paths:
             - ~/.m2
