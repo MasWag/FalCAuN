@@ -1,0 +1,43 @@
+package net.maswag;
+
+import java.util.*;
+
+/**
+ * List of STL/LTL formulas without update
+ *
+ * @author Masaki Waga
+ * @see BlackBoxVerifier
+ * @see NumericSULVerifier
+ */
+public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
+    Set<Integer> disprovedIndices = new HashSet<>();
+
+    public StaticSTLList() {
+        this(Collections.emptySet());
+    }
+
+    public StaticSTLList(STLCost propertyOracle) {
+        this(Collections.singleton(propertyOracle));
+    }
+
+    public StaticSTLList(Collection<? extends STLCost> STLProperties) {
+        super();
+        this.addSTLProperties(STLProperties);
+    }
+
+    @Override
+    public boolean allDisproved() {
+        return getSTLProperties().size() == disprovedIndices.size();
+    }
+
+    @Override
+    protected void notifyFalsifiedProperty(List<Integer> falsifiedIndices) {
+        super.notifyFalsifiedProperty(falsifiedIndices);
+        disprovedIndices.addAll(falsifiedIndices);
+    }
+
+    @Override
+    public void reset() {
+        // Since we do not add any STL formula, we do not need to reset.
+    }
+}

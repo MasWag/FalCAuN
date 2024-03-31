@@ -25,6 +25,7 @@ hs_err_pid*
 # Simulink
 *.slxc
 *mexmaci64
+*mexmaca64
 *mexa64
 slprj/
 *.autosave
@@ -194,3 +195,4 @@ example/hscc2020/results
 example/hscc2020/result.with.number.tsv
 example/hscc2020/result_name.list.txt
 example/hscc2020/vagrant
+.idea
