@@ -105,7 +105,7 @@ export MATLAB_HOME=<path/to/matlab/home>
 You can build and install FalCAuN using maven. You have to execute `mvn clean` to setup the Java API of MATLAB. An example is as follows.
 
 ```sh
-mvn clean
+mvn clean --projects matlab
 mvn install
 ```
 
