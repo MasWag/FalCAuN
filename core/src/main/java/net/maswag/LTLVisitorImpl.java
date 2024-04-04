@@ -3,71 +3,73 @@ package net.maswag;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.maswag.TemporalAnd.STLAnd;
-import net.maswag.TemporalEventually.STLEventually;
-import net.maswag.TemporalGlobally.STLGlobally;
-import net.maswag.TemporalImply.STLImply;
-import net.maswag.TemporalLogic.STLCost;
-import net.maswag.TemporalNext.STLNext;
-import net.maswag.TemporalOr.STLOr;
-import net.maswag.TemporalRelease.STLRelease;
-import net.maswag.TemporalSub.STLSub;
-import net.maswag.TemporalUntil.STLUntil;
+import net.maswag.TemporalAnd.LTLAnd;
+import net.maswag.TemporalEventually.LTLEventually;
+import net.maswag.TemporalGlobally.LTLGlobally;
+import net.maswag.TemporalImply.LTLImply;
+import net.maswag.TemporalLogic.LTLFormula;
+import net.maswag.TemporalNext.LTLNext;
+import net.maswag.TemporalOr.LTLOr;
+import net.maswag.TemporalRelease.LTLRelease;
+import net.maswag.TemporalSub.LTLSub;
+import net.maswag.TemporalUntil.LTLUntil;
 
 import java.util.List;
 import java.util.Map;
-
-import static net.maswag.STLAbstractAtomic.Operation.*;
+import java.util.Optional;
 
 /**
- * <p>STLVisitorImpl class.</p>
+ * <p>LTLVisitorImpl class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-public class STLVisitorImpl extends net.maswag.STLBaseVisitor<STLCost> {
+public class LTLVisitorImpl extends net.maswag.LTLBaseVisitor<LTLFormula> {
     private List<Map<Character, Double>> inputMapper;
     private List<Map<Character, Double>> outputMapper;
     private List<Character> largest;
 
-    private STLCost handleInterval(TemporalOp<List<Double>> subFml, net.maswag.STLParser.IntervalContext ctx) {
-        assert (ctx != null);
+    private LTLFormula handleInterval(TemporalOp<String> subFml, net.maswag.LTLParser.IntervalContext ctx) {
         log.trace("Bounded Globally or Eventually");
         int from = Integer.parseInt(ctx.left.getText());
         int to = Integer.parseInt(ctx.right.getText());
-        return new STLSub(subFml, from, to);
+        return new LTLSub(subFml, from, to);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public STLCost visitExpr(net.maswag.STLParser.ExprContext ctx) {
-        if (ctx.atomic() != null) {
+    public LTLFormula visitExpr(net.maswag.LTLParser.ExprContext ctx) {
+        if (ctx.INPUT() != null) {
             // atomic
-            log.trace("atomic");
-            return visitAtomic(ctx.atomic());
+            log.trace("atomic input");
+            return new LTLAtomic(Optional.of(ctx.ID().getText()), Optional.empty());
+        } else if (ctx.OUTPUT() != null) {
+            // atomic
+            log.trace("atomic output");
+            return new LTLAtomic(Optional.empty(), Optional.of(ctx.ID().getText()));
         } else if (ctx.binaryOperator() != null) {
             // Binary operators without interval
-            STLCost left = visitExpr(ctx.left);
-            STLCost right = visitExpr(ctx.right);
+            LTLFormula left = visitExpr(ctx.left);
+            LTLFormula right = visitExpr(ctx.right);
             if (ctx.binaryOperator().OR() != null) {
                 log.trace("or");
-                return new STLOr(left, right);
+                return new LTLOr(left, right);
             } else if (ctx.binaryOperator().AND() != null) {
                 log.trace("and");
-                return new STLAnd(left, right);
+                return new LTLAnd(left, right);
             } else if (ctx.binaryOperator().IMPLY() != null) {
                 log.trace("imply");
-                return new STLImply(left, right);
+                return new LTLImply(left, right);
             } else if (ctx.binaryOperator().binaryTemporalOperator().UNTIL() != null) {
                 log.trace("until");
-                return new STLUntil(left, right);
+                return new LTLUntil(left, right);
             } else if (ctx.binaryOperator().binaryTemporalOperator().RELEASE() != null) {
                 log.trace("release");
-                return new STLRelease(left, right);
+                return new LTLRelease(left, right);
             } else {
                 log.error("Unimplemented formula!!");
                 throw new UnsupportedOperationException("Unimplemented formula");
@@ -75,16 +77,16 @@ public class STLVisitorImpl extends net.maswag.STLBaseVisitor<STLCost> {
         } else if (ctx.unaryOperator() != null) {
             // Unary operators without interval
             assert ctx.expr().size() == 1;
-            STLCost expr = visitExpr(ctx.expr(0));
+            LTLFormula expr = visitExpr(ctx.expr(0));
             if (ctx.unaryOperator().NEXT() != null) {
                 log.trace("next");
-                return new STLNext(expr, true);
+                return new LTLNext(expr, true);
             } else if (ctx.unaryOperator().unaryTemporalOperator().GLOBALLY() != null) {
                 log.trace("Globally");
-                return new STLGlobally(expr);
+                return new LTLGlobally(expr);
             } else if (ctx.unaryOperator().unaryTemporalOperator().EVENTUALLY() != null) {
                 log.trace("Eventually");
-                return new STLEventually(expr);
+                return new LTLEventually(expr);
             } else {
                 log.error("Unimplemented formula!!");
                 throw new UnsupportedOperationException("Unimplemented formula");
@@ -92,25 +94,25 @@ public class STLVisitorImpl extends net.maswag.STLBaseVisitor<STLCost> {
         } else if (ctx.unaryTemporalOperator() != null) {
             // Unary operators with interval
             assert ctx.expr().size() == 1;
-            STLCost expr = visitExpr(ctx.expr(0));
+            LTLFormula expr = visitExpr(ctx.expr(0));
             if (ctx.unaryTemporalOperator().GLOBALLY() != null) {
                 log.trace("Globally");
-                STLGlobally global = new STLGlobally(expr);
+                LTLGlobally global = new LTLGlobally(expr);
 
                 return handleInterval(global, ctx.interval());
             } else if (ctx.unaryTemporalOperator().EVENTUALLY() != null) {
                 log.trace("Eventually");
-                STLEventually eventually = new STLEventually(visitExpr(ctx.expr(0)));
+                LTLEventually eventually = new LTLEventually(visitExpr(ctx.expr(0)));
 
                 return handleInterval(eventually, ctx.interval());
             }
         } else if (ctx.binaryTemporalOperator() != null) {
             // Binary operators with interval
-            STLCost left = visitExpr(ctx.left);
-            STLCost right = visitExpr(ctx.right);
+            LTLFormula left = visitExpr(ctx.left);
+            LTLFormula right = visitExpr(ctx.right);
             if (ctx.binaryTemporalOperator().UNTIL() != null) {
                 log.trace("Until");
-                STLUntil until = new STLUntil(left, right);
+                LTLUntil until = new LTLUntil(left, right);
 
                 if (ctx.interval() != null) {
                     log.error("Bounded until is not implemented yet");
@@ -120,7 +122,7 @@ public class STLVisitorImpl extends net.maswag.STLBaseVisitor<STLCost> {
                 }
             } else if (ctx.binaryTemporalOperator().RELEASE() != null) {
                 log.trace("Release");
-                STLRelease release = new STLRelease(left, right);
+                LTLRelease release = new LTLRelease(left, right);
 
                 if (ctx.interval() != null) {
                     log.error("Bounded release is not implemented yet");
@@ -141,52 +143,5 @@ public class STLVisitorImpl extends net.maswag.STLBaseVisitor<STLCost> {
 
         log.error("Unimplemented formula!!");
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public STLCost visitAtomic(net.maswag.STLParser.AtomicContext ctx) {
-        int sigIndex = Integer.parseInt(ctx.signalID.getText());
-
-        STLAbstractAtomic.Operation op;
-        switch (ctx.comparisonOperator().getText()) {
-            case "==":
-                op = eq;
-                break;
-            case "<":
-                op = lt;
-                break;
-            case ">":
-                op = gt;
-                break;
-            case "!=":
-                op = ne;
-                break;
-            default:
-                throw new UnsupportedOperationException();
-        }
-
-        double comparator = Double.parseDouble(ctx.value().getText());
-
-        STLAbstractAtomic result;
-        if (ctx.OUTPUT() != null) {
-            STLOutputAtomic outputResult = new STLOutputAtomic(sigIndex, op, comparator);
-            if (this.outputMapper != null && this.largest != null) {
-                outputResult.setOutputMapper(outputMapper);
-                outputResult.setLargest(largest);
-            }
-            result = outputResult;
-        } else if (ctx.INPUT() != null) {
-            STLInputAtomic inputResult = new STLInputAtomic(sigIndex, op, comparator);
-            if (this.inputMapper != null) {
-                inputResult.setInputMapper(inputMapper);
-            }
-            result = inputResult;
-        } else {
-            throw new UnsupportedOperationException();
-        }
-        return result;
     }
 }

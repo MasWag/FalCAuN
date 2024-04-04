@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public interface NumericSUL extends SUL<List<Double>, IOSignalPiece>, AutoCloseable {
+public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>>>, AutoCloseable {
     /**
      * Execute the SUL by feeding the entire input
     */

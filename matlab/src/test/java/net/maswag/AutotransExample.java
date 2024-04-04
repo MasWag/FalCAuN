@@ -1,10 +1,10 @@
 package net.maswag;
 
+import lombok.Getter;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
 import java.util.function.Function;
-
 /**
  * Example of the Automatic transmission model in <a href="https://easychair.org/publications/open/4bfq">HAF14</a>
  * <p>
@@ -12,21 +12,28 @@ import java.util.function.Function;
  */
 public class AutotransExample {
     private final String PWD = System.getenv("PWD");
+    @Getter
     private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAT;";
+    @Getter
     private final List<String> paramNames = Arrays.asList("throttle", "brake");
     private final int velocityIndex = 0;
     private final int rotationIndex = 1;
     private final int gearIndex = 2;
-    private List<List<Character>> abstractOutputs = new ArrayList<>();
-    private List<List<Double>> concreteOutputs = new ArrayList<>();
+    private final List<List<Character>> abstractOutputs = new ArrayList<>();
+    private final List<List<Double>> concreteOutputs = new ArrayList<>();
     private double signalStep;
+    @Getter
     private List<Map<Character, Double>> inputMapper;
     private List<Map<Character, Double>> outputMapper;
+    @Getter
     private List<Character> largest;
     private NumericSULVerifier verifier;
-    private AdaptiveSTLUpdater properties;
+    @Getter
+    private AdaptiveSTLUpdater<List<Double>> properties;
+    @Getter
     private NumericSULMapper mapper;
-    private List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>();
+    @Getter
+    private List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = new ArrayList<>();
 
     AutotransExample(double signalStep) {
         this.signalStep = signalStep;
@@ -101,10 +108,6 @@ public class AutotransExample {
         }
     }
 
-    public List<Map<Character, Double>> getInputMapper() {
-        return inputMapper;
-    }
-
     void setInputMapper(List<Map<Character, Double>> inputMapper) {
         this.inputMapper = inputMapper;
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
@@ -120,22 +123,10 @@ public class AutotransExample {
         setOutputMaps();
     }
 
-    public List<Character> getLargest() {
-        return largest;
-    }
-
     void setLargest(List<Character> largest) {
         this.largest = largest;
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         setOutputMaps();
-    }
-
-    public String getInitScript() {
-        return initScript;
-    }
-
-    public List<String> getParamNames() {
-        return paramNames;
     }
 
     public Double getSignalStep() {
@@ -146,23 +137,11 @@ public class AutotransExample {
         return verifier;
     }
 
-    public AdaptiveSTLUpdater getProperties() {
-        return properties;
-    }
-
-    void setProperties(AdaptiveSTLUpdater properties) {
+    void setProperties(AdaptiveSTLUpdater<List<Double>> properties) {
         this.properties = properties;
     }
 
-    public NumericSULMapper getMapper() {
-        return mapper;
-    }
-
-    public List<Function<IOSignalPiece, Double>> getSigMap() {
-        return sigMap;
-    }
-
-    public void setSigMap(List<Function<IOSignalPiece, Double>> sigMap) {
+    public void setSigMap(List<Function<IOSignalPiece<List<Double>>, Double>> sigMap) {
         this.sigMap = sigMap;
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(this.sigMap));
     }

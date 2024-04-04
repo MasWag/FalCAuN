@@ -13,7 +13,7 @@ import java.util.Set;
 public class STLInputAtomic extends STLAbstractAtomic {
     private final List<List<Character>> abstractInputs = new ArrayList<>();
     private final List<List<Double>> concreteInputs = new ArrayList<>();
-    private List<Character> largest = new ArrayList<>();
+    private final List<Character> largest = new ArrayList<>();
     private List<Map<Character, Double>> inputMapper;
 
     /**
@@ -36,7 +36,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
     }
 
     @Override
-    protected void constructAtomicStrings() {
+    public void constructAtomicStrings() {
         constructAtomicStrings(concreteInputs, abstractInputs, largest);
     }
 
@@ -65,7 +65,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
      * {@inheritDoc}
      */
     @Override
-    public RoSI getRoSI(IOSignal signal) {
+    public RoSI getRoSI(IOSignal<List<Double>> signal) {
         return getRoSISingle(signal.getInputSignal());
     }
 

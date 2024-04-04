@@ -1,5 +1,6 @@
 package net.maswag;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -8,10 +9,10 @@ import java.util.Set;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class STLRelease extends STLCost {
-    private final STLCost left, right;
+public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
+    private final TemporalLogic<I> left, right;
 
-    STLRelease(STLCost left, STLCost right) {
+    TemporalRelease(TemporalLogic<I> left, TemporalLogic<I> right) {
         this.left = left;
         this.right = right;
         this.nonTemporal = false;
@@ -21,11 +22,11 @@ public class STLRelease extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    public RoSI getRoSI(IOSignal signal) {
+    public RoSI getRoSI(IOSignal<I> signal) {
         return getRoSIRaw(signal).assignMax(new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
     }
 
-    public RoSI getRoSIRaw(IOSignal signal) {
+    public RoSI getRoSIRaw(IOSignal<I> signal) {
         RoSI result = new RoSI(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
 
         for (int i = 0; i < signal.length(); i++) {
@@ -49,7 +50,7 @@ public class STLRelease extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    protected void constructAtomicStrings() {
+    public void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
@@ -58,7 +59,7 @@ public class STLRelease extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    protected Set<String> getAllAPs() {
+    public Set<String> getAllAPs() {
         Set<String> allAPs = this.left.getAllAPs();
         allAPs.addAll(this.right.getAllAPs());
         return allAPs;
@@ -75,18 +76,30 @@ public class STLRelease extends STLCost {
     /**
      * <p>getLeft.</p>
      *
-     * @return a left {@link STLCost} object.
+     * @return a left {@link TemporalLogic<I>} object.
      */
-    public STLCost getLeft() {
+    public TemporalLogic<I> getLeft() {
         return this.left;
     }
 
     /**
      * <p>getRight.</p>
      *
-     * @return a right {@link STLCost} object.
+     * @return a right {@link TemporalLogic<I>} object.
      */
-    public STLCost getRight() {
+    public TemporalLogic<I> getRight() {
         return this.right;
+    }
+
+    static class STLRelease extends TemporalRelease<List<Double>> implements STLCost {
+        STLRelease(STLCost left, STLCost right) {
+            super(left, right);
+        }
+    }
+
+    static class LTLRelease extends TemporalRelease<String> implements LTLFormula {
+        LTLRelease(LTLFormula left, LTLFormula right) {
+            super(left, right);
+        }
     }
 }

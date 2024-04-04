@@ -2,10 +2,10 @@ package net.maswag;
 
 import java.util.Set;
 
-abstract class STLTemporalOp extends STLCost {
-    STLCost subFml;
+abstract class TemporalOp<I> extends AbstractTemporalLogic<I> {
+    TemporalLogic<I> subFml;
 
-    STLTemporalOp(STLCost subFml) {
+    TemporalOp(TemporalLogic<I> subFml) {
         this.subFml = subFml;
         this.nonTemporal = false;
     }
@@ -16,7 +16,7 @@ abstract class STLTemporalOp extends STLCost {
      * @param signal a {@link net.automatalib.word.Word} object.
      * @return a RoSI object.
      */
-    abstract public RoSI getRoSIRaw(IOSignal signal);
+    abstract public RoSI getRoSIRaw(IOSignal<I> signal);
 
     /**
      * <p>getRoSIRawLen.</p>
@@ -25,13 +25,13 @@ abstract class STLTemporalOp extends STLCost {
      * @param length the length to compute the RoSI
      * @return a RoSI object.
      */
-    abstract public RoSI getRoSIRawWithLen(IOSignal signal, int length);
+    abstract public RoSI getRoSIRawWithLen(IOSignal<I> signal, int length);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void constructAtomicStrings() {
+    public void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
@@ -39,7 +39,7 @@ abstract class STLTemporalOp extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    protected Set<String> getAllAPs() {
+    public Set<String> getAllAPs() {
         return subFml.getAllAPs();
     }
 }

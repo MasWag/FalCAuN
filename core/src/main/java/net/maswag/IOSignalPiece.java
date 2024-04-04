@@ -1,15 +1,24 @@
 package net.maswag;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Set;
 
-@Getter
-public class IOSignalPiece {
-    final private List<Double> inputSignal, outputSignal;
+@Getter @AllArgsConstructor
+public class IOSignalPiece<I> {
+    final private I inputSignal, outputSignal;
 
-    public IOSignalPiece(List<Double> inputSignal, List<Double> outputSignal) {
-        this.inputSignal = inputSignal;
-        this.outputSignal = outputSignal;
+    class NumericIOSignalPiece extends IOSignalPiece<List<Double>> {
+        public NumericIOSignalPiece(List<Double> inputSignal, List<Double> outputSignal) {
+            super(inputSignal, outputSignal);
+        }
+    }
+
+    class LogicalIOSignalPiece extends IOSignalPiece<Set<String>> {
+        public LogicalIOSignalPiece(Set<String> inputSignal, Set<String> outputSignal) {
+            super(inputSignal, outputSignal);
+        }
     }
 }

@@ -8,17 +8,17 @@ import java.util.stream.Collectors;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class STLOr extends STLCost {
-    private List<STLCost> subFmls;
+public class TemporalOr<I> extends AbstractTemporalLogic<I> {
+    private List<TemporalLogic<I>> subFmls;
 
-    STLOr(STLCost subFml1, STLCost subFml2) {
+    TemporalOr(TemporalLogic<I> subFml1, TemporalLogic<I> subFml2) {
         this.subFmls = Arrays.asList(subFml1, subFml2);
-        this.nonTemporal = subFml1.nonTemporal && subFml2.nonTemporal;
+        this.nonTemporal = subFml1.isNonTemporal() && subFml2.isNonTemporal();
     }
 
-    STLOr(List<STLCost> subFmls) {
+    TemporalOr(List<TemporalLogic<I>> subFmls) {
         this.subFmls = subFmls;
-        this.nonTemporal = subFmls.stream().map(STLCost::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
+        this.nonTemporal = subFmls.stream().map(TemporalLogic<I>::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
     }
 
     /**
@@ -35,17 +35,17 @@ public class STLOr extends STLCost {
      */
     @Override
     public String toString() {
-        return subFmls.stream().map(STLCost::toString).collect(Collectors.joining(" || "));
+        return subFmls.stream().map(TemporalLogic<I>::toString).collect(Collectors.joining(" || "));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void constructAtomicStrings() {
+    public void constructAtomicStrings() {
         if (this.nonTemporal) {
             this.atomicStrings = new HashSet<>();
-            for (STLCost subFml : subFmls) {
+            for (TemporalLogic<I> subFml : subFmls) {
                 this.atomicStrings.addAll(subFml.getAtomicStrings());
             }
         } else {
@@ -55,7 +55,7 @@ public class STLOr extends STLCost {
 
     /** {@inheritDoc} */
     @Override
-    protected Set<String> getAllAPs() {
+    public Set<String> getAllAPs() {
         return subFmls.get(0).getAllAPs();
     }
 
@@ -67,7 +67,7 @@ public class STLOr extends STLCost {
             return this.atomicStrings.stream().map(
                     s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
         } else {
-            return this.subFmls.stream().map(STLCost::toAbstractString).map(
+            return this.subFmls.stream().map(TemporalLogic::toAbstractString).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" || "));
         }
     }
@@ -75,7 +75,19 @@ public class STLOr extends STLCost {
     /**
      * <p>getSubFmls.</p>
      *
-     * @return {@link STLCost} list object.
+     * @return {@link TemporalLogic<I>} list object.
      */
-    public List<STLCost> getSubFmls() { return this.subFmls; }
+    public List<TemporalLogic<I>> getSubFmls() { return this.subFmls; }
+
+    static class STLOr extends TemporalOr<List<Double>> implements STLCost {
+        STLOr(STLCost subFml1, STLCost subFml2) {
+            super(subFml1, subFml2);
+        }
+    }
+
+    static class LTLOr extends TemporalOr<String> implements LTLFormula {
+        LTLOr(TemporalLogic<String> subFml1, TemporalLogic<String> subFml2) {
+            super(subFml1, subFml2);
+        }
+    }
 }

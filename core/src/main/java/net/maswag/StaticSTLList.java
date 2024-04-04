@@ -9,18 +9,18 @@ import java.util.*;
  * @see BlackBoxVerifier
  * @see NumericSULVerifier
  */
-public class StaticSTLList extends AbstractAdaptiveSTLUpdater {
+public class StaticSTLList<I> extends AbstractAdaptiveSTLUpdater<I> {
     Set<Integer> disprovedIndices = new HashSet<>();
 
     public StaticSTLList() {
         this(Collections.emptySet());
     }
 
-    public StaticSTLList(STLCost propertyOracle) {
+    public StaticSTLList(TemporalLogic<I> propertyOracle) {
         this(Collections.singleton(propertyOracle));
     }
 
-    public StaticSTLList(Collection<? extends STLCost> STLProperties) {
+    public StaticSTLList(Collection<? extends TemporalLogic<I>> STLProperties) {
         super();
         this.addSTLProperties(STLProperties);
     }

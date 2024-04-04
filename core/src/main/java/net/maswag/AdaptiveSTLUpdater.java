@@ -17,12 +17,12 @@ import java.util.stream.Stream;
  * @see BlackBoxVerifier
  * @see NumericSULVerifier
  */
-public interface AdaptiveSTLUpdater extends InclusionOracle.MealyInclusionOracle<String, String>, BlackBoxOracle.MealyBlackBoxOracle<String, String> {
+public interface AdaptiveSTLUpdater<I> extends InclusionOracle.MealyInclusionOracle<String, String>, BlackBoxOracle.MealyBlackBoxOracle<String, String> {
     /**
      * Returns the current list of STL formulas
      * The result may change only after the call of findCounterExample
      */
-    List<STLCost> getSTLProperties();
+    List<TemporalLogic<I>> getSTLProperties();
 
     /**
      * Returns the current list of LTL formulas in the string representation
@@ -64,5 +64,5 @@ public interface AdaptiveSTLUpdater extends InclusionOracle.MealyInclusionOracle
     /**
      * Returns if the formula is not yet falsified
      */
-    boolean newlyFalsifiedFormula(STLCost stlFormula);
+    boolean newlyFalsifiedFormula(TemporalLogic<I> stlFormula);
 }

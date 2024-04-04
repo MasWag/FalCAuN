@@ -1,5 +1,8 @@
 package net.maswag;
 
+import lombok.Getter;
+
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -7,11 +10,12 @@ import java.util.Set;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class STLNext extends STLCost {
-    private STLCost subFml;
-    private boolean nullPositive;
+public class TemporalNext<I> extends AbstractTemporalLogic<I> {
+    @Getter
+    private TemporalLogic<I> subFml;
+    private final boolean nullPositive;
 
-    STLNext(STLCost subFml, boolean nullPositive) {
+    TemporalNext(TemporalLogic<I> subFml, boolean nullPositive) {
         this.subFml = subFml;
         this.nullPositive = nullPositive;
         this.nonTemporal = false;
@@ -21,7 +25,7 @@ public class STLNext extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    public Double apply(IOSignal signal) {
+    public Double apply(IOSignal<I> signal) {
         if (signal.size() <= 1) {
             return this.nullPositive ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
         }
@@ -32,7 +36,7 @@ public class STLNext extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    public RoSI getRoSI(IOSignal signal) {
+    public RoSI getRoSI(IOSignal<I> signal) {
         if (signal.size() <= 1) {
             return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
@@ -43,7 +47,7 @@ public class STLNext extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    protected void constructAtomicStrings() {
+    public void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
@@ -57,7 +61,7 @@ public class STLNext extends STLCost {
 
     /** {@inheritDoc} */
     @Override
-    protected Set<String> getAllAPs() {
+    public Set<String> getAllAPs() {
         return subFml.getAllAPs();
     }
 
@@ -67,10 +71,15 @@ public class STLNext extends STLCost {
         return String.format("X ( %s )", subFml.toString());
     }
 
-    /**
-     * <p>getSubFml.</p>
-     *
-     * @return a {@link STLCost} object.
-     */
-    public STLCost getSubFml() { return this.subFml; }
+    static class STLNext extends TemporalNext<List<Double>> implements STLCost {
+        STLNext(STLCost subFml, boolean nullPositive) {
+            super(subFml, nullPositive);
+        }
+    }
+
+    static class LTLNext extends TemporalNext<String> implements LTLFormula {
+        LTLNext(LTLFormula subFml, boolean nullPositive) {
+            super(subFml, nullPositive);
+        }
+    }
 }

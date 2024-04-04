@@ -24,6 +24,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import net.maswag.TemporalLogic.STLCost;
+
 /**
  * Abstract class for potentially adaptive set of STL formulas
  *
@@ -32,7 +34,7 @@ import java.util.stream.Stream;
  * @see NumericSULVerifier
  */
 @Slf4j
-public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
+public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdater<I> {
     protected static final Function<String, String> EDGE_PARSER = s -> s;
     protected EmptinessOracle.MealyEmptinessOracle<String, String> emptinessOracle;
     @NotNull
@@ -41,11 +43,11 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     protected MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     @Setter
     protected Alphabet<String> inputAlphabet;
-    private final List<STLCost> STLProperties = new ArrayList<>();
+    private final List<TemporalLogic<I>> STLProperties = new ArrayList<>();
     private final List<PropertyOracle.MealyPropertyOracle<String, String, String>> propertyOracles = new ArrayList<>();
     boolean initialized = false;
     // The list of the STL formulas that are already falsified.
-    private final List<STLCost> reportedFormulas = new ArrayList<>();
+    private final List<TemporalLogic<I>> reportedFormulas = new ArrayList<>();
 
     public AbstractAdaptiveSTLUpdater() {
         // Create model checker
@@ -53,13 +55,13 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
     }
 
     @Override
-    final public List<STLCost> getSTLProperties() {
+    final public List<TemporalLogic<I>> getSTLProperties() {
         return STLProperties;
     }
 
     @Override
     public List<String> getLTLProperties() {
-        return this.getSTLProperties().stream().map(STLCost::toLTLString).collect(Collectors.toList());
+        return this.getSTLProperties().stream().map(TemporalLogic<I>::toLTLString).collect(Collectors.toList());
     }
 
     @Override
@@ -90,7 +92,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         inclusionOracle = new MealyBFInclusionOracle<>(this.memOracle, multiplier);
     }
 
-    protected void addSTLProperty(STLCost stl) {
+    protected void addSTLProperty(TemporalLogic<I> stl) {
         if (STLProperties.contains(stl)) {
             return;
         }
@@ -102,7 +104,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         }
     }
 
-    protected void addSTLProperties(Collection<? extends STLCost> stlCollection) {
+    protected void addSTLProperties(Collection<? extends TemporalLogic<I>> stlCollection) {
         stlCollection.forEach(this::addSTLProperty);
     }
 
@@ -144,7 +146,7 @@ public abstract class AbstractAdaptiveSTLUpdater implements AdaptiveSTLUpdater {
         }
     }
 
-    public final boolean newlyFalsifiedFormula(STLCost stlFormula) {
+    public final boolean newlyFalsifiedFormula(TemporalLogic<I> stlFormula) {
         return !reportedFormulas.contains(stlFormula);
     }
 

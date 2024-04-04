@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class NumericSULMapperTest {
 
     private List<Map<Character, Double>> inputMapper;
@@ -65,7 +64,7 @@ class NumericSULMapperTest {
         expected.put(new ArrayList<>(Arrays.asList(113.0, 200.0)), "00n");
 
         for (Map.Entry<List<Double>, String> test : expected.entrySet()) {
-            String result = mapper.mapOutput(new IOSignalPiece(Collections.emptyList(), test.getKey()));
+            String result = mapper.mapOutput(new IOSignalPiece<>(Collections.emptyList(), test.getKey()));
             assertEquals(test.getValue(), result);
         }
     }
@@ -86,8 +85,8 @@ class NumericSULMapperTest {
             mapper2.put('c', 100.0);
             inputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
         }
-        Function<IOSignalPiece, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
-        List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
+        Function<IOSignalPiece<List<Double>>, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
+        List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
         List<Map<Character, Double>> outputMapper;
         List<Character> largest;
         {

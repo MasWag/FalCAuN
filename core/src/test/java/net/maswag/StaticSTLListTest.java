@@ -10,9 +10,10 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.*;
+import net.maswag.TemporalLogic.STLCost;
 
 class StaticSTLListTest {
-    private AdaptiveSTLUpdater properties;
+    private AdaptiveSTLUpdater<List<Double>> properties;
 
     @Nested
     class AutoTransTest {
@@ -59,7 +60,7 @@ class StaticSTLListTest {
                 stlList = stlStringList.stream().map(stlString ->
                         factory.parse(stlString, inputMapper, outputMapper, largest)).collect(Collectors.toList());
                 expectedStlStringList = stlList.stream().map(Object::toString).collect(Collectors.toList());
-                properties = new StaticSTLList(stlList);
+                properties = new StaticSTLList<>(stlList);
             }
 
             @Test

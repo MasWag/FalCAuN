@@ -10,17 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class NumericMembershipOracleCost extends NumericMembershipOracle implements EvaluationCountable {
     private static final Logger LOGGER = LoggerFactory.getLogger(NumericMembershipOracleCost.class);
     private IncrementalMealyBuilder<String, Double> costCache;
-    private STLCost costFunc;
+    private Function<IOSignal<List<Double>>, Double> costFunc;
     private Set<NumericMembershipOracleCost> notifiedSet = new HashSet<>();
     @Getter
     private int evaluateCount = 0;
 
-    NumericMembershipOracleCost(NumericSUL sul, NumericSULMapper mapper, STLCost costFunc) {
+    NumericMembershipOracleCost(NumericSUL sul, NumericSULMapper mapper, Function<IOSignal<List<Double>>, Double> costFunc) {
         super(sul, mapper);
         this.costFunc = costFunc;
         this.costCache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());
@@ -65,9 +66,9 @@ class NumericMembershipOracleCost extends NumericMembershipOracle implements Eva
                 return null;
             }
             assert concreteOutput.size() == concreteInput.size();
-            IOSignal concreteSignal = new IOSignal(concreteInput, concreteOutput);
+            IOSignal<List<Double>> concreteSignal = new IOSignal<>(concreteInput, concreteOutput);
             List<Double> robustness = concreteSignal.prefixes(false).stream()
-                    .map(word -> new IOSignal(word.getInputSignal(),
+                    .map(word -> new IOSignal<>(word.getInputSignal(),
                             Word.fromList(word.stream().map(mapper::mapConcrete).collect(Collectors.toList()))))
                     .map(costFunc).collect(Collectors.toList())
                     .subList(1, concreteInput.length() + 1); // remove the additional element by prefixes
@@ -103,10 +104,10 @@ class NumericMembershipOracleCost extends NumericMembershipOracle implements Eva
         return costBuilder.toWord().lastSymbol();
     }
 
-    private void cacheInsert(Word<String> abstractInput, IOSignal concreteSignal, Word<String> abstractOutput) {
+    private void cacheInsert(Word<String> abstractInput, IOSignal<List<Double>> concreteSignal, Word<String> abstractOutput) {
         super.cacheInsert(abstractInput, abstractOutput);
         Word<Double> robustness = Word.fromList(concreteSignal.prefixes(false).stream()
-                .map(word -> new IOSignal(word.getInputSignal(),
+                .map(word -> new IOSignal<>(word.getInputSignal(),
                         Word.fromList(word.stream().map(mapper::mapConcrete).collect(Collectors.toList()))))
                 .map(costFunc).collect(Collectors.toList())
                 .subList(1, abstractInput.length() + 1)); // remove the additional element by prefixes

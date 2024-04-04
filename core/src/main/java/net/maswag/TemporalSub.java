@@ -3,12 +3,13 @@ package net.maswag;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
-public class STLSub extends STLCost {
+public class TemporalSub<I> extends AbstractTemporalLogic<I> {
 
-    private STLTemporalOp subFml;
+    private TemporalOp<I> subFml;
     private int from, to;
 
     /**
@@ -16,7 +17,7 @@ public class STLSub extends STLCost {
      * @param from   the first index, inclusive
      * @param to     the last index, inclusive.
      */
-    STLSub(STLTemporalOp subFml, int from, int to) {
+    TemporalSub(TemporalOp<I> subFml, int from, int to) {
         this.subFml = subFml;
         this.from = from;
         this.to = to;
@@ -24,7 +25,7 @@ public class STLSub extends STLCost {
     }
 
     @Override
-    public RoSI getRoSI(IOSignal signal) {
+    public RoSI getRoSI(IOSignal<I> signal) {
         if (from >= signal.size()) {
             // If the signal is too short
             return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -38,7 +39,7 @@ public class STLSub extends STLCost {
     }
 
     @Override
-    protected Set<String> getAllAPs() {
+    public Set<String> getAllAPs() {
         return subFml.getAllAPs();
     }
 
@@ -52,7 +53,7 @@ public class STLSub extends STLCost {
     }
 
     @Override
-    protected void constructAtomicStrings() {
+    public void constructAtomicStrings() {
         this.atomicStrings = null;
     }
 
@@ -85,9 +86,9 @@ public class STLSub extends STLCost {
     /**
      * <p>getSubFml.</p>
      *
-     * @return a {@link STLTemporalOp} object.
+     * @return a {@link TemporalLogic<I>} object.
      */
-    public STLTemporalOp getSubFml() { return this.subFml; }
+    public TemporalOp<I> getSubFml() { return this.subFml; }
 
     /**
      * <p>getFrom.</p>
@@ -102,4 +103,16 @@ public class STLSub extends STLCost {
      * @return a int of 'to'.
      */
     public int getTo() { return this.to; }
+
+    static class STLSub extends TemporalSub<List<Double>> implements STLCost {
+        STLSub(TemporalOp<List<Double>> subFml, int from, int to) {
+            super(subFml, from, to);
+        }
+    }
+
+    static class LTLSub extends TemporalSub<String> implements LTLFormula {
+        LTLSub(TemporalOp<String> subFml, int from, int to) {
+            super(subFml, from, to);
+        }
+    }
 }

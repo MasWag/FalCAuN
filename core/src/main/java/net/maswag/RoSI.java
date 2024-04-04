@@ -3,7 +3,7 @@ package net.maswag;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-class RoSI {
+public class RoSI {
     Double lowerBound;
     Double upperBound;
 

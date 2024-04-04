@@ -8,6 +8,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.List;
 import java.util.Map;
 
+import net.maswag.TemporalLogic.STLCost;
+
 public class STLFactory {
     /**
      * <p>parse an STL formula using mappers</p>
@@ -15,7 +17,7 @@ public class STLFactory {
      * @param stlFormula   a {@link java.lang.String} object.
      * @param outputMapper a {@link java.util.List} object.
      * @param largest      a {@link java.util.List} object.
-     * @return a {@link net.maswag.STLCost} object.
+     * @return a {@link net.maswag.TemporalLogic.STLCost} object.
      */
     public STLCost parse(String stlFormula,
                          List<Map<Character, Double>> inputMapper,
@@ -29,7 +31,7 @@ public class STLFactory {
      * <p>parse an STL formula without setting the mapper</p>
      *
      * @param formula a {@link java.lang.String} object.
-     * @return a {@link net.maswag.STLCost} object.
+     * @return a {@link net.maswag.TemporalLogic.STLCost} object.
      */
     public STLCost parse(String formula) {
         net.maswag.STLVisitor<STLCost> visitor = new STLVisitorImpl();

@@ -59,14 +59,14 @@ class SimulinkSULTest {
         void step() {
             sul.pre();
             List<Double> input = Arrays.asList(80.0, 900.0);
-            IOSignalPiece firstPair = sul.step(input);
+            IOSignalPiece<List<Double>> firstPair = sul.step(input);
             assert firstPair != null;
             List<Double> firstOutput = firstPair.getOutputSignal();
             assertNotNull(firstOutput);
             assertEquals(expectedOutputSize, firstOutput.size());
 
             input = Arrays.asList(85.0, 920.0);
-            IOSignalPiece secondPair = sul.step(input);
+            IOSignalPiece<List<Double>> secondPair = sul.step(input);
             assert secondPair != null;
             List<Double> secondOutput = secondPair.getOutputSignal();
             assertNotNull(secondOutput);
@@ -116,14 +116,14 @@ class SimulinkSULTest {
         void step() {
             sul.pre();
             List<Double> input = Arrays.asList(80.0, 0.0);
-            IOSignalPiece firstPair = sul.step(input);
+            IOSignalPiece<List<Double>> firstPair = sul.step(input);
             assert firstPair != null;
             List<Double> firstOutput = firstPair.getOutputSignal();
             assertNotNull(firstOutput);
             assertEquals(expectedOutputSize, firstOutput.size());
 
             input = Arrays.asList(0.0, 200.0);
-            IOSignalPiece secondPair = sul.step(input);
+            IOSignalPiece<List<Double>> secondPair = sul.step(input);
             assert secondPair != null;
             List<Double> secondOutput = secondPair.getOutputSignal();
             assertNotNull(secondOutput);
@@ -204,14 +204,14 @@ class SimulinkSULTest {
         void step() {
             sul.pre();
             List<Double> input = Arrays.asList(80.0, 0.0);
-            IOSignalPiece firstPair = sul.step(input);
+            IOSignalPiece<List<Double>> firstPair = sul.step(input);
             assert firstPair != null;
             List<Double> firstOutput = firstPair.getOutputSignal();
             assertNotNull(firstOutput);
             assertEquals(expectedOutputSize, firstOutput.size());
 
             input = Arrays.asList(0.0, 200.0);
-            IOSignalPiece secondPair =  sul.step(input);
+            IOSignalPiece<List<Double>> secondPair =  sul.step(input);
             assert secondPair != null;
             List<Double> secondOutput = secondPair.getOutputSignal();
             assertNotNull(secondOutput);

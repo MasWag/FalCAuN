@@ -11,6 +11,8 @@ import java.util.List;
 
 import static java.lang.Math.min;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import net.maswag.TemporalLogic.STLCost;
+import net.maswag.TemporalAnd.STLAnd;
 
 @RunWith(JUnitQuickcheck.class)
 public class STLAndTest {

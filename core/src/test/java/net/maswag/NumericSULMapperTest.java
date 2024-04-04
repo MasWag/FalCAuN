@@ -8,7 +8,16 @@ import java.util.*;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import net.maswag.TemporalAnd.STLAnd;
+import net.maswag.TemporalEventually.STLEventually;
+import net.maswag.TemporalGlobally.STLGlobally;
+import net.maswag.TemporalImply.STLImply;
+import net.maswag.TemporalLogic.STLCost;
+import net.maswag.TemporalNext.STLNext;
+import net.maswag.TemporalOr.STLOr;
+import net.maswag.TemporalRelease.STLRelease;
+import net.maswag.TemporalSub.STLSub;
+import net.maswag.TemporalUntil.STLUntil;
 class NumericSULMapperTest {
 
     private List<Map<Character, Double>> inputMapper;
@@ -86,8 +95,8 @@ class NumericSULMapperTest {
             mapper2.put('c', 100.0);
             inputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2));
         }
-        Function<IOSignalPiece, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
-        List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
+        Function<IOSignalPiece<List<Double>>, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
+        List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = new ArrayList<>(Collections.singletonList(diff));
         List<Map<Character, Double>> outputMapper;
         List<Character> largest;
         {

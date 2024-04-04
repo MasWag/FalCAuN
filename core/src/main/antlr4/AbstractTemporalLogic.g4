@@ -51,5 +51,5 @@ MINUS : '-';
 FLOAT : NATURAL '.' [0-9]+;
 LPAREN : '(';
 RPAREN : ')';
-INPUT : 'input';
-OUTPUT : 'signal' | 'output';
+// This must be the lowest priority token.
+ID : [a-zA-Z][a-zA-Z0-9]*;

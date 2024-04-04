@@ -1,5 +1,15 @@
 package net.maswag;
 
+import net.maswag.TemporalAnd.STLAnd;
+import net.maswag.TemporalEventually.STLEventually;
+import net.maswag.TemporalGlobally.STLGlobally;
+import net.maswag.TemporalImply.STLImply;
+import net.maswag.TemporalLogic.STLCost;
+import net.maswag.TemporalNext.STLNext;
+import net.maswag.TemporalOr.STLOr;
+import net.maswag.TemporalRelease.STLRelease;
+import net.maswag.TemporalSub.STLSub;
+import net.maswag.TemporalUntil.STLUntil;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -14,7 +24,6 @@ import java.util.*;
 import static net.maswag.STLAbstractAtomic.Operation.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 
 class STLParserTest {
 
@@ -76,22 +85,22 @@ class STLParserTest {
                     new STLImply(new STLOutputAtomic(0, lt, -1.0),
                             new STLOutputAtomic(1, eq, 2.2)),
                     new STLNext(new STLOutputAtomic(1, eq, -20), true),
-                    new STLGlobal(new STLOutputAtomic(1, eq, -20)),
+                    new STLGlobally(new STLOutputAtomic(1, eq, -20)),
                     new STLEventually(new STLOutputAtomic(1, eq, -20)),
                     new STLSub(
-                            new STLGlobal(new STLOutputAtomic(1, eq, -20)), 0, 2),
+                            new STLGlobally(new STLOutputAtomic(1, eq, -20)), 0, 2),
                     new STLSub(
                             new STLEventually(new STLOutputAtomic(1, eq, -20)), 10, 20),
-                    new STLGlobal(new STLImply(
+                    new STLGlobally(new STLImply(
                             new STLAnd(
                                     new STLOutputAtomic(2, ne, 4.0),
                                     new STLNext(new STLOutputAtomic(2, eq, 4.0), false)),
-                            new STLSub(new STLGlobal(new STLOutputAtomic(2, eq, 4.0)), 0, 1))),
+                            new STLSub(new STLGlobally(new STLOutputAtomic(2, eq, 4.0)), 0, 1))),
                     // S2
-                    new STLGlobal(new STLImply(new STLOutputAtomic(2, STLOutputAtomic.Operation.eq, 3),
+                    new STLGlobally(new STLImply(new STLOutputAtomic(2, STLOutputAtomic.Operation.eq, 3),
                             new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 20))),
                     // S5
-                    new STLGlobal(
+                    new STLGlobally(
                             new STLOr(
                                     new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 4770),
                                     new STLNext(new STLOutputAtomic(1, STLOutputAtomic.Operation.gt, 600.0), true))),

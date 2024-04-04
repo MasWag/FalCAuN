@@ -8,7 +8,16 @@ import net.automatalib.modelchecker.ltsmin.AbstractLTSmin;
 import net.automatalib.word.Word;
 import org.apache.commons.cli.MissingOptionException;
 import org.slf4j.LoggerFactory;
-
+import net.maswag.TemporalAnd.STLAnd;
+import net.maswag.TemporalEventually.STLEventually;
+import net.maswag.TemporalGlobally.STLGlobally;
+import net.maswag.TemporalImply.STLImply;
+import net.maswag.TemporalLogic.STLCost;
+import net.maswag.TemporalNext.STLNext;
+import net.maswag.TemporalOr.STLOr;
+import net.maswag.TemporalRelease.STLRelease;
+import net.maswag.TemporalSub.STLSub;
+import net.maswag.TemporalUntil.STLUntil;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.nio.file.FileSystems;
@@ -17,6 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.maswag.ArgParser.EquivType.*;
+import net.maswag.TemporalLogic.STLCost;
 
 /**
  * <p>FalCAuN class.</p>
@@ -245,7 +255,7 @@ public class FalCAuN {
         }
     }
 
-    private static void printResult(int i, List<STLCost> cexProperties, List<Signal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
+    private static <T extends TemporalLogic<List<Double>>> void printResult(int i, List<T> cexProperties, List<Signal> cexConcreteInput, List<Word<String>> cexAbstractInput, List<Word<String>> cexOutput) {
         log.info("Property STL: {}", cexProperties.get(i).toString());
         log.info("Property LTL: {}", cexProperties.get(i).toLTLString());
         log.info("Concrete Input: {}", cexConcreteInput.get(i));

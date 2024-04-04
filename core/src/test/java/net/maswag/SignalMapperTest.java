@@ -21,7 +21,7 @@ class SignalMapperTest {
 
     @BeforeEach
     void setUp() {
-        Function<IOSignalPiece, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
+        Function<IOSignalPiece<List<Double>>, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
         sigMap = new SignalMapper(Collections.singletonList(diff));
         concreteSignal = new ArrayList<>();
         concreteSignal.add(2.0);
@@ -31,10 +31,10 @@ class SignalMapperTest {
 
     @Test
     void apply() {
-        assertEquals(6.2, sigMap.apply(0, new IOSignalPiece(Collections.emptyList(), concreteSignal)));
+        assertEquals(6.2, sigMap.apply(0, new IOSignalPiece<>(Collections.emptyList(), concreteSignal)));
         // sigMap should be applied to an index smaller than the size of the SigMap. Otherwise, it throws IndexOutOfBoundsException.
         assertThrows(IndexOutOfBoundsException.class, () -> sigMap.apply(2,
-                new IOSignalPiece(Collections.emptyList(), concreteSignal)));
+                new IOSignalPiece<>(Collections.emptyList(), concreteSignal)));
     }
 
     @Test
@@ -47,14 +47,14 @@ class SignalMapperTest {
         sigMap = SignalMapper.parse(sigMapName);
         assertEquals(4, sigMap.size());
         assertEquals(2.0 + 0.4, sigMap.apply(0,
-                new IOSignalPiece(Collections.emptyList(), concreteSignal)));
+                new IOSignalPiece<>(Collections.emptyList(), concreteSignal)));
         assertEquals(-4.2 - 0.4 * 2.0, sigMap.apply(1,
-                new IOSignalPiece(Collections.emptyList(), concreteSignal)));
+                new IOSignalPiece<>(Collections.emptyList(), concreteSignal)));
         assertEquals(0.5 + 2.0, sigMap.apply(2,
-                new IOSignalPiece(Collections.singletonList(0.5), concreteSignal)));
+                new IOSignalPiece<>(Collections.singletonList(0.5), concreteSignal)));
         assertEquals(abs(2.0 - 4.2), sigMap.apply(3,
-                new IOSignalPiece(Collections.emptyList(), concreteSignal)));
+                new IOSignalPiece<>(Collections.emptyList(), concreteSignal)));
         assertThrows(IndexOutOfBoundsException.class, () -> sigMap.apply(4,
-                new IOSignalPiece(Collections.emptyList(), concreteSignal)));
+                new IOSignalPiece<>(Collections.emptyList(), concreteSignal)));
     }
 }

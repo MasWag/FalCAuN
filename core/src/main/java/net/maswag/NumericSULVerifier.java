@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.function.Function;
 
+import net.maswag.TemporalLogic.STLCost;
 import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
 
 /**
@@ -20,10 +21,10 @@ import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class NumericSULVerifier {
-    protected SUL<List<Double>, IOSignalPiece> simulink;
+    protected SUL<List<Double>, IOSignalPiece<List<Double>>> simulink;
     protected final NumericSUL rawSUL;
     private final NumericSULMapper mapper;
-    private final BlackBoxVerifier verifier;
+    private final BlackBoxVerifier<List<Double>> verifier;
     private final NumericMembershipOracle memOracle;
     private final List<NumericMembershipOracleCost> memOracleCosts = new ArrayList<>();
     private final EvaluationCountable.Sum evaluationCountables = new EvaluationCountable.Sum();
@@ -38,7 +39,7 @@ public class NumericSULVerifier {
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
-    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater properties, NumericSULMapper mapper) throws Exception {
+    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) throws Exception {
         this.rawSUL = rawSUL;
         this.signalStep = signalStep;
         this.mapper = mapper;
@@ -58,11 +59,11 @@ public class NumericSULVerifier {
     /**
      * Returns the falsified STL formulas in the string representation.
      */
-    List<STLCost> getCexProperty() {
+    List<TemporalLogic<List<Double>>> getCexProperty() {
         return verifier.getCexProperty();
     }
 
-    void addSimulinkEqOracle(STLCost costFunc,
+    void addSimulinkEqOracle(Function<IOSignal<List<Double>>, Double> costFunc,
                              Function<NumericMembershipOracleCost,
                                      ? extends MealyEquivalenceOracle<String, String>> constructor) {
         // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
@@ -127,7 +128,7 @@ public class NumericSULVerifier {
      * @param resetWord      a boolean.
      * @param ltlOracle      a {@link de.learnlib.oracle.PropertyOracle.MealyPropertyOracle} object.
      */
-    public void addHillClimbingEQOracle(STLCost costFunc,
+    public void addHillClimbingEQOracle(Function<IOSignal<List<Double>>, Double> costFunc,
                                         int length,
                                         Random random,
                                         int maxTests,
@@ -165,7 +166,7 @@ public class NumericSULVerifier {
      * @param alpha          a double.
      * @param ltlOracle      a {@link de.learnlib.oracle.PropertyOracle.MealyPropertyOracle} object.
      */
-    public void addSAEQOracle(STLCost costFunc,
+    public void addSAEQOracle(Function<IOSignal<List<Double>>, Double> costFunc,
                               int length,
                               Random random,
                               int maxTests,
@@ -178,7 +179,7 @@ public class NumericSULVerifier {
                 new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
     }
 
-    void addMutateSelectEQOracle(STLCost costFunc,
+    void addMutateSelectEQOracle(Function<IOSignal<List<Double>>, Double> costFunc,
                                  int length,
                                  Random random,
                                  int maxTests,
@@ -202,7 +203,7 @@ public class NumericSULVerifier {
      * @param mutationProbability probability to have mutation
      * @param ltlOracle           the LTL formula
      */
-    void addGAEQOracle(STLCost costFunc,
+    void addGAEQOracle(Function<IOSignal<List<Double>>, Double> costFunc,
                        int length,
                        int maxTests,
                        ArgParser.GASelectionKind selectionKind,
@@ -301,7 +302,7 @@ public class NumericSULVerifier {
         return evaluationCountables.getEvaluateCount();
     }
 
-    public AdaptiveSTLUpdater getProperties() {
+    public AdaptiveSTLUpdater<List<Double>> getProperties() {
         return this.verifier.getProperties();
     }
 

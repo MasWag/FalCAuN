@@ -1,14 +1,20 @@
 package net.maswag;
 
+import net.automatalib.word.Word;
+
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
+import net.maswag.TemporalLogic.*;
 
 /**
  * <p>STLGlobal class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class STLGlobal extends STLTemporalOp {
-    STLGlobal(STLCost subFml) {
+public class TemporalGlobally<I> extends TemporalOp<I> {
+    TemporalGlobally(TemporalLogic<I> subFml) {
         super(subFml);
     }
 
@@ -16,14 +22,14 @@ public class STLGlobal extends STLTemporalOp {
      * {@inheritDoc}
      */
     @Override
-    public RoSI getRoSI(IOSignal signal) {
+    public RoSI getRoSI(IOSignal<I> signal) {
         return getRoSIRaw(signal).assignMin(new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
     }
 
     /**
      * {@inheritDoc}
      */
-    public RoSI getRoSIRaw(IOSignal signal) {
+    public RoSI getRoSIRaw(IOSignal<I> signal) {
         return signal.suffixes(true).stream().filter(w -> !w.isEmpty()).map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
                 .reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
     }
@@ -31,7 +37,7 @@ public class STLGlobal extends STLTemporalOp {
     /**
      * {@inheritDoc}
      */
-    public RoSI getRoSIRawWithLen(IOSignal signal, int length) {
+    public RoSI getRoSIRawWithLen(IOSignal<I> signal, int length) {
         return signal.suffixes(true).subList(0, length).stream().filter(w -> !w.isEmpty()).map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
                 .reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
     }
@@ -55,7 +61,24 @@ public class STLGlobal extends STLTemporalOp {
     /**
      * <p>getSubFml.</p>
      *
-     * @return a {@link STLCost} object.
+     * @return a {@link TemporalLogic<I>} object.
      */
-    public STLCost getSubFml() { return this.subFml; }
+    public TemporalLogic<I> getSubFml() { return this.subFml; }
+
+    static class STLGlobally extends TemporalGlobally<List<Double>> implements STLCost {
+        STLGlobally(STLCost subFml) {
+            super(subFml);
+        }
+
+        @Override
+        public STLCost getSubFml() {
+            return (STLCost) this.subFml;
+        }
+    }
+
+    static class LTLGlobally extends TemporalGlobally<String> implements LTLFormula {
+        LTLGlobally(LTLFormula subFml) {
+            super(subFml);
+        }
+    }
 }

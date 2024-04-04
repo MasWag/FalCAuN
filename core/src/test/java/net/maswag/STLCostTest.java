@@ -11,6 +11,13 @@ import java.util.*;
 import static java.lang.Double.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import net.maswag.TemporalLogic.STLCost;
+import net.maswag.TemporalSub.STLSub;
+import net.maswag.TemporalOr.STLOr;
+import net.maswag.TemporalGlobally.STLGlobally;
+import net.maswag.TemporalImply.STLImply;
+import net.maswag.TemporalEventually.STLEventually;
+
 
 class STLCostTest {
     private List<String> concreteExpected;
@@ -45,8 +52,8 @@ class STLCostTest {
         }
 
         formulas = Arrays.asList(
-                new STLGlobal(atomics.get(0)),
-                new STLGlobal(new STLImply(atomics.get(1), atomics.get(2)))
+                new STLGlobally(atomics.get(0)),
+                new STLGlobally(new STLImply(atomics.get(1), atomics.get(2)))
         );
 
         assert concreteExpected.size() == formulas.size();
@@ -105,8 +112,8 @@ class STLCostTest {
         @Test
         void ATExampleS4() {
             STLCost costFunc =
-                    new STLOr(new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
-                            new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
+                    new STLOr(new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
+                            new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
             assertNotEquals(POSITIVE_INFINITY, costFunc.apply(input));
         }
 
@@ -114,8 +121,8 @@ class STLCostTest {
         void ATExampleS4AndTextRepl() {
             STLFactory factory = new STLFactory();
             STLCost costFuncExt =
-                    new STLOr(new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
-                            new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
+                    new STLOr(new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
+                            new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
             STLCost costFunc = factory.parse("([]_[0,13] (signal(0) < 100)) || ([]_[14,14] (signal(0) > 65.0))");
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
@@ -152,12 +159,12 @@ class STLCostTest {
         void AT6() {
             STLCost costFunc1Atomic =
                     new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 3000);
-            STLTemporalOp costFunc1Global =
-                    new STLGlobal(costFunc1Atomic);
+            TemporalOp<List<Double>> costFunc1Global =
+                    new STLGlobally(costFunc1Atomic);
             STLCost costFunc1 =
                     new STLSub(costFunc1Global, 0, 15);
             STLCost costFunc2 =
-                    new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2);
+                    new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2);
             STLCost costFunc = new STLImply(costFunc1, costFunc2);
 
             RoSI robustness1Atomic = costFunc1Atomic.getRoSI(input);
@@ -185,8 +192,8 @@ class STLCostTest {
         void AT6TextRepl() {
             STLFactory factory = new STLFactory();
             STLCost costFuncExt =
-                    new STLImply(new STLSub(new STLGlobal(new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 3000)), 0, 15),
-                            new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2));
+                    new STLImply(new STLSub(new STLGlobally(new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 3000)), 0, 15),
+                            new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2));
             STLCost costFunc = factory.parse("((alw_[0, 15] (signal(1) < 3000.0)) -> (alw_[0, 2] (signal(0) < 35.0)))");
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
@@ -194,7 +201,7 @@ class STLCostTest {
 
     @Nested
     class Bug20210308Test {
-        IOSignal input;
+        IOSignal<List<Double>> input;
 
         @BeforeEach
         void setUp() {
@@ -216,7 +223,7 @@ class STLCostTest {
             builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -58.495021874998656, -43.38252812500288, -31.858421875002815, -22.020599999999433)));
             Word<List<Double>> inputWord = builder.toWord();
             inputWord.stream().forEach(line -> line.add(line.get(4) - line.get(3)));
-            input = new IOSignal(inputWord, inputWord);
+            input = new IOSignal<>(inputWord, inputWord);
             assert Objects.requireNonNull(input.getOutputSymbol(0)).size() == 6;
         }
 
@@ -224,13 +231,13 @@ class STLCostTest {
         void CC4() {
             STLCost costFunc1Atomic =
                     new STLOutputAtomic(5, STLOutputAtomic.Operation.gt, 8);
-            STLTemporalOp costFunc1Global =
-                    new STLGlobal(costFunc1Atomic);
+            TemporalOp<List<Double>> costFunc1Global =
+                    new STLGlobally(costFunc1Atomic);
             STLCost costFunc1 =
                     new STLSub(costFunc1Global, 0, 2);
             STLCost costFunc2 =
                     new STLSub(new STLEventually(costFunc1), 0, 3);
-            STLCost costFunc = new STLSub(new STLGlobal(costFunc2), 0, 6);
+            STLCost costFunc = new STLSub(new STLGlobally(costFunc2), 0, 6);
 
             RoSI robustness1Atomic = costFunc1Atomic.getRoSI(input);
             assertNotEquals(POSITIVE_INFINITY, robustness1Atomic.lowerBound);

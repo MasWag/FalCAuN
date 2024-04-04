@@ -2,6 +2,7 @@ package net.maswag;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -13,12 +14,12 @@ import static java.lang.Math.abs;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class SignalMapperVisitorImpl extends net.maswag.SignalMapperBaseVisitor<Function<IOSignalPiece, Double>> {
+public class SignalMapperVisitorImpl extends net.maswag.SignalMapperBaseVisitor<Function<IOSignalPiece<List<Double>>, Double>> {
     /**
      * {@inheritDoc}
      */
     @Override
-    public Function<IOSignalPiece, Double> visitExpr(net.maswag.SignalMapperParser.ExprContext ctx) {
+    public Function<IOSignalPiece<List<Double>>, Double> visitExpr(net.maswag.SignalMapperParser.ExprContext ctx) {
         if (ctx.atomic() != null) {
             // atomic
             log.trace("atomic");
@@ -63,7 +64,7 @@ public class SignalMapperVisitorImpl extends net.maswag.SignalMapperBaseVisitor<
      * {@inheritDoc}
      */
     @Override
-    public Function<IOSignalPiece, Double> visitAtomic(net.maswag.SignalMapperParser.AtomicContext ctx) {
+    public Function<IOSignalPiece<List<Double>>, Double> visitAtomic(net.maswag.SignalMapperParser.AtomicContext ctx) {
         if (ctx.signalID != null) {
             int sigIndex = Integer.parseInt(ctx.signalID.getText());
             if (Objects.nonNull(ctx.INPUT())) {

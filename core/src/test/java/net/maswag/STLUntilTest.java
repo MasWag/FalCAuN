@@ -1,6 +1,9 @@
 package net.maswag;
 
 import net.automatalib.word.WordBuilder;
+import net.maswag.TemporalEventually.STLEventually;
+import net.maswag.TemporalLogic.STLCost;
+import net.maswag.TemporalUntil.STLUntil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

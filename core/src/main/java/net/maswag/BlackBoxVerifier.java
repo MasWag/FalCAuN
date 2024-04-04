@@ -31,7 +31,7 @@ import static net.automatalib.util.automaton.Automata.stateCover;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-class BlackBoxVerifier {
+class BlackBoxVerifier<I> {
     private static final Function<String, String> EDGE_PARSER = s -> s;
     final private double multiplier = 1.0;
     @Getter
@@ -43,11 +43,11 @@ class BlackBoxVerifier {
     private final LearningAlgorithm.MealyLearner<String, String> learner;
     private final MealyEQOracleChain<String, String> eqOracle;
     @Getter
-    private final AdaptiveSTLUpdater properties;
+    private final AdaptiveSTLUpdater<I> properties;
     @Getter
     private List<Word<String>> cexInput;
     @Getter
-    private List<STLCost> cexProperty;
+    private List<TemporalLogic<I>> cexProperty;
     @Getter
     private List<Word<String>> cexOutput;
     private final ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
@@ -196,7 +196,7 @@ class BlackBoxVerifier {
         cexInput = new ArrayList<>();
         cexOutput = new ArrayList<>();
         boolean isVerified = true;
-        for (STLCost stlProperty : properties.getSTLProperties()) {
+        for (TemporalLogic<I> stlProperty : properties.getSTLProperties()) {
             String ltlProperty = stlProperty.toLTLString();
 
             final MealyMachine<?, String, ?, String> cexMealyCandidate =

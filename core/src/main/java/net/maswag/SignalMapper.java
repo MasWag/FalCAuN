@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 public class SignalMapper {
-    final private List<Function<IOSignalPiece, Double>> sigMap;
+    final private List<Function<IOSignalPiece<List<Double>>, Double>> sigMap;
 
     public SignalMapper() {
         this.sigMap = Collections.emptyList();
@@ -30,7 +30,7 @@ public class SignalMapper {
 
 
     //@ requires 0 <= index < size()
-    public double apply(int index, IOSignalPiece concreteSignal) {
+    public double apply(int index, IOSignalPiece<List<Double>> concreteSignal) {
         return this.sigMap.get(index).apply(concreteSignal);
     }
 
@@ -40,18 +40,18 @@ public class SignalMapper {
     }
 
     public static SignalMapper parse(String filename) throws IOException {
-        List<Function<IOSignalPiece, Double>> rawList = new BufferedReader(
+        List<Function<IOSignalPiece<List<Double>>, Double>> rawList = new BufferedReader(
                 new InputStreamReader(new FileInputStream(filename))).lines().map(SignalMapper::lineParse).collect(Collectors.toList());
 
         return new SignalMapper(rawList);
     }
 
-    static Function<IOSignalPiece, Double> lineParse(String line) {
-        net.maswag.SignalMapperVisitor<Function<IOSignalPiece, Double>> visitor = new SignalMapperVisitorImpl();
+    static Function<IOSignalPiece<List<Double>>, Double> lineParse(String line) {
+        net.maswag.SignalMapperVisitor<Function<IOSignalPiece<List<Double>>, Double>> visitor = new SignalMapperVisitorImpl();
         return parseSignalMapperImpl(line, visitor);
     }
 
-    private static Function<IOSignalPiece, Double> parseSignalMapperImpl(String line, net.maswag.SignalMapperVisitor<Function<IOSignalPiece, Double>> visitor) {
+    private static Function<IOSignalPiece<List<Double>>, Double> parseSignalMapperImpl(String line, net.maswag.SignalMapperVisitor<Function<IOSignalPiece<List<Double>>, Double>> visitor) {
         CharStream stream = CharStreams.fromString(line);
         net.maswag.SignalMapperLexer lexer = new net.maswag.SignalMapperLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

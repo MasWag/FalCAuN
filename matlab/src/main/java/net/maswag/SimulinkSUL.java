@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-
 /**
  * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
  */
@@ -106,7 +105,7 @@ class SimulinkSUL implements NumericSUL {
      */
     @Nullable
     @Override
-    public IOSignalPiece step(@Nullable List<Double> inputSignal) throws SULException {
+    public IOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) throws SULException {
         assert (isInitial && endTime == 0) || (endTime > 0.0);
         if (inputSignal == null) {
             return null;
@@ -158,7 +157,7 @@ class SimulinkSUL implements NumericSUL {
         assert endTime > 0.0;
         LOGGER.trace("Output: " + result);
 
-        return new IOSignalPiece(inputSignal, result);
+        return new IOSignalPiece<>(inputSignal, result);
     }
 
     private void makeDataSet(StringBuilder builder) throws ExecutionException, InterruptedException {
@@ -319,7 +318,7 @@ class SimulinkSUL implements NumericSUL {
      */
     @Nonnull
     @Override
-    public SUL<List<Double>, IOSignalPiece> fork() throws UnsupportedOperationException {
+    public SUL<List<Double>, IOSignalPiece<List<Double>>> fork() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 

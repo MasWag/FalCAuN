@@ -6,13 +6,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
+import net.maswag.TemporalLogic.STLCost;
 
 /**
  * <p>STLAtomic class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-abstract public class STLAbstractAtomic extends STLCost {
+abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Double>> implements STLCost {
     protected Operation op;
     protected int sigIndex;
     protected double comparator;

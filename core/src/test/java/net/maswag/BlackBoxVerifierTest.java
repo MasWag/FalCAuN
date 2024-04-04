@@ -9,6 +9,10 @@ import net.automatalib.alphabet.ArrayAlphabet;
 import net.automatalib.automaton.transducer.CompactMealy;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import net.automatalib.word.WordBuilder;
+import net.maswag.TemporalGlobally.STLGlobally;
+import net.maswag.TemporalImply.STLImply;
+import net.maswag.TemporalLogic.STLCost;
+import net.maswag.TemporalNext.STLNext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +22,6 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
-
 class BlackBoxVerifierTest {
     private final Alphabet<String> inputAlphabet = new ArrayAlphabet<>("a");
     StaticSTLList stlList;
@@ -38,7 +41,7 @@ class BlackBoxVerifierTest {
         List<STLCost> properties = Arrays.asList(
                 new STLNext(new STLNext(new STLNext(events.get(1), true), true), true),
                 events.get(0),
-                new STLGlobal(new STLImply(events.get(1), new STLNext(events.get(0), true))),
+                new STLGlobally(new STLImply(events.get(1), new STLNext(events.get(0), true))),
                 new STLNext(new STLNext(events.get(1), true), true));
         falsifiedProperties = new ArrayList<>();
         falsifiedProperties.add(properties.get(3));

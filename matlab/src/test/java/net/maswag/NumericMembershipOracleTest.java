@@ -1,8 +1,8 @@
 package net.maswag;
 
 import com.mathworks.engine.EngineException;
-import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.mapper.MappedSUL;
+import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.membership.SULOracle;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
@@ -27,9 +27,9 @@ class NumericMembershipOracleTest {
     private final Double signalStep = 10.0;
     private List<String> properties;
     private NumericSULMapper mapper;
-    private List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>();
+    private List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = new ArrayList<>();
     private SimulinkSUL simulink;
-    private MappedSUL<String, String, List<Double>, IOSignalPiece> mappedSimulink;
+    private MappedSUL<String, String, List<Double>, IOSignalPiece<List<Double>>> mappedSimulink;
     private MembershipOracle.MealyMembershipOracle<String, String> sulOracle, directOracle;
     private Alphabet<String> abstractInputAlphabet;
     private Alphabet<List<Double>> concreteInputAlphabet;

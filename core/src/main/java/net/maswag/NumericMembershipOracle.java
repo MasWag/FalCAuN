@@ -61,7 +61,7 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
                 }
                 assert concreteOutput.size() == concreteInput.size();
                 abstractOutputBuilder.append(
-                        new IOSignal(concreteInput, concreteOutput).stream().map(mapper::mapOutput).collect(Collectors.toList()));
+                        new IOSignal<>(concreteInput, concreteOutput).stream().map(mapper::mapOutput).collect(Collectors.toList()));
 
                 assert concreteOutput.size() == abstractOutputBuilder.toWord().size();
                 cache.insert(abstractInput, abstractOutputBuilder.toWord());

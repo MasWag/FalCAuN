@@ -36,7 +36,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
     }
 
     @Override
-    protected void constructAtomicStrings() {
+    public void constructAtomicStrings() {
         constructAtomicStrings(concreteOutputs, abstractOutputs, largest);
     }
 
@@ -72,7 +72,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
      * {@inheritDoc}
      */
     @Override
-    public RoSI getRoSI(IOSignal signal) {
+    public RoSI getRoSI(IOSignal<List<Double>> signal) {
         return getRoSISingle(signal.getOutputSignal());
     }
 

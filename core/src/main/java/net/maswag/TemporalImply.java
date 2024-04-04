@@ -1,6 +1,7 @@
 package net.maswag;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -9,13 +10,14 @@ import java.util.stream.Collectors;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-public class STLImply extends STLCost {
-    private STLCost subFml1, subFml2;
+public class TemporalImply<I> extends AbstractTemporalLogic<I> {
+    private final TemporalLogic<I> subFml1;
+    private final TemporalLogic<I> subFml2;
 
-    STLImply(STLCost subFml1, STLCost subFml2) {
+    TemporalImply(TemporalLogic<I> subFml1, TemporalLogic<I> subFml2) {
         this.subFml1 = subFml1;
         this.subFml2 = subFml2;
-        this.nonTemporal = subFml1.nonTemporal && subFml2.nonTemporal;
+        this.nonTemporal = subFml1.isNonTemporal() && subFml2.isNonTemporal();
     }
 
 
@@ -23,7 +25,7 @@ public class STLImply extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    public RoSI getRoSI(IOSignal signal) {
+    public RoSI getRoSI(IOSignal<I> signal) {
         return subFml1.getRoSI(signal).assignNegate().assignMax(subFml2.getRoSI(signal));
     }
 
@@ -31,7 +33,7 @@ public class STLImply extends STLCost {
      * {@inheritDoc}
      */
     @Override
-    protected void constructAtomicStrings() {
+    public void constructAtomicStrings() {
         if (this.nonTemporal) {
             if (this.atomicStrings == null) {
                 this.atomicStrings = new HashSet<>(getAllAPs());
@@ -45,7 +47,7 @@ public class STLImply extends STLCost {
 
     /** {@inheritDoc} */
     @Override
-    protected Set<String> getAllAPs() {
+    public Set<String> getAllAPs() {
         return subFml1.getAllAPs();
     }
 
@@ -65,6 +67,18 @@ public class STLImply extends STLCost {
     @Override
     public String toString() {
         return String.format("( %s ) -> ( %s )", subFml1.toString(), subFml2.toString());
+    }
+
+    static class STLImply extends TemporalImply<List<Double>> implements STLCost {
+        STLImply(STLCost subFml1, STLCost subFml2) {
+            super(subFml1, subFml2);
+        }
+    }
+
+    static class LTLImply extends TemporalImply<String> implements LTLFormula {
+        LTLImply(LTLFormula subFml1, LTLFormula subFml2) {
+            super(subFml1, subFml2);
+        }
     }
 }
 

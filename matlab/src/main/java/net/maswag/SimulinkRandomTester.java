@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import net.maswag.TemporalLogic.STLCost;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
  * @author Masaki Waga
  */
 public class SimulinkRandomTester {
-    protected SUL<List<Double>, IOSignalPiece> simulink;
+    protected SUL<List<Double>, IOSignalPiece<List<Double>>> simulink;
     private final SimulinkSUL rawSimulink;
     private final Alphabet<String> abstractInputAlphabet;
     private final NumericSULMapper mapper;
@@ -103,7 +104,7 @@ public class SimulinkRandomTester {
 
             try {
                 Word<List<Double>> concreteOutput = this.rawSimulink.execute(concreteInput);
-                IOSignal concreteSignal = new IOSignal(concreteInput, concreteOutput);
+                IOSignal<List<Double>> concreteSignal = new IOSignal<>(concreteInput, concreteOutput);
                 LOGGER.debug("Abstract input: " + abstractInput);
                 LOGGER.debug("Concrete output: " + concreteOutput);
                 Iterator<Integer> it = unfalsifiedIndex.iterator();

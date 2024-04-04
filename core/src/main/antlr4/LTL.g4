@@ -1,18 +1,19 @@
-grammar STL;
+grammar LTL;
 
 @header {
 package net.maswag;
 
-import net.maswag.STLListener;
-import net.maswag.STLVisitor;
-import net.maswag.STLParser;
+import net.maswag.LTLListener;
+import net.maswag.LTLVisitor;
+import net.maswag.LTLParser;
 
 }
 
 import AbstractTemporalLogic;
 
 expr
-     : atomic
+     : INPUT EQ ID
+     | OUTPUT EQ ID
      | left=expr binaryOperator right=expr
      | unaryOperator expr
      | unaryTemporalOperator UNDER interval expr
@@ -20,10 +21,5 @@ expr
      | LPAREN expr RPAREN
      ;
 
-atomic
-       : OUTPUT LPAREN signalID=NATURAL RPAREN comparisonOperator value
-       | INPUT LPAREN signalID=NATURAL RPAREN comparisonOperator value
-       ;
-
 INPUT : 'input';
-OUTPUT : 'signal' | 'output';
+OUTPUT : 'output';

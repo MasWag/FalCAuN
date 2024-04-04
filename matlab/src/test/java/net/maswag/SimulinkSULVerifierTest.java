@@ -11,7 +11,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
-
+import net.maswag.TemporalAnd.STLAnd;
+import net.maswag.TemporalEventually.STLEventually;
+import net.maswag.TemporalGlobally.STLGlobally;
+import net.maswag.TemporalImply.STLImply;
+import net.maswag.TemporalLogic.STLCost;
+import net.maswag.TemporalNext.STLNext;
+import net.maswag.TemporalOr.STLOr;
+import net.maswag.TemporalRelease.STLRelease;
+import net.maswag.TemporalSub.STLSub;
+import net.maswag.TemporalUntil.STLUntil;
 class SimulinkSULVerifierTest {
     private final String PWD = System.getenv("PWD");
     private String initScript;
@@ -23,10 +32,10 @@ class SimulinkSULVerifierTest {
     private final List<String> paramNames = Arrays.asList("Pedal Angle", "Engine Speed");
     private Double signalStep = 10.0;
     private SimulinkSULVerifier verifier;
-    private AdaptiveSTLUpdater properties;
+    private AdaptiveSTLUpdater<List<Double>> properties;
     private NumericSULMapper mapper;
-    private final List<Function<IOSignalPiece, Double>> sigMap = Collections.emptyList();
-    private final AdaptiveSTLUpdater propertyZHA19_AFC1 = new StopDisprovedEQOracle.StaticLTLList(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
+    private final List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = Collections.emptyList();
+    private final AdaptiveSTLUpdater<List<Double>> propertyZHA19_AFC1 = new StopDisprovedEQOracle.StaticLTLList<>(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
     STLFactory factory = new STLFactory();
 
     @BeforeEach
@@ -59,7 +68,7 @@ class SimulinkSULVerifierTest {
         }
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
         // [] (velocity < 10)
-        properties = new StaticSTLList(Collections.singletonList(
+        properties = new StaticSTLList<>(Collections.singletonList(
                 factory.parse("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
 
         try {
@@ -122,9 +131,9 @@ class SimulinkSULVerifierTest {
             engineSpeedMapper.put('k', 1100.0);
             inputMapper = new ArrayList<>(Arrays.asList(pedalAngleMapper, engineSpeedMapper));
         }
-        Function<IOSignalPiece, Double> mu = a -> abs(a.getOutputSignal().get(0) -
+        Function<IOSignalPiece<List<Double>>, Double> mu = a -> abs(a.getOutputSignal().get(0) -
                 a.getOutputSignal().get(1)) / a.getOutputSignal().get(1);
-        List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
+        List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
         {
             Map<Character, Double> afMapper = new HashMap<>();
             afMapper.put('a', 10.0);
@@ -206,9 +215,9 @@ class SimulinkSULVerifierTest {
             engineSpeedMapper.put('k', 1100.0);
             inputMapper = new ArrayList<>(Arrays.asList(pedalAngleMapper, engineSpeedMapper));
         }
-        Function<IOSignalPiece, Double> mu =
+        Function<IOSignalPiece<List<Double>>, Double> mu =
                 a -> abs(a.getOutputSignal().get(0) - a.getOutputSignal().get(1)) / a.getOutputSignal().get(1);
-        List<Function<IOSignalPiece, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
+        List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = new ArrayList<>(Collections.singletonList(mu));
         {
             Map<Character, Double> afMapper = new HashMap<>();
             afMapper.put('a', 10.0);
@@ -253,7 +262,7 @@ class SimulinkSULVerifierTest {
     @Test
     void getCexProperty() {
         assertFalse(verifier.run());
-        List<STLCost> expected = properties.getSTLProperties();
+        List<TemporalLogic<List<Double>>> expected = properties.getSTLProperties();
         assertEquals(expected, verifier.getCexProperty());
     }
 
@@ -306,7 +315,7 @@ class SimulinkSULVerifierTest {
             // generate properties
             String stlString = "alw_[0, 3] (signal(1) < 4750)";
             STLCost stl = factory.parse(stlString, inputMapper, outputMapper, largest);
-            properties = new StaticSTLList(Collections.singletonList(stl));
+            properties = new StaticSTLList<>(Collections.singletonList(stl));
             // define the verifier
             verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
             // set timeout
@@ -334,13 +343,13 @@ class SimulinkSULVerifierTest {
             @Test
             void runStatic() {
                 // generate properties
-                properties = new StaticSTLList(Collections.singletonList(stl));
+                properties = new StaticSTLList<>(Collections.singletonList(stl));
             }
 
             @Test
             void runAdaptive() {
                 // generate properties
-                properties = new AdaptiveSTLList(Collections.singletonList(stl));
+                properties = new AdaptiveSTLList<>(Collections.singletonList(stl));
             }
 
             @AfterEach
@@ -372,14 +381,14 @@ class SimulinkSULVerifierTest {
             @Test
             void runStatic() throws Exception {
                 // generate properties
-                properties = new StaticSTLList(stlList);
+                properties = new StaticSTLList<>(stlList);
                 verify();
             }
 
             @Test
             void runAdaptive() throws Exception {
                 // generate properties
-                properties = new AdaptiveSTLList(stlList);
+                properties = new AdaptiveSTLList<>(stlList);
                 verify();
             }
 

@@ -26,16 +26,16 @@ import java.util.stream.Stream;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class StopDisprovedEQOracle<I, O> implements EquivalenceOracle.MealyEquivalenceOracle<I, O> {
+public class StopDisprovedEQOracle<I, O, C> implements EquivalenceOracle.MealyEquivalenceOracle<I, O> {
 
-    private final AdaptiveSTLUpdater ltlOracles;
+    private final AdaptiveSTLUpdater<C> ltlOracles;
     private final MealyEquivalenceOracle<I, O> eqOracle;
 
     /**
      * @param eqOracle   the wrapped equivalence oracle
      * @param ltlOracles ltlOracles
      */
-    StopDisprovedEQOracle(MealyEquivalenceOracle<I, O> eqOracle, AdaptiveSTLUpdater ltlOracles) {
+    StopDisprovedEQOracle(MealyEquivalenceOracle<I, O> eqOracle, AdaptiveSTLUpdater<C> ltlOracles) {
         this.eqOracle = eqOracle;
         this.ltlOracles = ltlOracles;
     }
@@ -60,7 +60,7 @@ public class StopDisprovedEQOracle<I, O> implements EquivalenceOracle.MealyEquiv
     @Slf4j
     @AllArgsConstructor
     static
-    class StaticLTLList extends AbstractAdaptiveSTLUpdater {
+    class StaticLTLList<I> extends AbstractAdaptiveSTLUpdater<I> {
         List<String> ltlProperties;
         Set<Integer> disprovedIndices = new HashSet<>();
 
