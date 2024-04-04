@@ -7,7 +7,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
-import static net.maswag.STLCost.parseSTL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.greaterThan;
@@ -28,7 +27,7 @@ class SimulinkSULVerifierTest {
     private NumericSULMapper mapper;
     private final List<Function<IOSignalPiece, Double>> sigMap = Collections.emptyList();
     private final AdaptiveSTLUpdater propertyZHA19_AFC1 = new StopDisprovedEQOracle.StaticLTLList(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
-
+    STLFactory factory = new STLFactory();
 
     @BeforeEach
     void setUp() {
@@ -59,10 +58,9 @@ class SimulinkSULVerifierTest {
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
-
         // [] (velocity < 10)
         properties = new StaticSTLList(Collections.singletonList(
-                STLCost.parseSTL("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
+                factory.parse("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
 
         try {
             verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
@@ -307,7 +305,7 @@ class SimulinkSULVerifierTest {
         void setTimeout() throws Exception {
             // generate properties
             String stlString = "alw_[0, 3] (signal(1) < 4750)";
-            STLCost stl = parseSTL(stlString, inputMapper, outputMapper, largest);
+            STLCost stl = factory.parse(stlString, inputMapper, outputMapper, largest);
             properties = new StaticSTLList(Collections.singletonList(stl));
             // define the verifier
             verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
@@ -330,7 +328,7 @@ class SimulinkSULVerifierTest {
             @BeforeEach
             void setUp() {
                 String stlString = "alw_[0, 20] (signal(0) < 120)";
-                stl = parseSTL(stlString, inputMapper, outputMapper, largest);
+                stl = factory.parse(stlString, inputMapper, outputMapper, largest);
             }
 
             @Test
@@ -367,7 +365,7 @@ class SimulinkSULVerifierTest {
                         "alw_[0, 20] (signal(0) < 120)",
                         "alw_[0, 10] (signal(1) < 4750)");
                 stlList = stlStringList.stream().map(stlString ->
-                        parseSTL(stlString, inputMapper, outputMapper, largest)).collect(Collectors.toList());
+                        factory.parse(stlString, inputMapper, outputMapper, largest)).collect(Collectors.toList());
                 expectedStlStringList = stlList.stream().map(Object::toString).collect(Collectors.toList());
             }
 

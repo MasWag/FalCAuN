@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 import static net.maswag.STLAbstractAtomic.Operation.*;
-import static net.maswag.STLCost.parseSTL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -105,8 +104,9 @@ class STLParserTest {
 
         @Test
         void withoutMapper() {
+            STLFactory factory = new STLFactory();
             for (int i = 0; i < inputs.size(); i++) {
-                STLCost result = parseSTL(inputs.get(i));
+                STLCost result = factory.parse(inputs.get(i));
                 assertThrows(NullPointerException.class, result::toAbstractString);
                 assertEquals(expectedList.get(i).toString(), result.toString());
             }
@@ -114,6 +114,7 @@ class STLParserTest {
 
         @Test
         void withMapper() {
+            STLFactory factory = new STLFactory();
             Map<Character, Double> velocityMap = new HashMap<>();
             velocityMap.put('a', -1.0);
             velocityMap.put('b', 10.0);
@@ -130,7 +131,7 @@ class STLParserTest {
             List<Character> largest = Arrays.asList('c', 'd', 'a');
 
             for (int i = 0; i < inputs.size(); i++) {
-                STLCost result = parseSTL(inputs.get(i), inputMapper, outputMapper, largest);
+                STLCost result = factory.parse(inputs.get(i), inputMapper, outputMapper, largest);
                 Assertions.assertThat(result.toAbstractString()).contains("output == ");
                 assertEquals(expectedList.get(i).toString(), result.toString());
             }

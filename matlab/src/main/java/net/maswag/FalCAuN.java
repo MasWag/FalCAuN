@@ -103,11 +103,12 @@ public class FalCAuN {
 
         // Parse STL formulas
         List<STLCost> stl;
+        STLFactory factory = new STLFactory();
         if (argParser.getStlFormula() != null) {
-            stl = Collections.singletonList(STLCost.parseSTL(argParser.getStlFormula(), inputMapper, outputMapper, largest));
+            stl = Collections.singletonList(factory.parse(argParser.getStlFormula(), inputMapper, outputMapper, largest));
         } else if (argParser.getStlFile() != null) {
             stl = Files.lines(FileSystems.getDefault().getPath(argParser.getStlFile())).map(line ->
-                    STLCost.parseSTL(line, inputMapper, outputMapper, largest)).collect(Collectors.toList());
+                    factory.parse(line, inputMapper, outputMapper, largest)).collect(Collectors.toList());
         } else {
             throw new MissingOptionException("STL formula is not given");
         }

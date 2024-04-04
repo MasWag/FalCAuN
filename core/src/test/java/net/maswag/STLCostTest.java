@@ -68,9 +68,10 @@ class STLCostTest {
 
     @Test
     void equalityTest() {
+        STLFactory factory = new STLFactory();
         List<STLCost> formulas = new ArrayList<>();
-        formulas.add(STLCost.parseSTL("[] ( output(0) < 120.000000 )"));
-        formulas.add(STLCost.parseSTL("[] ( output(0) < 120.000000 )"));
+        formulas.add(factory.parse("[] ( output(0) < 120.000000 )"));
+        formulas.add(factory.parse("[] ( output(0) < 120.000000 )"));
         // STL Formulas are considered the same if they have the same string representation
         assertEquals(formulas.get(0), formulas.get(1));
     }
@@ -111,10 +112,11 @@ class STLCostTest {
 
         @Test
         void ATExampleS4AndTextRepl() {
+            STLFactory factory = new STLFactory();
             STLCost costFuncExt =
                     new STLOr(new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
                             new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
-            STLCost costFunc = STLCost.parseSTL("([]_[0,13] (signal(0) < 100)) || ([]_[14,14] (signal(0) > 65.0))");
+            STLCost costFunc = factory.parse("([]_[0,13] (signal(0) < 100)) || ([]_[14,14] (signal(0) > 65.0))");
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
     }
@@ -181,10 +183,11 @@ class STLCostTest {
 
         @Test
         void AT6TextRepl() {
+            STLFactory factory = new STLFactory();
             STLCost costFuncExt =
                     new STLImply(new STLSub(new STLGlobal(new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 3000)), 0, 15),
                             new STLSub(new STLGlobal(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2));
-            STLCost costFunc = STLCost.parseSTL("((alw_[0, 15] (signal(1) < 3000.0)) -> (alw_[0, 2] (signal(0) < 35.0)))");
+            STLCost costFunc = factory.parse("((alw_[0, 15] (signal(1) < 3000.0)) -> (alw_[0, 2] (signal(0) < 35.0)))");
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
     }

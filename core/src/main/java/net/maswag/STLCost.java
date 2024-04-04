@@ -16,32 +16,10 @@ import java.util.function.Function;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
+@Getter
 public abstract class STLCost implements Function<IOSignal, Double> {
-    @Getter
     boolean nonTemporal;
-    @Getter
     Set<String> atomicStrings;
-
-    /**
-     * <p>parseSTL.</p>
-     *
-     * @param stlFormula a {@link java.lang.String} object.
-     * @param outputMapper a {@link java.util.List} object.
-     * @param largest a {@link java.util.List} object.
-     * @return a {@link net.maswag.STLCost} object.
-     */
-    static public STLCost parseSTL(String stlFormula,
-                                   List<Map<Character, Double>> inputMapper,
-                                   List<Map<Character, Double>> outputMapper,
-                                   List<Character> largest) {
-        net.maswag.STLVisitor<STLCost> visitor = new STLVisitorImpl(inputMapper, outputMapper, largest);
-        return parseSTLImpl(stlFormula, visitor);
-    }
-
-    static STLCost parseSTL(String stlFormula) {
-        net.maswag.STLVisitor<STLCost> visitor = new STLVisitorImpl();
-        return parseSTLImpl(stlFormula, visitor);
-    }
 
     /**
      * <p>getAllAPs.</p>
@@ -87,7 +65,7 @@ public abstract class STLCost implements Function<IOSignal, Double> {
     /**
      * <p>getRoSI.</p>
      *
-     * @param signal a {@link net.automatalib.words.Word} object.
+     * @param signal a {@link net.automatalib.word.Word} object.
      * @return a {@link RoSI} object.
      */
     public abstract RoSI getRoSI(IOSignal signal);

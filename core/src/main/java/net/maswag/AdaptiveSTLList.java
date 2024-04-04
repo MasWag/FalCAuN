@@ -95,7 +95,7 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
             return ret;
         }
         if (stl instanceof STLAnd) {
-            List<STLCost> subFmls = ((STLAnd) stl).getSubFmls();
+            List<STLCost> subFmls = ((STLAnd) stl).getSubFormulas();
             List<STLCost> ret = new ArrayList<>();
 
             strengthenSTL(subFmls.get(0)).forEach(s -> ret.add(new STLAnd(s, subFmls.get(1))));
@@ -244,7 +244,7 @@ public class AdaptiveSTLList extends AbstractAdaptiveSTLUpdater {
             return ret;
         }
         if (stl instanceof STLAnd) {
-            List<STLCost> subFmls = ((STLAnd) stl).getSubFmls();
+            List<STLCost> subFmls = ((STLAnd) stl).getSubFormulas();
             List<IntervalSTL> ret = new ArrayList<>();
 
             ret.addAll(findIntervalSTL(subFmls.get(0), (s) -> frame.apply(new STLAnd(s, subFmls.get(1)))));

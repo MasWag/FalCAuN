@@ -1,19 +1,22 @@
 package net.maswag;
 
+import lombok.Getter;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
 class STLAnd extends STLCost {
-    private List<STLCost> subFmls;
+    private final List<STLCost> subFormulas;
 
     STLAnd(STLCost subFml1, STLCost subFml2) {
-        this.subFmls = Arrays.asList(subFml1, subFml2);
+        this.subFormulas = Arrays.asList(subFml1, subFml2);
         this.nonTemporal = subFml1.nonTemporal && subFml2.nonTemporal;
     }
 
-    STLAnd(List<STLCost> subFmls) {
-        this.subFmls = subFmls;
-        this.nonTemporal = subFmls.stream().map(STLCost::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
+    STLAnd(List<STLCost> subFormulas) {
+        this.subFormulas = subFormulas;
+        this.nonTemporal = subFormulas.stream().map(STLCost::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
     }
 
 
@@ -22,7 +25,7 @@ class STLAnd extends STLCost {
      */
     @Override
     public RoSI getRoSI(IOSignal signal) {
-        return subFmls.stream().map(subFml -> subFml.getRoSI(signal)).filter(
+        return subFormulas.stream().map(subFml -> subFml.getRoSI(signal)).filter(
                 Objects::nonNull).reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
     }
 
@@ -31,7 +34,7 @@ class STLAnd extends STLCost {
      */
     @Override
     public String toString() {
-        return subFmls.stream().map(STLCost::toString).collect(Collectors.joining(" && "));
+        return subFormulas.stream().map(STLCost::toString).collect(Collectors.joining(" && "));
     }
 
     /**
@@ -41,7 +44,7 @@ class STLAnd extends STLCost {
     protected void constructAtomicStrings() {
         if (this.nonTemporal) {
             this.atomicStrings = new HashSet<>(getAllAPs());
-            for (STLCost subFml : subFmls) {
+            for (STLCost subFml : subFormulas) {
                 this.atomicStrings.retainAll(subFml.getAtomicStrings());
             }
         } else {
@@ -52,7 +55,7 @@ class STLAnd extends STLCost {
     /** {@inheritDoc} */
     @Override
     protected Set<String> getAllAPs() {
-        return subFmls.get(0).getAllAPs();
+        return subFormulas.get(0).getAllAPs();
     }
 
     /** {@inheritDoc} */
@@ -63,16 +66,8 @@ class STLAnd extends STLCost {
             return this.atomicStrings.stream().map(
                     s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
         } else {
-            return this.subFmls.stream().map(STLCost::toAbstractString).map(
+            return this.subFormulas.stream().map(STLCost::toAbstractString).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" && "));
         }
     }
-
-    /**
-     * <p>getSubFmls.</p>
-     *
-     * @return {@link STLCost} list object.
-     */
-    public List<STLCost> getSubFmls() { return this.subFmls; }
-
 }
