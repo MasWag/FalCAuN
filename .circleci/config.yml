@@ -26,7 +26,7 @@ jobs:
           key: FalCAuN-{{ checksum "pom.xml" }}
       - run: MATLAB_HOME=/tmp/matlab_root mvn clean
       - run: MATLAB_HOME=/tmp/matlab_root mvn install -DskipTests=True
-      - run: MATLAB_HOME=/tmp/matlab_root mvn test -Dtest='!%regex[.*Simulink((SULVerifier)|(SUL)|(MembershipOracle))Test.*]' -DskipTests=False
+      - run: MATLAB_HOME=/tmp/matlab_root mvn test -Dtest='!%regex[.*((Simulink((SULVerifier)|(SUL)))|(MembershipOracle))Test.*]' -DskipTests=False
       - store_artifacts:
           path: target
       - save_cache:
