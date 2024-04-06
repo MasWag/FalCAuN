@@ -105,9 +105,9 @@ public class FalCAuN {
         outputMapperReader.parse();
         List<Character> largest = outputMapperReader.getLargest();
         List<Map<Character, Double>> outputMapper = outputMapperReader.getOutputMapper();
-        log.debug("InputMapper: " + inputMapper);
-        log.debug("OutputMapper: " + outputMapper);
-        log.debug("Largest: " + largest);
+        log.debug("InputMapper: {}", inputMapper);
+        log.debug("OutputMapper: {}", outputMapper);
+        log.debug("Largest: {}", largest);
 
         NumericSULMapper sulMapper = new NumericSULMapper(inputMapper, largest, outputMapper, argParser.getSigMap());
 
@@ -135,13 +135,13 @@ public class FalCAuN {
             log.warn("Size of the longest LTL string is " + maxLTLLength + ". This is probably too long.");
         }
 
-        AdaptiveSTLUpdater adaptiveSTLUpdater;
+        AdaptiveSTLUpdater<List<Double>> adaptiveSTLUpdater;
         if (argParser.isAdaptiveSTL()) {
             log.info("adaptive STL updater is enabled");
-            adaptiveSTLUpdater = new AdaptiveSTLList(stl, argParser.getLength());
+            adaptiveSTLUpdater = new AdaptiveSTLList<>(stl, argParser.getLength());
         } else {
             log.info("adaptive STL updater is disabled");
-            adaptiveSTLUpdater = new StaticSTLList(stl);
+            adaptiveSTLUpdater = new StaticSTLList<>(stl);
         }
 
         SimulinkSULVerifier verifier = new SimulinkSULVerifier(

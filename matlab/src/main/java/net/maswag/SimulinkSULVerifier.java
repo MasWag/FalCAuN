@@ -13,7 +13,7 @@ public class SimulinkSULVerifier extends NumericSULVerifier {
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
-    public SimulinkSULVerifier(String initScript, List<String> paramName, double signalStep, double simulinkSimulationStep, AdaptiveSTLUpdater properties, NumericSULMapper mapper) throws Exception {
+    public SimulinkSULVerifier(String initScript, List<String> paramName, double signalStep, double simulinkSimulationStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) throws Exception {
         super(new SimulinkSUL(initScript, paramName, signalStep, simulinkSimulationStep), signalStep, properties, mapper);
     }
 

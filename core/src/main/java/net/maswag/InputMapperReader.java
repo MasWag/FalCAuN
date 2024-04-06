@@ -9,9 +9,13 @@ import java.util.Map;
 class InputMapperReader extends AbstractMapperReader {
     static ArrayList<Map<Character, Double>> parse(String filename) throws IOException {
         List<List<Double>> parsedData = rawParse(filename);
-        char[] charList = new char[parsedData.size()];
+        return InputMapperReader.make(parsedData);
+    }
+
+    static ArrayList<Map<Character, Double>> make(List<List<Double>> data) {
+        char[] charList = new char[data.size()];
         Arrays.fill(charList, 'a');
 
-        return assignCharacters(parsedData, charList);
+        return assignCharacters(data, charList);
     }
 }

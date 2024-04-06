@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
  */
-class SimulinkSUL implements NumericSUL {
+public class SimulinkSUL implements NumericSUL {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkSUL.class);
     private final Double signalStep;
     /**

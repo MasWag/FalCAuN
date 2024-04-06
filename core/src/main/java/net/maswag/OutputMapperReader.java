@@ -1,42 +1,40 @@
 package net.maswag;
 
 import com.google.common.primitives.Chars;
+import lombok.Getter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-class OutputMapperReader extends AbstractMapperReader {
+public class OutputMapperReader extends AbstractMapperReader {
     private String filename;
-    private ArrayList<Character> largest;
+    @Getter
     private List<List<Double>> parsedData;
-    private ArrayList<Map<Character, Double>> outputMapper;
+    @Getter
+    private List<Character> largest;
+    @Getter
+    private List<Map<Character, Double>> outputMapper;
 
-    OutputMapperReader(String filename) {
+    public OutputMapperReader(String filename) {
         this.filename = filename;
     }
 
-    void parse() throws IOException {
-        parsedData = rawParse(filename);
+    /**
+     * <p>Constructor for OutputMapperReader from data.</p>
+     */
+    public OutputMapperReader(List<List<Double>> data) {
+        this.parsedData = data;
+    }
+
+    public void parse() throws IOException {
+        if (Objects.isNull(parsedData)) {
+            parsedData = rawParse(filename);
+        }
         char[] charList = new char[parsedData.size()];
         Arrays.fill(charList, 'a');
 
         outputMapper = assignCharacters(parsedData, charList);
 
         largest = new ArrayList<>(Chars.asList(charList));
-    }
-
-    List<List<Double>> getParsedData() {
-        return parsedData;
-    }
-
-    List<Character> getLargest() {
-        return largest;
-    }
-
-    List<Map<Character, Double>> getOutputMapper() {
-        return outputMapper;
     }
 }

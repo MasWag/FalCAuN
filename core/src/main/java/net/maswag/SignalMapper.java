@@ -6,10 +6,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -40,8 +37,13 @@ public class SignalMapper {
     }
 
     public static SignalMapper parse(String filename) throws IOException {
-        List<Function<IOSignalPiece<List<Double>>, Double>> rawList = new BufferedReader(
-                new InputStreamReader(new FileInputStream(filename))).lines().map(SignalMapper::lineParse).collect(Collectors.toList());
+        return SignalMapper.parse(new BufferedReader(
+                new InputStreamReader(new FileInputStream(filename))));
+    }
+
+    public static SignalMapper parse(BufferedReader reader) {
+        List<Function<IOSignalPiece<List<Double>>, Double>> rawList =
+                reader.lines().map(SignalMapper::lineParse).collect(Collectors.toList());
 
         return new SignalMapper(rawList);
     }
