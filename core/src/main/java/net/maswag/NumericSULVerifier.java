@@ -59,7 +59,7 @@ public class NumericSULVerifier {
     /**
      * Returns the falsified STL formulas in the string representation.
      */
-    List<TemporalLogic<List<Double>>> getCexProperty() {
+    public List<TemporalLogic<List<Double>>> getCexProperty() {
         return verifier.getCexProperty();
     }
 
@@ -101,11 +101,11 @@ public class NumericSULVerifier {
      *
      * @param timeout timeout in seconds.
      */
-    void setTimeout(long timeout) {
+    public void setTimeout(long timeout) {
         this.verifier.setTimeout(timeout);
     }
 
-    void addHillClimbingEQOracle(STLCost costFunc,
+    public void addHillClimbingEQOracle(STLCost costFunc,
                                  int length,
                                  Random random,
                                  int maxTests,
@@ -203,7 +203,7 @@ public class NumericSULVerifier {
      * @param mutationProbability probability to have mutation
      * @param ltlOracle           the LTL formula
      */
-    void addGAEQOracle(Function<IOSignal<List<Double>>, Double> costFunc,
+    public void addGAEQOracle(Function<IOSignal<List<Double>>, Double> costFunc,
                        int length,
                        int maxTests,
                        ArgParser.GASelectionKind selectionKind,
@@ -215,11 +215,11 @@ public class NumericSULVerifier {
                 new GAEQOracle(oracle, length, maxTests, selectionKind, generationSize, crossoverProb, mutationProbability, ltlOracle));
     }
 
-    List<Word<String>> getCexAbstractInput() {
+    public List<Word<String>> getCexAbstractInput() {
         return verifier.getCexInput();
     }
 
-    List<Signal> getCexConcreteInput() {
+    public List<Signal> getCexConcreteInput() {
         List<Signal> result = new ArrayList<>();
         for (Word<String> abstractCex : this.getCexAbstractInput()) {
             result.add(new Signal(this.signalStep));
@@ -229,7 +229,7 @@ public class NumericSULVerifier {
     }
 
 
-    List<Word<String>> getCexOutput() {
+    public List<Word<String>> getCexOutput() {
         return verifier.getCexOutput();
     }
 
@@ -254,7 +254,7 @@ public class NumericSULVerifier {
      * @param a Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    void writeDOTCex(int index, Appendable a) throws IOException {
+    public void writeDOTCex(int index, Appendable a) throws IOException {
         verifier.writeDOTCex(index, a);
     }
 
@@ -264,7 +264,7 @@ public class NumericSULVerifier {
      * @param a Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    void writeDOTLearnedMealy(Appendable a) throws IOException {
+    public void writeDOTLearnedMealy(Appendable a) throws IOException {
         verifier.writeDOTLearnedMealy(a);
     }
 
@@ -280,14 +280,14 @@ public class NumericSULVerifier {
     /**
      * Visualize the found counter example.
      */
-    void visualizeCex(int index) {
+    public void visualizeCex(int index) {
         this.verifier.visualizeCex(index);
     }
 
     /**
      * Visualize the learned Mealy machine
      */
-    void visualizeLearnedMealy() {
+    public void visualizeLearnedMealy() {
         this.verifier.visualizeLearnedMealy();
     }
 

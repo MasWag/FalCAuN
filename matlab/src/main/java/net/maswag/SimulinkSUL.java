@@ -49,7 +49,7 @@ public class SimulinkSUL implements NumericSUL {
         this.simulinkSimulationStep = simulinkSimulationStep;
     }
 
-    SimulinkSUL(String initScript, List<String> paramNames, Double signalStep, Double simulinkSimulationStep) throws InterruptedException, ExecutionException {
+    public SimulinkSUL(String initScript, List<String> paramNames, Double signalStep, Double simulinkSimulationStep) throws InterruptedException, ExecutionException {
         // Load System here
         this.paramNames = paramNames;
         this.signalStep = signalStep;

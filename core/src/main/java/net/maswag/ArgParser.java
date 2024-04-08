@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-class ArgParser {
+public class ArgParser {
     private final Options options = new Options();
     private final HelpFormatter help = new HelpFormatter();
     @Getter
@@ -273,7 +273,7 @@ class ArgParser {
         System.out.println(ArgParser.class.getPackage().getImplementationTitle() + " version " + ArgParser.class.getPackage().getImplementationVersion());
     }
 
-    enum GASelectionKind {
+    public enum GASelectionKind {
         BestSolution,
         Tournament
     }

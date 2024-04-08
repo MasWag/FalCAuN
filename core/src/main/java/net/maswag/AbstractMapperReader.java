@@ -7,13 +7,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class AbstractMapperReader {
-    static List<List<Double>> rawParse(String filename) throws IOException {
+    public static List<List<Double>> rawParse(String filename) throws IOException {
         return Files.lines(FileSystems.getDefault().getPath(filename)).map(
                 s -> Arrays.stream(s.split("\\s+"))).map(
                 stream -> stream.map(str -> str.equals("inf") ? null : Double.parseDouble(str)).collect(Collectors.toList())).collect(Collectors.toList());
     }
 
-    static ArrayList<Map<Character, Double>> assignCharacters(List<List<Double>> parsedData, char[] charList) {
+    public static ArrayList<Map<Character, Double>> assignCharacters(List<List<Double>> parsedData, char[] charList) {
         ArrayList<Map<Character, Double>> assignedMapper = new ArrayList<>(parsedData.size());
 
         for (int i = 0; i < parsedData.size(); i++) {
