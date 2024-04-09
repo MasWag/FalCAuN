@@ -13,6 +13,7 @@ import net.maswag.TemporalOr.STLOr;
 import net.maswag.TemporalRelease.STLRelease;
 import net.maswag.TemporalSub.STLSub;
 import net.maswag.TemporalUntil.STLUntil;
+import net.maswag.TemporalNot.STLNot;
 
 import java.util.List;
 import java.util.Map;
@@ -79,12 +80,15 @@ public class STLVisitorImpl extends net.maswag.STLBaseVisitor<STLCost> {
             if (ctx.unaryOperator().NEXT() != null) {
                 log.trace("next");
                 return new STLNext(expr, true);
-            } else if (ctx.unaryOperator().unaryTemporalOperator().GLOBALLY() != null) {
+            } else if (ctx.unaryOperator().unaryTemporalOperator() != null && ctx.unaryOperator().unaryTemporalOperator().GLOBALLY() != null) {
                 log.trace("Globally");
                 return new STLGlobally(expr);
-            } else if (ctx.unaryOperator().unaryTemporalOperator().EVENTUALLY() != null) {
+            } else if (ctx.unaryOperator().unaryTemporalOperator() != null && ctx.unaryOperator().unaryTemporalOperator().EVENTUALLY() != null) {
                 log.trace("Eventually");
                 return new STLEventually(expr);
+            } else if (ctx.unaryOperator().NOT() != null) {
+                log.trace("not");
+                return new STLNot(expr);
             } else {
                 log.error("Unimplemented formula!!");
                 throw new UnsupportedOperationException("Unimplemented formula");

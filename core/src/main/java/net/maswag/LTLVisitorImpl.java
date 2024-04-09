@@ -13,6 +13,7 @@ import net.maswag.TemporalOr.LTLOr;
 import net.maswag.TemporalRelease.LTLRelease;
 import net.maswag.TemporalSub.LTLSub;
 import net.maswag.TemporalUntil.LTLUntil;
+import net.maswag.TemporalNot.LTLNot;
 
 import java.util.List;
 import java.util.Map;
@@ -81,12 +82,15 @@ public class LTLVisitorImpl extends net.maswag.LTLBaseVisitor<LTLFormula> {
             if (ctx.unaryOperator().NEXT() != null) {
                 log.trace("next");
                 return new LTLNext(expr, true);
-            } else if (ctx.unaryOperator().unaryTemporalOperator().GLOBALLY() != null) {
+            } else if (ctx.unaryOperator().unaryTemporalOperator() != null && ctx.unaryOperator().unaryTemporalOperator().GLOBALLY() != null) {
                 log.trace("Globally");
                 return new LTLGlobally(expr);
-            } else if (ctx.unaryOperator().unaryTemporalOperator().EVENTUALLY() != null) {
+            } else if (ctx.unaryOperator().unaryTemporalOperator() != null && ctx.unaryOperator().unaryTemporalOperator().EVENTUALLY() != null) {
                 log.trace("Eventually");
                 return new LTLEventually(expr);
+            } else if (ctx.unaryOperator().NOT() != null) {
+                log.trace("not");
+                return new LTLNot(expr);
             } else {
                 log.error("Unimplemented formula!!");
                 throw new UnsupportedOperationException("Unimplemented formula");

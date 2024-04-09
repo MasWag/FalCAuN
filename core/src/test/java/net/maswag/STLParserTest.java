@@ -7,6 +7,7 @@ import net.maswag.TemporalImply.STLImply;
 import net.maswag.TemporalLogic.STLCost;
 import net.maswag.TemporalNext.STLNext;
 import net.maswag.TemporalOr.STLOr;
+import net.maswag.TemporalNot.STLNot;
 import net.maswag.TemporalRelease.STLRelease;
 import net.maswag.TemporalSub.STLSub;
 import net.maswag.TemporalUntil.STLUntil;
@@ -74,7 +75,8 @@ class STLParserTest {
                     "[] ((signal(2) == 3) -> signal(0) > 20)", // S2
                     "alw((signal(1) < 4770) || (X (signal(1) > 600)))", // S5
                     "(signal(0) > 100) U (signal(1) < 20)", // Until
-                    "(signal(0) > 100) R (signal(1) < 20)" // Release
+                    "(signal(0) > 100) R (signal(1) < 20)", // Release
+                    "(!(signal(0) > 0)) || (alw_[0,5] signal(1) < 15)"
             );
             expectedList = Arrays.asList(
                     new STLOutputAtomic(0, lt, 10.0),
@@ -105,7 +107,8 @@ class STLParserTest {
                                     new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 4770),
                                     new STLNext(new STLOutputAtomic(1, STLOutputAtomic.Operation.gt, 600.0), true))),
                     new STLUntil(new STLOutputAtomic(0, gt, 100), new STLOutputAtomic(1, lt, 20)),
-                    new STLRelease(new STLOutputAtomic(0, gt, 100), new STLOutputAtomic(1, lt, 20))
+                    new STLRelease(new STLOutputAtomic(0, gt, 100), new STLOutputAtomic(1, lt, 20)),
+                    new STLOr(new STLNot(new STLOutputAtomic(0, gt, 0)), new STLSub(new STLGlobally(new STLOutputAtomic(1, lt, 15)), 0, 5))
             );
 
             assert inputs.size() == expectedList.size();
