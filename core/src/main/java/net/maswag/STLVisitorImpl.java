@@ -100,7 +100,7 @@ public class STLVisitorImpl extends net.maswag.STLBaseVisitor<STLCost> {
                 return handleInterval(global, ctx.interval());
             } else if (ctx.unaryTemporalOperator().EVENTUALLY() != null) {
                 log.trace("Eventually");
-                STLEventually eventually = new STLEventually(visitExpr(ctx.expr(0)));
+                STLEventually eventually = new STLEventually(expr);
 
                 return handleInterval(eventually, ctx.interval());
             }

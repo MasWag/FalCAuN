@@ -1,16 +1,17 @@
 package net.maswag;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Getter
 @Slf4j
 public class TemporalSub<I> extends AbstractTemporalLogic<I> {
-
-    private TemporalOp<I> subFml;
-    private int from, to;
+    private final TemporalOp<I> subFml;
+    private final int from, to;
 
     /**
      * @param subFml the subformula
@@ -45,7 +46,7 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
 
     @Override
     public String toString() {
-        String result = (subFml.getClass().toString().equals("class net.maswag.STLEventually")) ? " <>" : " []";
+        String result = (subFml instanceof TemporalEventually) ? " <>" : " []";
         result += "_[" + (from) + ", " + (to) + "]";
         result += " ( " + (subFml.subFml.toString()) + " )";
 
@@ -82,27 +83,6 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
 
         return String.join(op, subFmls);
     }
-
-    /**
-     * <p>getSubFml.</p>
-     *
-     * @return a {@link TemporalLogic<I>} object.
-     */
-    public TemporalOp<I> getSubFml() { return this.subFml; }
-
-    /**
-     * <p>getFrom.</p>
-     *
-     * @return a int of 'from'.
-     */
-    public int getFrom() { return this.from; }
-
-    /**
-     * <p>getTo.</p>
-     *
-     * @return a int of 'to'.
-     */
-    public int getTo() { return this.to; }
 
     static class STLSub extends TemporalSub<List<Double>> implements STLCost {
         STLSub(TemporalOp<List<Double>> subFml, int from, int to) {
