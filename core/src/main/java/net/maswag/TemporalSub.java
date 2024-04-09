@@ -60,25 +60,16 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
 
     @Override
     public String toAbstractString() {
-        final String op = (subFml.getClass().toString().equals("class net.maswag.STLEventually")) ? " || " : " && ";
+        final String op = (subFml instanceof TemporalEventually) ? " || " : " && ";
 
         ArrayList<String> subFmls = new ArrayList<>();
         for (int i = this.from; i <= this.to; i++) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("( ");
-
-            for (int j = 0; j < i; j++) {
-                builder.append("X (");
-            }
-
-            builder.append(subFml.subFml.toAbstractString());
-
-            for (int j = 0; j < i; j++) {
-                builder.append(" )");
-            }
-            builder.append(" )");
-
-            subFmls.add(builder.toString());
+            String builder = "( " +
+                    "X (".repeat(Math.max(0, i)) +
+                    subFml.subFml.toAbstractString() +
+                    " )".repeat(Math.max(0, i)) +
+                    " )";
+            subFmls.add(builder);
         }
 
         return String.join(op, subFmls);
