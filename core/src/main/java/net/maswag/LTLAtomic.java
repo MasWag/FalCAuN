@@ -1,12 +1,9 @@
 package net.maswag;
 
 import lombok.AllArgsConstructor;
-import net.automatalib.word.Word;
+import net.maswag.TemporalLogic.LTLFormula;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import net.maswag.TemporalLogic.LTLFormula;
 
 /**
  * The atomic propositions in LTL formulas
@@ -29,17 +26,14 @@ public class LTLAtomic extends AbstractTemporalLogic<String> implements LTLFormu
     @Override
     public String toAbstractString() {
         List<String> result = new ArrayList<>();
-        inputString.ifPresent(s -> result.add("input == " + s + ")"));
-        outputString.ifPresent(s -> result.add("output == " + s + ")"));
+        inputString.ifPresent(s -> result.add("input == \"" + s + "\" "));
+        outputString.ifPresent(s -> result.add("output == \"" + s + "\" "));
         return String.join(" && ", result);
     }
 
     @Override
     public String toString() {
-        List<String> result = new ArrayList<>();
-        inputString.ifPresent(s -> result.add("(input == " + s + ")"));
-        outputString.ifPresent(s -> result.add("(output == " + s + ")"));
-        return String.join(" && ", result);
+        return this.toAbstractString();
     }
 
     @Override

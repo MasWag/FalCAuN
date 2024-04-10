@@ -31,7 +31,7 @@ import static net.automatalib.util.automaton.Automata.stateCover;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-class BlackBoxVerifier<I> {
+public class BlackBoxVerifier<I> {
     private static final Function<String, String> EDGE_PARSER = s -> s;
     final private double multiplier = 1.0;
     @Getter
@@ -59,7 +59,7 @@ class BlackBoxVerifier<I> {
      * @param properties    The LTL properties to be verified. What we verify is the conjunction of the properties.
      * @param inputAlphabet The input alphabet.
      */
-    BlackBoxVerifier(MembershipOracle.MealyMembershipOracle<String, String> memOracle, SUL<String, String> verifiedSystem, AdaptiveSTLUpdater properties, Alphabet<String> inputAlphabet) {
+    public BlackBoxVerifier(MembershipOracle.MealyMembershipOracle<String, String> memOracle, SUL<String, String> verifiedSystem, AdaptiveSTLUpdater<I> properties, Alphabet<String> inputAlphabet) {
         this.properties = properties;
         this.properties.setInputAlphabet(inputAlphabet);
         this.inputAlphabet = inputAlphabet;
@@ -79,30 +79,30 @@ class BlackBoxVerifier<I> {
         this.eqOracle = new MealyEQOracleChain<>(this.properties);
     }
 
-    void addWpMethodEQOracle(int maxDepth) {
+    public void addWpMethodEQOracle(int maxDepth) {
         addEqOracle(new MealyWpMethodEQOracle<>(memOracle, maxDepth));
     }
 
-    void addBFOracle(double multiplier) {
+    public void addBFOracle(double multiplier) {
         addEqOracle(new MealyBFInclusionOracle<>(memOracle, multiplier));
     }
 
-    void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
+    public void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
         addEqOracle(new MealyRandomWordsEQOracle<>(
                 memOracle, minLength, maxLength, maxTests, random, batchSize));
     }
 
-    void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
+    public void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
         addEqOracle(new RandomWalkEQOracle<>(verifiedSystem, restartProbability, maxSteps, random));
 
     }
 
-    void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
+    public void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
         addEqOracle(new MealyCompleteExplorationEQOracle<>(
                 memOracle, minDepth, maxDepth, batchSize));
     }
 
-    void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
+    public void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {
         if (Objects.nonNull(timeout)) {
             TimeoutEQOracle<String, String> timeoutOracle = new TimeoutEQOracle<>(
                     new StopDisprovedEQOracle<>(eqOracle, this.properties), timeout);
@@ -118,14 +118,14 @@ class BlackBoxVerifier<I> {
      *
      * @param timeout timeout in seconds.
      */
-    void setTimeout(long timeout) {
+    public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
 
     /**
      * @return Returns {@code true} if and only if the given black-box system is verified i.e., no counter example is found.
      */
-    boolean run() {
+    public boolean run() {
         for (TimeoutEQOracle<String, String> timeoutOracle : timeoutOracles) {
             timeoutOracle.start();
         }
@@ -144,7 +144,7 @@ class BlackBoxVerifier<I> {
      * @param a Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    void writeDOTCex(int index, Appendable a) throws IOException {
+    public void writeDOTCex(int index, Appendable a) throws IOException {
         GraphDOT.write(cexMealy.get(index), this.inputAlphabet, a);
     }
 
@@ -154,21 +154,21 @@ class BlackBoxVerifier<I> {
      * @param a Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    void writeDOTLearnedMealy(Appendable a) throws IOException {
+    public void writeDOTLearnedMealy(Appendable a) throws IOException {
         GraphDOT.write(learnedMealy, this.inputAlphabet, a);
     }
 
     /**
      * Visualize the found counter example.
      */
-    void visualizeCex(int index) {
+    public void visualizeCex(int index) {
         Visualization.visualize(cexMealy.get(index), this.inputAlphabet);
     }
 
     /**
      * Visualize the learned Mealy machine
      */
-    void visualizeLearnedMealy() {
+    public void visualizeLearnedMealy() {
         Visualization.visualize(this.learnedMealy, this.inputAlphabet);
     }
 
@@ -177,7 +177,7 @@ class BlackBoxVerifier<I> {
      *
      * @param os Write the ETF to {@code os}
      */
-    void writeETFLearnedMealy(OutputStream os) {
+    public void writeETFLearnedMealy(OutputStream os) {
         Mealy2ETFWriterIO<String, String> writer = Mealy2ETFWriterIO.getInstance();
         writer.writeModel(os, learnedMealy, this.inputAlphabet);
     }
