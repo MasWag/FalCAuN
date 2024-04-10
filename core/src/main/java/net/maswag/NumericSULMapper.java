@@ -73,7 +73,7 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
             concreteOutputs.add(dList);
         }
         this.sigMap = sigMap;
-        log.debug("sigMap size: " + sigMap.size());
+        log.debug("sigMap size: {}", sigMap.size());
     }
 
     /**

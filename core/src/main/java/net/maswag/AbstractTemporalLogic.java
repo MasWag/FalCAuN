@@ -6,7 +6,7 @@ import net.automatalib.word.Word;
 import java.util.Set;
 
 /**
- * <p>Abstract TemporalLogic<I> class.</p>
+ * <p>Abstract TemporalLogic class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */

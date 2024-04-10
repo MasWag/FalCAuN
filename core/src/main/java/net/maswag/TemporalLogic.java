@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * <p>Abstract TemporalLogic<I> class.</p>
+ * <p>Interface of a TemporalLogic formula.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */

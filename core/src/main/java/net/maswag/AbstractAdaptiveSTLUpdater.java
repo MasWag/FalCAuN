@@ -164,7 +164,7 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
      * @param hypothesis The Mealy machine to be verified.
      * @param inputs     The alphabet of the Mealy machine.
      * @return A query of counterexample if a counterexample is found. Otherwise, it returns null.
-     * @see de.learnlib.oracle.equivalence.CExFirstOracle::findCounterExample
+     * @see de.learnlib.oracle.equivalence.CExFirstOracle
      */
     @Nullable
     @Override

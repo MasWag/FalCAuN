@@ -3,26 +3,23 @@ package net.maswag;
 import com.mathworks.engine.EngineException;
 import com.mathworks.engine.MatlabEngine;
 import de.learnlib.exception.SULException;
-import de.learnlib.sul.SUL;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
-import net.automatalib.word.WordBuilder;
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+
 /**
- * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
+ * Raw Simulink model. We use the fixed step execution of Simulink to make sampling easier.
  */
-public class SimulinkSUL implements NumericSUL {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimulinkSUL.class);
+@Slf4j
+public class SimulinkModel {
+    /**
+     * The signal step of the input signal.
+     */
     private final Double signalStep;
     /**
      * The simulation step of Simulink.
@@ -32,6 +29,9 @@ public class SimulinkSUL implements NumericSUL {
     private double simulinkSimulationStep;
     private final MatlabEngine matlab;
     private final List<String> paramNames;
+    /**
+     * The current time of the simulation
+     */
     private Double endTime = 0.0;
     private Signal inputSignal;
     private boolean isInitial = true;
@@ -49,7 +49,7 @@ public class SimulinkSUL implements NumericSUL {
         this.simulinkSimulationStep = simulinkSimulationStep;
     }
 
-    public SimulinkSUL(String initScript, List<String> paramNames, Double signalStep, Double simulinkSimulationStep) throws InterruptedException, ExecutionException {
+    public SimulinkModel(String initScript, List<String> paramNames, Double signalStep, Double simulinkSimulationStep) throws InterruptedException, ExecutionException {
         // Load System here
         this.paramNames = paramNames;
         this.signalStep = signalStep;
@@ -67,53 +67,33 @@ public class SimulinkSUL implements NumericSUL {
         try {
             matlab.eval(initScript);
         } catch (Exception e) {
-            LOGGER.error("An error occurred during running the initial script. This also happens if the engine is not correctly installed.");
+            log.error("An error occurred during running the initial script. This also happens if the engine is not correctly installed.");
             throw e;
         }
+        // Initialize the current state
+        this.reset();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean canFork() {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void pre() {
+    public void reset() {
         endTime = 0.0;
         inputSignal = new Signal(signalStep);
         isInitial = true;
     }
 
     /**
-     * {@inheritDoc}
+     * Execute the Simulink model for one step by feeding inputSignal
+     * @param inputSignal The input signal
+     * @return The output signal with timestamps of the entire execution.
      */
-    @Override
-    public void post() {
-        inputSignal.clear();
-        endTime = 0.0;
-        isInitial = true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Nullable
-    @Override
-    public IOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) throws SULException {
+    @Nonnull
+    public ValueWithTime<List<Double>> step(@Nonnull List<Double> inputSignal) {
         assert (isInitial && endTime == 0) || (endTime > 0.0);
-        if (inputSignal == null) {
-            return null;
-        }
-        List<Double> result;
-        LOGGER.trace("Input: {}", inputSignal);
+        List<List<Double>> result = new ArrayList<>();
+        List<Double> timestamps;
+        log.trace("Input: {}", inputSignal);
 
         this.inputSignal.add(inputSignal);
+         // For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
         StringBuilder builder = new StringBuilder();
         try {
             // Make the input signal
@@ -141,11 +121,19 @@ public class SimulinkSUL implements NumericSUL {
 
             // get the simulation result and make the result
             double[][] y = this.getResult();
+            double[] t = this.getTimestamps();
+            assert(t.length == y.length);
 
-            result = new ArrayList<>(Arrays.asList(ArrayUtils.toObject(y[y.length - 1])));
+            // convert double[][] to List<List<Double>>
+            for (double[] outputStep: y) {
+                result.add(Arrays.asList(ArrayUtils.toObject(outputStep)));
+            }
+
+            // convert double[] to List<Double>
+            timestamps = Arrays.asList(ArrayUtils.toObject(t));
         } catch (Exception e) {
-            LOGGER.error("There was an error in the simulation: {}", e.getMessage());
-            LOGGER.error("The executed script was: {}", builder);
+            log.error("There was an error in the simulation: {}", e.getMessage());
+            log.error("The executed script was: {}", builder);
             assert false;
             throw new SULException(e);
         }
@@ -154,23 +142,19 @@ public class SimulinkSUL implements NumericSUL {
         endTime += signalStep;
         assert !isInitial;
         assert endTime > 0.0;
-        LOGGER.trace("Output: {}", result);
+        log.trace("Output: {}", result);
 
-        return new IOSignalPiece<>(inputSignal, result);
+        return new ValueWithTime<>(timestamps, result);
     }
 
     private void makeDataSet(StringBuilder builder) throws ExecutionException, InterruptedException {
         builder.append("timeVector = ").append(inputSignal.getTimestamps()).append(";");
-        //matlab.eval("timeVector = (0:numberOfSamples) * signalStep;");
         builder.append("ds = Simulink.SimulationData.Dataset;");
-        //matlab.eval("ds = Simulink.SimulationData.Dataset;");
         for (int i = 0; i < inputSignal.dimension(); i++) {
             double[] tmp = inputSignal.dimensionGet(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
             builder.append("input").append(i).append(" = timeseries(tmp").append(i).append(", timeVector);");
-            //matlab.eval("input = timeseries(tmp, timeVector);");
             builder.append("ds = ds.addElement(input").append(i).append(", '").append(paramNames.get(i)).append("');");
-            //matlab.eval("ds = ds.addElement(input, '" + paramNames.get(i) + "');");
         }
     }
 
@@ -201,7 +185,10 @@ public class SimulinkSUL implements NumericSUL {
         // Configuration on the decimation
         builder.append("set_param(mdl, 'SolverType', 'Fixed-step');");
         builder.append("set_param(mdl, 'FixedStep', '").append(simulinkSimulationStep).append("');");
-        builder.append("set_param(mdl, 'Decimation', '").append(signalStep / simulinkSimulationStep).append("');");
+        // We dump all the results
+        builder.append("set_param(mdl, 'LimitDataPoints', 'off');");
+        // We do not decimate the result
+        // builder.append("set_param(mdl, 'Decimation', '").append(signalStep / simulinkSimulationStep).append("');");
     }
 
     private void preventHugeTempFile(StringBuilder builder) {
@@ -230,6 +217,7 @@ public class SimulinkSUL implements NumericSUL {
         builder.append("simOut = sim(in);");
         // We handle the output as double.
         builder.append("y = double(simOut.get('yout'));");
+        builder.append("t = double(simOut.get('tout'));");
         counter++;
     }
 
@@ -239,7 +227,7 @@ public class SimulinkSUL implements NumericSUL {
             if (this.inputSignal.duration() == 0.0) {
                 double[] tmpY = matlab.getVariable("y");
                 if (Objects.isNull(tmpY)) {
-                    LOGGER.error("The simulation output is null");
+                    log.error("The simulation output is null");
                     y = null;
                 } else {
                     y = new double[][]{tmpY};
@@ -248,10 +236,43 @@ public class SimulinkSUL implements NumericSUL {
                 y = matlab.getVariable("y");
             }
         } catch (Exception e) {
-            LOGGER.error("There was an error in the simulation: {}", e.getMessage());
+            log.error("There was an error in the simulation: {}", e.getMessage());
             throw e;
         }
         return y;
+    }
+
+    protected double[] getTimestamps() throws ExecutionException, InterruptedException {
+        double[] t;
+        try {
+            if (this.inputSignal.duration() == 0.0) {
+                t = new double[]{0.0};
+            } else {
+                t = matlab.getVariable("t");
+            }
+        } catch (Exception e) {
+            log.error("There was an error in the simulation: {}", e.getMessage());
+            throw e;
+        }
+        return t;
+    }
+
+    /**
+     * A pair of time and values.
+     *
+     * @param <T> The type of the values
+     */
+    @Getter
+    public static class ValueWithTime<T> {
+        List<Double> timestamp;
+        List<T> values;
+        ValueWithTime(List<Double> timestamp, List<T> values) {
+            if (timestamp.size() != values.size()) {
+                throw new IllegalArgumentException("The size of timestamp and values must be the same");
+            }
+            this.timestamp = timestamp;
+            this.values = values;
+        }
     }
 
     /**
@@ -262,15 +283,15 @@ public class SimulinkSUL implements NumericSUL {
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
      */
-    @Override
-    public Word<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
+    public ValueWithTime<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
         assert (isInitial && endTime == 0) || (endTime > 0.0);
         if (inputSignal == null) {
             return null;
         }
-        pre();
+        reset();
         this.inputSignal.addAll(inputSignal);
 
+        // For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
         StringBuilder builder = new StringBuilder();
 
         makeDataSet(builder);
@@ -282,43 +303,33 @@ public class SimulinkSUL implements NumericSUL {
         runSimulation(builder, this.inputSignal.duration());
 
         simulationTime.start();
-        LOGGER.trace(builder.toString());
+        log.trace(builder.toString());
         matlab.eval(builder.toString());
         simulationTime.stop();
 
         // get the simulation result and make the result
         double[][] y = this.getResult();
+        double[] t = this.getTimestamps();
         if (Objects.isNull(y) || Objects.isNull(y[0])) {
             if (this.useFastRestart) {
                 this.useFastRestart = false;
-                LOGGER.info("disable fast restart");
+                log.info("disable fast restart");
                 return this.execute(inputSignal);
             } else {
-                LOGGER.error("I do not know how to obtain non-null result");
+                log.error("I do not know how to obtain non-null result");
                 return null;
             }
         }
+        assert(t.length == y.length);
 
-        //convert double[][] to Word<ArrayList<Double>
-        WordBuilder<List<Double>> result = new WordBuilder<>();
-
+        // convert double[][] to List<List<Double>>
+        List<List<Double>> result = new ArrayList<>();
         for (double[] outputStep: y) {
-            result.append(Arrays.asList(ArrayUtils.toObject(outputStep)));
+            result.add(Arrays.asList(ArrayUtils.toObject(outputStep)));
         }
 
-        post();
-        Word<List<Double>> resultWord = result.toWord();
-        assert inputSignal.size() == resultWord.size();
-        return resultWord;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Nonnull
-    @Override
-    public SUL<List<Double>, IOSignalPiece<List<Double>>> fork() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
+        reset();
+        return new ValueWithTime<>(Arrays.asList(ArrayUtils.toObject(t)), result);
     }
 
     /**
@@ -331,5 +342,4 @@ public class SimulinkSUL implements NumericSUL {
     public double getSimulationTimeSecond() {
         return this.simulationTime.getSecond();
     }
-
 }
