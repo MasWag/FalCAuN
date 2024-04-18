@@ -100,6 +100,13 @@ public class SimulinkSUL implements NumericSUL {
     }
 
     /**
+     * Execute the Simulink model by feeding inputSignal
+     */
+    public ValueWithTime<List<Double>> executeRaw(Word<List<Double>> inputSignal) throws ExecutionException, InterruptedException {
+        return model.execute(inputSignal);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Nonnull
