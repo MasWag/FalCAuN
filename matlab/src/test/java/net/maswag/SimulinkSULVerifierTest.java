@@ -11,16 +11,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
-import net.maswag.TemporalAnd.STLAnd;
-import net.maswag.TemporalEventually.STLEventually;
-import net.maswag.TemporalGlobally.STLGlobally;
-import net.maswag.TemporalImply.STLImply;
+
 import net.maswag.TemporalLogic.STLCost;
-import net.maswag.TemporalNext.STLNext;
-import net.maswag.TemporalOr.STLOr;
-import net.maswag.TemporalRelease.STLRelease;
-import net.maswag.TemporalSub.STLSub;
-import net.maswag.TemporalUntil.STLUntil;
+
 class SimulinkSULVerifierTest {
     private final String PWD = System.getenv("PWD");
     private String initScript;
@@ -66,7 +59,7 @@ class SimulinkSULVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
         // [] (velocity < 10)
         properties = new StaticSTLList<>(Collections.singletonList(
                 factory.parse("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
@@ -163,7 +156,7 @@ class SimulinkSULVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(afMapper, afRefMapper, cmMapper, muMapper));
             largest = new ArrayList<>(Arrays.asList('x', '0', '1', 'h'));
         }
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
 
         try {
             verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, propertyZHA19_AFC1, mapper);
@@ -247,7 +240,7 @@ class SimulinkSULVerifierTest {
             outputMapper = new ArrayList<>(Arrays.asList(afMapper, afRefMapper, cmMapper, muMapper));
             largest = new ArrayList<>(Arrays.asList('x', '0', '1', 'h'));
         }
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
 
         try {
             verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, propertyZHA19_AFC1, mapper);
@@ -307,7 +300,7 @@ class SimulinkSULVerifierTest {
                 outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
                 largest = new ArrayList<>(Arrays.asList('b', 'b', 'a'));
             }
-            mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+            mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
         }
 
         @Test

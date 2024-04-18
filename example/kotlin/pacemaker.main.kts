@@ -1,7 +1,7 @@
 #!/usr/bin/env kscript
 /*****h* kotlin/pacemaker
  *  NAME
- *   pacemaker.kts
+ *   pacemaker.main.kts
  *  DESCRIPTION
  *   Script to falsify the "pacemaker" formula by FalCAuN
  *  AUTHOR
@@ -19,21 +19,21 @@
  *   - The environment variable MATLAB_HOME is set to the root directory of MATLAB, e.g., /Applications/MATLAB_R2024a.app/ or /usr/local/MATLAB/R2024a.
  *
  *  USAGE
- *   ./pacemaker.kts
+ *   ./pacemaker.main.kts
  *  NOTES
  *   By default, this script runs FalCAuN for 50 times. When you want to run for a different interval, specify the range by the first and the second arguments.
  *
  ********/
 
-package net.maswag
-
 // This script depends on FalCAuN-core and FalCAuN-matlab
-@file:DependsOn("net.maswag:FalCAuN-core:1.0-SNAPSHOT", "net.maswag:FalCAuN-matlab:1.0-SNAPSHOT")
+@file:DependsOn("net.maswag:FalCAuN-core:1.0-SNAPSHOT")
+@file:DependsOn("net.maswag:FalCAuN-matlab:1.0-SNAPSHOT")
 // We assume that the MATLAB_HOME environment variable is set
 @file:KotlinOptions("-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64")
 
 import net.maswag.*
-import kotlin.streams.toList
+import java.io.BufferedReader
+import java.io.StringReader
 
 // Define the input and output mappers
 val lriValues = listOf(50.0, 90.0)
@@ -41,9 +41,13 @@ val inputMapper = InputMapperReader.make(listOf(lriValues))
 val periodValues = listOf(null)
 val lrlValues = listOf(null)
 val paceCountValues = listOf(8.0, 15.0, null)
-val outputMapperReader = OutputMapperReader(listOf(periodValues, lrlValues, paceCountValues))
+val outputMapperReader = OutputMapperReader(listOf(periodValues, lrlValues, paceCountValues, paceCountValues, paceCountValues))
 outputMapperReader.parse()
-val signalMapper = SignalMapper()
+val mapperString = """previous_max_output(2)
+previous_min_output(2)
+"""
+val signalMapper: ExtendedSignalMapper = ExtendedSignalMapper.parse(BufferedReader(StringReader(mapperString)))
+assert(signalMapper.size() == 2)
 val mapper =
     NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
 
@@ -51,12 +55,15 @@ val mapper =
 val period = "signal(0)"
 val LRL = "signal(1)"
 val paceCount = "signal(2)"
+// Pseudo signals representing the maximum and minimum values between sampling points
+val prevMaxPaceCount = "output(3)"
+val prevMinPaceCount = "output(4)"
 
 // Define the STL properties
 val stlFactory = STLFactory()
 val stlList = listOf(
     stlFactory.parse(
-        "(alw_[5,5] $LRL > 0) -> ((alw_[0,5] $paceCount < 15) && (ev_[0,5] $paceCount > 8))",
+        "(alw_[5,5] $LRL > 0) -> ((alw_[0,5] ($paceCount < 15 && $prevMinPaceCount < 15)) && (ev_[0,5] ($paceCount > 8 && $prevMaxPaceCount > 8)))",
         inputMapper,
         outputMapperReader.outputMapper,
         outputMapperReader.largest

@@ -92,7 +92,7 @@ public class AutotransExample {
             outputMapper = new ArrayList<>(Arrays.asList(velocityMapper, rotationMapper, gearMapper));
             largest = new ArrayList<>(Arrays.asList('X', 'X', 'X'));
         }
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
         setOutputMaps();
     }
 
@@ -110,7 +110,7 @@ public class AutotransExample {
 
     void setInputMapper(List<Map<Character, Double>> inputMapper) {
         this.inputMapper = inputMapper;
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
     }
 
     List<Map<Character, Double>> getOutputMapper() {
@@ -119,13 +119,13 @@ public class AutotransExample {
 
     void setOutputMapper(List<Map<Character, Double>> outputMapper) {
         this.outputMapper = outputMapper;
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
         setOutputMaps();
     }
 
     void setLargest(List<Character> largest) {
         this.largest = largest;
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
         setOutputMaps();
     }
 
@@ -143,7 +143,7 @@ public class AutotransExample {
 
     public void setSigMap(List<Function<IOSignalPiece<List<Double>>, Double>> sigMap) {
         this.sigMap = sigMap;
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(this.sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(this.sigMap));
     }
 
     private List<Character> constructSmallerAPs(int index, double threshold) {

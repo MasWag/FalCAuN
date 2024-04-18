@@ -13,7 +13,7 @@ import static java.lang.Math.abs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class SignalMapperTest {
+class SimpleSignalMapperTest {
     private final String PWD = System.getenv("PWD");
     private final String sigMapName = PWD + "/src/test/resources/sigMap.txt";
     SignalMapper sigMap;
@@ -22,7 +22,7 @@ class SignalMapperTest {
     @BeforeEach
     void setUp() {
         Function<IOSignalPiece<List<Double>>, Double> diff = a -> a.getOutputSignal().get(0) - a.getOutputSignal().get(1);
-        sigMap = new SignalMapper(Collections.singletonList(diff));
+        sigMap = new SimpleSignalMapper(Collections.singletonList(diff));
         concreteSignal = new ArrayList<>();
         concreteSignal.add(2.0);
         concreteSignal.add(-4.2);
@@ -44,7 +44,7 @@ class SignalMapperTest {
 
     @Test
     void parse() throws IOException {
-        sigMap = SignalMapper.parse(sigMapName);
+        sigMap = SimpleSignalMapper.parse(sigMapName);
         assertEquals(4, sigMap.size());
         assertEquals(2.0 + 0.4, sigMap.apply(0,
                 new IOSignalPiece<>(Collections.emptyList(), concreteSignal)));

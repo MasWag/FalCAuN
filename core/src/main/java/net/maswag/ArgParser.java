@@ -253,9 +253,9 @@ public class ArgParser {
         dotFile = cl.getOptionValue('o', null);
         etfFile = cl.getOptionValue("output-etf", null);
         if (cl.hasOption("signal-mapper")) {
-            sigMap = SignalMapper.parse(cl.getOptionValue("signal-mapper"));
+            sigMap = SimpleSignalMapper.parse(cl.getOptionValue("signal-mapper"));
         } else {
-            sigMap = new SignalMapper();
+            sigMap = new SimpleSignalMapper();
         }
         if (cl.hasOption("disable-adaptive-stl")) {
             adaptiveSTL = false;

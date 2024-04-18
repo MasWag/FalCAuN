@@ -8,16 +8,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import net.maswag.TemporalAnd.STLAnd;
-import net.maswag.TemporalEventually.STLEventually;
-import net.maswag.TemporalGlobally.STLGlobally;
-import net.maswag.TemporalImply.STLImply;
-import net.maswag.TemporalLogic.STLCost;
-import net.maswag.TemporalNext.STLNext;
-import net.maswag.TemporalOr.STLOr;
-import net.maswag.TemporalRelease.STLRelease;
-import net.maswag.TemporalSub.STLSub;
-import net.maswag.TemporalUntil.STLUntil;
+
 class NumericSULMapperTest {
 
     private List<Map<Character, Double>> inputMapper;
@@ -112,6 +103,6 @@ class NumericSULMapperTest {
             outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
             largest = new ArrayList<>(Arrays.asList('0', '0', 'p'));
         }
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SignalMapper(sigMap));
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
     }
 }

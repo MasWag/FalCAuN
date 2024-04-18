@@ -21,17 +21,16 @@ import java.util.stream.Collectors;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @RequiredArgsConstructor
-public class ExtendedSignalMapper {
+public class ExtendedSignalMapper implements SignalMapper {
     final private List<Function<ExtendedIOSignalPiece<List<Double>>, Double>> sigMap;
 
     public ExtendedSignalMapper() {
         this.sigMap = Collections.emptyList();
     }
 
-
     //@ requires 0 <= index < size()
-    public double apply(int index, ExtendedIOSignalPiece<List<Double>> concreteSignal) {
-        return this.sigMap.get(index).apply(concreteSignal);
+    public double apply(int index, IOSignalPiece<List<Double>> concreteSignal) {
+        return this.sigMap.get(index).apply((ExtendedIOSignalPiece<List<Double>>) concreteSignal);
     }
 
     //@ ensures \result >= 0

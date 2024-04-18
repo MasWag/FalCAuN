@@ -2,6 +2,7 @@ package net.maswag;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -75,21 +76,23 @@ public class ExtendedSignalMapperVisitorImpl extends net.maswag.ExtendedSignalMa
                 return (concreteSignal) -> concreteSignal.getPreviousOutputSignals().stream()
                         // Take the elementwise maximum of the previous output signals
                         .reduce((a, b) -> {
+                            List<Double> result = new ArrayList<>();
                             assert a.size() == b.size();
                             for (int i = 0; i < a.size(); i++) {
-                                a.set(i, Math.max(a.get(i), b.get(i)));
+                                result.add(i, Math.max(a.get(i), b.get(i)));
                             }
-                            return a;
+                            return result;
                         }).get().get(sigIndex);
             } else { // PREVIOUS_MIN_OUTPUT
                 return (concreteSignal) -> concreteSignal.getPreviousOutputSignals().stream()
                         // Take the elementwise minimum of the previous output signals
                         .reduce((a, b) -> {
+                            List<Double> result = new ArrayList<>();
                             assert a.size() == b.size();
                             for (int i = 0; i < a.size(); i++) {
-                                a.set(i, Math.min(a.get(i), b.get(i)));
+                                result.add(i, Math.min(a.get(i), b.get(i)));
                             }
-                            return a;
+                            return result;
                         }).get().get(sigIndex);
             }
         } else {

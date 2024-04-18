@@ -51,6 +51,7 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
                         abstractInput.stream().map(mapper::mapInput).collect(Collectors.toList()));
                 assert concreteInput.size() == q.getInput().size();
 
+                // TODO: Fix here to handle ExtendedSignals
                 final Word<List<Double>> concreteOutput;
                 try {
                     concreteOutput = sul.execute(concreteInput);
