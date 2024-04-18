@@ -18,25 +18,25 @@ import org.slf4j.LoggerFactory
 import java.util.*
 
 // The following surprises the debug log
-var updaterLogger = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
-updaterLogger.level = Level.INFO
-var updateListLogger = LoggerFactory.getLogger(AdaptiveSTLList::class.java) as Logger
-updateListLogger.level = Level.INFO
-var LTSminVersionLogger = LoggerFactory.getLogger(LTSminVersion::class.java) as Logger
-LTSminVersionLogger.level = Level.INFO
-var AbstractLTSminLogger = LoggerFactory.getLogger(AbstractLTSmin::class.java) as Logger
-AbstractLTSminLogger.level = Level.INFO
-var EQSearchProblemLogger = LoggerFactory.getLogger(EQSearchProblem::class.java) as Logger
-EQSearchProblemLogger.level = Level.INFO
-var SimulinkSteadyStateGeneticAlgorithmLogger = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm::class.java) as Logger
-SimulinkSteadyStateGeneticAlgorithmLogger.level = Level.INFO
+var loggerUpdater = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
+loggerUpdater.level = Level.INFO
+var loggerUpdateList = LoggerFactory.getLogger(AdaptiveSTLList::class.java) as Logger
+loggerUpdateList.level = Level.INFO
+var loggerLTSminVersion = LoggerFactory.getLogger(LTSminVersion::class.java) as Logger
+loggerLTSminVersion.level = Level.INFO
+var loggerAbstractLTSmin = LoggerFactory.getLogger(AbstractLTSmin::class.java) as Logger
+loggerAbstractLTSmin.level = Level.INFO
+var loggerEQSearchProblem = LoggerFactory.getLogger(EQSearchProblem::class.java) as Logger
+loggerEQSearchProblem.level = Level.INFO
+var loggerSimulinkSteadyStateGeneticAlgorithm = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm::class.java) as Logger
+loggerSimulinkSteadyStateGeneticAlgorithm.level = Level.INFO
 
 // Define the target Mealy machine
-/// input alphabet contains strings "a" and "b"
+// 1. input alphabet contains strings "a" and "b"
 val sigma = Alphabets.fromList(listOf("a", "b"))
-/// output alphabet contains strings "p" and "q"
+// 2. output alphabet contains strings "p" and "q"
 val gamma = Alphabets.fromList(listOf("p", "q"))
-/// create Mealy machine
+// 3. create Mealy machine
 // @formatter:off
 val target: CompactMealy<String, String> = AutomatonBuilders.newMealy<String, String>(sigma)
     .withInitial("q0")
@@ -60,12 +60,13 @@ Visualization.visualize(target.transitionGraphView(sigma))
 
 // Define LTL properties
 val ltlFactory = LTLFactory()
-val ltlList = listOf(
+val ltlList =
+    listOf(
         "[] (output == p -> X (output == q))", // This does not hold
         "[] ((input == a && output == p && (X input == a)) -> (X output == q))", // This holds
-).map { stlString ->
-    ltlFactory.parse(stlString)
-}.toList()
+    ).map { stlString ->
+        ltlFactory.parse(stlString)
+    }.toList()
 val signalLength = 10 // We believe that the traces of length 10 are enough to verify/falsify the properties
 val properties = AdaptiveSTLList(ltlList, signalLength)
 
@@ -79,11 +80,11 @@ val verifier = BlackBoxVerifier(oracle, sul, properties, sigma)
 // Timeout must be set before adding equivalence testing
 verifier.setTimeout(5 * 60) // 5 minutes
 verifier.addRandomWordEQOracle(
-        1, // The minimum length of the random word
-        10, // The maximum length of the random word
-        1000, // The maximum number of tests
-        Random(),
-        1
+    1, // The minimum length of the random word
+    10, // The maximum length of the random word
+    1000, // The maximum number of tests
+    Random(),
+    1,
 )
 val result = verifier.run()
 
