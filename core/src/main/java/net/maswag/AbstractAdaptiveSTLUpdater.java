@@ -24,8 +24,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import net.maswag.TemporalLogic.STLCost;
-
 /**
  * Abstract class for potentially adaptive set of STL formulas
  *
@@ -61,7 +59,7 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
 
     @Override
     public List<String> getLTLProperties() {
-        return this.getSTLProperties().stream().map(TemporalLogic<I>::toLTLString).collect(Collectors.toList());
+        return this.getSTLProperties().stream().map(TemporalLogic::toLTLString).collect(Collectors.toList());
     }
 
     @Override

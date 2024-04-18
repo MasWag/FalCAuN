@@ -45,7 +45,7 @@ class SimulinkModelTest {
                 Arrays.asList(80.0, 900.0),
                 Arrays.asList(80.0, 900.0),
                 Arrays.asList(80.0, 900.0));
-        SimulinkModel.ValueWithTime<List<Double>> result = this.mdl.execute(Word.fromList(input));
+        ValueWithTime<List<Double>> result = this.mdl.execute(Word.fromList(input));
         // Test that the first time stamp is 0.0
         Assertions.assertEquals(0.0, result.getTimestamp().get(0).doubleValue());
         // Test that the last time stamp is 18.0
@@ -58,7 +58,7 @@ class SimulinkModelTest {
         // Give [80.0, 900.0] for 10 times
         List<Double> input = Arrays.asList(80.0, 900.0);
         for (int i = 0; i < 10; i++) {
-            SimulinkModel.ValueWithTime<List<Double>> result = this.mdl.step(input);
+            ValueWithTime<List<Double>> result = this.mdl.step(input);
             if (lastTime < 0.0) {
                 // The result only contains the information at time 0
                 Assertions.assertEquals(1, result.getTimestamp().size());

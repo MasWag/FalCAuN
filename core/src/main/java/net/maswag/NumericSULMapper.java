@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class NumericSULMapper implements SULMapper<String, String, List<Double>, IOSignalPiece<List<Double>>> {
-    private Map<String, List<Double>> inputMapper;
-    private List<Character> largestOutputs;
-    private SignalMapper sigMap;
+    private final Map<String, List<Double>> inputMapper;
+    private final List<Character> largestOutputs;
+    private final SignalMapper sigMap;
 
-    private List<List<Character>> abstractOutputs;
-    private List<List<Double>> concreteOutputs;
+    private final List<List<Character>> abstractOutputs;
+    private final List<List<Double>> concreteOutputs;
 
     /**
      * <p>Constructor for SimulinkSULMapper.</p>

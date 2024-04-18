@@ -20,6 +20,7 @@ public class SimulinkModel {
     /**
      * The signal step of the input signal.
      */
+    @Getter
     private final Double signalStep;
     /**
      * The simulation step of Simulink.
@@ -32,7 +33,9 @@ public class SimulinkModel {
     /**
      * The current time of the simulation
      */
-    private Double endTime = 0.0;
+    public double getCurrentTime() {
+        return inputSignal.duration();
+    }
     private Signal inputSignal;
     private boolean isInitial = true;
     private boolean useFastRestart = true;
@@ -75,7 +78,6 @@ public class SimulinkModel {
     }
 
     public void reset() {
-        endTime = 0.0;
         inputSignal = new Signal(signalStep);
         isInitial = true;
     }
@@ -87,7 +89,7 @@ public class SimulinkModel {
      */
     @Nonnull
     public ValueWithTime<List<Double>> step(@Nonnull List<Double> inputSignal) {
-        assert (isInitial && endTime == 0) || (endTime > 0.0);
+        assert isInitial || !inputSignal.isEmpty();
         List<List<Double>> result = new ArrayList<>();
         List<Double> timestamps;
         log.trace("Input: {}", inputSignal);
@@ -139,9 +141,7 @@ public class SimulinkModel {
         }
 
         // Final internal process
-        endTime += signalStep;
         assert !isInitial;
-        assert endTime > 0.0;
         log.trace("Output: {}", result);
 
         return new ValueWithTime<>(timestamps, result);
@@ -258,24 +258,6 @@ public class SimulinkModel {
     }
 
     /**
-     * A pair of time and values.
-     *
-     * @param <T> The type of the values
-     */
-    @Getter
-    public static class ValueWithTime<T> {
-        List<Double> timestamp;
-        List<T> values;
-        ValueWithTime(List<Double> timestamp, List<T> values) {
-            if (timestamp.size() != values.size()) {
-                throw new IllegalArgumentException("The size of timestamp and values must be the same");
-            }
-            this.timestamp = timestamp;
-            this.values = values;
-        }
-    }
-
-    /**
      * Execute the Simulink model by feeding inputSignal
      * <p>
      * For inputSignal = a1, a2, ..., an, we construct a timed word w = (a1, 0), (a2, T), (a3, 2 * T), ... (an, (n - 1) * T) and execute the Simulink model by feeding the piecewise-linear interpolation of w.
@@ -284,7 +266,7 @@ public class SimulinkModel {
      * @return The output signal. The size is same as the input.
      */
     public ValueWithTime<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
-        assert (isInitial && endTime == 0) || (endTime > 0.0);
+        assert isInitial || !inputSignal.isEmpty();
         if (inputSignal == null) {
             return null;
         }

@@ -23,4 +23,17 @@ public class ExtendedIOSignalPiece<I> extends IOSignalPiece<I> {
         super(inputSignal, outputSignal);
         this.previousOutputSignals = previousOutputSignals;
     }
+
+    /**
+     * Constructor for the first signal piece.
+     *
+     * @param inputStep the current step of the input signal
+     * @param outputSignal the entire output signal with time stamps
+     * @param from the time when the current signal starts
+     * @param to the time when the current signal ends. This is the same as the current signal step.
+     */
+    public ExtendedIOSignalPiece(I inputStep, ValueWithTime<I> outputSignal, Double from, Double to) {
+        super(inputStep, outputSignal.at(to));
+        this.previousOutputSignals = outputSignal.range(from, to);
+    }
 }

@@ -3,9 +3,6 @@ package net.maswag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
-import java.util.Set;
-
 /**
  * A pair of input and output signals at one time step.
  *
