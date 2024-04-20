@@ -34,7 +34,6 @@ import static net.automatalib.util.automaton.Automata.stateCover;
  */
 public class BlackBoxVerifier<I> {
     private static final Function<String, String> EDGE_PARSER = s -> s;
-    final private double multiplier = 1.0;
     @Getter
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     private final SUL<String, String> verifiedSystem;
@@ -110,7 +109,7 @@ public class BlackBoxVerifier<I> {
      * @param length  The length of the input.
      * @param minStep The minimum step of the corner case.
      */
-    public void addCornerCaseEQOracle(int length, int minStep) {
+    public EvaluationCountable. MealyEquivalenceOracle<String, String>  addCornerCaseEQOracle(int length, int minStep) {
         MealyFixedSetEQOracle cornerCaseEqOracle =
                 new MealyFixedSetEQOracle(this.getProperties().list(), this.memOracle);
         int step = length;
@@ -129,10 +128,11 @@ public class BlackBoxVerifier<I> {
             }
             // Limit the length of each corner cases and add them to the oracle
             cornerCase.stream().map(word -> word.prefix(length)).forEach(cornerCaseEqOracle::add);
-            //cornerCaseEqOracle.addAll(cornerCase.stream().map(word -> word.prefix(length)).collect(Collectors.toList()));
             step /= 2;
         }
         addEqOracle(cornerCaseEqOracle);
+
+        return cornerCaseEqOracle;
     }
 
     public void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {

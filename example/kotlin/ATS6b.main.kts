@@ -16,7 +16,7 @@ import java.io.StringReader
 val throttleValues = listOf(0.0, 50.0, 100.0)
 val brakeValues = listOf(0.0, 325.0)
 val inputMapper = InputMapperReader.make(listOf(throttleValues, brakeValues))
-val velocityValues = listOf(35.0, null)
+val velocityValues = listOf(50.0, null)
 val accelerationValues = listOf(3000.0, null)
 val ignoreValues = listOf(null)
 val gearValues = listOf(null)
@@ -43,14 +43,14 @@ signalStep = 1.0
 //val stlGRotationLt3000 = "$rotation < 3000.0 && []_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation < 3000.0)"
 val stlGRotationLt3000 = "[]_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation < 3000.0)"
 val stlNotGRotationLt3000 = "<>_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation > 3000.0)"
-//val STLGVelocityLt35 = "$velocity < 35.0 && []_[0,${(4 / signalStep).toInt()}] ($prevMaxVelocity < 35.0)"
-val STLGVelocityLt35 = "[]_[0,${(4 / signalStep).toInt()}] ($prevMaxVelocity < 35.0)"
+//val STLGVelocityLt50 = "$velocity < 50.0 && []_[0,${(8 / signalStep).toInt()}] ($prevMaxVelocity < 50.0)"
+val STLGVelocityLt50 = "[]_[0,${(8 / signalStep).toInt()}] ($prevMaxVelocity < 50.0)"
 val stlList = listOf(
     //"($stlGRotationLt3000) -> ($STLGVelocityLt35)",
     // We use || instead of -> because specification strengthening does not support -> yet
     // "(!($stlGRotationLt3000)) || ($STLGVelocityLt35)",
     // Similarly, we use <>! instead of ![]
-    "($stlNotGRotationLt3000) || ($STLGVelocityLt35)",
+    "($stlNotGRotationLt3000) || ($STLGVelocityLt50)",
 ).stream().map { stlString ->
     stlFactory.parse(
         stlString,

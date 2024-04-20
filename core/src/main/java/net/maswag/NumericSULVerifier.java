@@ -37,9 +37,8 @@ public class NumericSULVerifier {
      * @param signalStep The signal step in the simulation
      * @param properties The LTL properties to be verified
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
-     * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
-    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) throws Exception {
+    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) {
         this.rawSUL = rawSUL;
         this.signalStep = signalStep;
         this.mapper = mapper;
@@ -80,19 +79,19 @@ public class NumericSULVerifier {
         this.verifier.addWpMethodEQOracle(maxDepth);
     }
 
-    void addBFOracle(double multiplier) {
+    public void addBFOracle(double multiplier) {
         this.verifier.addBFOracle(multiplier);
     }
 
-    void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
+    public void addRandomWordEQOracle(int minLength, int maxLength, int maxTests, Random random, int batchSize) {
         this.verifier.addRandomWordEQOracle(minLength, maxLength, maxTests, random, batchSize);
     }
 
-    void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
+    public void addRandomWalkEQOracle(double restartProbability, long maxSteps, Random random) {
         this.verifier.addRandomWalkEQOracle(restartProbability, maxSteps, random);
     }
 
-    void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
+    public void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
         this.verifier.addCompleteExplorationEQOracle(minDepth, maxDepth, batchSize);
     }
 
@@ -103,7 +102,7 @@ public class NumericSULVerifier {
      * @param minStep The minimum step of the corner case.
      */
     public void addCornerCaseEQOracle(int length, int minStep) {
-        this.verifier.addCornerCaseEQOracle(length, minStep);
+        this.evaluationCountables.add(this.verifier.addCornerCaseEQOracle(length, minStep));
     }
 
     /**

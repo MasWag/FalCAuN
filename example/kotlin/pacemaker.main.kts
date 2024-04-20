@@ -36,8 +36,23 @@ import net.maswag.*
 import java.io.BufferedReader
 import java.io.StringReader
 
+// Set up the pacemaker model
+val initScript = """
+%% Init Script for the pacemaker model
+
+%% Load the pacemaker model
+mdl = 'Model1_Scenario1_Correct';
+load_system(mdl);
+
+% The initial pacing conditions in the Simulink model are used.
+init_cond = []; 
+"""
+val paramNames = listOf("LRI")
+val signalStep = 0.5
+val simulinkSimulationStep = 0.0025
+
 // Define the input and output mappers
-val lriValues = listOf(50.0, 90.0)
+val lriValues = listOf(50.0, 60.0, 70.0, 80.0, 90.0)
 val inputMapper = InputMapperReader.make(listOf(lriValues))
 val ignoreValue = listOf(null)
 val paceCountValues = listOf(7.999999, 15.000001, null)
@@ -61,34 +76,20 @@ val prevMinPaceCount = "output(4)" // We do not use the minimum values show as a
 // Define the STL properties
 val stlFactory = STLFactory()
 // Signal must be long enough
-val stlSignalLength = "alw_[5,5] $LRL > 0"
-val stlGPaceCountLt15 = "($paceCount < 15.000001 && alw_[0,5] $prevMaxPaceCount < 15.000001)"
-val stlFPaceCountGt8 = "($paceCount > 7.999999 || ev_[0,5] $prevMaxPaceCount > 7.999999)"
+val stlSignalLength = "alw_[${(10 / signalStep).toInt()},${(10 / signalStep).toInt()}] $LRL > 0"
+val stlGPaceCountLt15 = "($paceCount < 15.000001 && alw_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount < 15.000001)"
+val stlFPaceCountGt8 = "($paceCount > 7.999999 || ev_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount > 7.999999)"
 val stlList = listOf(
     stlFactory.parse(
-        "($stlSignalLength) -> ($stlGPaceCountLt15 && $stlFPaceCountGt8)",
+        "(!($stlSignalLength)) || ($stlGPaceCountLt15 && $stlFPaceCountGt8)",
         inputMapper,
         outputMapperReader.outputMapper,
         outputMapperReader.largest
     )
 )
 println(stlList.get(0).toAbstractString())
-val signalLength = 6
+val signalLength = (12 / signalStep).toInt()
 val properties = AdaptiveSTLList(stlList, signalLength)
-
-val initScript = """
-%% Init Script for the pacemaker model
-
-%% Load the pacemaker model
-mdl = 'Model1_Scenario1_Correct'
-load_system(mdl);
-
-% The initial pacing conditions in the Simulink model are used.
-init_cond = []; 
-"""
-val paramNames = listOf("LRI")
-val signalStep = 2.0
-val simulinkSimulationStep = 0.0025
 
 // Constants for the GA-based equivalence testing
 val maxTest = 10000
@@ -102,6 +103,9 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { pa
     val verifier = NumericSULVerifier(pacemakerSUL, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
     verifier.setTimeout(10 * 60) // 10 minutes
+    // We first try equivalence testing based on corner case inputs
+    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2)
+    // Then, we use genetic algorithm
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
@@ -124,4 +128,7 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { pa
             println("cex output: ${verifier.cexOutput[i]}")
         }
     }
+    println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
+    println("Number of simulations: ${verifier.simulinkCount}")
+    println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
 }

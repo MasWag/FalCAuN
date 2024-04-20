@@ -4,6 +4,7 @@ import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.query.DefaultQuery;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.word.Word;
@@ -19,11 +20,12 @@ import java.util.Objects;
  * Equivalence oracle that uses a fixed set of samples.
  */
 @Slf4j
-public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String> {
+public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String>, EvaluationCountable. MealyEquivalenceOracle<String, String> {
     List<Word<String>> fixedSamples = new ArrayList<>();
     private final List<PropertyOracle.MealyPropertyOracle<String, String, String>> ltlOracles;
     protected final MembershipOracle.MealyMembershipOracle<String, String> memOracle;
-
+    @Getter
+    protected int evaluateCount = 0;
 
     /**
      * Constructor for MealyFixedSetEQOracle.
@@ -37,11 +39,11 @@ public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalence
         this.memOracle = memOracle;
     }
 
-    void add(Word<String> sample) {
+    public void add(Word<String> sample) {
         fixedSamples.add(sample);
     }
 
-    void addAll(Collection<Word<String>> samples) {
+    public void addAll(Collection<Word<String>> samples) {
         fixedSamples.addAll(samples);
     }
 
@@ -75,6 +77,7 @@ public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalence
         for (Word<String> sample : fixedSamples) {
             DefaultQuery<String, Word<String>> query = new DefaultQuery<>(sample);
             memOracle.processQuery(query);
+            evaluateCount++;
             Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
             log.trace("Processing fixed sample: {}", sample);
             log.trace("Hypothesis output: {}", hypOutput);
