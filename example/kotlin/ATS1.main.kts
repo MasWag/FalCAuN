@@ -1,4 +1,27 @@
 #!/usr/bin/env kscript
+/*****h* kotlin/ATS1
+ *  NAME
+ *   ATS1.main.kts
+ *  DESCRIPTION
+ *   Script to falsify the automatic transmission benchmark against the S1 formula by FalCAuN
+ *  AUTHOR
+ *   Masaki Waga
+ *  HISTORY
+ *    - 2024/04/20: Use ExtendedSignalMapper
+ *  COPYRIGHT
+ *   Copyright (c) 2024 Masaki Waga
+ *   Released under the MIT license
+ *   https://opensource.org/licenses/mit-license.php
+ *
+ *  PORTABILITY
+ *   This script assumes the following:
+ *   - FalCAuN is installed, for example, by mvn install.
+ *   - The environment variable MATLAB_HOME is set to the root directory of MATLAB, e.g., /Applications/MATLAB_R2024a.app/ or /usr/local/MATLAB/R2024a.
+ *
+ *  USAGE
+ *   ./ATS1.main.kts
+ *
+ ********/
 
 // Import the constants for AutoTrans
 @file:Import("./AutoTrans.kt")
