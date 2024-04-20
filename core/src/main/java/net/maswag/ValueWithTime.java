@@ -2,7 +2,6 @@ package net.maswag;
 
 import com.google.common.collect.Streams;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.apache.commons.math3.util.Pair;
 
 import javax.annotation.Nullable;
@@ -20,20 +19,20 @@ import static java.lang.Math.ceil;
  */
 @Getter
 public class ValueWithTime<T> {
-    protected final List<Double> timestamp;
+    protected final List<Double> timestamps;
     protected final List<T> values;
 
     ValueWithTime() {
         // Initialization with empty lists
-        this.timestamp = Collections.emptyList();
+        this.timestamps = Collections.emptyList();
         this.values = Collections.emptyList();
     }
 
-    ValueWithTime(List<Double> timestamp, List<T> values) {
-        if (timestamp.size() != values.size()) {
+    ValueWithTime(List<Double> timestamps, List<T> values) {
+        if (timestamps.size() != values.size()) {
             throw new IllegalArgumentException("The size of timestamp and values must be the same");
         }
-        this.timestamp = timestamp;
+        this.timestamps = timestamps;
         this.values = values;
     }
 
@@ -41,7 +40,7 @@ public class ValueWithTime<T> {
      * Get the number of contained values.
      */
     public int size() {
-        return timestamp.size();
+        return timestamps.size();
     }
 
     /**
@@ -49,9 +48,9 @@ public class ValueWithTime<T> {
      */
     @Nullable
     public T at(double time) {
-        assert(timestamp.size() == values.size());
-        for (int i = 0; i < timestamp.size(); i++) {
-            if (timestamp.get(i) == time) {
+        assert(timestamps.size() == values.size());
+        for (int i = 0; i < timestamps.size(); i++) {
+            if (timestamps.get(i) == time) {
                 return values.get(i);
             }
         }
@@ -66,8 +65,8 @@ public class ValueWithTime<T> {
      */
     public ValueWithTime<T> range(double from, double to) {
         assert(from < to);
-        assert(timestamp.size() == values.size());
-        return Streams.zip(timestamp.stream(), values.stream(), Pair::new)
+        assert(timestamps.size() == values.size());
+        return Streams.zip(timestamps.stream(), values.stream(), Pair::new)
                 .filter(pair -> from < pair.getFirst() && pair.getFirst() <= to)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
                     List<Double> newTimestamp = list.stream().map(Pair::getFirst).collect(Collectors.toList());
@@ -83,8 +82,8 @@ public class ValueWithTime<T> {
      * @param signalStep The time step between each signal
      */
     public Stream<List<T>> stream(double signalStep) {
-        assert(timestamp.size() == values.size());
-        return Streams.zip(timestamp.stream(), values.stream(), Pair::new)
+        assert(timestamps.size() == values.size());
+        return Streams.zip(timestamps.stream(), values.stream(), Pair::new)
                 .collect(Collectors.groupingBy(pair -> (int) ceil(pair.getFirst() / signalStep)))
                 .values().stream()
                 .map(list -> list.stream().map(Pair::getSecond).collect(Collectors.toList()));

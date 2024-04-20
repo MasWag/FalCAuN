@@ -47,9 +47,9 @@ class SimulinkModelTest {
                 Arrays.asList(80.0, 900.0));
         ValueWithTime<List<Double>> result = this.mdl.execute(Word.fromList(input));
         // Test that the first time stamp is 0.0
-        Assertions.assertEquals(0.0, result.getTimestamp().get(0).doubleValue());
+        Assertions.assertEquals(0.0, result.getTimestamps().get(0).doubleValue());
         // Test that the last time stamp is 18.0
-        Assertions.assertEquals(18.0, result.getTimestamp().get(result.getTimestamp().size() - 1).doubleValue());
+        Assertions.assertEquals(18.0, result.getTimestamps().get(result.getTimestamps().size() - 1).doubleValue());
     }
 
     @Test
@@ -61,15 +61,15 @@ class SimulinkModelTest {
             ValueWithTime<List<Double>> result = this.mdl.step(input);
             if (lastTime < 0.0) {
                 // The result only contains the information at time 0
-                Assertions.assertEquals(1, result.getTimestamp().size());
-                Assertions.assertEquals(0.0, result.getTimestamp().get(0));
+                Assertions.assertEquals(1, result.getTimestamps().size());
+                Assertions.assertEquals(0.0, result.getTimestamps().get(0));
             } else {
                 // Test that the first time stamp is always 0
-                Assertions.assertEquals(0.0, result.getTimestamp().get(0));
+                Assertions.assertEquals(0.0, result.getTimestamps().get(0));
                 // Test that the last time stamp is 2.0 larger than the latest last time stamp
-                Assertions.assertEquals(result.getTimestamp().get(result.getTimestamp().size() - 1), lastTime + signalStep);
+                Assertions.assertEquals(result.getTimestamps().get(result.getTimestamps().size() - 1), lastTime + signalStep);
             }
-            lastTime = result.getTimestamp().get(result.getTimestamp().size() - 1);
+            lastTime = result.getTimestamps().get(result.getTimestamps().size() - 1);
         }
         // Since the total number of steps is 10, the last time stamp should be 18.0
         Assertions.assertEquals(this.signalStep * 9, lastTime);
