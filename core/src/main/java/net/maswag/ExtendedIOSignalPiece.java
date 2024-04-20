@@ -19,8 +19,21 @@ public class ExtendedIOSignalPiece<I> extends IOSignalPiece<I> {
      */
     protected List<I> previousOutputSignals;
 
+    /**
+     * Constructor for the signal pieces.
+     *
+     * @param inputSignal the current step of the input signal
+     * @param outputSignal the current step of the output signal
+     * @param previousOutputSignals the output signals between the previous step and the current step
+     *                              excluding the previous step and including the current step
+     * @throws IllegalArgumentException if the current output signal is not the last element of previousOutputSignals
+     */
     public ExtendedIOSignalPiece(I inputSignal, I outputSignal, List<I> previousOutputSignals) {
         super(inputSignal, outputSignal);
+        // The following equality must be based on the elements, not the references.
+        if (!outputSignal.equals(previousOutputSignals.get(previousOutputSignals.size() - 1))) {
+            throw new IllegalArgumentException("The current output signal must be the last element of previousOutputSignals");
+        }
         this.previousOutputSignals = previousOutputSignals;
     }
 
@@ -34,6 +47,6 @@ public class ExtendedIOSignalPiece<I> extends IOSignalPiece<I> {
      */
     public ExtendedIOSignalPiece(I inputStep, ValueWithTime<I> outputSignal, Double from, Double to) {
         super(inputStep, outputSignal.at(to));
-        this.previousOutputSignals = outputSignal.range(from, to);
+        this.previousOutputSignals = outputSignal.range(from, to).getValues();
     }
 }

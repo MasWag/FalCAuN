@@ -28,8 +28,14 @@ public class ExtendedSignalMapper implements SignalMapper {
         this.sigMap = Collections.emptyList();
     }
 
+    /**
+     * @throws IllegalArgumentException if the given signal is not an instance of ExtendedIOSignalPiece
+     */
     //@ requires 0 <= index < size()
     public double apply(int index, IOSignalPiece<List<Double>> concreteSignal) {
+        if (!(concreteSignal instanceof ExtendedIOSignalPiece)) {
+            throw new IllegalArgumentException("The given signal is not an instance of ExtendedIOSignalPiece");
+        }
         return this.sigMap.get(index).apply((ExtendedIOSignalPiece<List<Double>>) concreteSignal);
     }
 
@@ -44,8 +50,12 @@ public class ExtendedSignalMapper implements SignalMapper {
     }
 
     public static ExtendedSignalMapper parse(BufferedReader reader) {
+        return ExtendedSignalMapper.parse(reader.lines().collect(Collectors.toList()));
+    }
+
+    public static ExtendedSignalMapper parse(List<String> mapperDefinitions) {
         List<Function<ExtendedIOSignalPiece<List<Double>>, Double>> rawList =
-                reader.lines().map(ExtendedSignalMapper::lineParse).collect(Collectors.toList());
+                mapperDefinitions.stream().map(ExtendedSignalMapper::lineParse).collect(Collectors.toList());
 
         return new ExtendedSignalMapper(rawList);
     }

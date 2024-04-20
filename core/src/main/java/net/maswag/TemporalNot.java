@@ -3,7 +3,6 @@ package net.maswag;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>STLTemporalNot class.</p>

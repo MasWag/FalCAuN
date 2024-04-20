@@ -105,7 +105,7 @@ class STLCostTest {
             builder.append(new ArrayList<>(Arrays.asList(82.83787200700355, 3062.240095871121, 4.0)));
             builder.append(new ArrayList<>(Arrays.asList(85.75230478701785, 3117.4431309247016, 4.0)));
             builder.append(new ArrayList<>(Arrays.asList(88.39317330844652, 3165.812526140048, 4.0)));
-            input = new IOSignal(builder.toWord(), builder.toWord());
+            input = new IODiscreteSignal(builder.toWord(), builder.toWord());
             assert input.size() == 15;
         }
 
@@ -151,7 +151,7 @@ class STLCostTest {
             builder.append(new ArrayList<>(Arrays.asList(85.75230478701785, 3117.4431309247016, 4.0)));
             builder.append(new ArrayList<>(Arrays.asList(88.39317330844652, 3165.812526140048, 4.0)));
             builder.append(new ArrayList<>(Arrays.asList(88.39317330844652, 3165.812526140048, 4.0)));
-            input = new IOSignal(builder.toWord(), builder.toWord());
+            input = new IODiscreteSignal(builder.toWord(), builder.toWord());
             assert input.size() == 16;
         }
 
@@ -223,7 +223,7 @@ class STLCostTest {
             builder.append(new ArrayList<>(Arrays.asList(-70.00499399229089, -58.495021874998656, -43.38252812500288, -31.858421875002815, -22.020599999999433)));
             Word<List<Double>> inputWord = builder.toWord();
             inputWord.stream().forEach(line -> line.add(line.get(4) - line.get(3)));
-            input = new IOSignal<>(inputWord, inputWord);
+            input = new IODiscreteSignal<>(inputWord, inputWord);
             assert Objects.requireNonNull(input.getOutputSymbol(0)).size() == 6;
         }
 

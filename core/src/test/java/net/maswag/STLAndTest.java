@@ -24,7 +24,7 @@ public class STLAndTest {
     public void andIsMin(@InRange(min = "0.0", max = "200.0") double value) {
         Word<List<Double>> outputSignal = Word.fromLetter(Collections.singletonList(value));
         Word<List<Double>> inputSignal = Word.fromLetter(Collections.emptyList());
-        IOSignal signal = new IOSignal(inputSignal, outputSignal);
+        IOSignal signal = new IODiscreteSignal(inputSignal, outputSignal);
         double result = formula.apply(signal);
         assertEquals(min(value - 20.0, 100.0 - value), result);
     }

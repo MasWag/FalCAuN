@@ -8,6 +8,7 @@
  *   Masaki Waga
  *  HISTORY
  *    - 2024/04/09: initial version
+ *    - 2024/04/20: Use ExtendedSignalMapper
  *  COPYRIGHT
  *   Copyright (c) 2024 Masaki Waga
  *   Released under the MIT license
@@ -38,14 +39,11 @@ import java.io.StringReader
 // Define the input and output mappers
 val lriValues = listOf(50.0, 90.0)
 val inputMapper = InputMapperReader.make(listOf(lriValues))
-val periodValues = listOf(null)
-val lrlValues = listOf(null)
+val ignoreValue = listOf(null)
 val paceCountValues = listOf(8.0, 15.0, null)
-val outputMapperReader = OutputMapperReader(listOf(periodValues, lrlValues, paceCountValues, paceCountValues, paceCountValues))
+val outputMapperReader = OutputMapperReader(listOf(ignoreValue, ignoreValue, paceCountValues, paceCountValues, ignoreValue))
 outputMapperReader.parse()
-val mapperString = """previous_max_output(2)
-previous_min_output(2)
-"""
+val mapperString = listOf("previous_max_output(2)", "previous_min_output(2)").joinToString("\n")
 val signalMapper: ExtendedSignalMapper = ExtendedSignalMapper.parse(BufferedReader(StringReader(mapperString)))
 assert(signalMapper.size() == 2)
 val mapper =
@@ -56,14 +54,19 @@ val period = "signal(0)"
 val LRL = "signal(1)"
 val paceCount = "signal(2)"
 // Pseudo signals representing the maximum and minimum values between sampling points
+// These signals exclude the begin time and include the end time
 val prevMaxPaceCount = "output(3)"
-val prevMinPaceCount = "output(4)"
+val prevMinPaceCount = "output(4)" // We do not use the minimum values show as an example
 
 // Define the STL properties
 val stlFactory = STLFactory()
+// Signal must be long enough
+val stlSignalLength = "alw_[5,5] $LRL > 0"
+val stlGPaceCountLt15 = "($paceCount < 15 && alw_[0,5] $prevMaxPaceCount < 15)"
+val stlFPaceCountGt8 = "($paceCount > 8 || ev_[0,5] $prevMaxPaceCount > 8)"
 val stlList = listOf(
     stlFactory.parse(
-        "(alw_[5,5] $LRL > 0) -> ((alw_[0,5] ($paceCount < 15 && $prevMinPaceCount < 15)) && (ev_[0,5] ($paceCount > 8 && $prevMaxPaceCount > 8)))",
+        "($stlSignalLength) -> ($stlGPaceCountLt15 && $stlFPaceCountGt8)",
         inputMapper,
         outputMapperReader.outputMapper,
         outputMapperReader.largest
@@ -113,9 +116,8 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { pa
     if (result) {
         println("The property is likely satisfied")
     } else {
-        println("The property is falsified")
         for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified by the following counterexample)")
+            println("${verifier.cexProperty[i]} is falsified by the following counterexample")
             println("cex concrete input: ${verifier.cexConcreteInput[i]}")
             println("cex abstract input: ${verifier.cexAbstractInput[i]}")
             println("cex output: ${verifier.cexOutput[i]}")

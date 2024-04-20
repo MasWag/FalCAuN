@@ -103,10 +103,9 @@ public class SimulinkRandomTester {
                     abstractInput.stream().map(mapper::mapInput).collect(Collectors.toList()));
 
             try {
-                Word<List<Double>> concreteOutput = this.rawSimulink.execute(concreteInput);
-                IOSignal<List<Double>> concreteSignal = new IOSignal<>(concreteInput, concreteOutput);
+                IOSignal<List<Double>> concreteSignal = this.rawSimulink.execute(concreteInput);
                 LOGGER.debug("Abstract input: " + abstractInput);
-                LOGGER.debug("Concrete output: " + concreteOutput);
+                LOGGER.debug("Concrete output: " + concreteSignal.getOutputSignal());
                 Iterator<Integer> it = unfalsifiedIndex.iterator();
                 while (it.hasNext()) {
                     int i = it.next();
@@ -114,7 +113,7 @@ public class SimulinkRandomTester {
                     if (costFunc.get(i).apply(concreteSignal) < 0) {
                         LOGGER.info("Property_violated: " + properties.get(i));
                         LOGGER.info("Counter example for property: " + abstractInput);
-                        LOGGER.info("Concrete output: " + concreteOutput);
+                        LOGGER.info("Concrete output: " + concreteSignal.getOutputSignal());
                         LOGGER.info("Robustness: " + costFunc.get(i).apply(concreteSignal));
 
                         cexInput.add(abstractInput);

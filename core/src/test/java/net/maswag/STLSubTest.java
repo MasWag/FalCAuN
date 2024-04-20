@@ -17,7 +17,7 @@ class STLSubTest {
 
     @BeforeEach
     void setUp() {
-        signal = new IOSignal<>(Word.epsilon(), Word.epsilon());
+        signal = new IODiscreteSignal<>(Word.epsilon(), Word.epsilon());
     }
 
     @Test

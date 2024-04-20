@@ -58,28 +58,27 @@ class NumericMembershipOracleCost extends NumericMembershipOracle implements Eva
             final Word<List<Double>> concreteInput = Word.fromList(
                     abstractInput.stream().map(mapper::mapInput).collect(Collectors.toList()));
 
-            final Word<List<Double>> concreteOutput;
+            final IOSignal<List<Double>> concreteSignal;
             try {
-                concreteOutput = sul.execute(concreteInput);
+                concreteSignal = sul.execute(concreteInput);
             } catch (Exception e) {
                 LOGGER.error(e.getMessage());
                 return null;
             }
-            assert concreteOutput.size() == concreteInput.size();
-            IOSignal<List<Double>> concreteSignal = new IOSignal<>(concreteInput, concreteOutput);
+            assert concreteSignal.size() == concreteInput.size();
             List<Double> robustness = concreteSignal.prefixes(false).stream()
-                    .map(word -> new IOSignal<>(word.getInputSignal(),
+                    .map(word -> new IODiscreteSignal<>(word.getInputSignal(),
                             Word.fromList(word.stream().map(mapper::mapConcrete).collect(Collectors.toList()))))
                     .map(costFunc).collect(Collectors.toList())
                     .subList(1, concreteInput.length() + 1); // remove the additional element by prefixes
-            assert concreteOutput.size() == abstractInput.size();
+            assert concreteSignal.size() == abstractInput.size();
             assert robustness.size() == abstractInput.size();
             costBuilder.append(robustness);
 
             abstractOutputBuilder.append(
                     concreteSignal.stream().map(mapper::mapOutput).collect(Collectors.toList()));
 
-            assert concreteOutput.size() == abstractOutputBuilder.size();
+            assert concreteSignal.size() == abstractOutputBuilder.size();
 
             cache.insert(abstractInput, abstractOutputBuilder.toWord());
             costCache.insert(abstractInput, costBuilder.toWord());
@@ -95,7 +94,7 @@ class NumericMembershipOracleCost extends NumericMembershipOracle implements Eva
             assert (Objects.equals(tmpCostBuilder.toWord(), costBuilder.toWord()));
             if (Objects.requireNonNull(costBuilder.toWord().lastSymbol()).isInfinite()) {
                 LOGGER.warn("Infinite robustness is detected. {} {}", costBuilder.toWord().lastSymbol(), abstractInput);
-                LOGGER.warn("Raw Output: {}", concreteOutput);
+                LOGGER.warn("Raw Output: {}", concreteSignal);
             }
         }
 
@@ -107,7 +106,7 @@ class NumericMembershipOracleCost extends NumericMembershipOracle implements Eva
     private void cacheInsert(Word<String> abstractInput, IOSignal<List<Double>> concreteSignal, Word<String> abstractOutput) {
         super.cacheInsert(abstractInput, abstractOutput);
         Word<Double> robustness = Word.fromList(concreteSignal.prefixes(false).stream()
-                .map(word -> new IOSignal<>(word.getInputSignal(),
+                .map(word -> new IODiscreteSignal<>(word.getInputSignal(),
                         Word.fromList(word.stream().map(mapper::mapConcrete).collect(Collectors.toList()))))
                 .map(costFunc).collect(Collectors.toList())
                 .subList(1, abstractInput.length() + 1)); // remove the additional element by prefixes

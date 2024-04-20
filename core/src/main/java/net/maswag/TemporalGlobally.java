@@ -1,12 +1,7 @@
 package net.maswag;
 
-import net.automatalib.word.Word;
-
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-
-import net.maswag.TemporalLogic.*;
 
 /**
  * <p>STLGlobal class.</p>

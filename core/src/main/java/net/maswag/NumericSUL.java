@@ -15,7 +15,7 @@ public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>
     /**
      * Execute the SUL by feeding the entire input
     */
-    Word<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException;
+    IOSignal<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException;
 
     /**
      * Returns the number of SUL executions

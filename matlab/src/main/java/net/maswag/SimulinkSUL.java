@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
  */
-public class SimulinkSUL implements NumericSUL {
+public class SimulinkSUL implements ContinuousNumericSUL {
     /**
      * The simulation step of Simulink.
      * <p>
@@ -69,7 +69,7 @@ public class SimulinkSUL implements NumericSUL {
      */
     @Nullable
     @Override
-    public IOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) throws SULException {
+    public ExtendedIOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) throws SULException {
         if (inputSignal == null) {
             return null;
         }
@@ -88,7 +88,7 @@ public class SimulinkSUL implements NumericSUL {
      * @return The output signal. The size is same as the input.
      */
     @Override
-    public Word<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
+    public IOContinuousSignal<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
         ValueWithTime<List<Double>> values = model.execute(inputSignal);
 
         WordBuilder<List<Double>> builder = new WordBuilder<>();
@@ -96,7 +96,8 @@ public class SimulinkSUL implements NumericSUL {
             builder.add(values.at(i * model.getSignalStep()));
         }
 
-        return builder.toWord();
+        return new IOContinuousSignal<>(inputSignal, builder.toWord(),
+                values, model.getSignalStep());
     }
 
     /**

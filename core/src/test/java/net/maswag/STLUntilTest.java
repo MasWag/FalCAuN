@@ -28,7 +28,7 @@ class STLUntilTest {
             inputBuilder.append(Collections.singletonList((random.nextDouble() - 0.5) * 2000));
             outputBuilder.append(Collections.singletonList((random.nextDouble() - 0.5) * 2000));
         }
-        signal = new IOSignal(inputBuilder.toWord(), outputBuilder.toWord());
+        signal = new IODiscreteSignal(inputBuilder.toWord(), outputBuilder.toWord());
         assert signal.size() == size;
     }
 

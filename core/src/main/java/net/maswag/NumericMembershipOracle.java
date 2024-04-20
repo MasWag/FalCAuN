@@ -52,7 +52,7 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
                 assert concreteInput.size() == q.getInput().size();
 
                 // TODO: Fix here to handle ExtendedSignals
-                final Word<List<Double>> concreteOutput;
+                final IOSignal<List<Double>> concreteOutput;
                 try {
                     concreteOutput = sul.execute(concreteInput);
                 } catch (Exception e) {
@@ -61,8 +61,7 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
                     return;
                 }
                 assert concreteOutput.size() == concreteInput.size();
-                abstractOutputBuilder.append(
-                        new IOSignal<>(concreteInput, concreteOutput).stream().map(mapper::mapOutput).collect(Collectors.toList()));
+                abstractOutputBuilder.append(concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList()));
 
                 assert concreteOutput.size() == abstractOutputBuilder.toWord().size();
                 cache.insert(abstractInput, abstractOutputBuilder.toWord());

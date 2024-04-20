@@ -137,7 +137,7 @@ class SimulinkSULTest {
             final int length = 15;
             Word<List<Double>> input = Word.fromList(Collections.nCopies(length, Arrays.asList(100.0, 0.0)));
             assertEquals(length, input.size());
-            Word<List<Double>> output = sul.execute(input);
+            Word<List<Double>> output = sul.execute(input).getOutputSignal();
             assertNotNull(output);
             assertEquals(length, output.size());
         }
@@ -225,7 +225,7 @@ class SimulinkSULTest {
             final int length = 15;
             Word<List<Double>> input = Word.fromList(Collections.nCopies(length, Arrays.asList(100.0, 0.0)));
             assertEquals(length, input.size());
-            Word<List<Double>> output = sul.execute(input);
+            Word<List<Double>> output = sul.execute(input).getOutputSignal();
             assertNotNull(output);
             assertEquals(length, output.size());
         }
