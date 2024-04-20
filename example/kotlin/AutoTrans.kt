@@ -20,5 +20,5 @@ load_system(mdl);
 % Bardh Hoxha, Houssam Abbas, Georgios E. Fainekos
 """
 val paramNames = listOf("throttle", "brake")
-val signalStep = 1.0
+var signalStep = 1.0
 val simulinkSimulationStep = 0.0025

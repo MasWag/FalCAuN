@@ -80,6 +80,7 @@ public class SimulinkModel {
     public void reset() {
         inputSignal = new Signal(signalStep);
         isInitial = true;
+        counter++;
     }
 
     /**
@@ -218,7 +219,6 @@ public class SimulinkModel {
         // We handle the output as double.
         builder.append("y = double(simOut.get('yout'));");
         builder.append("t = double(simOut.get('tout'));");
-        counter++;
     }
 
     protected double[][] getResult() throws ExecutionException, InterruptedException {

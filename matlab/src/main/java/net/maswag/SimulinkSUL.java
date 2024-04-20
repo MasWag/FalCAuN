@@ -3,7 +3,6 @@ package net.maswag;
 import com.mathworks.engine.EngineException;
 import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
-import lombok.Getter;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 
@@ -22,9 +21,6 @@ public class SimulinkSUL implements ContinuousNumericSUL {
      */
     private final SimulinkModel model;
 
-    // The total number of executions
-    @Getter
-    private int counter = 0;
     /**
      * Setter of simulinkSimulationStep
      *
@@ -53,7 +49,6 @@ public class SimulinkSUL implements ContinuousNumericSUL {
     @Override
     public void pre() {
         model.reset();
-        counter += 1;
     }
 
     /**
@@ -123,8 +118,18 @@ public class SimulinkSUL implements ContinuousNumericSUL {
         this.model.close();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSimulationTimeSecond() {
         return this.model.getSimulationTimeSecond();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getCounter() {
+        return this.model.getCounter();
+    }
 }

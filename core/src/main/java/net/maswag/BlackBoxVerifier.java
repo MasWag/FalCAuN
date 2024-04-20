@@ -1,28 +1,29 @@
 package net.maswag;
 
 import de.learnlib.acex.AcexAnalyzers;
-import de.learnlib.algorithm.ttt.mealy.TTTLearnerMealy;
-import de.learnlib.sul.SUL;
 import de.learnlib.algorithm.LearningAlgorithm;
+import de.learnlib.algorithm.ttt.mealy.TTTLearnerMealy;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.oracle.equivalence.*;
 import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
+import de.learnlib.sul.SUL;
 import de.learnlib.util.Experiment;
 import lombok.Getter;
+import net.automatalib.alphabet.Alphabet;
 import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.modelchecker.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
 import net.automatalib.serialization.dot.GraphDOT;
 import net.automatalib.serialization.etf.writer.Mealy2ETFWriterIO;
 import net.automatalib.visualization.Visualization;
-import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static net.automatalib.util.automaton.Automata.stateCover;
 
@@ -100,6 +101,38 @@ public class BlackBoxVerifier<I> {
     public void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
         addEqOracle(new MealyCompleteExplorationEQOracle<>(
                 memOracle, minDepth, maxDepth, batchSize));
+    }
+
+    /**
+     * Add a corner case equivalence oracle.
+     * <p>This oracle tries the corner case input, i.e., the inputs with the same values</p>
+     *
+     * @param length  The length of the input.
+     * @param minStep The minimum step of the corner case.
+     */
+    public void addCornerCaseEQOracle(int length, int minStep) {
+        MealyFixedSetEQOracle cornerCaseEqOracle =
+                new MealyFixedSetEQOracle(this.getProperties().list(), this.memOracle);
+        int step = length;
+        while (step >= minStep) {
+            List<Word<String>> cornerCase = new ArrayList<>();
+            int finalStep = step;
+            while (cornerCase.isEmpty() || cornerCase.get(0).size() < length) {
+                List<Word<String>> newSuffixes = inputAlphabet.stream().map(c ->
+                        Word.fromList(Collections.nCopies(finalStep, c))).collect(Collectors.toList());
+                if (cornerCase.isEmpty()) {
+                    cornerCase = newSuffixes;
+                } else {
+                    cornerCase = cornerCase.stream().flatMap(prefix ->
+                            newSuffixes.stream().map(prefix::concat)).collect(Collectors.toList());
+                }
+            }
+            // Limit the length of each corner cases and add them to the oracle
+            cornerCase.stream().map(word -> word.prefix(length)).forEach(cornerCaseEqOracle::add);
+            //cornerCaseEqOracle.addAll(cornerCase.stream().map(word -> word.prefix(length)).collect(Collectors.toList()));
+            step /= 2;
+        }
+        addEqOracle(cornerCaseEqOracle);
     }
 
     public void addEqOracle(PropertyOracle.MealyEquivalenceOracle<String, String> eqOracle) {

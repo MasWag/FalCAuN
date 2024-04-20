@@ -53,7 +53,7 @@ public class NumericSULVerifier {
         // create a regular membership oracle
         this.memOracle = new NumericMembershipOracle(rawSUL, this.mapper);
         properties.setMemOracle(memOracle);
-        verifier = new BlackBoxVerifier(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
+        verifier = new BlackBoxVerifier<>(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
     }
 
     /**
@@ -76,7 +76,7 @@ public class NumericSULVerifier {
         this.verifier.addEqOracle(eqOracle);
     }
 
-    void addWpMethodEQOracle(int maxDepth) {
+    public void addWpMethodEQOracle(int maxDepth) {
         this.verifier.addWpMethodEQOracle(maxDepth);
     }
 
@@ -94,6 +94,16 @@ public class NumericSULVerifier {
 
     void addCompleteExplorationEQOracle(int minDepth, int maxDepth, int batchSize) {
         this.verifier.addCompleteExplorationEQOracle(minDepth, maxDepth, batchSize);
+    }
+
+    /**
+     * Add a corner case equivalence oracle.
+     * <p>This oracle tries the corner case input, i.e., the inputs with the same values</p>
+     * @param length The length of the input.
+     * @param minStep The minimum step of the corner case.
+     */
+    public void addCornerCaseEQOracle(int length, int minStep) {
+        this.verifier.addCornerCaseEQOracle(length, minStep);
     }
 
     /**

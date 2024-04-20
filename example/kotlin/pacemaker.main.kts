@@ -40,7 +40,7 @@ import java.io.StringReader
 val lriValues = listOf(50.0, 90.0)
 val inputMapper = InputMapperReader.make(listOf(lriValues))
 val ignoreValue = listOf(null)
-val paceCountValues = listOf(8.0, 15.0, null)
+val paceCountValues = listOf(7.999999, 15.000001, null)
 val outputMapperReader = OutputMapperReader(listOf(ignoreValue, ignoreValue, paceCountValues, paceCountValues, ignoreValue))
 outputMapperReader.parse()
 val mapperString = listOf("previous_max_output(2)", "previous_min_output(2)").joinToString("\n")
@@ -62,8 +62,8 @@ val prevMinPaceCount = "output(4)" // We do not use the minimum values show as a
 val stlFactory = STLFactory()
 // Signal must be long enough
 val stlSignalLength = "alw_[5,5] $LRL > 0"
-val stlGPaceCountLt15 = "($paceCount < 15 && alw_[0,5] $prevMaxPaceCount < 15)"
-val stlFPaceCountGt8 = "($paceCount > 8 || ev_[0,5] $prevMaxPaceCount > 8)"
+val stlGPaceCountLt15 = "($paceCount < 15.000001 && alw_[0,5] $prevMaxPaceCount < 15.000001)"
+val stlFPaceCountGt8 = "($paceCount > 7.999999 || ev_[0,5] $prevMaxPaceCount > 7.999999)"
 val stlList = listOf(
     stlFactory.parse(
         "($stlSignalLength) -> ($stlGPaceCountLt15 && $stlFPaceCountGt8)",
@@ -91,7 +91,7 @@ val signalStep = 2.0
 val simulinkSimulationStep = 0.0025
 
 // Constants for the GA-based equivalence testing
-val maxTest = 1000
+val maxTest = 10000
 val populationSize = 50
 val crossoverProb = 0.9
 val mutationProb = 0.01
@@ -110,6 +110,7 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { pa
         crossoverProb,
         mutationProb
     )
+    //verifier.addWpMethodEQOracle(6)
     val result = verifier.run()
 
     // Print the result
