@@ -43,8 +43,12 @@ public class SimpleSignalMapper implements SignalMapper {
     }
 
     public static SignalMapper parse(BufferedReader reader) {
+        return SimpleSignalMapper.parse(reader.lines().collect(Collectors.toList()));
+    }
+
+    public static SignalMapper parse(List<String> mapperDefinitions) {
         List<Function<IOSignalPiece<List<Double>>, Double>> rawList =
-                reader.lines().map(SimpleSignalMapper::lineParse).collect(Collectors.toList());
+                mapperDefinitions.stream().map(SimpleSignalMapper::lineParse).collect(Collectors.toList());
 
         return new SimpleSignalMapper(rawList);
     }

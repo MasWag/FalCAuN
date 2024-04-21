@@ -14,6 +14,9 @@ expr
      | left=expr DIV right=expr
      | left=expr PLUS right=expr
      | left=expr MINUS right=expr
+     | left=expr MOD right=expr
+     | MIN LPAREN expr (COMMA expr)* RPAREN
+     | MAX LPAREN expr (COMMA expr)* RPAREN
      | LPAREN expr RPAREN
      | ABS expr
      ;
@@ -43,6 +46,10 @@ TIMES : '*';
 DIV: '/';
 PLUS :  '+';
 MINUS : '-';
+MOD : '%' | 'mod' | 'MOD';
+MIN : 'min' | 'MIN';
+MAX : 'max' | 'MAX';
+COMMA : ',';
 NATURAL  : [1-9][0-9]* | '0';
 FLOAT : NATURAL '.' [0-9]+;
 //([1-9][0-9]*('.'[0-9]+)?) | ('0.'[0-9]+);

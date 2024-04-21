@@ -45,16 +45,31 @@ public class ExtendedSignalMapperVisitorImpl extends net.maswag.ExtendedSignalMa
             log.trace("minus");
             assert ctx.expr().size() == 2;
             return (concreteSignal) -> visitExpr(ctx.left).apply(concreteSignal) - visitExpr(ctx.expr(1)).apply(concreteSignal);
-        } else if (ctx.LPAREN() != null) {
+        } else if (ctx.MOD() != null) {
+            // mod
+            log.trace("mod");
+            assert ctx.expr().size() == 2;
+            return (concreteSignal) -> visitExpr(ctx.left).apply(concreteSignal) % visitExpr(ctx.right).apply(concreteSignal);
+        } else if (ctx.ABS() != null) {
+            // abs
+            log.trace("abs");
+            assert ctx.expr().size() == 1;
+            return (concreteSignal) -> abs(visitExpr(ctx.expr(0)).apply(concreteSignal));
+        } else if (ctx.MIN() != null) {
+            // min
+            log.trace("min");
+            assert ctx.expr() != null;
+            return (concreteSignal) -> ctx.expr().stream().map(e -> visitExpr(e).apply(concreteSignal)).min(Double::compare).orElse(Double.POSITIVE_INFINITY);
+        } else if (ctx.MAX() != null) {
+            // max
+            log.trace("max");
+            assert ctx.expr() != null;
+            return (concreteSignal) -> ctx.expr().stream().map(e -> visitExpr(e).apply(concreteSignal)).max(Double::compare).orElse(Double.NEGATIVE_INFINITY);
+        }  else if (ctx.LPAREN() != null) {
             // Paren
             log.trace("paren");
             assert ctx.expr().size() == 1;
             return visitExpr(ctx.expr(0));
-        }else if (ctx.ABS() != null) {
-            // Paren
-            log.trace("abs");
-            assert ctx.expr().size() == 1;
-            return (concreteSignal) -> abs(visitExpr(ctx.expr(0)).apply(concreteSignal));
         }
 
         log.error("Unimplemented formula!!");
