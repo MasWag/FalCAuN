@@ -3,6 +3,7 @@ package net.maswag;
 import de.learnlib.sul.SUL;
 import net.automatalib.word.Word;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -15,7 +16,16 @@ public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>
     /**
      * Execute the SUL by feeding the entire input
     */
-    IOSignal<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException;
+    default IOSignal<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
+        List<List<Double>> outputs = new ArrayList<>();
+        this.pre();
+        for (List<Double> input : inputSignal) {
+            outputs.add(this.step(input).getOutputSignal());
+        }
+        this.post();
+        assert inputSignal.size() == outputs.size();
+        return new IODiscreteSignal<>(inputSignal, Word.fromList(outputs));
+    }
 
     /**
      * Returns the number of SUL executions
@@ -26,4 +36,12 @@ public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>
      * Returns the execution time for the simulations
      */
     double getSimulationTimeSecond();
+
+    default void pre() {
+        // do nothing
+    }
+
+    default void post() {
+        // do nothing
+    }
 }
