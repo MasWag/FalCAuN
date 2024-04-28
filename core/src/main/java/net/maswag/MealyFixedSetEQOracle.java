@@ -80,6 +80,7 @@ public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalence
             evaluateCount++;
             Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
             log.trace("Processing fixed sample: {}", sample);
+            log.trace("Query: {}", query);
             log.trace("Hypothesis output: {}", hypOutput);
             if (!Objects.equals(hypOutput, query.getOutput())) {
                 log.debug("A counterexample is found with: {}", query);
@@ -87,6 +88,7 @@ public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalence
             }
         }
 
+        log.debug("No counterexample found in the fixed set of samples.");
         return null;
     }
 }

@@ -109,7 +109,7 @@ public class BlackBoxVerifier<I> {
      * @param length  The length of the input.
      * @param minStep The minimum step of the corner case.
      */
-    public EvaluationCountable. MealyEquivalenceOracle<String, String>  addCornerCaseEQOracle(int length, int minStep) {
+    public EvaluationCountable.MealyEquivalenceOracle<String, String> addCornerCaseEQOracle(int length, int minStep) {
         MealyFixedSetEQOracle cornerCaseEqOracle =
                 new MealyFixedSetEQOracle(this.getProperties().list(), this.memOracle);
         int step = length;

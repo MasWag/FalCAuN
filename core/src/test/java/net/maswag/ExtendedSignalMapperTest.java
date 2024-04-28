@@ -36,15 +36,21 @@ class ExtendedSignalMapperTest {
 
     @Test
     void parse() throws IOException {
-        String sigMapContent = "previous_max_output(2)\n" + "previous_min_output(2)";
+        // Join with \n
+        String sigMapContent = Stream.of("previous_max_output(2)",
+                "previous_min_output(2)",
+                "previous_min(output(0) + signal(1))").reduce((a, b) -> a + "\n" + b).get();
         BufferedReader reader = new BufferedReader(new StringReader(sigMapContent));
         sigMap = ExtendedSignalMapper.parse(reader);
-        assertEquals(2, sigMap.size());
+        assertEquals(3, sigMap.size());
         assertEquals(Stream.of(3.0, 6.0, 0.4).sorted().max(Double::compareTo).get(),
                 sigMap.apply(0,
                         new ExtendedIOSignalPiece<>(Collections.emptyList(), concreteSignal, previousValues)));
         assertEquals(Stream.of(3.0, 6.0, 0.4).sorted().min(Double::compareTo).get(),
                 sigMap.apply(1,
+                        new ExtendedIOSignalPiece<>(Collections.emptyList(), concreteSignal, previousValues)));
+        assertEquals(Stream.of(1.0 + 2.0, 4.0 + 5.0, 2.0 - 4.2).sorted().min(Double::compareTo).get(),
+                sigMap.apply(2,
                         new ExtendedIOSignalPiece<>(Collections.emptyList(), concreteSignal, previousValues)));
     }
 }

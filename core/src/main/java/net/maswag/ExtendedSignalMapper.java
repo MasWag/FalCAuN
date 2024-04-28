@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @RequiredArgsConstructor
 public class ExtendedSignalMapper implements SignalMapper {
-    final private List<Function<ExtendedIOSignalPiece<List<Double>>, Double>> sigMap;
+    final private List<Function<ExtendedIOSignalPiece<List<Double>>, List<Double>>> sigMap;
 
     public ExtendedSignalMapper() {
         this.sigMap = Collections.emptyList();
@@ -36,7 +36,7 @@ public class ExtendedSignalMapper implements SignalMapper {
         if (!(concreteSignal instanceof ExtendedIOSignalPiece)) {
             throw new IllegalArgumentException("The given signal is not an instance of ExtendedIOSignalPiece");
         }
-        return this.sigMap.get(index).apply((ExtendedIOSignalPiece<List<Double>>) concreteSignal);
+        return this.sigMap.get(index).apply((ExtendedIOSignalPiece<List<Double>>) concreteSignal).get(0);
     }
 
     //@ ensures \result >= 0
@@ -54,18 +54,18 @@ public class ExtendedSignalMapper implements SignalMapper {
     }
 
     public static ExtendedSignalMapper parse(List<String> mapperDefinitions) {
-        List<Function<ExtendedIOSignalPiece<List<Double>>, Double>> rawList =
+        List<Function<ExtendedIOSignalPiece<List<Double>>, List<Double>>> rawList =
                 mapperDefinitions.stream().map(ExtendedSignalMapper::lineParse).collect(Collectors.toList());
 
         return new ExtendedSignalMapper(rawList);
     }
 
-    static Function<ExtendedIOSignalPiece<List<Double>>, Double> lineParse(String line) {
-        ExtendedSignalMapperVisitor<Function<ExtendedIOSignalPiece<List<Double>>, Double>> visitor = new ExtendedSignalMapperVisitorImpl();
+    static Function<ExtendedIOSignalPiece<List<Double>>, List<Double>> lineParse(String line) {
+        ExtendedSignalMapperVisitor<Function<ExtendedIOSignalPiece<List<Double>>, List<Double>>> visitor = new ExtendedSignalMapperVisitorImpl();
         return parseSignalMapperImpl(line, visitor);
     }
 
-    private static Function<ExtendedIOSignalPiece<List<Double>>, Double> parseSignalMapperImpl(String line, ExtendedSignalMapperVisitor<Function<ExtendedIOSignalPiece<List<Double>>, Double>> visitor) {
+    private static Function<ExtendedIOSignalPiece<List<Double>>, List<Double>> parseSignalMapperImpl(String line, ExtendedSignalMapperVisitor<Function<ExtendedIOSignalPiece<List<Double>>, List<Double>>> visitor) {
         CharStream stream = CharStreams.fromString(line);
         ExtendedSignalMapperLexer lexer = new ExtendedSignalMapperLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
