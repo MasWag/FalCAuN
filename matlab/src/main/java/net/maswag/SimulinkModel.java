@@ -182,6 +182,12 @@ public class SimulinkModel {
 
         // The save format must be an array
         builder.append("set_param(mdl, 'SaveFormat', 'Array');");
+        // We save the output as yout
+        builder.append("set_param(mdl, 'SaveOutput', 'on');");
+        builder.append("set_param(mdl, 'OutputSaveName', 'yout');");
+        // We save the time as tout
+        builder.append("set_param(mdl, 'SaveTime', 'on');");
+        builder.append("set_param(mdl, 'TimeSaveName', 'tout');");
 
         // Configuration on the decimation
         builder.append("set_param(mdl, 'SolverType', 'Fixed-step');");
