@@ -14,18 +14,6 @@ public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {
     boolean nonTemporal;
     Set<String> atomicStrings;
 
-    public String toLTLString() {
-        return this.toAbstractString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Double apply(IOSignal<I> signal) {
-        return getRoSI(signal).getRobustness();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

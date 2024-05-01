@@ -12,27 +12,47 @@ import java.util.function.Function;
  */
 public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
     /**
-     * <p>toAbstractString.</p>
+     * Returns a string representation of the formula in the format of <a href="https://ltsmin.utwente.nl/assets/man/ltsmin-ltl.html">LTSMin</a>.
      *
-     * @return a {@link String} object.
+     * @return a {@link java.lang.String} object representing the formula in the format of LTSMin.
      */
     String toAbstractString();
 
-    String toLTLString();
+    /**
+     * Returns a string representation of the formula in the format of <a href="https://ltsmin.utwente.nl/assets/man/ltsmin-ltl.html">LTSMin</a>.
+     *
+     * @return a {@link java.lang.String} object representing the formula in the format of LTSMin.
+     */
+    default String toLTLString() {
+        return this.toAbstractString();
+    }
 
     /**
-     * <p>getRoSI.</p>
+     * Evaluate the formula on the given signal and returns the RoSI, i.e., the range of the possible robustness values after concatenating a suffix.
      *
-     * @return a {@link RoSI} object.
+     * @return a {@link RoSI} object representing the range of the possible robustness values after concatenating a suffix.
      */
     RoSI getRoSI(IOSignal<I> signal);
 
-    Double apply(IOSignal<I> signal);
+    /**
+     * Evaluate the formula on the given signal and returns the robustness value.
+     */
+    default Double apply(IOSignal<I> signal) {
+        return getRoSI(signal).getRobustness();
+    }
 
+    /**
+     * TODO: I do not remember the precise specification of this method.
+     */
     Set<String> getAllAPs();
 
     void constructAtomicStrings();
 
+    /**
+     * Returns true if the formula does not contain any temporal operators.
+     *
+     * @return a boolean value indicating whether the formula contains any temporal operators.
+     */
     boolean isNonTemporal();
 
     Collection<String> getAtomicStrings();
