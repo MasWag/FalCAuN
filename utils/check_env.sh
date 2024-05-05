@@ -106,6 +106,16 @@ else
     exit 1
 fi
 
+log "Check if C/C++ compiler is configured in MATLAB"
+MATLAB_compiler_configuration="$("$MATLAB_HOME/bin/matlab" -nodisplay -nosplash -r "mex -setup; exit" 2>/dev/null | grep configured)"
+log "$MATLAB_compiler_configuration"
+if [ -n "$MATLAB_compiler_configuration" ]; then
+    log_ok "C/C++ compiler is configured in MATLAB"
+else
+    log_error "C/C++ compiler is not configured in MATLAB"
+    exit 1
+fi
+
 log "Check if the AT example is installed"
 if [ -d "$HOME/Documents/MATLAB/Examples/$MATLAB_version/simulink_automotive/ModelingAnAutomaticTransmissionControllerExample/" ] ; then
     log_ok "The AT example by Mathworks is detected"
