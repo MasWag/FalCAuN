@@ -1,5 +1,6 @@
 package net.maswag;
 
+import lombok.extern.slf4j.Slf4j;
 import net.maswag.EvaluationCountable.MealyEquivalenceOracle;
 import de.learnlib.sul.SUL;
 import de.learnlib.oracle.PropertyOracle.MealyPropertyOracle;
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import net.maswag.TemporalLogic.STLCost;
+
 import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
 
 /**
@@ -20,6 +22,7 @@ import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
+@Slf4j
 public class NumericSULVerifier {
     protected SUL<List<Double>, IOSignalPiece<List<Double>>> simulink;
     protected final NumericSUL rawSUL;
@@ -36,9 +39,10 @@ public class NumericSULVerifier {
      * @param rawSUL     The system under test.
      * @param signalStep The signal step in the simulation
      * @param properties The LTL properties to be verified
-     * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
+     * @param mapper     The I/O mapper between abstract/concrete Simulink models.
      */
     public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) {
+        log.debug("Initialize numeric SUL verifier with signalStep: {}, properties: {}", signalStep, properties);
         this.rawSUL = rawSUL;
         this.signalStep = signalStep;
         this.mapper = mapper;

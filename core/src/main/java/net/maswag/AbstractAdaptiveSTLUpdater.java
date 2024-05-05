@@ -221,4 +221,10 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
      */
     protected void notifyFalsifiedProperty(List<Integer> falsifiedIndices) {
     }
+
+    @Override
+    public String toString() {
+        // Map the list of STL properties to a list of strings and join them with a comma.
+        return "[" + this.getSTLProperties().stream().map(TemporalLogic::toString).collect(Collectors.joining(", ")) + "]";
+    }
 }

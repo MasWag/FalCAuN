@@ -77,10 +77,21 @@ public class SimulinkModel {
         this.reset();
     }
 
+    /**
+     * Reset the Simulink model to the initial state.
+     */
     public void reset() {
         inputSignal = new Signal(signalStep);
         isInitial = true;
         counter++;
+    }
+
+    /**
+     * Clear the counter and the time measure.
+     */
+    public void clear() {
+        counter = 0;
+        simulationTime.reset();
     }
 
     /**

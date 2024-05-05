@@ -132,4 +132,9 @@ public class SimulinkSUL implements ContinuousNumericSUL {
     public int getCounter() {
         return this.model.getCounter();
     }
+
+    @Override
+    public void clear() {
+        this.model.clear();
+    }
 }

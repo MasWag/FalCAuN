@@ -37,6 +37,11 @@ public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>
      */
     double getSimulationTimeSecond();
 
+    /**
+     * Clear the counter and the time measure.
+     */
+    void clear();
+
     default void pre() {
         // do nothing
     }
