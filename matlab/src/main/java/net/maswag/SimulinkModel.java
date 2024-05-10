@@ -4,6 +4,7 @@ import com.mathworks.engine.EngineException;
 import com.mathworks.engine.MatlabEngine;
 import de.learnlib.exception.SULException;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
 import org.apache.commons.lang3.ArrayUtils;
@@ -42,6 +43,8 @@ public class SimulinkModel {
     @Getter
     private int counter = 0;
     private final TimeMeasure simulationTime = new TimeMeasure();
+    @Setter
+    private InterpolationMethod interpolationMethod = InterpolationMethod.LINEAR;
 
     /**
      * Setter of simulinkSimulationStep
@@ -166,6 +169,15 @@ public class SimulinkModel {
             double[] tmp = inputSignal.dimensionGet(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
             builder.append("input").append(i).append(" = timeseries(tmp").append(i).append(", timeVector);");
+            if (this.interpolationMethod == InterpolationMethod.CONSTANT) {
+                // Set the interpolation method to zoh https://jp.mathworks.com/help/matlab/ref/timeseries.setinterpmethod.html
+                //builder.append("input").append(i).append(" = setinterpmethod(input").append(i).append(", 'zoh');");
+                builder.append("input").append(i).append(".DataInfo.Interpolation = tsdata.interpolation('zoh');");
+            } else {
+                // Set the interpolation method to linear https://jp.mathworks.com/help/matlab/ref/timeseries.setinterpmethod.html
+                //builder.append("input").append(i).append(" = setinterpmethod(input").append(i).append(", 'linear');");
+                builder.append("input").append(i).append(".DataInfo.Interpolation = tsdata.interpolation('linear');");
+            }
             builder.append("ds = ds.addElement(input").append(i).append(", '").append(paramNames.get(i)).append("');");
         }
     }
@@ -241,8 +253,17 @@ public class SimulinkModel {
     protected double[][] getResult() throws ExecutionException, InterruptedException {
         double[][] y;
         try {
+            matlab.eval("ySize = size(y);");
+            double[] ySize = matlab.getVariable("ySize");
             if (this.inputSignal.duration() == 0.0) {
-                double[] tmpY = matlab.getVariable("y");
+                double[] tmpY;
+                if (ySize[1] == 1.0) {
+                    // When the output is one dimensional, we need to convert it to 1D array first.
+                    double tmp = matlab.getVariable("y");
+                    tmpY = new double[]{tmp};
+                } else {
+                    tmpY = matlab.getVariable("y");
+                }
                 if (Objects.isNull(tmpY)) {
                     log.error("The simulation output is null");
                     y = null;
@@ -250,7 +271,13 @@ public class SimulinkModel {
                     y = new double[][]{tmpY};
                 }
             } else {
-                y = matlab.getVariable("y");
+                if (ySize[1] == 1.0) {
+                    // When the output is one dimensional, we need to convert it to 2D array.
+                    double[] tmpY = matlab.getVariable("y");
+                    y = Arrays.stream(tmpY).mapToObj(d -> new double[]{d}).toArray(double[][]::new);
+                } else {
+                    y = matlab.getVariable("y");
+                }
             }
         } catch (Exception e) {
             log.error("There was an error in the simulation: {}", e.getMessage());
@@ -340,5 +367,20 @@ public class SimulinkModel {
 
     public double getSimulationTimeSecond() {
         return this.simulationTime.getSecond();
+    }
+
+    /**
+     * Enum for the interpolation methods of the input signal
+     */
+    public enum InterpolationMethod {
+        /**
+         * Piecewise constant interpolation
+         * Note: This is not supported in the current version.
+         */
+        CONSTANT,
+        /**
+         * Piecewise linear interpolation
+         */
+        LINEAR
     }
 }
