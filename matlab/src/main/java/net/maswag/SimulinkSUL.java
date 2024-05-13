@@ -3,17 +3,20 @@ package net.maswag;
 import com.mathworks.engine.EngineException;
 import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
+import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 /**
  * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
  */
-public class SimulinkSUL implements ContinuousNumericSUL {
+@Slf4j
+public class SimulinkSUL implements ContinuousNumericSUL, Closeable {
     /**
      * The simulation step of Simulink.
      * <p>
@@ -114,8 +117,13 @@ public class SimulinkSUL implements ContinuousNumericSUL {
     /**
      * Close the MATLAB engine. This method must be called when the object is no longer used.
      */
-    public void close() throws EngineException {
-        this.model.close();
+    @Override
+    public void close() {
+        try {
+            this.model.close();
+        } catch (EngineException e) {
+            log.warn("Failed to close the MATLAB engine: {}", e.getMessage());
+        }
     }
 
     /**
