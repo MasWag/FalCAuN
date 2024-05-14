@@ -55,7 +55,7 @@ val simulinkSimulationStep = 0.0025
 val lriValues = listOf(50.0, 60.0, 70.0, 80.0, 90.0)
 val inputMapper = InputMapperReader.make(listOf(lriValues))
 val ignoreValue = listOf(null)
-val paceCountValues = listOf(7.999999, 15.000001, null)
+val paceCountValues = listOf(7.0, 16.0, null)
 val outputMapperReader = OutputMapperReader(listOf(ignoreValue, ignoreValue, paceCountValues, paceCountValues, ignoreValue))
 outputMapperReader.parse()
 val mapperString = listOf("previous_max_output(2)", "previous_min_output(2)").joinToString("\n")
@@ -77,8 +77,8 @@ val prevMinPaceCount = "output(4)" // We do not use the minimum values show as a
 val stlFactory = STLFactory()
 // Signal must be long enough
 val stlSignalLength = "alw_[${(10 / signalStep).toInt()},${(10 / signalStep).toInt()}] $LRL > 0"
-val stlGPaceCountLt15 = "($paceCount < 15.000001 && alw_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount < 15.000001)"
-val stlFPaceCountGt8 = "($paceCount > 7.999999 || ev_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount > 7.999999)"
+val stlGPaceCountLt15 = "($paceCount < 16.0 && alw_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount < 16.0)"
+val stlFPaceCountGt8 = "($paceCount > 7.0 || ev_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount > 7.0)"
 val stlList = listOf(
     stlFactory.parse(
         "(!($stlSignalLength)) || ($stlGPaceCountLt15 && $stlFPaceCountGt8)",
