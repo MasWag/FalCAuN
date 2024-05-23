@@ -11,6 +11,7 @@ import java.util.function.Function;
  * <p>Interface of a TemporalLogic formula.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
  */
 public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
     /**

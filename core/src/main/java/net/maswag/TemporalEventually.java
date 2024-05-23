@@ -8,6 +8,7 @@ import java.util.List;
  * <p>STLEventually class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
  */
 public class TemporalEventually<I> extends TemporalOp<I> {
     TemporalEventually(TemporalLogic<I> subFml) {

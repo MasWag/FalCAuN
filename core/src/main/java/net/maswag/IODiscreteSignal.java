@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 /**
  * A discrete-time signal with both input and output values.
+ *
+ * @param <I> the type of the input and output signals
  */
 public class IODiscreteSignal<I> extends AbstractIOSignal<I> {
     public IODiscreteSignal(Word<I> inputSignal, Word<I> outputSignal) {

@@ -9,6 +9,7 @@ import java.util.Set;
  * <p>STLImply class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
  */
 public class TemporalImply<I> extends AbstractTemporalLogic<I> {
     private final TemporalLogic<I> subFml1;

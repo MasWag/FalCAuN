@@ -9,6 +9,7 @@ import de.learnlib.oracle.equivalence.MealyBFInclusionOracle;
 import de.learnlib.oracle.property.LoggingPropertyOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import de.learnlib.query.DefaultQuery;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automaton.transducer.MealyMachine;
@@ -28,6 +29,7 @@ import java.util.stream.Stream;
  * Abstract class for potentially adaptive set of STL formulas
  *
  * @author Masaki Waga
+ * @param <I> Type of the input at each step
  * @see BlackBoxVerifier
  * @see NumericSULVerifier
  */
@@ -41,6 +43,7 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
     protected MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     @Setter
     protected Alphabet<String> inputAlphabet;
+    @Getter
     private final List<TemporalLogic<I>> STLProperties = new ArrayList<>();
     private final List<PropertyOracle.MealyPropertyOracle<String, String, String>> propertyOracles = new ArrayList<>();
     boolean initialized = false;
@@ -50,21 +53,6 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
     public AbstractAdaptiveSTLUpdater() {
         // Create model checker
         modelChecker = new LTSminMonitorIOBuilder<String, String>().withString2Input(EDGE_PARSER).withString2Output(EDGE_PARSER).create();
-    }
-
-    @Override
-    final public List<TemporalLogic<I>> getSTLProperties() {
-        return STLProperties;
-    }
-
-    @Override
-    public List<String> getLTLProperties() {
-        return this.getSTLProperties().stream().map(TemporalLogic::toLTLString).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<PropertyOracle.MealyPropertyOracle<String, String, String>> list() {
-        return this.stream().collect(Collectors.toList());
     }
 
     //@ requires inclusionOracle != null && emptinessOracle != null
@@ -117,11 +105,6 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
 
     protected void removeSTLProperties(Collection<Integer> indices) {
         indices.stream().sorted(Comparator.reverseOrder()).forEach(this::removeSTLProperty);
-    }
-
-    @Override
-    public int size() {
-        return this.getSTLProperties().size();
     }
 
     /**

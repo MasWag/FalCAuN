@@ -10,6 +10,7 @@ import java.util.Set;
  * <p>STLUntil class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
  */
 @Getter
 public class TemporalUntil<I> extends AbstractTemporalLogic<I> {

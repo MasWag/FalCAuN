@@ -9,6 +9,7 @@ import java.util.function.Function;
  * Adaptive updater of STL/LTL formulas
  *
  * @author Junya Shijubo
+ * @param <I> Type of the input at each step
  * @see BlackBoxVerifier
  * @see NumericSULVerifier
  */

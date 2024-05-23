@@ -7,6 +7,7 @@ import java.util.Objects;
  * <p>STLGlobal class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
  */
 public class TemporalGlobally<I> extends TemporalOp<I> {
     TemporalGlobally(TemporalLogic<I> subFml) {

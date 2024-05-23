@@ -28,9 +28,10 @@ import java.util.stream.Collectors;
 import static net.automatalib.util.automaton.Automata.stateCover;
 
 /**
- * Verifier of a black-box system
+ * Verifier of a black-box system with respect to the given properties.
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step.
  */
 public class BlackBoxVerifier<I> {
     private static final Function<String, String> EDGE_PARSER = s -> s;

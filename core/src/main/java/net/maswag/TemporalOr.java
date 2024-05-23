@@ -6,9 +6,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * <p>STLOr class.</p>
+ * <p>The class representing the OR operator of temporal logic.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
  */
 @Getter
 public class TemporalOr<I> extends AbstractTemporalLogic<I> {

@@ -23,6 +23,8 @@ import java.util.stream.Stream;
  *
  * @param <I> Input symbol
  * @param <O> Output symbol
+ * @param <C>
+ *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j

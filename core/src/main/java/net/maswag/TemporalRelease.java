@@ -10,6 +10,7 @@ import java.util.Set;
  * <p>STLRelease class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
  */
 @Getter
 public class TemporalRelease<I> extends AbstractTemporalLogic<I> {

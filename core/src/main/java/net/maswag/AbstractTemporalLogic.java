@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
  * <p>Abstract TemporalLogic class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
  */
 @Getter
 public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {

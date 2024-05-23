@@ -5,6 +5,12 @@ import lombok.Getter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * <p>The class representing the AND operator of temporal logic.</p>
+ *
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @param <I> Type of the input at each step
+ */
 @Getter
 class TemporalAnd<I> extends AbstractTemporalLogic<I> {
     private final List<TemporalLogic<I>> subFormulas;

@@ -8,6 +8,11 @@ import org.apache.commons.math3.util.Pair;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * A signal with continuous output values.
+ *
+ * @param <I> the type of the input and output signals
+ */
 @Getter
 public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
     ValueWithTime<I> continuousOutputSignal;

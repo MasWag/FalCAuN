@@ -6,6 +6,7 @@ import java.util.*;
  * List of STL/LTL formulas without update
  *
  * @author Masaki Waga
+ * @param <I> Type of the input at each step.
  * @see BlackBoxVerifier
  * @see NumericSULVerifier
  */
