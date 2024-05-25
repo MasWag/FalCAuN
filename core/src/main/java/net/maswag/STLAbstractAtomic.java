@@ -1,12 +1,16 @@
 package net.maswag;
 
+import com.google.common.collect.Sets;
 import net.automatalib.word.Word;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
+
 import net.maswag.TemporalLogic.STLCost;
+
+import javax.annotation.Nonnull;
 
 /**
  * <p>STLAtomic class.</p>
@@ -40,7 +44,7 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
                 APList.add(constructAllAPs(abstractValues, largest, i));
             }
 
-            this.allAPs = constructProductAPs(APList);
+            this.allAPs = cartesianProductCharacters(APList);
         }
         return allAPs;
     }
@@ -119,7 +123,7 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
             }
         }
 
-        this.atomicStrings = constructProductAPs(APList);
+        this.atomicStrings = cartesianProductCharacters(APList);
     }
 
     @Override
@@ -138,7 +142,7 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         constructAtomicStrings();
 
         return this.atomicStrings.stream().map(
-                s -> String.format("( %s == \"" + s + "\" )", getSignalName()))
+                        s -> String.format("( %s == \"" + s + "\" )", getSignalName()))
                 .collect(Collectors.joining(" || "));
     }
 
@@ -192,22 +196,20 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         return resultAPs;
     }
 
-    protected Set<String> constructProductAPs(List<Set<Character>> APList) {
-        Set<String> APs = null;
-        for (Set<Character> currentAPs : APList) {
-            Set<String> newAPs = new HashSet<>();
-            if (APs != null) {
-                for (String previousAP : APs) {
-                    for (Character currentAP : currentAPs) {
-                        newAPs.add(previousAP + currentAP);
-                    }
-                }
-            } else {
-                newAPs.addAll(currentAPs.stream().map(String::valueOf).collect(Collectors.toList()));
-            }
-            APs = newAPs;
+    /**
+     * Take the cartesian product of a list of sets of characters and return a set of strings by concatenating the characters.
+     * <p>For example, if the input is [[a, b], [c, d]], the output will be {ac, ad, bc, bd}.</p>
+     *
+     * @param charList a list of sets of characters
+     * @return a set of concatenated character combinations
+     */
+    static public @Nonnull Set<String> cartesianProductCharacters(@Nonnull List<Set<Character>> charList) {
+        if (charList.isEmpty()) {
+            return Collections.emptySet();
         }
-        return APs;
+        return Sets.cartesianProduct(charList).stream()
+                .map(l -> l.stream().map(String::valueOf).collect(Collectors.joining()))
+                .collect(Collectors.toSet());
     }
 
     public enum Operation {
