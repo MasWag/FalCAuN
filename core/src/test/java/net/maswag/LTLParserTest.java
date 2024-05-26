@@ -78,4 +78,88 @@ class LTLParserTest {
             assertEquals(expectedList.get(i).toString(), result.toString());
         }
     }
+
+    @Test
+    void toStringTest() {
+        List<String> inputs = Arrays.asList(
+                "input == a ",
+                "output == p ",
+                "input == a  || output == p ",
+                "input == a  || input == a ",
+                "( input == a  ) -> ( output == p  )",
+                "input == a  && output == p ",
+                "X ( input == a  )",
+                "[] ( output == p  )",
+                "<> ( input == a  )",
+                " []_[0, 2] ( output == p  )",
+                " <>_[10, 20] ( input == a  )",
+                "input == a  U output == p ", // Until
+                "input == a  R output == p " // Release
+        );
+        LTLAtomic left = new LTLAtomic(Optional.of("a"), Optional.empty());
+        LTLAtomic right = new LTLAtomic(Optional.empty(), Optional.of("p"));
+        List<LTLFormula> expectedList = Arrays.asList(
+                left, right,
+                new LTLOr(left, right),
+                new LTLOr(left, left),
+                new LTLImply(left, right),
+                new LTLAnd(left, right),
+                new LTLNext(left, true),
+                new LTLGlobally(right),
+                new LTLEventually(left),
+                new LTLSub(new LTLGlobally(right), 0, 2),
+                new LTLSub(new LTLEventually(left), 10, 20),
+                new LTLUntil(left, right),
+                new LTLRelease(left, right)
+        );
+
+        assert inputs.size() == expectedList.size();
+
+        for (String input : inputs) {
+            LTLFormula result = factory.parse(input);
+            assertEquals(input, result.toString().replaceAll("\"", ""));
+        }
+    }
+
+    @Test
+    void toAbstractStringTest() {
+        List<String> inputs = Arrays.asList(
+                "input == a ",
+                "output == p ",
+                "( input == a  ) || ( output == p  )",
+                "input == a ",
+                "( input == a  ) -> ( output == p  )",
+                "( input == a  ) && ( output == p  )",
+                "X ( input == a  )",
+                "[] ( output == p  )",
+                "<> ( input == a  )",
+                //" []_[0, 2] ( output == p  )",
+                //" <>_[1, 3] ( input == a  )",
+                "( input == a  ) U ( output == p  )", // Until
+                "( input == a  ) R ( output == p  )" // Release
+        );
+        LTLAtomic left = new LTLAtomic(Optional.of("a"), Optional.empty());
+        LTLAtomic right = new LTLAtomic(Optional.empty(), Optional.of("p"));
+        List<LTLFormula> expectedList = Arrays.asList(
+                left, right,
+                new LTLOr(left, right),
+                new LTLOr(left, left),
+                new LTLImply(left, right),
+                new LTLAnd(left, right),
+                new LTLNext(left, true),
+                new LTLGlobally(right),
+                new LTLEventually(left),
+                //new LTLSub(new LTLGlobally(right), 0, 2),
+                //new LTLSub(new LTLEventually(left), 10, 20),
+                new LTLUntil(left, right),
+                new LTLRelease(left, right)
+        );
+
+        assert inputs.size() == expectedList.size();
+
+        for (String input : inputs) {
+            LTLFormula result = factory.parse(input);
+            assertEquals(input, result.toAbstractString().replaceAll("\"", ""));
+        }
+    }
 }
