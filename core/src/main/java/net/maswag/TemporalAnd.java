@@ -12,11 +12,15 @@ class TemporalAnd<I> extends AbstractTemporalLogic<I> {
     TemporalAnd(TemporalLogic<I> subFml1, TemporalLogic<I> subFml2) {
         this.subFormulas = Arrays.asList(subFml1, subFml2);
         this.nonTemporal = subFml1.isNonTemporal() && subFml2.isNonTemporal();
+        this.iOType = subFml1.getIOType().merge(subFml2.getIOType());
+        this.initialized = subFml1.isInitialized() && subFml2.isInitialized();
     }
 
     TemporalAnd(List<TemporalLogic<I>> subFormulas) {
         this.subFormulas = subFormulas;
         this.nonTemporal = subFormulas.stream().map(TemporalLogic::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
+        this.iOType = subFormulas.stream().map(TemporalLogic::getIOType).reduce(TemporalLogic.IOType::merge).orElse(null);
+        this.initialized = subFormulas.stream().map(TemporalLogic::isInitialized).reduce((a, b) -> a && b).orElse(false);
     }
 
     /**
@@ -40,14 +44,15 @@ class TemporalAnd<I> extends AbstractTemporalLogic<I> {
      * {@inheritDoc}
      */
     @Override
-    public void constructAtomicStrings() {
+    public void constructSatisfyingAtomicPropositions() {
         if (this.nonTemporal) {
-            this.atomicStrings = new HashSet<>(getAllAPs());
+            this.satisfyingAtomicPropositions = new HashSet<>(getAllAPs());
             for (TemporalLogic<I> subFml : subFormulas) {
-                this.atomicStrings.retainAll(subFml.getAtomicStrings());
+                this.satisfyingAtomicPropositions.retainAll(
+                        Objects.requireNonNull(subFml.getSatisfyingAtomicPropositions()));
             }
         } else {
-            this.atomicStrings = null;
+            this.satisfyingAtomicPropositions = null;
         }
     }
 
@@ -60,12 +65,10 @@ class TemporalAnd<I> extends AbstractTemporalLogic<I> {
     /** {@inheritDoc} */
     @Override
     public String toAbstractString() {
-        if (nonTemporal) {
-            constructAtomicStrings();
-            return this.atomicStrings.stream().map(
-                    s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
+        if (nonTemporal && this.iOType != IOType.BOTH) {
+            return makeAbstractStringWithAtomicStrings();
         } else {
-            return this.subFormulas.stream().map(TemporalLogic<I>::toAbstractString).map(
+            return this.subFormulas.stream().map(TemporalLogic::toAbstractString).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" && "));
         }
     }

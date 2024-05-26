@@ -23,8 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 import static net.maswag.STLAbstractAtomic.Operation.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class STLParserTest {
 
@@ -119,7 +118,8 @@ class STLParserTest {
             STLFactory factory = new STLFactory();
             for (int i = 0; i < inputs.size(); i++) {
                 STLCost result = factory.parse(inputs.get(i));
-                assertThrows(NullPointerException.class, result::toAbstractString);
+                assertFalse(result.isInitialized());
+                assertThrows(IllegalStateException.class, result::toAbstractString);
                 assertEquals(expectedList.get(i).toString(), result.toString());
             }
         }
@@ -144,6 +144,7 @@ class STLParserTest {
 
             for (int i = 0; i < inputs.size(); i++) {
                 STLCost result = factory.parse(inputs.get(i), inputMapper, outputMapper, largest);
+                assertTrue(result.isInitialized());
                 Assertions.assertThat(result.toAbstractString()).contains("output == ");
                 assertEquals(expectedList.get(i).toString(), result.toString());
             }

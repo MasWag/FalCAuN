@@ -1,6 +1,5 @@
 package net.maswag;
 
-import lombok.AllArgsConstructor;
 import net.maswag.TemporalLogic.LTLFormula;
 
 import java.util.*;
@@ -8,9 +7,24 @@ import java.util.*;
 /**
  * The atomic propositions in LTL formulas
  */
-@AllArgsConstructor
 public class LTLAtomic extends AbstractTemporalLogic<String> implements LTLFormula {
     private final Optional<String> inputString, outputString;
+
+    public LTLAtomic(Optional<String> inputString, Optional<String> outputString) {
+        this.inputString = inputString;
+        this.outputString = outputString;
+        this.nonTemporal = false;
+        this.initialized = true;
+        if (inputString.isPresent() && outputString.isPresent()) {
+            this.iOType = IOType.BOTH;
+        } else if (inputString.isPresent()) {
+            this.iOType = IOType.INPUT;
+        } else if (outputString.isPresent()) {
+            this.iOType = IOType.OUTPUT;
+        } else {
+            throw new IllegalArgumentException("At least one of inputString and outputString must be present");
+        }
+    }
 
     @Override
     public Set<String> getAllAPs() {
@@ -21,7 +35,7 @@ public class LTLAtomic extends AbstractTemporalLogic<String> implements LTLFormu
     }
 
     @Override
-    public void constructAtomicStrings() {}
+    public void constructSatisfyingAtomicPropositions() {}
 
     @Override
     public String toAbstractString() {

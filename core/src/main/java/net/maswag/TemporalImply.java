@@ -2,8 +2,8 @@ package net.maswag;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>STLImply class.</p>
@@ -18,6 +18,8 @@ public class TemporalImply<I> extends AbstractTemporalLogic<I> {
         this.subFml1 = subFml1;
         this.subFml2 = subFml2;
         this.nonTemporal = subFml1.isNonTemporal() && subFml2.isNonTemporal();
+        this.iOType = subFml1.getIOType().merge(subFml2.getIOType());
+        this.initialized = subFml1.isInitialized() && subFml2.isInitialized();
     }
 
 
@@ -33,15 +35,17 @@ public class TemporalImply<I> extends AbstractTemporalLogic<I> {
      * {@inheritDoc}
      */
     @Override
-    public void constructAtomicStrings() {
+    public void constructSatisfyingAtomicPropositions() {
         if (this.nonTemporal) {
-            if (this.atomicStrings == null) {
-                this.atomicStrings = new HashSet<>(getAllAPs());
-                this.atomicStrings.removeAll(subFml1.getAtomicStrings());
-                this.atomicStrings.addAll(subFml2.getAtomicStrings());
+            if (this.satisfyingAtomicPropositions == null) {
+                this.satisfyingAtomicPropositions = new HashSet<>(getAllAPs());
+                this.satisfyingAtomicPropositions.removeAll(Objects.requireNonNull(
+                        subFml1.getSatisfyingAtomicPropositions()));
+                this.satisfyingAtomicPropositions.addAll(Objects.requireNonNull(
+                        subFml2.getSatisfyingAtomicPropositions()));
             }
         } else {
-            this.atomicStrings = null;
+            this.satisfyingAtomicPropositions = null;
         }
     }
 
@@ -54,10 +58,8 @@ public class TemporalImply<I> extends AbstractTemporalLogic<I> {
     /** {@inheritDoc} */
     @Override
     public String toAbstractString() {
-        if (nonTemporal) {
-            constructAtomicStrings();
-            return this.atomicStrings.stream().map(
-                    s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
+        if (nonTemporal && iOType != IOType.BOTH) {
+            return makeAbstractStringWithAtomicStrings();
         } else {
             return String.format("( %s ) -> ( %s )", subFml1.toAbstractString(), subFml2.toAbstractString());
         }

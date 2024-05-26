@@ -19,6 +19,8 @@ public class TemporalNext<I> extends AbstractTemporalLogic<I> {
         this.subFml = subFml;
         this.nullPositive = nullPositive;
         this.nonTemporal = false;
+        this.iOType = subFml.getIOType();
+        this.initialized = subFml.isInitialized();
     }
 
     /**
@@ -47,8 +49,8 @@ public class TemporalNext<I> extends AbstractTemporalLogic<I> {
      * {@inheritDoc}
      */
     @Override
-    public void constructAtomicStrings() {
-        this.atomicStrings = null;
+    public void constructSatisfyingAtomicPropositions() {
+        this.satisfyingAtomicPropositions = null;
     }
 
     /**

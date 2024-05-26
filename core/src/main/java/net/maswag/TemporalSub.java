@@ -23,6 +23,8 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
         this.from = from;
         this.to = to;
         this.nonTemporal = false;
+        this.iOType = subFml.getIOType();
+        this.initialized = subFml.isInitialized();
     }
 
     @Override
@@ -54,8 +56,8 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
     }
 
     @Override
-    public void constructAtomicStrings() {
-        this.atomicStrings = null;
+    public void constructSatisfyingAtomicPropositions() {
+        this.satisfyingAtomicPropositions = null;
     }
 
     @Override

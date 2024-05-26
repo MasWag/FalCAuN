@@ -1,9 +1,6 @@
 package net.maswag;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>STLAtomic class.</p>
@@ -13,7 +10,7 @@ import java.util.Set;
 public class STLInputAtomic extends STLAbstractAtomic {
     private final List<List<Character>> abstractInputs = new ArrayList<>();
     private final List<List<Double>> concreteInputs = new ArrayList<>();
-    private final List<Character> largest = new ArrayList<>();
+    private final List<Character> largest = Collections.emptyList();
     private List<Map<Character, Double>> inputMapper;
 
     /**
@@ -25,6 +22,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
      */
     public STLInputAtomic(int sigIndex, Operation op, double comparator) {
         super(sigIndex, op, comparator);
+        iOType = IOType.INPUT;
     }
 
     /**
@@ -36,24 +34,18 @@ public class STLInputAtomic extends STLAbstractAtomic {
     }
 
     @Override
-    public void constructAtomicStrings() {
+    public void constructSatisfyingAtomicPropositions() {
+        if (!this.initialized) {
+            if (!this.isInitialized()) {
+                throw new IllegalStateException("The formula is not initialized but the abstract string is requested.");
+            }
+        }
         constructAtomicStrings(concreteInputs, abstractInputs, largest);
     }
 
     private void setInputMaps() {
-        abstractInputs.clear();
-        concreteInputs.clear();
-        for (Map<Character, Double> entry : inputMapper) {
-            ArrayList<Character> cList = new ArrayList<>(entry.keySet());
-            ArrayList<Double> dList = new ArrayList<>(entry.values());
-            assert cList.size() == dList.size();
-            abstractInputs.add(cList);
-            concreteInputs.add(dList);
-        }
-        largest.clear();
-        for (List<Character> inputList : abstractInputs) {
-            largest.add((char) (inputList.get(inputList.size() - 1) + 1));
-        }
+        STLAbstractAtomic.decomposeMapList(inputMapper, abstractInputs, concreteInputs);
+        initialized = true;
     }
 
     void setInputMapper(List<Map<Character, Double>> inputMapper) {

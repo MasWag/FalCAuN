@@ -1,5 +1,7 @@
 package net.maswag;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -42,11 +44,14 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
     }
 
     /**
-     * TODO: I do not remember the precise specification of this method.
+     * Returns the collection of atomic propositions under consideration.
+     * If this formula contains only the input constraints, the atomic propositions are the input constraints.
+     * If this formula contains only the output constraints, the atomic propositions are the output constraints.
+     * If this formula contains both input and output constraints, the atomic propositions are one of the input and output constraints.
      */
     Set<String> getAllAPs();
 
-    void constructAtomicStrings();
+    void constructSatisfyingAtomicPropositions();
 
     /**
      * Returns true if the formula does not contain any temporal operators.
@@ -55,7 +60,40 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
      */
     boolean isNonTemporal();
 
-    Collection<String> getAtomicStrings();
+    /**
+     * Returns true if the mapper is set.
+     */
+    boolean isInitialized();
+
+    /**
+     * Specifies the type of the formula.
+     */
+    enum IOType {
+        INPUT, OUTPUT, BOTH;
+
+        /**
+         * Merges two IOType.
+         */
+        IOType merge(IOType other) {
+            if (this == other) {
+                return this;
+            } else {
+                return BOTH;
+            }
+        }
+    }
+
+    @Nonnull
+    IOType getIOType();
+
+    /**
+     * Returns the collection of atomic propositions such that if one of them is satisfied, the formula is satisfied.
+     * If there is no such collection, returns null
+     *
+     * <p>Such a set exists if the formula does not contain any temporal operators.</p>
+     */
+    @Nullable
+    Collection<String> getSatisfyingAtomicPropositions();
 
     interface STLCost extends TemporalLogic<List<Double>> {}
 

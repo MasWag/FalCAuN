@@ -8,6 +8,8 @@ abstract class TemporalOp<I> extends AbstractTemporalLogic<I> {
     TemporalOp(TemporalLogic<I> subFml) {
         this.subFml = subFml;
         this.nonTemporal = false;
+        this.iOType = subFml.getIOType();
+        this.initialized = subFml.isInitialized();
     }
 
     /**
@@ -31,8 +33,8 @@ abstract class TemporalOp<I> extends AbstractTemporalLogic<I> {
      * {@inheritDoc}
      */
     @Override
-    public void constructAtomicStrings() {
-        this.atomicStrings = null;
+    public void constructSatisfyingAtomicPropositions() {
+        this.satisfyingAtomicPropositions = null;
     }
 
     /**

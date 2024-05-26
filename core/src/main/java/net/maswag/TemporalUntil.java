@@ -1,5 +1,7 @@
 package net.maswag;
 
+import lombok.Getter;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -9,13 +11,16 @@ import java.util.Set;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
+@Getter
 public class TemporalUntil<I> extends AbstractTemporalLogic<I> {
-    private TemporalLogic<I> left, right;
+    final private TemporalLogic<I> left, right;
 
     TemporalUntil(TemporalLogic<I> left, TemporalLogic<I> right) {
         this.left = left;
         this.right = right;
         this.nonTemporal = false;
+        this.iOType = left.getIOType().merge(right.getIOType());
+        this.initialized = left.isInitialized() && right.isInitialized();
     }
 
     /**
@@ -32,8 +37,8 @@ public class TemporalUntil<I> extends AbstractTemporalLogic<I> {
         for (int i = 0; i < signal.length(); i++) {
             RoSI nextRoSI = this.right.getRoSI(signal.subWord(i));
             RoSI globalRoSI = signal.prefixes(true).stream().sorted((left, right) ->
-                    right.length() - left.length()).limit(i + 1).map(suffix ->
-                    this.left.getRoSI(suffix)).filter(Objects::nonNull).reduce(nextRoSI, RoSI::min);
+                    right.length() - left.length()).limit(i + 1).map(this.left::getRoSI)
+                    .filter(Objects::nonNull).reduce(nextRoSI, RoSI::min);
             result.assignMax(globalRoSI);
         }
         return result;
@@ -51,8 +56,8 @@ public class TemporalUntil<I> extends AbstractTemporalLogic<I> {
      * {@inheritDoc}
      */
     @Override
-    public void constructAtomicStrings() {
-        this.atomicStrings = null;
+    public void constructSatisfyingAtomicPropositions() {
+        this.satisfyingAtomicPropositions = null;
     }
 
 
@@ -73,20 +78,6 @@ public class TemporalUntil<I> extends AbstractTemporalLogic<I> {
     public String toAbstractString() {
         return "( " + this.left.toAbstractString() + " ) U ( " + this.right.toAbstractString() + " )";
     }
-
-    /**
-     * <p>getLeft.</p>
-     *
-     * @return a left {@link TemporalLogic<I>} object.
-     */
-    public TemporalLogic<I> getLeft() { return this.left; }
-
-    /**
-     * <p>getRight.</p>
-     *
-     * @return a right {@link TemporalLogic<I>} object.
-     */
-    public TemporalLogic<I> getRight() { return this.right; }
 
     static class STLUntil extends TemporalUntil<List<Double>> implements STLCost {
         STLUntil(STLCost left, STLCost right) {

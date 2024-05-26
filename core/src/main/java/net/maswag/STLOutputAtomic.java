@@ -13,7 +13,7 @@ import java.util.Set;
 public class STLOutputAtomic extends STLAbstractAtomic {
     private final List<List<Character>> abstractOutputs = new ArrayList<>();
     private final List<List<Double>> concreteOutputs = new ArrayList<>();
-    private List<Character> largest = new ArrayList<>();
+    private List<Character> largest;
     private List<Map<Character, Double>> outputMapper;
 
     /**
@@ -25,6 +25,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
      */
     public STLOutputAtomic(int sigIndex, Operation op, double comparator) {
         super(sigIndex, op, comparator);
+        iOType = IOType.OUTPUT;
     }
 
     /**
@@ -36,20 +37,18 @@ public class STLOutputAtomic extends STLAbstractAtomic {
     }
 
     @Override
-    public void constructAtomicStrings() {
+    public void constructSatisfyingAtomicPropositions() {
+        if (!this.initialized) {
+            if (!this.isInitialized()) {
+                throw new IllegalStateException("The formula is not initialized but the abstract string is requested.");
+            }
+        }
         constructAtomicStrings(concreteOutputs, abstractOutputs, largest);
     }
 
     private void setOutputMaps() {
-        abstractOutputs.clear();
-        concreteOutputs.clear();
-        for (Map<Character, Double> entry : outputMapper) {
-            ArrayList<Character> cList = new ArrayList<>(entry.keySet());
-            ArrayList<Double> dList = new ArrayList<>(entry.values());
-            assert cList.size() == dList.size();
-            abstractOutputs.add(cList);
-            concreteOutputs.add(dList);
-        }
+        STLAbstractAtomic.decomposeMapList(outputMapper, abstractOutputs, concreteOutputs);
+        initialized = true;
     }
 
     void setAtomic(List<Map<Character, Double>> outputMapper, List<Character> largest) {

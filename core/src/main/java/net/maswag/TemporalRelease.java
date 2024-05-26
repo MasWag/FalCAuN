@@ -1,5 +1,7 @@
 package net.maswag;
 
+import lombok.Getter;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -9,6 +11,7 @@ import java.util.Set;
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
+@Getter
 public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
     private final TemporalLogic<I> left, right;
 
@@ -16,6 +19,8 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
         this.left = left;
         this.right = right;
         this.nonTemporal = false;
+        this.iOType = left.getIOType().merge(right.getIOType());
+        this.initialized = left.isInitialized() && right.isInitialized();
     }
 
     /**
@@ -50,8 +55,8 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
      * {@inheritDoc}
      */
     @Override
-    public void constructAtomicStrings() {
-        this.atomicStrings = null;
+    public void constructSatisfyingAtomicPropositions() {
+        this.satisfyingAtomicPropositions = null;
     }
 
 
@@ -71,24 +76,6 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
     @Override
     public String toAbstractString() {
         return "( " + this.left.toAbstractString() + " ) R ( " + this.right.toAbstractString() + " )";
-    }
-
-    /**
-     * <p>getLeft.</p>
-     *
-     * @return a left {@link TemporalLogic<I>} object.
-     */
-    public TemporalLogic<I> getLeft() {
-        return this.left;
-    }
-
-    /**
-     * <p>getRight.</p>
-     *
-     * @return a right {@link TemporalLogic<I>} object.
-     */
-    public TemporalLogic<I> getRight() {
-        return this.right;
     }
 
     static class STLRelease extends TemporalRelease<List<Double>> implements STLCost {

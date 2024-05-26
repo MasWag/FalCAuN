@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 class BlackBoxVerifierTest {
     private final Alphabet<String> inputAlphabet = new ArrayAlphabet<>("a");
-    StaticSTLList stlList;
-    private BlackBoxVerifier verifier;
+    StaticSTLList<List<Double>> stlList;
+    private BlackBoxVerifier<List<Double>> verifier;
     private List<STLCost> falsifiedProperties;
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     SUL<String, String> sul;
@@ -55,9 +55,9 @@ class BlackBoxVerifierTest {
                 create();
         sul = new MealySimulatorSUL<>(mealy);
         memOracle = new SULOracle<>(sul);
-        stlList = spy(new StaticSTLList(properties));
+        stlList = spy(new StaticSTLList<>(properties));
         stlList.setMemOracle(memOracle);
-        verifier = new BlackBoxVerifier(memOracle, sul, stlList, inputAlphabet);
+        verifier = new BlackBoxVerifier<>(memOracle, sul, stlList, inputAlphabet);
         stlList.stream();
     }
 

@@ -2,6 +2,7 @@ package net.maswag;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -15,6 +16,8 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
     TemporalNot(TemporalLogic<I> subFml) {
         this.subFml = subFml;
         this.nonTemporal = subFml.isNonTemporal();
+        this.iOType = subFml.getIOType();
+        this.initialized = subFml.isInitialized();
     }
 
 
@@ -30,14 +33,15 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
      * {@inheritDoc}
      */
     @Override
-    public void constructAtomicStrings() {
+    public void constructSatisfyingAtomicPropositions() {
         if (this.nonTemporal) {
-            if (this.atomicStrings == null) {
-                this.atomicStrings = new HashSet<>(getAllAPs());
-                this.atomicStrings.removeAll(subFml.getAtomicStrings());
+            if (this.satisfyingAtomicPropositions == null) {
+                this.satisfyingAtomicPropositions = new HashSet<>(getAllAPs());
+                this.satisfyingAtomicPropositions.removeAll(
+                        Objects.requireNonNull(subFml.getSatisfyingAtomicPropositions()));
             }
         } else {
-            this.atomicStrings = null;
+            this.satisfyingAtomicPropositions = null;
         }
     }
 

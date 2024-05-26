@@ -1,6 +1,7 @@
 package net.maswag;
 
 import com.google.common.collect.Sets;
+import javafx.util.Pair;
 import net.automatalib.word.Word;
 
 import java.util.*;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import static java.lang.Math.abs;
 
 import net.maswag.TemporalLogic.STLCost;
+import net.maswag.annotation.Sorted;
 
 import javax.annotation.Nonnull;
 
@@ -96,7 +98,7 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
     protected void constructAtomicStrings(List<List<Double>> concreteValues,
                                           List<List<Character>> abstractValues,
                                           List<Character> largest) {
-        if (this.atomicStrings != null) {
+        if (this.satisfyingAtomicPropositions != null) {
             return;
         }
 
@@ -123,15 +125,15 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
             }
         }
 
-        this.atomicStrings = cartesianProductCharacters(APList);
+        this.satisfyingAtomicPropositions = cartesianProductCharacters(APList);
     }
 
     @Override
-    public Set<String> getAtomicStrings() {
-        if (atomicStrings == null) {
-            constructAtomicStrings();
+    public Set<String> getSatisfyingAtomicPropositions() {
+        if (satisfyingAtomicPropositions == null) {
+            constructSatisfyingAtomicPropositions();
         }
-        return atomicStrings;
+        return satisfyingAtomicPropositions;
     }
 
     /**
@@ -139,13 +141,18 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
      */
     @Override
     public String toAbstractString() {
-        constructAtomicStrings();
-
-        return this.atomicStrings.stream().map(
+        if (this.satisfyingAtomicPropositions == null) {
+            constructSatisfyingAtomicPropositions();
+        }
+        return this.satisfyingAtomicPropositions.stream().map(
                         s -> String.format("( %s == \"" + s + "\" )", getSignalName()))
                 .collect(Collectors.joining(" || "));
     }
 
+    /**
+     * @param concreteValues The list of the concrete values of each signal
+     *                       Each element of the list must be sorted in ascending order.
+     */
     private Set<Character> constructSmallerAPs(List<List<Double>> concreteValues,
                                                List<List<Character>> abstractValues,
                                                List<Character> largest, int index, double threshold) {
@@ -159,6 +166,10 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         return resultAPs;
     }
 
+    /**
+     * @param concreteValues The list of the concrete values of each signal
+     *                       Each element of the list must be sorted in ascending order.
+     */
     private Set<Character> constructLargerAPs(List<List<Double>> concreteValues,
                                               List<List<Character>> abstractValues,
                                               List<Character> largest, int index, double threshold) {
@@ -172,6 +183,10 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         return resultAPs;
     }
 
+    /**
+     * @param concreteValues The list of the concrete values of each signal
+     *                       Each element of the list must be sorted in ascending order.
+     */
     private Set<Character> constructEqAPs(List<List<Double>> concreteValues,
                                           List<List<Character>> abstractValues,
                                           List<Character> largest, int index, double threshold) {
@@ -190,9 +205,20 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         return resultAPs;
     }
 
+    /**
+     * Construct the characters that represent the abstract values of the signal.
+     *
+     * @param abstractValues The list of the abstract values of each signal.
+     * @param largest The largest value of each signal.
+     *                If the signal is output signal this value is used to construct the atomic propositions.
+     *                If the signal is input signal this value must be empty.
+     * @param index The index of the signal
+     */
     Set<Character> constructAllAPs(List<List<Character>> abstractValues, List<Character> largest, int index) {
         Set<Character> resultAPs = new HashSet<>(abstractValues.get(index));
-        resultAPs.add(largest.get(index));
+        if (!largest.isEmpty()) {
+            resultAPs.add(largest.get(index));
+        }
         return resultAPs;
     }
 
@@ -210,6 +236,52 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         return Sets.cartesianProduct(charList).stream()
                 .map(l -> l.stream().map(String::valueOf).collect(Collectors.joining()))
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Decomposes a map with value Doubles into a pair of lists of keys and Doubles.
+     *
+     * @param map a map to Doubles
+     * @param <T> the type of the keys
+     * @return a pair of lists of keys and Doubles.
+     * The first element is a list of keys and the second element is a list of values.
+     * The returned lists are sorted in ascending order of the values.
+     */
+    static <T> Pair<List<T>, @Sorted List<Double>> decomposeMap(Map<T, Double> map) {
+        List<Pair<T, Double>> pairs = new ArrayList<>(map.size());
+        map.forEach((k, v) -> pairs.add(new Pair<>(k, v)));
+        pairs.sort(Comparator.comparing(Pair::getValue));
+        List<T> keys = new ArrayList<>(pairs.size());
+        List<Double> values = new ArrayList<>(pairs.size());
+        pairs.forEach(pair -> {
+            keys.add(pair.getKey());
+            values.add(pair.getValue());
+        });
+        return new Pair<>(keys, values);
+    }
+
+    /**
+     * Decomposes a list of maps with value Doubles into a list of pair of lists of keys and Doubles.
+     *
+     * @param maps a list of maps to Doubles.
+     * @param keyLists a list of lists of keys. The contents of this list will be cleared.
+     * @param valueLists a list of lists of values. The contents of this list will be cleared.
+     * @param <T> the type of the keys
+     */
+    static <T> void decomposeMapList(List<Map<T, Double>> maps, List<List<T>> keyLists, List<List<Double>> valueLists) {
+        keyLists.clear();
+        valueLists.clear();
+        maps.forEach(map -> {
+            Pair<List<T>, List<Double>> pair = decomposeMap(map);
+            // The resulting lists must have the same size
+            assert pair.getKey().size() == pair.getValue().size();
+            // The resulting list must be sorted
+            assert pair.getValue().stream().allMatch(c -> pair.getValue().get(0) <= c);
+            keyLists.add(pair.getKey());
+            valueLists.add(pair.getValue());
+        });
+        // The resulting lists must have the same size
+        assert keyLists.size() == valueLists.size();
     }
 
     public enum Operation {
