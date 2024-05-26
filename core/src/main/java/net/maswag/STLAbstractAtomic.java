@@ -1,7 +1,6 @@
 package net.maswag;
 
 import com.google.common.collect.Sets;
-import javafx.util.Pair;
 import net.automatalib.word.Word;
 
 import java.util.*;
@@ -11,6 +10,7 @@ import static java.lang.Math.abs;
 
 import net.maswag.TemporalLogic.STLCost;
 import net.maswag.annotation.Sorted;
+import org.apache.commons.math3.util.Pair;
 
 import javax.annotation.Nonnull;
 
