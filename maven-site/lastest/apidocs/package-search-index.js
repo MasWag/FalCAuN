@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"net.maswag"},{"l":"net.maswag.annotation"}];updateSearchResults();
