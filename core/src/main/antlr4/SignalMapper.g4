@@ -1,10 +1,10 @@
 grammar SignalMapper;
 
 @header {
-package net.maswag;
+package net.maswag.falcaun;
 
 import java.util.AbstractMap;
-import net.maswag.SignalMapperVisitor;
+import net.maswag.falcaun.SignalMapperVisitor;
 
 }
 

@@ -27,12 +27,12 @@
  ********/
 
 // This script depends on FalCAuN-core and FalCAuN-matlab
-@file:DependsOn("net.maswag:FalCAuN-core:1.0-SNAPSHOT")
-@file:DependsOn("net.maswag:FalCAuN-matlab:1.0-SNAPSHOT")
+@file:DependsOn("net.maswag.falcaun.*
+@file:DependsOn("net.maswag.falcaun.*
 // We assume that the MATLAB_HOME environment variable is set
 @file:KotlinOptions("-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64")
 
-import net.maswag.*
+import net.maswag.falcaun.*
 import java.io.BufferedReader
 import java.io.StringReader
 

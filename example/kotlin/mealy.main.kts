@@ -1,7 +1,7 @@
 #!/usr/bin/env kscript
 
 // This script depends on FalCAuN-core
-@file:DependsOn("net.maswag:FalCAuN-core:1.0-SNAPSHOT")
+@file:DependsOn("net.maswag.falcaun.*
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
@@ -13,7 +13,7 @@ import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.automatalib.util.automaton.builder.AutomatonBuilders
 import net.automatalib.visualization.Visualization
-import net.maswag.*
+import net.maswag.falcaun.*
 import org.slf4j.LoggerFactory
 import java.util.*
 

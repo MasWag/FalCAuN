@@ -1,11 +1,11 @@
 grammar STL;
 
 @header {
-package net.maswag;
+package net.maswag.falcaun;
 
-import net.maswag.STLListener;
-import net.maswag.STLVisitor;
-import net.maswag.STLParser;
+import net.maswag.falcaun.STLListener;
+import net.maswag.falcaun.STLVisitor;
+import net.maswag.falcaun.STLParser;
 
 }
 

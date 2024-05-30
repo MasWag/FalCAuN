@@ -3,11 +3,11 @@
 // Import the constants for AutoTrans
 @file:Import("./AutoTrans.kt")
 // This script depends on FalCAuN-core and FalCAuN-matlab
-@file:DependsOn("net.maswag:FalCAuN-core:1.0-SNAPSHOT", "net.maswag:FalCAuN-matlab:1.0-SNAPSHOT")
+@file:DependsOn("net.maswag.falcaun.*
 // We assume that the MATLAB_HOME environment variable is set
 @file:KotlinOptions("-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64")
 
-import net.maswag.*
+import net.maswag.falcaun.*
 import kotlin.streams.toList
 
 // Define the input and output mappers
