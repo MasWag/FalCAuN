@@ -3,10 +3,11 @@ FalCAuN
 
 [![JUnit](https://github.com/MasWag/FalCAuN/workflows/JUnit/badge.svg)](https://github.com/MasWag/FalCAuN/actions?query=workflow%3AJUnit)
 [![CircleCI](https://circleci.com/gh/MasWag/FalCAuN/tree/master.svg?style=svg)](https://circleci.com/gh/MasWag/FalCAuN/tree/master)
+[![Javadoc](https://img.shields.io/badge/Javadoc-latest-green)](https://maswag.github.io/FalCAuN/maven-site/latest/apidocs/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
 
 This is the source code repository for FalCAuN ---  Falsification of CPSs via Automata Learning.
-FalCAuN is a toolkit for testing of black-box systems (e.g., cyber-physical systems) based on automata learning and model checking. Currently, systems implemented in Java and Simulink are supported.
+FalCAuN is a toolkit for testing black-box systems (e.g., cyber-physical systems) based on automata learning and model checking. Currently, systems implemented in Java and Simulink are supported.
 
 Installation
 ------------
@@ -40,7 +41,7 @@ You need to install the requirements above. For example, on Ubuntu, you can inst
 sudo apt-get install maven openjdk-11-jdk-headless -y
 ```
 
-You have to manually install LTSMin 3.1.0 and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 by the following commands.
+You have to manually install LTSMin 3.1.0 and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 with the following commands.
 
 ```sh
 wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz -O ltsmin-v3.1.0-linux.tgz
@@ -58,7 +59,7 @@ We provide a script to check if some of the requirements are installed. You can 
 
 #### 2. Build and Install FalCAuN
 
-You can build and install FalCAuN using maven. An example to install the core module and the top-level module is as follows.
+You can build and install FalCAuN using Maven. An example of installing the core module and the top-level module is as follows.
 
 ```sh
 mvn install --projects core,
@@ -70,7 +71,7 @@ Here, we provide the instructions to install the matlab module.
 
 #### 1. Install the Requirements
 
-You need to install MATLAB/Simulink manually. Please follow the instruction on the official website of Mathworks.
+You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of Mathworks.
 
 #### 2. Setup the environment variable
 
@@ -84,7 +85,7 @@ export MATLAB_HOME=<path/to/matlab/home>
 
 #### 3. Build and Install FalCAuN
 
-You can build and install FalCAuN using maven. You have to execute `mvn clean` to setup the Java API of MATLAB. An example to install the matlab module as well as the others is as follows.
+You can build and install FalCAuN using Maven. You have to execute `mvn clean` to set up the Java API of MATLAB. An example to install the matlab module, as well as the others, is as follows.
 
 ```sh
 mvn clean --projects matlab
@@ -93,7 +94,7 @@ mvn install
 
 ### Installation of LTSMin 3.1.0 on macOS with ARM Processors
 
-FalCAuN works on macOS with ARM Processors, but the set up of LTSMin is a bit tricky because it only support x86\_64. One can still run LTSMin using Rosetta and libtool for x86\_64.
+FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86\_64. One can still run LTSMin using Rosetta and libtool for x86\_64.
 
 1. Set up Rosetta on the macOS
 2. Install Homebrew for intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
@@ -110,7 +111,7 @@ FalCAuN works on macOS with ARM Processors, but the set up of LTSMin is a bit tr
 Examples
 --------
 
-We provide some examples in the `./example/kotlin` directory. The following is the list of the examples. To run the examples, you need to install [kscript](https://github.com/kscripting/kscript) because the examples are written in Kotlin script.
+We provide some examples in the `./example/kotlin` directory. The following is the list of examples. To run the examples, you need to install [kscript](https://github.com/kscripting/kscript) because the examples are written in Kotlin script.
 
 The following example does not require MATLAB/Simulink.
 
@@ -168,8 +169,8 @@ EVENTUALLY : '<>' | 'ev' | 'F'
 Javadoc
 --------
 
-The source code is partially commented using the Javadoc syntax. The document can be generated
-under `./target/site/apidocs/` by `mvn javadoc:javadoc`.
+The source code is partially commented on using the Javadoc syntax. The document is hosted on [GitHub Pages](https://maswag.github.io/FalCAuN/maven-site/latest/apidocs/).
+If you want to generate the document locally under `./target/site/apidocs/` by `mvn javadoc:aggregate.`
 
 Obsolete CLI interface
 -----------------------
@@ -177,7 +178,7 @@ Obsolete CLI interface
 After FalCAuN 1.0, FalCAuN is mainly intended to be used as a library called from a program written in some JVM language, such as Kotlin. The CLI interface is still available for backward compatibility, but it is not actively maintained.
 
 To execute FalCAuN via the CLI interface, you can use the helper shell script `falcaun` in the root directory of the repository. The script is a wrapper of the CLI interface of FalCAuN. The script is written in POSIX sh and should work on most UNIX-like operating systems.
-An example usage is as follows. This takes at least a few minutes for MATLAB start up and another few minutes to falsify all the STL formulas in `./example/AT_M4.stl`. Please be patient!!
+An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in `./example/AT_M4.stl`. Please be patient!!
 
 ```sh
 ./falcaun --stl-file=./example/AT_M4.stl --output-mapper=./example/AT_M4.omap.tsv --input-mapper=./example/AT.imap.tsv --equiv=GA --step-time=1.0 --signal-length=30  --init='cd ./example; initAT' --max-test=50000 --param-names="throttle brake" --ga-crossover-prob=0.5 --ga-mutation-prob=0.01 --population-size=150 --ga-selection-kind=Tournament
