@@ -1,7 +1,7 @@
 #!/usr/bin/env kscript
 
 // This script depends on FalCAuN-core
-@file:DependsOn("net.maswag.falcaun.*
+@file:DependsOn("net.maswag.falcaun.FalCAuN-core:1.0-SNAPSHOT")
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
