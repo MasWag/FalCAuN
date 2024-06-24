@@ -127,14 +127,6 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         this.satisfyingAtomicPropositions = cartesianProductCharacters(APList);
     }
 
-    @Override
-    public Set<String> getSatisfyingAtomicPropositions() {
-        if (satisfyingAtomicPropositions == null) {
-            constructSatisfyingAtomicPropositions();
-        }
-        return satisfyingAtomicPropositions;
-    }
-
     /**
      * {@inheritDoc}
      */

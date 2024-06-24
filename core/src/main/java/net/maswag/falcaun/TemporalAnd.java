@@ -51,6 +51,7 @@ class TemporalAnd<I> extends AbstractTemporalLogic<I> {
      */
     @Override
     public void constructSatisfyingAtomicPropositions() {
+        super.constructSatisfyingAtomicPropositions();
         if (this.nonTemporal) {
             this.satisfyingAtomicPropositions = new HashSet<>(getAllAPs());
             for (TemporalLogic<I> subFml : subFormulas) {

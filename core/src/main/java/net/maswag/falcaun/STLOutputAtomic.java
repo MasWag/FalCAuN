@@ -38,11 +38,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
 
     @Override
     public void constructSatisfyingAtomicPropositions() {
-        if (!this.initialized) {
-            if (!this.isInitialized()) {
-                throw new IllegalStateException("The formula is not initialized but the abstract string is requested.");
-            }
-        }
+        super.constructSatisfyingAtomicPropositions();
         constructAtomicStrings(concreteOutputs, abstractOutputs, largest);
     }
 

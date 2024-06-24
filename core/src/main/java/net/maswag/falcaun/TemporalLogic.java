@@ -52,7 +52,11 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
      */
     Set<String> getAllAPs();
 
-    void constructSatisfyingAtomicPropositions();
+    default void constructSatisfyingAtomicPropositions() {
+        if (!this.isInitialized()) {
+            throw new IllegalStateException("The formula is not initialized but the abstract string is requested.");
+        }
+    }
 
     /**
      * Returns true if the formula does not contain any temporal operators.

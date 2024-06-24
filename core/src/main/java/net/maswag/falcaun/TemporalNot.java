@@ -35,6 +35,7 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
      */
     @Override
     public void constructSatisfyingAtomicPropositions() {
+        super.constructSatisfyingAtomicPropositions();
         if (this.nonTemporal) {
             if (this.satisfyingAtomicPropositions == null) {
                 this.satisfyingAtomicPropositions = new HashSet<>(getAllAPs());

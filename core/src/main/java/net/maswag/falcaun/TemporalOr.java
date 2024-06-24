@@ -51,6 +51,7 @@ public class TemporalOr<I> extends AbstractTemporalLogic<I> {
      */
     @Override
     public void constructSatisfyingAtomicPropositions() {
+        super.constructSatisfyingAtomicPropositions();
         if (this.nonTemporal) {
             this.satisfyingAtomicPropositions = new HashSet<>();
             for (TemporalLogic<I> subFml : subFmls) {

@@ -58,6 +58,7 @@ public class TemporalUntil<I> extends AbstractTemporalLogic<I> {
      */
     @Override
     public void constructSatisfyingAtomicPropositions() {
+        super.constructSatisfyingAtomicPropositions();
         this.satisfyingAtomicPropositions = null;
     }
 

@@ -8,14 +8,16 @@ import java.util.stream.Collectors;
 /**
  * <p>Abstract TemporalLogic class.</p>
  *
- * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  * @param <I> Type of the input at each step
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
-@Getter
 public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {
+    @Getter
     boolean nonTemporal;
+    @Getter
     boolean initialized = false;
     Set<String> satisfyingAtomicPropositions;
+    @Getter
     IOType iOType;
 
     @Override
@@ -23,9 +25,7 @@ public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AbstractTemporalLogic<I> stlCost = (AbstractTemporalLogic<I>) o;
-
-        return this.hashCode() == stlCost.hashCode();
+        return this.hashCode() == o.hashCode();
     }
 
     @Override
@@ -52,5 +52,17 @@ public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {
             return this.satisfyingAtomicPropositions.stream().map(
                     s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
         }
+    }
+
+    /**
+     * It returns the set of atomic propositions such that the formula is satisfied if and only if one of the atomic propositions in the returned set is satisfied.
+     * Since such a set does not exist for temporal formulas, it returns null for such formulas.
+     */
+    @Override
+    public Set<String> getSatisfyingAtomicPropositions() {
+        if (this.isNonTemporal() && satisfyingAtomicPropositions == null) {
+            constructSatisfyingAtomicPropositions();
+        }
+        return satisfyingAtomicPropositions;
     }
 }

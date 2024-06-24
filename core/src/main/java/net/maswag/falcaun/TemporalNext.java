@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class TemporalNext<I> extends AbstractTemporalLogic<I> {
     @Getter
-    private TemporalLogic<I> subFml;
+    private final TemporalLogic<I> subFml;
     private final boolean nullPositive;
 
     TemporalNext(TemporalLogic<I> subFml, boolean nullPositive) {
@@ -51,6 +51,7 @@ public class TemporalNext<I> extends AbstractTemporalLogic<I> {
      */
     @Override
     public void constructSatisfyingAtomicPropositions() {
+        super.constructSatisfyingAtomicPropositions();
         this.satisfyingAtomicPropositions = null;
     }
 
