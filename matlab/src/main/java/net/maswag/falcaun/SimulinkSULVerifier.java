@@ -10,7 +10,7 @@ public class SimulinkSULVerifier extends NumericSULVerifier {
      * @param paramName  The list of input parameters.
      * @param signalStep The signal step in the simulation
      * @param properties The LTL properties to be verified
-     * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
+     * @param mapper     The I/O mapper between abstract/concrete Simulink models.
      * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
     public SimulinkSULVerifier(String initScript, List<String> paramName, double signalStep, double simulinkSimulationStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) throws Exception {
