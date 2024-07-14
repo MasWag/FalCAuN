@@ -47,9 +47,46 @@
       Simulink Preferences->Model Files->Do not load models created with a newer version of simulink のチェックを外す
 - ignore_matlab.sh で matlab を無視してビルドできそうに見えたが,
   これ使われてない? core 以下で実行しなければならない？
+
+- jupyter notebook
+  - README にあるとおり, pip で jupyter と kotlin-jupyter-kernel を入れたら良い
+  ~~- conda を入れる~~
+    ~~- 直接condaに入れるんじゃなくて, 仮想環境を作ってライブラリ自体はpipで入れるようにしたほうがいいかも~~
+    ~~- miniconda~~
+      ~~- `export CONDA_CHANGEPS1=false` するとプロンプトが壊れなくて済む~~
+  ~~- `conda install jupyter jupyterlab notebook` で jupyter を入れる~~
+    - jupyter notebook がブラウザのキャッシュの問題で表示されなくなる問題がある https://github.com/jupyter/notebook/issues/7221
+  ~~- `conda install -c jetbrains kotlin-jupyter-kernel` とかすると kotlin-kernel が入る~~
+    - kotlin-jupyter-kernel は kotlin 2.0 でも問題なかった
+  - `JAVA_HOME=$JAVA_HOME KOTLIN_JUPYTER_JAVA_OPTS="-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64" jupyter notebook Git/FalCAuN` とかで起動(書いてある)
+    - JAVA_HOME と MATLAB のパスを通している
+  - ログは端末に流れてくる
+
 - javadoc
   - unnamed package みたいな表示しかない
-- LTLの式の意味論の説明ある?
+- STLの式の意味論の説明が欲しい
+
+
+## Examples
+- mealy.main.kts
+  - 実行して最初に表示される画像のMealy型オートマトンに対し,
+    2つのLTL条件式を満たすかBBCによって検査する例
+- counter.ipynb
+  - 正の入力をすると 1 を足し, 負の入力をすると 1 を引くシステム NumericSUL を定義
+  - 出力に `mod 2` をした結果を STL 式で検証する
+    - SignalMapper で出力を `mod 2` した値へ変換している
+- pacemaker.main.kts
+  - これなんやろ
+- ATS1.main.kts
+  - kotlin の use は closable の自動クローズをする構文 `SimulinkSUL(...).use { ...`
+  - `"[] signal(3) < 20"` は, output の `val outputMapperReader = OutputMapperReader(listOf(ignoreValues, accelerationValues, gearValues, velocityValues))` の第3引数を指している?
+  - ATS は AutoTransmissionShiftの略?
+  - ATS1 は velocity, ATS2 は gear, ATS6 は acceleration の STL 式をチェックする例になっている
+- ATS6a.main.kts
+  - undocumented な stl 式の記述がある?
+    - "$stlNotGRotationLt3000" で変数参照してそう
+    - signalStep は多分グローバルな変数
+    - U_interval の interval ってなんだ?
 
 
 ## Thesis
