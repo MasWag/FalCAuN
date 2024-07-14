@@ -138,12 +138,12 @@ expr : atomic
      | expr -> expr
      | ! expr
      | GLOBALLY expr
+     | GLOBALLY _ INTERVAL expr
      | EVENTUALLY expr
+     | EVENTUALLY _ INTERVAL expr
      | X expr
      | expr U expr
-     | GLOBALLY_interval expr
-     | EVENTUALLY_interval expr
-     | expr U_interval expr
+     | expr U _ INTERVAL expr
      | ( expr )
 
 atomic : signal(NATURAL) == value
@@ -164,6 +164,8 @@ value : -? NATURAL | -? FLOAT
 GLOBALLY : '[]' | 'alw' | 'G'
 
 EVENTUALLY : '<>' | 'ev' | 'F'
+
+INTERVAL : [ NATURAL , NATURAL ]
 ```
 
 Javadoc
