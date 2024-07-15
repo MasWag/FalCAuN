@@ -1,4 +1,8 @@
 # FalCAuN
+## 名目
+- FalCAuNのソースコードの調査 : 48人時
+- 再利用性と保守性を高めるためのリファクタリング方針の査定 : 40人時
+
 ## インスコ
 
 - kscript が動かない, depends で指定するパッケージ名の ArtifactID がおかしい？
@@ -8,6 +12,7 @@
 ```
 - cwd を `./example/kscript` へ移動しないと動かない
 - example と examples の違いは?
+  - examples の方はメンテされてない 放棄されている？
 - mealy.main.kts だけ matlab なしで動くらしい
   - mealy_main が無いと言われて動かない...
     ```
@@ -65,9 +70,35 @@
 - javadoc
   - unnamed package みたいな表示しかない
 - STLの式の意味論の説明が欲しい
+  - STL - LTL : atomic な条件式に signal がかける, 大小比較ができる ?
+  - Globally と Eventually は □ や ♢ で表記されることもある STL 一般の文法
+    - U(Until) で代用できるため論文中では定義されてなかった？
+    - Eventually はなんで F があるのに Finally じゃないんだろ
+    - これ `[]` は □, `<>` は ♢ のことか!
+    - 多分 `[], alw, G` は全て同じ意味, EVENTUALLY も同様
+  - interval について書いてない！
+    - G や E で区間`[i,j]`を記述する際の文法
+  - shellscript っぽく `$` をつけて書くと java の式を評価する機構がありそう (pacemaker.main.kts)
 
+- ./falcaun のバイナリ, 動かないw
+- example/hscc2020/utils コマンドが変わっている
+  ```diff
+  - robodoc --src ./diffDate.sh --doc ./doc/diffDate.html --singledoc --html
+  + robodoc --src ./diffDate.sh --doc ./doc/diffDate.html --singlefile --html
+  ```
+  - robodoc 自体は header のドキュメントをそれっぽく html へ展開してくれる
+- example/kotlin/README.md
+  - On macOS と On Linux の記述の仕方が非対称なので揃えたい
+    ```
+    After that, execute `jupyter` with suitable environmental variables. The following shows an example on macOS.
+    :
+    On Linux, you can likely find suitable directory to set `JAVA_HOME` by `ls /usr/lib/jvm/`.
+    ```
 
 ## Examples
+### kotlin
+もしかして ATS1 って AT_S1 のことか？だとしたら ATS6 は何者？
+
 - mealy.main.kts
   - 実行して最初に表示される画像のMealy型オートマトンに対し,
     2つのLTL条件式を満たすかBBCによって検査する例
@@ -88,6 +119,47 @@
     - signalStep は多分グローバルな変数
     - U_interval の interval ってなんだ?
 
+### hscc2020
+hscc2020 の実験で使ったコード.
+- S1-S5 : ZESAH18
+- M1-M2 : オリジナル
+
+- run_falcaun.sh
+  - これ mwaga マシンに依存してない?
+    ```
+    rm -f /home/mwaga/CyVeriA/src/test/resources/MATLAB/Autotrans_shift.mdl.autosave
+    ```
+    - 無くても問題ない?
+
+
+### rv2021
+四十坊さん作
+- F1-F2 = S4-S5 : ZESAH18
+- F3-F5 : オリジナル
+
+### example 直下
+CLI 用テスト
+- S1-S2, S4-S5 : ZGS+18 (表記ゆれ)
+- M3-M4 : オリジナル
+
+- ./utils 以下の script の説明はここの README.md に書いてある
+
+## Code
+- System Under Learning(SUL) って一般的な略語なんだろうか
+- ANTLR v4 で TL 辺りのソースは一部自動生成されてる
+
+### core
+  - `NumericSULVerifier.getCexOutput()`
+    - Input の方は `CexAbstractInput`, `CexConcreteInput` があり,
+      もともと Output 版もあった模様
+      - Abstract : Alphabet へ map した後の値
+      - Concrete : map 前の実数値
+    - 今のこれは Abstract の方を返す
+  - RoSI
+    - robust satisfaction interval (RoSI)
+### matlab
+  - `SimulinkModels.step(@Nonnull List<Double> inputSignal)`
+    - 過去の inputSignal を全部保持して毎回一から実行してそう
 
 ## Thesis
 ### Falsification of Cyber-Physical Systems with Robustness Guided Black-Box Checking
