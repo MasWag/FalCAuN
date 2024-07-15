@@ -10,7 +10,7 @@
 #
 #******
 
-readonly JAR_NAME=net/maswag/falcaun-matlab/1.0-SNAPSHOT/falcaun-matlab-1.0-SNAPSHOT-jar-with-dependencies.jar 
+readonly JAR_NAME=net/maswag/falcaun/FalCAuN-matlab/1.0-SNAPSHOT/FalCAuN-matlab-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 if [ -z "$MATLAB_HOME" ]; then
   echo "Error: environment variable MATLAB_HOME is not set"
