@@ -94,6 +94,13 @@
     :
     On Linux, you can likely find suitable directory to set `JAVA_HOME` by `ls /usr/lib/jvm/`.
     ```
+- `.imap`, `.omap` はそれぞれ input mapper と output mapper ぽい
+- `mvn javadoc:aggregate`, 動かん?
+  - gh-pages ブランチ, メンテされてない?
+    - circleCI がコケている
+  - 手動でビルドしてアップロードしてそう
+
+- 例を見たら十分かもしれないけれど, なんかチュートリアルか何かあれば良いんかな
 
 ## Examples
 ### kotlin
@@ -130,7 +137,8 @@ hscc2020 の実験で使ったコード.
     rm -f /home/mwaga/CyVeriA/src/test/resources/MATLAB/Autotrans_shift.mdl.autosave
     ```
     - 無くても問題ない?
-
+- run_falcaun_all.sh
+  - 一日かけても終わらんかった
 
 ### rv2021
 四十坊さん作
@@ -148,18 +156,32 @@ CLI 用テスト
 - System Under Learning(SUL) って一般的な略語なんだろうか
 - ANTLR v4 で TL 辺りのソースは一部自動生成されてる
 
+- falcaun (script)
+  - linux 版の java が `/usr/lib/jvm` 以下の java11 を探すようになっている
+  - sdk 版だと違う場所
+  - まずは JAVA_HOME から探したほうが良いかも
+
 ### core
-  - `NumericSULVerifier.getCexOutput()`
+- `NumericSUL`
+  -  `SUL` を継承
+    - `SUL` は Learnlib
+- `NumericSULVerifier`
+  - `BlackBoxSUL` の wrapper
+  - `getCexOutput()`
     - Input の方は `CexAbstractInput`, `CexConcreteInput` があり,
       もともと Output 版もあった模様
       - Abstract : Alphabet へ map した後の値
       - Concrete : map 前の実数値
     - 今のこれは Abstract の方を返す
-  - RoSI
-    - robust satisfaction interval (RoSI)
+- `RoSI`
+  - robust satisfaction interval (RoSI)
+
 ### matlab
-  - `SimulinkModels.step(@Nonnull List<Double> inputSignal)`
-    - 過去の inputSignal を全部保持して毎回一から実行してそう
+- `SimulinkSULVerifier`
+  - `NumericSULVerifier` を継承
+- `SimulinkModels.step(@Nonnull List<Double> inputSignal)`
+  - 過去の inputSignal を全部保持して毎回一から実行してそう
+
 
 ## Thesis
 ### Falsification of Cyber-Physical Systems with Robustness Guided Black-Box Checking
@@ -173,6 +195,7 @@ CLI 用テスト
     - 失敗した場合, 反例が得られるのでそれを M に対して実行する
 - 等価性判定が重い, 乱択か遺伝アルゴリズムか山登り法か
 - 構築した Mealy Machine が学習に使った論理式に依存している問題がある
+
 ### Efficient Black-Box Checking via Model Checking with Strengthened Specifications
 四十坊さん著
 - 等価性判定を高速化してそう
