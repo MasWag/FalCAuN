@@ -1,20 +1,24 @@
 # FalCAuN
+## やりたい or 疑問
+- バージョン固定したい
+  - example/hscc2020 とか　example/rv2021 とかコミットを固定してビルドして実行するようにしたいかも
+- kotlin のバージョンもなんかいい感じに固定したい
+- robustness って結局どういうこと?
+- `signal(x)` の x が指すものって結局なんだろう, 引数の n 番目で良い?
+
 ## 名目
 - FalCAuNのソースコードの調査 : 48人時
 - 再利用性と保守性を高めるためのリファクタリング方針の査定 : 40人時
 
-## インスコ
-
+## インストール&実行
 - kscript が動かない, depends で指定するパッケージ名の ArtifactID がおかしい？
-```diff
-- @file:DependsOn("net.maswag.falcaun.FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun.FalCAuN-matlab:1.0-SNAPSHOT")
-+ @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-matlab:1.0-SNAPSHOT")
-```
-- cwd を `./example/kscript` へ移動しないと動かない
-- example と examples の違いは?
-  - examples の方はメンテされてない 放棄されている？
+  ```diff
+  - @file:DependsOn("net.maswag.falcaun.FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun.FalCAuN-matlab:1.0-SNAPSHOT")
+  + @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-matlab:1.0-SNAPSHOT")
+  ```
+- kscript は cwd を `./example/kscript` へ移動しないと動かない
 - mealy.main.kts だけ matlab なしで動くらしい
-  - mealy_main が無いと言われて動かない...
+  - (SOLVED) mealy_main が無いと言われて動かない...
     ```
     % ./mealy.main.kts
     Exception in thread "main" java.lang.ClassNotFoundException: kscript.scriplet.Mealy_main
@@ -46,10 +50,12 @@
     [kscript] [ERROR] Stderr      : '/home/hsaito/.cache/kscript/jar_c6053954427e99c7c1e5692b49852e09/ATS2.kts:42:20: error: interface SignalMapper does not have constructors[nl]val signalMapper = SignalMapper()[nl]                   ^[nl]'
     ```
     - SimpleSignalMapper に書き換えたら動きはした
-  - pacemaker.main.kts は Model1_Sceneario1_Correct.slx のsimulinkのバージョンが最新(2024a以降)でないと動かないかも?
+
+  - pacemaker.main.kts は Model1_Sceneario1_Correct.slx の simulink のバージョンが最新(2024a以降)でないと動かないかも?
     - https://jp.mathworks.com/help/simulink/slref/simulinkpreferences.html
     - matlab の command window で `slprivate('showprefs')` を実行して
       Simulink Preferences->Model Files->Do not load models created with a newer version of simulink のチェックを外す
+
 - ignore_matlab.sh で matlab を無視してビルドできそうに見えたが,
   これ使われてない? core 以下で実行しなければならない？
 
@@ -69,6 +75,25 @@
 
 - javadoc
   - unnamed package みたいな表示しかない
+  - `mvn javadoc:aggregate`, 動かん?
+    - バージョンが古いと? @link 中の型引数 `<T>` がエラーになるバグがありそう
+      - https://www.mail-archive.com/commits@mesos.apache.org/msg26303.html ?
+  - gh-pages ブランチに手元でビルドした document を upload して deploy してそう
+    - latest の circleCI はコケている
+
+- ./falcaun のバイナリ, 動かないw
+
+- example/hscc2020/utils コマンドが変わっている
+  ```diff
+  - robodoc --src ./diffDate.sh --doc ./doc/diffDate.html --singledoc --html
+  + robodoc --src ./diffDate.sh --doc ./doc/diffDate.html --singlefile --html
+  ```
+  - robodoc 自体は header のドキュメントをそれっぽく html へ展開してくれる
+
+## 雑記
+- example と examples の違いは?
+  - examples の方はメンテされてない 放棄されている？
+
 - STLの式の意味論の説明が欲しい
   - STL - LTL : atomic な条件式に signal がかける, 大小比較ができる ?
   - Globally と Eventually は □ や ♢ で表記されることもある STL 一般の文法
@@ -80,13 +105,6 @@
     - G や E で区間`[i,j]`を記述する際の文法
   - shellscript っぽく `$` をつけて書くと java の式を評価する機構がありそう (pacemaker.main.kts)
 
-- ./falcaun のバイナリ, 動かないw
-- example/hscc2020/utils コマンドが変わっている
-  ```diff
-  - robodoc --src ./diffDate.sh --doc ./doc/diffDate.html --singledoc --html
-  + robodoc --src ./diffDate.sh --doc ./doc/diffDate.html --singlefile --html
-  ```
-  - robodoc 自体は header のドキュメントをそれっぽく html へ展開してくれる
 - example/kotlin/README.md
   - On macOS と On Linux の記述の仕方が非対称なので揃えたい
     ```
@@ -95,10 +113,6 @@
     On Linux, you can likely find suitable directory to set `JAVA_HOME` by `ls /usr/lib/jvm/`.
     ```
 - `.imap`, `.omap` はそれぞれ input mapper と output mapper ぽい
-- `mvn javadoc:aggregate`, 動かん?
-  - gh-pages ブランチ, メンテされてない?
-    - circleCI がコケている
-  - 手動でビルドしてアップロードしてそう
 
 - 例を見たら十分かもしれないけれど, なんかチュートリアルか何かあれば良いんかな
 
@@ -125,6 +139,7 @@
     - "$stlNotGRotationLt3000" で変数参照してそう
     - signalStep は多分グローバルな変数
     - U_interval の interval ってなんだ?
+  - `val ignoreValues = listOf(null)` これなに？
 
 ### hscc2020
 hscc2020 の実験で使ったコード.
@@ -139,6 +154,8 @@ hscc2020 の実験で使ったコード.
     - 無くても問題ない?
 - run_falcaun_all.sh
   - 一日かけても終わらんかった
+  - 1.5日強で終了
+  - table4_breach.stl のケースが動かない, `table4_breach.omap.tsv` が無い
 
 ### rv2021
 四十坊さん作
@@ -152,14 +169,14 @@ CLI 用テスト
 
 - ./utils 以下の script の説明はここの README.md に書いてある
 
-## Code
-- System Under Learning(SUL) って一般的な略語なんだろうか
+## コード読み
+- System Under Learning(SUL) ~~って一般的な略語なんだろうか~~ は Learnlib 由来の略語
 - ANTLR v4 で TL 辺りのソースは一部自動生成されてる
 
 - falcaun (script)
   - linux 版の java が `/usr/lib/jvm` 以下の java11 を探すようになっている
   - sdk 版だと違う場所
-  - まずは JAVA_HOME から探したほうが良いかも
+  - まずは JAVA_HOME から探したほうが良いのかも?
 
 ### core
 - `NumericSUL`
