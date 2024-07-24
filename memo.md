@@ -3,6 +3,9 @@
 - バージョン固定したい
   - example/hscc2020 とか　example/rv2021 とかコミットを固定してビルドして実行するようにしたいかも
 - kotlin のバージョンもなんかいい感じに固定したい
+  - java 11 も含めて sdk 経由で入れさせる？
+- kscript の dependson の format とか javadoc のバグとかの問題は和賀さんの手元だと大丈夫だったんだろうか
+  - ./utils/deploy_javadoc.sh とかあるが...?
 - robustness って結局どういうこと?
 - `signal(x)` の x が指すものって結局なんだろう, 引数の n 番目で良い?
 
@@ -152,6 +155,7 @@ hscc2020 の実験で使ったコード.
     rm -f /home/mwaga/CyVeriA/src/test/resources/MATLAB/Autotrans_shift.mdl.autosave
     ```
     - 無くても問題ない?
+
 - run_falcaun_all.sh
   - 一日かけても終わらんかった
   - 1.5日強で終了
@@ -170,13 +174,26 @@ CLI 用テスト
 - ./utils 以下の script の説明はここの README.md に書いてある
 
 ## コード読み
-- System Under Learning(SUL) ~~って一般的な略語なんだろうか~~ は Learnlib 由来の略語
+- System Under Learning(SUL) ~~って一般的な略語なんだろうか~~ は Learnlib 由来の略語?
+  - Learnlib の wiki : https://github.com/LearnLib/learnlib/wiki/Instantiating-a-simple-learning-setup
 - ANTLR v4 で TL 辺りのソースは一部自動生成されてる
+- learnlib のドキュメントを見る限り, システムのオートマトンによる模倣メカニズムは Learnlib に依るものらしい
+  - mapper もそう
+  - cache = MembershipOracle?
 
 - falcaun (script)
   - linux 版の java が `/usr/lib/jvm` 以下の java11 を探すようになっている
   - sdk 版だと違う場所
   - まずは JAVA_HOME から探したほうが良いのかも?
+
+- LTSMin
+  - ./utils/check_env.sh だと etf2lts-mc の存在だけ確認しているけれど,
+    ソースではガッツリライブラリに依存している
+  - LTSMonitorIOBuilder 使っている
+    - LTSMonitorIO : MealyModelChecker のファクトリで, findCounterExample を実行すると条件式 (STL式) に違反しているmealyマシンとその入出力を返す
+    - BlackBoxVerifier と AbstractAdaptiveUpdater で使用
+    - https://learnlib.de/automatalib/maven-site/latest/apidocs/net/automatalib/modelchecker/ltsmin/monitor/package-summary.html
+    - つまり, STL式に違反している入力を探すパートで使用している?
 
 ### core
 - `NumericSUL`
@@ -192,6 +209,20 @@ CLI 用テスト
     - 今のこれは Abstract の方を返す
 - `RoSI`
   - robust satisfaction interval (RoSI)
+
+- AbstractAdaptiveSTLUpdater
+  - AdaptiveSTLUpdater の実装
+  - AdaptiveSTLList, StaticSTLList, StaticLTLList が継承
+  - Adaptive なんちゃらが多分四十坊さんの STL 式を書き換える機能を指している
+  
+
+#### Learnlib
+- MembershipOracle
+  - 対象システムの言語に, ある単語が属するか判定するクラスインターフェース
+  - processQuery だけ 
+- EquivalenceOracle
+  - 対象システムとAMが一致するか判定するクラスインターフェース
+  - findCounterExample だけ
 
 ### matlab
 - `SimulinkSULVerifier`
