@@ -30,23 +30,23 @@ Darwin)
     else
         arch=maci64
     fi
-  if java="$(/usr/libexec/java_home -v '11')/bin/java"; then
-    echo "Java 11 found at $java"
-  elif java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '11')/bin/java"; then
-    echo "Java 11 found at $java"
+  if java="$(/usr/libexec/java_home -v '21')/bin/java"; then
+    echo "Java 21 found at $java"
+  elif java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '21')/bin/java"; then
+    echo "Java 21 found at $java"
   else
-    echo "Error: Java 11 did not found"
+    echo "Error: Java 21 did not found"
     exit 1
   fi
   ;;
 Linux)
   arch=glnxa64
-  if java=$(find /usr/lib/jvm/java-11-openjdk* -name java -type f) 2>/dev/null; then
-    echo "Java 11 found at $java"
-  elif java=$(find /usr/lib/jvm/java-1.11.0-openjdk* -name java -type f | head -n 1) 2>/dev/null; then
-    echo "Java 11 found at $java"
+  if java=$(find /usr/lib/jvm/java-21-openjdk* -name java -type f) 2>/dev/null; then
+    echo "Java 21 found at $java"
+  elif java=$(find /usr/lib/jvm/java-1.21.0-openjdk* -name java -type f | head -n 1) 2>/dev/null; then
+    echo "Java 21 found at $java"
   else
-    echo "Error: Java 11 did not found"
+    echo "Error: Java 21 did not found"
     exit 1
   fi
   ;;

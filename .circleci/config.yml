@@ -14,11 +14,11 @@ jobs:
             tar xvf ltsmin-v3.1.0-linux.tgz
             sudo cp -r v3.1.0/* /usr
       - run:
-          name: Install OpenJDK 11
+          name: Install OpenJDK 21
           command: |
-            sudo apt-get update && sudo apt-get install openjdk-11-jdk maven -y
-            sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
-            sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
+            sudo apt-get update && sudo apt-get install openjdk-21-jdk maven -y
+            sudo update-alternatives --set java /usr/lib/jvm/java-21-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-21-openjdk-amd64/bin/javac
       - matlab/install:
           release: R2024a
           products: Simulink
