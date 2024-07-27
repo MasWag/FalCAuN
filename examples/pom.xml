@@ -67,16 +67,24 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.group_mmm</groupId>
-            <artifactId>falcaun</artifactId>
-            <version>${falcaun.version}</version>
+            <groupId>net.maswag.falcaun</groupId>
+            <artifactId>FalCAuN-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.maswag.falcaun</groupId>
+            <artifactId>FalCAuN-matlab</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- LearnLib -->
         <dependency>
             <groupId>de.learnlib.distribution</groupId>
             <artifactId>learnlib-distribution</artifactId>
-            <version>0.14.0</version>
+            <version>0.17.0</version>
             <type>pom</type>
         </dependency>
 
