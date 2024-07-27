@@ -43,7 +43,8 @@ Linux)
   arch=glnxa64
   if java=$(find /usr/lib/jvm/java-21-openjdk* -name java -type f) 2>/dev/null; then
     echo "Java 21 found at $java"
-  elif java=$(find /usr/lib/jvm/java-1.21.0-openjdk* -name java -type f | head -n 1) 2>/dev/null; then
+  elif java=$(find /usr/lib/jvm/java-1.21.0-openjdk* -name java -type f) 2>/dev/null; then
+    java=$java[0]
     echo "Java 21 found at $java"
   else
     echo "Error: Java 21 did not found"
