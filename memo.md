@@ -87,6 +87,8 @@
     - latest の circleCI はコケている
 
 - ./falcaun のバイナリ, 動かないw
+  - linux のときに java が jvm 以下に無くても, エラー処理がうまくいかずスルーされているバグがある
+    - `find /usr/lib/jvm/java-1.21.0-openjdk* -name java -type f | head -n 1` で find で失敗しても, パイプした命令が成功するので if 文は true に評価されて, `Java 21 found at ` と表示される
 
 - example/hscc2020/utils コマンドが変わっている
   ```diff
