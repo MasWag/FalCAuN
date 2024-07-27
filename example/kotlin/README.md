@@ -6,7 +6,7 @@ This directory contains examples to directly execute FalCAuN via Kotlin. Our exa
 Usage of kotlin scripts
 -----------------------
 
-To execute the examples with `.kts` suffixes, you need to install kscript first. Then, please install FalCAuN using the following commands at the root of FalCAuN.
+To execute the examples with `.kts` suffixes, you need to install `kotlin<2.0` and `kscript` first (*kotlin 2.x series are not supported yet*). Then, please install FalCAuN using the following commands at the root of FalCAuN.
 
 ```bash
 mvn clean --projects matlab
