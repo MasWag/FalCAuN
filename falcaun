@@ -23,6 +23,22 @@ if expr "$MATLAB_VERSION" \< R2021a > /dev/null 2>&1; then
     printf "Warning: You are using MATLAB %s. This may be too old\n" "$MATLAB_VERSION"
 fi
 
+#######################################
+# Try to find java binary that version equals 21 from JAVA_HOME
+# Globals:
+#   java
+# Arguments:
+#   None
+# Returns:
+#   0 if it exists, 1 otherwise.
+#######################################
+check_java_home () {
+  java=$JAVA_HOME/bin/java
+  local JAVA_VERSION=$($java -version -version 2>&1 | awk -F '"' '/version/ {print $2}')
+  local JAVA_VERSION_MAJOR=$(echo "$JAVA_VERSION" | cut -d '.' -f1)
+  [ "$JAVA_VERSION_MAJOR" = "21" ]
+}
+
 case "$(uname)" in
 Darwin)
     if [ "$(arch)" = arm64 ]; then
@@ -30,7 +46,9 @@ Darwin)
     else
         arch=maci64
     fi
-  if java="$(/usr/libexec/java_home -v '21')/bin/java"; then
+  if check_java_home ; then
+    echo "Java 21 found at $java"
+  elif java="$(/usr/libexec/java_home -v '21')/bin/java"; then
     echo "Java 21 found at $java"
   elif java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '21')/bin/java"; then
     echo "Java 21 found at $java"
@@ -41,7 +59,9 @@ Darwin)
   ;;
 Linux)
   arch=glnxa64
-  if java=$(find /usr/lib/jvm/java-21-openjdk* -name java -type f) 2>/dev/null; then
+  if check_java_home ; then
+    echo "Java 21 found at $java"
+  elif java=$(find /usr/lib/jvm/java-21-openjdk* -name java -type f) 2>/dev/null; then
     echo "Java 21 found at $java"
   elif java=$(find /usr/lib/jvm/java-1.21.0-openjdk* -name java -type f) 2>/dev/null; then
     java=$java[0]
