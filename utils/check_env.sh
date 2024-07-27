@@ -32,7 +32,7 @@ log_warn () {
 }
 
 ## Check Java
-log "Check if Java 11 is installed"
+log "Check if Java 17 is installed"
 
 ## Use JAVA_HOME if it is set
 set +u
@@ -44,12 +44,12 @@ set -u
 if which java > /dev/null; then
     JAVA_VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
     JAVA_VERSION_MAJOR=$(echo "$JAVA_VERSION" | cut -d '.' -f1)
-    if [ "$JAVA_VERSION_MAJOR" = "11" ]; then
+    if [ "$JAVA_VERSION_MAJOR" = "17" ]; then
         log_ok "Detected Java $JAVA_VERSION"
     else
         log_error "Detected Java $JAVA_VERSION"
-        log_error "FalCAuN requires Java 11"
-        log "Maybe you need to set JAVA_HOME to the correct Java 11 installation"
+        log_error "FalCAuN requires Java 17"
+        log "Maybe you need to set JAVA_HOME to the correct Java 17 installation"
         exit 1
     fi
 else

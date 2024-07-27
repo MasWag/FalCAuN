@@ -36,7 +36,7 @@ mvn install
 After that, execute `jupyter` with suitable environmental variables. The following shows an example on macOS.
 
 ```sh
-JAVA_HOME=$(/usr/libexec/java_home -v 11) KOTLIN_JUPYTER_JAVA_OPTS="-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64" jupyter notebook
+JAVA_HOME=$(/usr/libexec/java_home -v 17) KOTLIN_JUPYTER_JAVA_OPTS="-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64" jupyter notebook
 ```
 
 On Linux, you can likely find suitable directory to set `JAVA_HOME` by `ls /usr/lib/jvm/`.
