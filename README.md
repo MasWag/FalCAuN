@@ -18,7 +18,7 @@ FalCAuN is implemented in Java. We suppose FalCAuN works on many UNIX-like opera
 
 The requirements for the core module of FalCAuN are as follows.
 
-- Java 21
+- Java 17
 - Maven
 - LTSMin 3.1.0
   - This is not officially released yet.
@@ -35,10 +35,10 @@ Here, we provide the instructions to install the core module of FalCAuN.
 
 #### 1. Install the Requirements
 
-You need to install the requirements above. For example, on Ubuntu, you can install Java 21 and Maven by the following command.
+You need to install the requirements above. For example, on Ubuntu, you can install Java 17 and Maven by the following command.
 
 ```sh
-sudo apt-get install maven openjdk-21-jdk-headless -y
+sudo apt-get install maven openjdk-17-jdk-headless -y
 ```
 
 You have to manually install LTSMin 3.1.0 and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 with the following commands.
@@ -103,7 +103,7 @@ FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tri
 ### Notes
 
 - For the matlab module, the unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test -DskipTests=false`.
-    - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 21) mvn test -DskipTests=False`.
+    - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=False`.
     - Also, the automatic transmission model requires parameters defined in an example by Mathworks. To load it, you probably need to set up the example by Mathworks and the path beforehand. 
         - The example by Mathworks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
         - See `./src/test/resources/MATLAB/initAT.m` for an example to set the path.
