@@ -61,6 +61,8 @@
 
 - ignore_matlab.sh で matlab を無視してビルドできそうに見えたが,
   これ使われてない? core 以下で実行しなければならない？
+  - そもそもパッケージ名が違う, 多分古いのでもう動かない
+  - 内容としては matlab ディレクトリ以下を rm する感じ
 
 - jupyter notebook
   - README にあるとおり, pip で jupyter と kotlin-jupyter-kernel を入れたら良い
@@ -173,6 +175,11 @@ CLI 用テスト
 
 - ./utils 以下の script の説明はここの README.md に書いてある
 
+### examples 以下
+- 古い
+- org.group_mmm がもともとのパッケージのドメインだったっぽい どこかのタイミングで動いた
+  - 2895e1ad56dcbccdb76b1e4dad3effa16fd01ca9
+
 ## コード読み
 - System Under Learning(SUL) ~~って一般的な略語なんだろうか~~ は Learnlib 由来の略語?
   - Learnlib の wiki : https://github.com/LearnLib/learnlib/wiki/Instantiating-a-simple-learning-setup
@@ -194,6 +201,8 @@ CLI 用テスト
     - BlackBoxVerifier と AbstractAdaptiveUpdater で使用
     - https://learnlib.de/automatalib/maven-site/latest/apidocs/net/automatalib/modelchecker/ltsmin/monitor/package-summary.html
     - つまり, STL式に違反している入力を探すパートで使用している?
+
+- SimulinkSULMapper -> NumericSULMapper のコミット : bff0a3fa13796c77fdc727ecdcb9edf84c80e0c8
 
 ### core
 - `NumericSUL`
@@ -227,6 +236,7 @@ CLI 用テスト
 ### matlab
 - `SimulinkSULVerifier`
   - `NumericSULVerifier` を継承
+  - コンストラクタの `simulinkSimulationStep : double`, 何？
 - `SimulinkModels.step(@Nonnull List<Double> inputSignal)`
   - 過去の inputSignal を全部保持して毎回一から実行してそう
 
