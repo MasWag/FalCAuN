@@ -4,7 +4,7 @@
   - example/hscc2020 とか　example/rv2021 とかコミットを固定してビルドして実行するようにしたいかも
 - kotlin のバージョンもなんかいい感じに固定したい
   - java 11 も含めて sdk 経由で入れさせる？
-- kscript の dependson の format とか javadoc のバグとかの問題は和賀さんの手元だと大丈夫だったんだろうか
+- ~~kscript の dependson の format とか javadoc のバグとかの問題は和賀さんの手元だと大丈夫だったんだろうか~~ だめだったらしい
   - ./utils/deploy_javadoc.sh とかあるが...?
 - robustness って結局どういうこと?
 - `signal(x)` の x が指すものって結局なんだろう, 引数の n 番目で良い?
