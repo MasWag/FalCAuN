@@ -9,6 +9,9 @@
 - SOLVED ~~kscript の dependson の format とか javadoc のバグとかの問題は和賀さんの手元だと大丈夫だったんだろうか~~ だめだったらしい
   - ~~./utils/deploy_javadoc.sh とかあるが...?~~
 - robustness って結局どういうこと?
+  - 元々はCPSの出力が多少摂動したところで論理式の真偽を変えないようにするために導入した定量化
+    - robustness degree/estimate とか robust semantic(denotational) とか
+  - STL式の充足度合いを測り, 違反する入力信号を最適化手法で探すための目的関数として使用？
 - `signal(x)` の x が指すものって結局なんだろう, 引数の n 番目で良い?
 
 ## 名目
@@ -16,14 +19,14 @@
 - 再利用性と保守性を高めるためのリファクタリング方針の査定 : 40人時
 
 ## インストール&実行
-- kscript が動かない, depends で指定するパッケージ名の ArtifactID がおかしい？
+- FIXED: kscript が動かない, depends で指定するパッケージ名の ArtifactID がおかしい？
   ```diff
   - @file:DependsOn("net.maswag.falcaun.FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun.FalCAuN-matlab:1.0-SNAPSHOT")
   + @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-matlab:1.0-SNAPSHOT")
   ```
 - kscript は cwd を `./example/kscript` へ移動しないと動かない
 - mealy.main.kts だけ matlab なしで動くらしい
-  - (SOLVED) mealy_main が無いと言われて動かない...
+  - SOLVED: mealy_main が無いと言われて動かない...
     ```
     % ./mealy.main.kts
     Exception in thread "main" java.lang.ClassNotFoundException: kscript.scriplet.Mealy_main
@@ -50,7 +53,7 @@
   - ~~kscript も最新だと ATS1 は動かなかった 3.1.0 でやっている~~
   - バージョン固定したほうがよい?
 
-  - ATS2.kts が動かん
+  - FIXED: ATS2.kts が動かん
     ```
     [kscript] [ERROR] Stderr      : '/home/hsaito/.cache/kscript/jar_c6053954427e99c7c1e5692b49852e09/ATS2.kts:42:20: error: interface SignalMapper does not have constructors[nl]val signalMapper = SignalMapper()[nl]                   ^[nl]'
     ```
@@ -89,7 +92,7 @@
     - latest の circleCI はコケている
 
 - ./falcaun のバイナリ, 動かないw
-  - linux のときに java が jvm 以下に無くても, エラー処理がうまくいかずスルーされているバグがある
+  - linux のときに java が jvm 以下に無くても, エラー処理がうまくいかずスルーされているバグがある 
     - `find /usr/lib/jvm/java-1.21.0-openjdk* -name java -type f | head -n 1` で find で失敗しても, パイプした命令が成功するので if 文は true に評価されて, `Java 21 found at ` と表示される
 
 - example/hscc2020/utils コマンドが変わっている
@@ -125,6 +128,8 @@
 
 - 例を見たら十分かもしれないけれど, なんかチュートリアルか何かあれば良いんかな
 
+- verifier に EQOracle を何も追加しないと Falsification に失敗する
+
 ## Examples
 ### kotlin
 もしかして ATS1 って AT_S1 のことか？だとしたら ATS6 は何者？
@@ -146,9 +151,13 @@
 - ATS6a.main.kts
   - undocumented な stl 式の記述がある?
     - "$stlNotGRotationLt3000" で変数参照してそう
+      - もしかして kotlin か言語側の機能?
     - signalStep は多分グローバルな変数
     - U_interval の interval ってなんだ?
   - `val ignoreValues = listOf(null)` これなに？
+- ATS1-step-5.ipynb
+  - `%use lets-plot` て基本jupyter上でしか動かないから移植が困難
+    - JFreeChart とかで書き直すか？
 
 ### hscc2020
 hscc2020 の実験で使ったコード.
@@ -227,6 +236,7 @@ CLI 用テスト
   - AdaptiveSTLUpdater の実装
   - AdaptiveSTLList, StaticSTLList, StaticLTLList が継承
   - Adaptive なんちゃらが多分四十坊さんの STL 式を書き換える機能を指している
+    - ということは StaticSTLList が Abstract*Adaptive*STLUpdator なのはおかしいのでは？
   
 
 #### Learnlib
