@@ -6,14 +6,17 @@ FalCAuN checks the given system satisfies the specifications by finding an input
 It is called falsification.
 
 The main feature of FalCAuN is the combination of BBC and optimization-based falsification.
+
 BBC (Black-box checking) [Meinke, MLDSA'18], [Peled et al., JALC'02] is a way of testing method that constructs a mealy machine by automata-learning from a black-box system and
 uses this mealy machine for model-checking of the specifications.
 Since in general a system like CPS is large and complicated,
 it is hard to do model-checking to the system directly.
 In contrast, model-checking to the mealy-machine is easier and more light-weighted.
-<!-- ![](bbc-workflow.png) -->
+
 Optimization-based falsification is a testing method to find a counter-example
 violating a specification by minimizing a kind of quantitative degree through simulations. FalCAuN uses robust semantics of STL formulas as the degree.
+
+<!-- ![](bbc-workflow.png) -->
 
 ## Tutorial: Automatic Transmission benchmark
 It shows an example called automatic transmission benchmark [Hoxha et al., ARCH@CPSWeek 2014] as a tutorial.
