@@ -62,7 +62,7 @@ We provide a script to check if some of the requirements are installed. You can 
 You can build and install FalCAuN using Maven. An example of installing the core module and the top-level module is as follows.
 
 ```sh
-mvn install --projects core,
+mvn install --also-make --projects core
 ```
 
 ### Installation of the matlab Module
