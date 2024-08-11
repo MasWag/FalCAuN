@@ -51,4 +51,4 @@ jobs:
       - name: Run the examples
         run: |
           cd example/kotlin
-          kscript ./mealy.main.kts
+          kscript ./mealy-nox.main.kts
