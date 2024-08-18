@@ -74,6 +74,7 @@ public class SimulinkModel {
             matlab.eval(initScript);
         } catch (Exception e) {
             log.error("An error occurred during running the initial script. This also happens if the engine is not correctly installed.");
+            log.error("Init Script: {}", initScript);
             throw e;
         }
         // Initialize the current state
