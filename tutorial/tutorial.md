@@ -7,11 +7,11 @@ It is called falsification.
 
 The main feature of FalCAuN is the combination of BBC and optimization-based falsification.
 
-BBC (Black-box checking) [Meinke, MLDSA'18], [Peled et al., JALC'02] is a way of testing method that constructs a mealy machine by automata-learning from a black-box system and
-uses this mealy machine for model-checking of the specifications.
+BBC (Black-box checking) [Meinke, MLDSA'18], [Peled et al., JALC'02] is a way of testing method that constructs a Mealy machine by automata-learning from a black-box system and
+uses this Mealy machine for model-checking of the specifications.
 Since in general a system like CPS is large and complicated,
 it is hard to do model-checking to the system directly.
-In contrast, model-checking to the mealy-machine is easier and more light-weighted.
+In contrast, model-checking to the Mealy machine is easier and more light-weighted.
 
 Optimization-based falsification is a testing method to find a counter-example
 violating a specification by minimizing a kind of quantitative degree through simulations. FalCAuN uses robust semantics of STL formulas as the degree.
@@ -52,7 +52,7 @@ Second, define a mapper.
 It is hard to deal with real-valued signals so that
 alphabet abstraction is introduced.
 A `SULMapper` provides an input mapper, mapping from real values to discrete alphabets, and an output mapper vise versa.
-The approximated mealy-machine uses these alphabet-abstracted signals.
+The approximated Mealy machine uses these alphabet-abstracted signals.
 ```kotlin
 // Define the input and output mappers
 val throttleValues = listOf(0.0, 100.0)
@@ -138,7 +138,7 @@ val properties = AdaptiveSTLList(stlList, signalLength)
 
 Then, define a verifier using them above.
 A verifier needs `MealyEquivalenceOracle`, used to check
-if the given system and the mealy-machine by learning do the same behavior.
+if the given system and the Mealy machine by learning do the same behavior.
 This is a part of BBC.
 In this example, the verifier below has two equivalence oracles.
 `GAEQOracle` is an equivalence oracle based on a genetic algorithm.
@@ -207,7 +207,7 @@ the velocity does not exceed `120`.
 And FalCAuN falsifies this specification by finding a counter-example.
 This counter-example shows when `throttle` input keeps the max value `100`, full throttle, the velocity exceeds `120` in `20` ticks.
 
-The mealy-machine constructed by automat-learning from the target system is here.
+The Mealy machine constructed by automat-learning from the target system is here.
 This graph highlighting the violating path is described by the above `abstract input` and `abstract output`.
 ![](learned-mealy-machine.png)
 
