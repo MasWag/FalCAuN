@@ -9,9 +9,9 @@ The main feature of FalCAuN is the combination of BBC and optimization-based fal
 
 BBC (Black-box checking) [Meinke, MLDSA'18], [Peled et al., JALC'02] is a way of testing method that constructs a Mealy machine by automata-learning from a black-box system and
 uses this Mealy machine for model-checking of the specifications.
-Since in general a system like CPS is large and complicated,
-it is hard to do model-checking to the system directly.
-In contrast, model-checking to the Mealy machine is easier and more light-weighted.
+The main benefit of black-box checking is that the system model is unnecessary, and the system can be black-box.
+In contrast, the standard model checking requires the system model, which is usually not easy.
+
 
 Optimization-based falsification is a testing method to find a counter-example
 violating a specification by minimizing a kind of quantitative degree through simulations. FalCAuN uses robust semantics of STL formulas as the degree.
