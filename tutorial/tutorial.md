@@ -8,7 +8,7 @@ It is called falsification.
 The main feature of FalCAuN is the combination of BBC and optimization-based falsification.
 
 BBC (Black-box checking) [Meinke, MLDSA'18], [Peled et al., JALC'02] is a way of testing method that constructs a Mealy machine by automata-learning from a black-box system and
-uses this Mealy machine for model-checking of the specifications.
+uses this Mealy machine for model checking of the specifications.
 The main benefit of black-box checking is that the system model is unnecessary, and the system can be black-box.
 In contrast, the standard model checking requires the system model, which is usually not easy.
 
