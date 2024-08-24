@@ -22,7 +22,7 @@ violating a specification by minimizing a kind of quantitative degree through si
 It shows an example called automatic transmission benchmark [Hoxha et al., ARCH@CPSWeek 2014] as a tutorial.
 We provide the same code in `example/kotlin/ATS1-step-5.ipynb` and you can run it using jupyter with kotlin kernel.
 Details are in `example/kotlin/README.md`.
-This example uses a system simulating an automobile transmission system and implemented by Simulink.
+This example uses a system simulating an automatic transmission system and implemented by Simulink.
 It is located in `example/kotlin/Autotrans_shift.mdl`.
 ![](ats.png)
 
