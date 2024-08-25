@@ -1,36 +1,32 @@
 # Tutorial
 ## Introduction
 FalCAuN is a toolkit for testing black-box systems like CPSs (cyber-physical systems) based on automata learning and model checking.
-Given specifications as STL(Signal Temporal Logic) formulas,
-FalCAuN checks the given system satisfies the specifications by finding an input signal that its corresponding output signal violates the specifications.
+Given a list of specifications as STL(Signal Temporal Logic) formulas,
+FalCAuN tests that the given system satisfies the specifications by finding an input signal whose corresponding output signal violates the specifications.
 It is called falsification.
 
-The main feature of FalCAuN is the combination of BBC and optimization-based falsification.
-
-BBC (Black-box checking) [Meinke, MLDSA'18], [Peled et al., JALC'02] is a way of testing method that constructs a Mealy machine by automata-learning from a black-box system and
-uses this Mealy machine for model checking of the specifications.
+The main feature of FalCAuN is the combination of black-box checking and optimization-based falsification.
+BBC (black-box checking) [Meinke18], [Peled+02] is a way of testing method that constructs a Mealy machine by automata-learning from a black-box system and uses this Mealy machine for model checking of the specifications.
 The main benefit of black-box checking is that the system model is unnecessary, and the system can be black-box.
-In contrast, the standard model checking requires the system model, which is usually not easy.
+In contrast, the standard model checking requires the system model, which is usually challenging.
 
 
-Optimization-based falsification is a testing method to find a counter-example
-violating a specification by minimizing a kind of quantitative degree through simulations. FalCAuN uses robust semantics of STL formulas as the degree.
+Optimization-based falsification [Kapinski+16] is a testing method to find a counterexample violating a specification by minimizing the satisfaction degree of the specification. The minimization is done by black-box optimization, such as a genetic algorithm and simulated annealing. FalCAuN uses the robust semantics of STL as the degree.
 
 <!-- ![](bbc-workflow.png) -->
 
 ## Tutorial: Automatic Transmission benchmark
-It shows an example called automatic transmission benchmark [Hoxha et al., ARCH@CPSWeek 2014] as a tutorial.
-We provide the same code in `example/kotlin/ATS1-step-5.ipynb` and you can run it using jupyter with kotlin kernel.
+Here, we demonstrate the usage of FalCauN with an example called automatic transmission benchmark [Hoxha+14] as a tutorial.
+We provide the same code in `example/kotlin/ATS1-step-5.ipynb`, which can be run using Jupyter with Kotlin kernel.
 Details are in `example/kotlin/README.md`.
-This example uses a system simulating an automatic transmission system and implemented by Simulink.
-It is located in `example/kotlin/Autotrans_shift.mdl`.
+This example uses a Simulink model of an automatic transmission system. It is located in `example/kotlin/Autotrans_shift.mdl`.
 ![](ats.png)
 
-First, include falcaun and write `initScript` Matlab executes.
+First, include FalCAuN and write `initScript` Matlab executes.
 ```kotlin
 import net.maswag.falcaun.*
 
-// Initializing script for matlab
+// Initializing script for MATLAB
 val initScript = """
 versionString = version('-release');
 oldpath = path;
@@ -46,13 +42,19 @@ val simulinkSimulationStep = 0.0025
 // Load the automatic transmission model. This must be manually closed!!
 val sul = SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep)
 ```
-`SimulinkSUL` implements `Closable` so `use` function is recommended to use, though this code does not use it.
+`SimulinkSUL` implements the `Closable` interface of Java, and it is recommended to use the `use` function of Kotlin, though this example does not use it.
 
 Second, define a mapper.
-It is hard to deal with real-valued signals so that
-alphabet abstraction is introduced.
-A `SULMapper` provides an input mapper, mapping from real values to discrete alphabets, and an output mapper vise versa.
-The approximated Mealy machine uses these alphabet-abstracted signals.
+Since Mealy machines receive finite events, real-valued signals are abstracted into a finite alphabet.
+`NumericSULMapper` provides input, output, and (general) signal mappers:
+
+- The input mapper maps discrete input events into a real-valued input signal.
+- The output mapper maps a real-valued output signal into discrete observations.
+- The signal mapper creates "pseudo output signals" from the input and output signals to handle complicated properties.
+
+The approximated Mealy machine uses these alphabet-abstracted signals. For instance, in the following example, an input signal consists of two dimensions (throttle and brake), and we create input events for each pair of the following values: (0.0, 0.0), (100.0, 0.0), (0.0, 325.0), and (100.0, 325.0). An output signal consists of three dimensions (velocity, acceleration, and gear value). By specifying `previous_max_output(0)` in the definition of signal mapper, it creates a pseudo signal of the maximum value of `output(0)` (velocity in this case) since the latest sampling point. The output mapper ignores the velocity, acceleration, and gear value and assigns a discrete observation for each of the following range of the pseudo signal: $[-\infty 20.0)$, $[20.0, 40.0)$, $[40.0, 60.0)$, $[60.0, 80.0)$, $[80.0, 100.0)$, $[100.0, 120.0)$, and $[120.0, \infty)$.
+
+
 ```kotlin
 // Define the input and output mappers
 val throttleValues = listOf(0.0, 100.0)
@@ -72,7 +74,8 @@ val mapper =
 ```
 
 Third, give STL formulas.
-The syntax is below
+The syntax of STL in FalCAuN is as follows.
+
 ```
 expr : atomic
      | expr && expr
@@ -109,10 +112,11 @@ EVENTUALLY : '<>' | 'ev' | 'F'
 
 INTERVAL : [ NATURAL , NATURAL ]
 ```
-`GLOBALLY` and `EVENTUALLY` have 3 notations and the same meanings each.
-For STL semantics, see the paper[Waga, HSCC'20].
 
-STL formulas are given as strings.
+`GLOBALLY` and `EVENTUALLY` have three alternative notations with the same semantics.
+For STL semantics, see the paper[Waga20].
+
+In FalCAuN, STL formulas are given as strings.
 ```kotlin
 import net.maswag.falcaun.TemporalLogic.STLCost;
 
@@ -132,24 +136,23 @@ val signalLength = 6
 val properties = AdaptiveSTLList(stlList, signalLength)
 ```
 `STLFactory` is used to parse them.
-`signal(3)` points to the third element of the list given to the `OutputMapperReader` above, `velocityValues`.
+`signal(3)` points to the fourth output signal, the pseudo signal in this case.
 
 <!-- `AdaptiveSTLList` has the feature to find a violating signal efficiently. [Shijubo+, RV'21] -->
 
-Then, define a verifier using them above.
-A verifier needs `MealyEquivalenceOracle`, used to check
-if the given system and the Mealy machine by learning do the same behavior.
-This is a part of BBC.
-In this example, the verifier below has two equivalence oracles.
+Then, define a verifier using the above.
+A verifier needs `MealyEquivalenceOracle` to check if the given system and the learned Mealy machine behave equivalently.
+In this example, the verifier below has two equivalence oracles: `CornerCaseEQOracle` and `GAEQOracle`:
+`CornerCaseEQOracle` is an equivalence oracle that tests the equivalence for the corner case inputs, such as keeping the maximum throttle;
 `GAEQOracle` is an equivalence oracle based on a genetic algorithm.
 `addGAEQOracleAll` adds this oracle for each STL property.
 ```kotlin
 val verifier = NumericSULVerifier(sul, signalStep, properties, mapper)
 
-// Timeout must be set before adding equivalence testing
+// Timeout must be set before adding equivalence testing methods
 verifier.setTimeout(5 * 60) // 5 minutes
 
-// First, try corner cases
+// First, try the corner cases
 verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
 
 // Constants for the GA-based equivalence testing
@@ -188,9 +191,9 @@ println("Number of simulations: ${verifier.simulinkCount}")
 println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
 ```
 
-For example, since the system does not satisfy the specification,
-a counter-example violating the specification will be output like below.
-`concrete input` is real values given to the system directly.
+In this example, since the system does not satisfy the specification,
+a counterexample violating the specification is shown as follows.
+`concrete input` is a list of real values specifying the signal given to the system.
 `abstract input` is the alphabet-abstracted input by the input mapper.
 ```
 [] ( output(3) < 120.000000 ) is falsified by the following counterexample
@@ -199,15 +202,15 @@ cex abstract input: ba ba ba ba ba
 cex abstract output: aaaa aaad aaae aaaf aaag
 ```
 
-The observation of the below input and output to the target system shows this output above.
+The following input and output to the target system shows this output above.
 ![](timeline.png)
 
 Intuitively the formula `[] ( output(3) < 120.000000 )` means that
 the velocity does not exceed `120`.
-And FalCAuN falsifies this specification by finding a counter-example.
-This counter-example shows when `throttle` input keeps the max value `100`, full throttle, the velocity exceeds `120` in `20` ticks.
+And FalCAuN falsifies this specification by finding a counterexample.
+This counterexample shows when `throttle` input keeps the max value `100`, full throttle, the velocity exceeds `120` in `20` ticks.
 
-The Mealy machine constructed by automat-learning from the target system is here.
+The Mealy machine constructed by an automata learning algorithm is shown below.
 This graph highlighting the violating path is described by the above `abstract input` and `abstract output`.
 ![](learned-mealy-machine.png)
 
@@ -221,7 +224,8 @@ References
 ----------
 
 <!-- - [Shijubo+, RV'21] Efficient Black-Box Checking via Model Checking with Strengthened Specifications. Junya Shijubo, Masaki Waga, and Kohei Suenaga -->
-- [Waga, HSCC'20]: Falsification of cyber-physical systems with robustness-guided black-box checking. Masaki Waga
-- [Meinke, MLDSA'18]: Meinke, K. (2018). Learning-Based Testing: Recent Progress and Future Prospects. In: Bennaceur, A., Hähnle, R., Meinke, K. (eds) Machine Learning for Dynamic Software Analysis: Potentials and Limits. Lecture Notes in Computer Science(), vol 11026. Springer, Cham. https://doi.org/10.1007/978-3-319-96562-8_2
-- [Peled et al., JALC'02]: Doron A. Peled, Moshe Y. Vardi, and Mihalis Yannakakis. 2002. Black Box Checking. Journal of Automata, Languages and Combinatorics 7, 2 (2002), 225–246.
-- [Hoxha et al., ARCH@CPSWeek 2014]: Benchmarks for Temporal Logic Requirements for Automotive Systems, ARCH@CPSWeek 2014, Bardh Hoxha, Houssam Abbas, Georgios E. Fainekos.
+- [Waga20]: Falsification of cyber-physical systems with robustness-guided black-box checking. Masaki Waga
+- [Meinke18]: Meinke, K. (2018). Learning-Based Testing: Recent Progress and Future Prospects. In: Bennaceur, A., Hähnle, R., Meinke, K. (eds) Machine Learning for Dynamic Software Analysis: Potentials and Limits. Lecture Notes in Computer Science(), vol 11026. Springer, Cham. https://doi.org/10.1007/978-3-319-96562-8_2
+- [Peled+02]: Doron A. Peled, Moshe Y. Vardi, and Mihalis Yannakakis. 2002. Black Box Checking. Journal of Automata, Languages and Combinatorics 7, 2 (2002), 225–246.
+- [Kapinski+16]: Kapinski, James, et al. "Simulation-based approaches for verification of embedded control systems: An overview of traditional and advanced modeling, testing, and verification techniques." IEEE Control Systems Magazine 36.6 (2016): 45-64.
+- [Hoxha+14]: Benchmarks for Temporal Logic Requirements for Automotive Systems, ARCH@CPSWeek 2014, Bardh Hoxha, Houssam Abbas, Georgios E. Fainekos.
