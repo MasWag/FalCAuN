@@ -6,7 +6,7 @@ FalCAuN tests that the given system satisfies the specifications by finding an i
 It is called falsification.
 
 The main feature of FalCAuN is the combination of black-box checking and optimization-based falsification.
-BBC (black-box checking) [Meinke18], [Peled+02] is a way of testing method that constructs a Mealy machine by automata-learning from a black-box system and uses this Mealy machine for model checking of the specifications.
+BBC (black-box checking) [Meinke18], [Peled+99] is a way of testing method that constructs a Mealy machine by automata-learning from a black-box system and uses this Mealy machine for model checking of the specifications.
 The main benefit of black-box checking is that the system model is unnecessary, and the system can be black-box.
 In contrast, the standard model checking requires the system model, which is usually challenging.
 
@@ -224,8 +224,8 @@ References
 ----------
 
 <!-- - [Shijubo+, RV'21] Efficient Black-Box Checking via Model Checking with Strengthened Specifications. Junya Shijubo, Masaki Waga, and Kohei Suenaga -->
-- [Waga20]: Falsification of cyber-physical systems with robustness-guided black-box checking. Masaki Waga
-- [Meinke18]: Meinke, K. (2018). Learning-Based Testing: Recent Progress and Future Prospects. In: Bennaceur, A., Hähnle, R., Meinke, K. (eds) Machine Learning for Dynamic Software Analysis: Potentials and Limits. Lecture Notes in Computer Science(), vol 11026. Springer, Cham. https://doi.org/10.1007/978-3-319-96562-8_2
-- [Peled+02]: Doron A. Peled, Moshe Y. Vardi, and Mihalis Yannakakis. 2002. Black Box Checking. Journal of Automata, Languages and Combinatorics 7, 2 (2002), 225–246.
+- [Waga20]: Waga, Masaki. "Falsification of cyber-physical systems with robustness-guided black-box checking." Proceedings of the 23rd International Conference on Hybrid Systems: Computation and Control. 2020.
+- [Meinke18]: Meinke, Karl. "Learning-based testing: recent progress and future prospects." Machine Learning for Dynamic Software Analysis: Potentials and Limits: International Dagstuhl Seminar 16172, Dagstuhl Castle, Germany, April 24-27, 2016, Revised Papers. Springer International Publishing, 2018.
+- [Peled+99]: Peled, Doron, Moshe Y. Vardi, and Mihalis Yannakakis. "Black box checking." International Conference on Protocol Specification, Testing and Verification. Boston, MA: Springer US, 1999.
 - [Kapinski+16]: Kapinski, James, et al. "Simulation-based approaches for verification of embedded control systems: An overview of traditional and advanced modeling, testing, and verification techniques." IEEE Control Systems Magazine 36.6 (2016): 45-64.
-- [Hoxha+14]: Benchmarks for Temporal Logic Requirements for Automotive Systems, ARCH@CPSWeek 2014, Bardh Hoxha, Houssam Abbas, Georgios E. Fainekos.
+- [Hoxha+14]: Hoxha, Bardh, Houssam Abbas, and Georgios Fainekos. "Benchmarks for Temporal Logic Requirements for Automotive Systems." ARCH@ CPSWeek 34 (2014): 25-30.
