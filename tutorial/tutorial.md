@@ -2,11 +2,11 @@
 ## Introduction
 FalCAuN is a toolkit for testing black-box systems like CPSs (cyber-physical systems) based on automata learning and model checking.
 Given a list of specifications as STL(Signal Temporal Logic) formulas,
-FalCAuN tests that the given system satisfies the specifications by finding an input signal whose corresponding output signal violates the specifications.
-It is called falsification.
+FalCAuN tests whether the given system satisfies the specifications by finding an input signal that causes the corresponding output signal to violate the specifications.
+This process is called falsification.
 
 The main feature of FalCAuN is the combination of black-box checking and optimization-based falsification.
-BBC (black-box checking) [Meinke18], [Peled+99] is a way of testing method that constructs a Mealy machine by automata-learning from a black-box system and uses this Mealy machine for model checking of the specifications.
+BBC (black-box checking) [Meinke18], [Peled+99] is a testing method that constructs a Mealy machine via automata learning from a black-box system, then uses this machine for model checking the specifications.
 The main benefit of black-box checking is that the system model is unnecessary, and the system can be black-box.
 In contrast, the standard model checking requires the system model, which is usually challenging.
 
@@ -114,7 +114,7 @@ INTERVAL : [ NATURAL , NATURAL ]
 ```
 
 `GLOBALLY` and `EVENTUALLY` have three alternative notations with the same semantics.
-For STL semantics, see the paper[Waga20].
+For STL semantics, see the paper [Waga20].
 
 In FalCAuN, STL formulas are given as strings.
 ```kotlin
@@ -206,8 +206,8 @@ The following input and output to the target system shows this output above.
 ![](timeline.png)
 
 Intuitively the formula `[] ( output(3) < 120.000000 )` means that
-the velocity does not exceed `120`.
-And FalCAuN falsifies this specification by finding a counterexample.
+the velocity does not exceed `120`, and
+FalCAuN falsified this specification by finding a counterexample.
 This counterexample shows when `throttle` input keeps the max value `100`, full throttle, the velocity exceeds `120` in `20` ticks.
 
 The Mealy machine constructed by an automata learning algorithm is shown below.
