@@ -55,9 +55,6 @@ val target: CompactMealy<String, String> = AutomatonBuilders.newMealy<String, St
     .create()
 // @formatter:on
 
-// This shows the target Mealy machine in a new window. The script is blocked until the window is closed.
-Visualization.visualize(target.transitionGraphView(sigma))
-
 // Define LTL properties
 val ltlFactory = LTLFactory()
 val ltlList =

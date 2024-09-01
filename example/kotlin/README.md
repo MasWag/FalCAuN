@@ -6,7 +6,7 @@ This directory contains examples to directly execute FalCAuN via Kotlin. Our exa
 Usage of kotlin scripts
 -----------------------
 
-To execute the examples with `.kts` suffixes, you need to install kscript first. Then, please install FalCAuN using the following commands at the root of FalCAuN.
+To execute the examples with `.kts` suffixes, you need to install `kotlin<2.0` and `kscript` first (*kotlin 2.x series are not supported yet*). Then, please install FalCAuN using the following commands at the root of FalCAuN.
 
 ```bash
 mvn clean --projects matlab
@@ -33,7 +33,9 @@ mvn clean --projects matlab
 mvn install
 ```
 
-After that, execute `jupyter` with suitable environmental variables. The following shows an example on macOS.
+After that, execute `jupyter` with suitable environmental variables.
+
+On macOS, the following is an example.
 
 ```sh
 JAVA_HOME=$(/usr/libexec/java_home -v 17) KOTLIN_JUPYTER_JAVA_OPTS="-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64" jupyter notebook

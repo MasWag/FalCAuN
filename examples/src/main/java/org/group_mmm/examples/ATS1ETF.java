@@ -1,8 +1,11 @@
 package org.group_mmm.examples;
 
-import org.group_mmm.STLCost;
-import org.group_mmm.SimulinkSULMapper;
-import org.group_mmm.SimulinkVerifier;
+import net.maswag.falcaun.STLFactory;
+import net.maswag.falcaun.TemporalLogic.STLCost;
+import net.maswag.falcaun.SimpleSignalMapper;
+import net.maswag.falcaun.NumericSULMapper;
+import net.maswag.falcaun.StaticSTLList;
+import net.maswag.falcaun.SimulinkSULVerifier;
 
 import java.io.FileOutputStream;
 import java.util.*;
@@ -47,12 +50,12 @@ public class ATS1ETF {
 
         List<Character> largest = new ArrayList<>(Arrays.asList('d', 'X', 'X'));
 
-        SimulinkSULMapper mapper = new SimulinkSULMapper(inputMapper, largest, outputMapper, Collections.emptyList());
+        NumericSULMapper mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper());
 
-        STLCost costFunc = STLCost.parseSTL("alw(signal(0) < 120.0)", outputMapper, largest);
-        final List<String> properties = Collections.singletonList(costFunc.toAbstractString());
+        STLCost costFunc = new STLFactory().parse("alw(signal(0) < 120.0)", inputMapper, outputMapper, largest);
+        final var properties = new StaticSTLList(Collections.singletonList(costFunc.toAbstractString()));
 
-        SimulinkVerifier verifier = new SimulinkVerifier(initScript, paramName, signalStep, properties, mapper);
+        SimulinkSULVerifier verifier = new SimulinkSULVerifier(initScript, paramName, signalStep, 0.0025, properties, mapper);
 
         verifier.addHillClimbingEQOracle(costFunc,
                 15,
@@ -60,8 +63,7 @@ public class ATS1ETF {
                 500,
                 5,
                 15 * 4,
-                false,
-                verifier.getLtlFormulas().get(0));
+                false);
 
         verifier.run();
         verifier.writeETFLearnedMealy(stream);

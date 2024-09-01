@@ -62,7 +62,7 @@ We provide a script to check if some of the requirements are installed. You can 
 You can build and install FalCAuN using Maven. An example of installing the core module and the top-level module is as follows.
 
 ```sh
-mvn install --projects core,
+mvn install --also-make --projects core
 ```
 
 ### Installation of the matlab Module
@@ -138,12 +138,12 @@ expr : atomic
      | expr -> expr
      | ! expr
      | GLOBALLY expr
+     | GLOBALLY _ INTERVAL expr
      | EVENTUALLY expr
+     | EVENTUALLY _ INTERVAL expr
      | X expr
      | expr U expr
-     | GLOBALLY_interval expr
-     | EVENTUALLY_interval expr
-     | expr U_interval expr
+     | expr U _ INTERVAL expr
      | ( expr )
 
 atomic : signal(NATURAL) == value
@@ -164,6 +164,8 @@ value : -? NATURAL | -? FLOAT
 GLOBALLY : '[]' | 'alw' | 'G'
 
 EVENTUALLY : '<>' | 'ev' | 'F'
+
+INTERVAL : [ NATURAL , NATURAL ]
 ```
 
 Javadoc
