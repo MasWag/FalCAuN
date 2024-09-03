@@ -250,8 +250,8 @@ public class ArgParser {
             throw new MissingOptionException("equiv must be specified");
         }
 
-        dotFile = cl.getOptionValue('o', null);
-        etfFile = cl.getOptionValue("output-etf", null);
+        dotFile = cl.getOptionValue('o',  (String) null);
+        etfFile = cl.getOptionValue("output-etf", (String) null);
         if (cl.hasOption("signal-mapper")) {
             sigMap = SimpleSignalMapper.parse(cl.getOptionValue("signal-mapper"));
         } else {
