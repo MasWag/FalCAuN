@@ -281,7 +281,7 @@ public class SimulinkModel {
                 }
             }
         } catch (Exception e) {
-            log.error("There was an error in the simulation: {}", e.getMessage());
+            log.error("There was an error when obtaining the result: {}", e.getMessage());
             throw e;
         }
         return y;
@@ -296,7 +296,7 @@ public class SimulinkModel {
                 t = matlab.getVariable("t");
             }
         } catch (Exception e) {
-            log.error("There was an error in the simulation: {}", e.getMessage());
+            log.error("There was an error when obtaining the timestamps: {}", e.getMessage());
             throw e;
         }
         return t;
