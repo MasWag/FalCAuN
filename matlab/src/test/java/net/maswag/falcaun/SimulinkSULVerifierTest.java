@@ -293,10 +293,11 @@ class SimulinkSULVerifierTest {
                 mapper1.put('a', 120.0);
                 Map<Character, Double> mapper2 = new HashMap<>();
                 mapper2.put('a', 4750.0);
+                mapper2.put('b', 6000.0);
                 Map<Character, Double> mapper3 = new HashMap<>();
 
                 outputMapper = new ArrayList<>(Arrays.asList(mapper1, mapper2, mapper3));
-                largest = new ArrayList<>(Arrays.asList('b', 'b', 'a'));
+                largest = new ArrayList<>(Arrays.asList('b', 'c', 'a'));
             }
             mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
         }
@@ -304,7 +305,7 @@ class SimulinkSULVerifierTest {
         @Test
         void setTimeout() throws Exception {
             // generate properties
-            String stlString = "alw_[0, 3] (signal(1) < 4750)";
+            String stlString = "alw_[0, 3] (signal(1) < 6000)";
             TemporalLogic.STLCost stl = factory.parse(stlString, inputMapper, outputMapper, largest);
             properties = new StaticSTLList<>(Collections.singletonList(stl));
             // define the verifier
