@@ -196,7 +196,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.15.4</version>
+            <version>1.15.10</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest -->
