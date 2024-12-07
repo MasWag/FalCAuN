@@ -229,10 +229,15 @@ CLI 用テスト
       - Abstract : Alphabet へ map した後の値
       - Concrete : map 前の実数値
     - 今のこれは Abstract の方を返す
+- `ValueWithTime`
+  - 値と時間のペアのリスト
+  - これまでの出力列を保管するのに使われていそう
+- `Signal`
+  - ValueWithTime の input 版
 - `RoSI`
   - robust satisfaction interval (RoSI)
 
-- AbstractAdaptiveSTLUpdater
+- `AbstractAdaptiveSTLUpdater`
   - AdaptiveSTLUpdater の実装
   - AdaptiveSTLList, StaticSTLList, StaticLTLList が継承
   - Adaptive なんちゃらが多分四十坊さんの STL 式を書き換える機能を指している
