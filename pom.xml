@@ -26,6 +26,7 @@
         <module>core</module>
         <module>examples</module>
         <module>matlab</module>
+        <module>python-wrapper</module>
     </modules>
 
     <properties>
