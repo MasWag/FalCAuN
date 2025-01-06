@@ -9,6 +9,9 @@ import net.automatalib.word.WordBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.uma.jmetal.problem.multiobjective.UF.UF1;
+
 import java.io.Closeable;
 import java.util.List;
 import java.util.ArrayList;
@@ -57,15 +60,24 @@ public class PythonSUL implements ContinuousNumericSUL, Closeable {
      */
     @Nullable
     @Override
-    public ExtendedIOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) throws Exception {
+    public ExtendedIOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) {
         if (inputSignal == null) {
             return null;
         }
-        List<Double> outputSignal = model.step(inputSignal);
+        List<Double> outputSignal = null;
+        try
+        {
+            outputSignal = model.step(inputSignal);
+        }
+        catch (Exception e)
+        {
+            System.out.printf("Raised error : %s\n", e.toString());
+        }
         this.outputSignals.add(outputSignal);
 
         double endTime = model.getCurrentTime();
         return new ExtendedIOSignalPiece<>(inputSignal, outputSignal, outputSignals);
+
     }
 
     /**
@@ -81,14 +93,27 @@ public class PythonSUL implements ContinuousNumericSUL, Closeable {
     @Override
     public IOContinuousSignal<List<Double>> execute(Word<List<Double>> inputSignal)
             throws InterruptedException, ExecutionException {
-        ValueWithTime<List<Double>> values = model.execute(inputSignal);
+        
+        try
+        {
+            ValueWithTime<List<Double>> values = model.execute(inputSignal);
+            System.out.println("Prnt values");
+            System.out.println(values.timestamps);
+            System.out.println(values.values);
+            WordBuilder<List<Double>> builder = new WordBuilder<>();
+            for (int i = 0; i < inputSignal.size(); i++) {
+                builder.add(values.at(i * model.getSignalStep()));
+            }
 
-        WordBuilder<List<Double>> builder = new WordBuilder<>();
-        for (int i = 0; i < inputSignal.size(); i++) {
-            builder.add(values.at(i * model.getSignalStep()));
+            return new IOContinuousSignal<>(inputSignal, builder.toWord(), values, model.getSignalStep());
         }
-
-        return new IOContinuousSignal<>(inputSignal, builder.toWord(), values, model.getSignalStep());
+        catch (Exception e)
+        {
+            assert false; //利かない!?
+            System.out.printf("Raised error : %s\n", e.toString());
+            throw new ExecutionException(new Throwable());
+            //return new IOContinuousSignal<>(inputSignal, inputSignal, null, null);
+        }
     }
 
     /**

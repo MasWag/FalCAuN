@@ -1,17 +1,22 @@
 package net.maswag.falcaun;
 
+import jep.JepConfig;
 import jep.JepException;
 import jep.SharedInterpreter;
+import jep.python.PyCallable;
+import jep.python.PyObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.rules.ExternalResource;
+//import org.junit.rules.ExternalResource;
 
 import javax.annotation.Nonnull;
+
+import java.io.OutputStream;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
+//import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import jep.SharedInterpreter;
@@ -40,10 +45,17 @@ public class PythonModel {
 
 
     private final SharedInterpreter interpreter;
+    private final PyObject pysul;
     public PythonModel(String initScript, Double signalStep) throws JepException {
+        SharedInterpreter.setConfig(new JepConfig().redirectStdout(System.out).redirectStdErr(System.err));
         this.interpreter = new SharedInterpreter();
-        this.interpreter.runScript(initScript);
         this.signalStep = signalStep;
+
+        this.interpreter.runScript(initScript);
+        //this.interpreter.eval(String.format("import %s as s", moduleName));
+        this.interpreter.eval("sul = SUL()");
+        this.pysul = this.interpreter.getValue("sul", PyObject.class);
+
 
         // Initialize the current state
         this.reset();
@@ -54,7 +66,9 @@ public class PythonModel {
      */
     public void reset() {
         inputSignal = new Signal(signalStep);
-        this.interpreter.invoke("SUL.reset");
+        //this.interpreter.invoke("SUL.reset");
+        PyCallable pyReset = this.pysul.getAttr("reset", PyCallable.class);
+        pyReset.call();
     }
 
     /**
@@ -64,6 +78,13 @@ public class PythonModel {
         simulationTime.reset();
     }
 
+    public ArrayList<Double> origin() {
+        var ref = new ArrayList<Double>();
+        PyCallable pyOrigin = this.pysul.getAttr("origin", PyCallable.class);
+        ArrayList<Double> ret = pyOrigin.callAs(ref.getClass());
+        return ret;
+    }
+
     /**
      * Execute the Simulink model for one step by feeding inputSignal
      * @param inputSignal The input signal
@@ -71,14 +92,32 @@ public class PythonModel {
      */
     @Nonnull @SuppressWarnings("unchecked")
     public List<Double> step(@Nonnull List<Double> inputSignal) throws Exception {
+        System.out.println("Step");
         this.inputSignal.add(inputSignal);
-        Object ret = this.interpreter.invoke("SUL.step", inputSignal);
+        PyCallable pyStep = this.pysul.getAttr("step", PyCallable.class);
+
+        var ref = new ArrayList<Double>();
+        /*
+        var ret = pyStep.call(inputSignal);
+        System.out.println(ret.getClass().toString());
+        System.out.println(ret.toString());
+
+
+        var ret1 = pyStep.callAs(ref.getClass(), inputSignal);
+        System.out.println(ret1.getClass().toString());
+        */
+
+        ArrayList<Double> ret0 = pyStep.callAs(ref.getClass(), inputSignal);
+        System.out.println(ret0.getClass().toString());
+        return ret0;
+        /*
         if (ret instanceof ArrayList al)
         {
             return (ArrayList<Double>)al;
         }
         else
             throw new Exception();
+            */
     }
 
 
@@ -97,6 +136,7 @@ public class PythonModel {
 
         ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
         ArrayList<Double> timestamps = new ArrayList<Double>();
+        outputs.add(origin());
         for(var e : inputSignal)
         {
             outputs.add(step(e));
@@ -110,7 +150,10 @@ public class PythonModel {
      * Close the MATLAB engine. This method must be called when the object is no longer used.
      */
     public void close() {
-        this.interpreter.invoke("close");
+        PyCallable pyClose = this.pysul.getAttr("close", PyCallable.class);
+
+        pyClose.call();
+        //this.interpreter.invoke("close");
     }
 
     public double getSimulationTimeSecond() {

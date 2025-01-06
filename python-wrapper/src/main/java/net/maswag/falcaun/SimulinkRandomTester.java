@@ -52,7 +52,7 @@ public class SimulinkRandomTester {
      */
     public SimulinkRandomTester(String initScript, List<String> paramName, int length, double signalStep, List<String> properties, List<TemporalLogic.STLCost> costFunc, NumericSULMapper mapper) throws Exception {
         this.mapper = mapper;
-        this.rawSimulink = new PythonSUL(initScript, signalStep, 0.0025);
+        this.rawSimulink = new PythonSUL(initScript, signalStep);
         Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
         this.signalStep = signalStep;

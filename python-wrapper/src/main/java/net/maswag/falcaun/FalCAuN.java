@@ -132,11 +132,9 @@ public class FalCAuN {
             adaptiveSTLUpdater = new StaticSTLList<>(stl);
         }
 
-        SimulinkSULVerifier verifier = new SimulinkSULVerifier(
+        PythonSULVerifier verifier = new PythonSULVerifier(
                 argParser.getInitScript(),
-                argParser.getParamNames(),
                 argParser.getStepTime(),
-                argParser.getSimulinkSimulationStep(),
                 adaptiveSTLUpdater,
                 sulMapper);
 

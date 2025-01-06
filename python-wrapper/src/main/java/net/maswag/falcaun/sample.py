@@ -1,13 +1,13 @@
 from java.util import ArrayList
 
-class SUL:
+class NumericSUL:
     def __init__(self):
         return 0
-    def step(self, inputSignal : ArrayList[float]):
+    def step(self, inputSignal : ArrayList[float]) -> ArrayList[float]:
         return 0
-    def reset(self):
+    def reset(self) -> None:
         return 0
-    def close(self):
+    def close(self) -> None:
         return 0
 
 
