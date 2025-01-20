@@ -20,12 +20,14 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
 
     public IOContinuousSignal(Word<I> inputSignal, Word<I> outputSignal, ValueWithTime<I> continuousOutputSignal, Double signalStep) {
         super(inputSignal, outputSignal);
+        System.out.println("IOC: " + inputSignal.toString() + "\n" + outputSignal.toString());
         this.continuousOutputSignal = continuousOutputSignal;
         this.signalStep = signalStep;
     }
 
     @Override
     public Stream<IOSignalPiece<I>> stream() {
+        System.out.println("IOC steam: " + inputSignal.toString() + "\n" + outputSignal.toString());
         return Streams.zip(Streams.zip(inputSignal.stream(), outputSignal.stream(), Pair::new),
                 continuousOutputSignal.stream(this.signalStep),
                 (pair, value) -> new ExtendedIOSignalPiece<>(pair.getFirst(), pair.getSecond(), value));

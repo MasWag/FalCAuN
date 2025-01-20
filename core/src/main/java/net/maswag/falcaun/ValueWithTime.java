@@ -88,4 +88,8 @@ public class ValueWithTime<T> {
                 .values().stream()
                 .map(list -> list.stream().map(Pair::getSecond).collect(Collectors.toList()));
     }
+
+    public String toString() {
+        return this.timestamps.toString() + "\n" + this.values.toString();
+    }
 }

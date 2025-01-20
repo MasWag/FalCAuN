@@ -75,7 +75,6 @@ public class PythonSUL implements ContinuousNumericSUL, Closeable {
         }
         this.outputSignals.add(outputSignal);
 
-        double endTime = model.getCurrentTime();
         return new ExtendedIOSignalPiece<>(inputSignal, outputSignal, outputSignals);
 
     }
@@ -97,19 +96,23 @@ public class PythonSUL implements ContinuousNumericSUL, Closeable {
         try
         {
             ValueWithTime<List<Double>> values = model.execute(inputSignal);
+            /*
             System.out.println("Prnt values");
             System.out.println(values.timestamps);
             System.out.println(values.values);
+            */
             WordBuilder<List<Double>> builder = new WordBuilder<>();
             for (int i = 0; i < inputSignal.size(); i++) {
                 builder.add(values.at(i * model.getSignalStep()));
             }
 
+            //System.out.println("Exec Values");
+            //System.out.println(values.toString());
             return new IOContinuousSignal<>(inputSignal, builder.toWord(), values, model.getSignalStep());
         }
         catch (Exception e)
         {
-            assert false; //利かない!?
+            //assert false; //利かない!?
             System.out.printf("Raised error : %s\n", e.toString());
             throw new ExecutionException(new Throwable());
             //return new IOContinuousSignal<>(inputSignal, inputSignal, null, null);

@@ -66,9 +66,9 @@ public class PythonModel {
      */
     public void reset() {
         inputSignal = new Signal(signalStep);
-        //this.interpreter.invoke("SUL.reset");
         PyCallable pyReset = this.pysul.getAttr("reset", PyCallable.class);
         pyReset.call();
+        counter++;
     }
 
     /**
@@ -76,14 +76,15 @@ public class PythonModel {
      */
     public void clear() {
         simulationTime.reset();
+        counter = 0;
     }
-
+    /*
     public ArrayList<Double> origin() {
-        var ref = new ArrayList<Double>();
         PyCallable pyOrigin = this.pysul.getAttr("origin", PyCallable.class);
-        ArrayList<Double> ret = pyOrigin.callAs(ref.getClass());
+        ArrayList<Double> ret = pyOrigin.callAs(new ArrayList<Double>().getClass());
         return ret;
     }
+    */
 
     /**
      * Execute the Simulink model for one step by feeding inputSignal
@@ -92,32 +93,15 @@ public class PythonModel {
      */
     @Nonnull @SuppressWarnings("unchecked")
     public List<Double> step(@Nonnull List<Double> inputSignal) throws Exception {
-        System.out.println("Step");
+        //System.out.println("Step");
         this.inputSignal.add(inputSignal);
         PyCallable pyStep = this.pysul.getAttr("step", PyCallable.class);
 
-        var ref = new ArrayList<Double>();
-        /*
-        var ret = pyStep.call(inputSignal);
-        System.out.println(ret.getClass().toString());
-        System.out.println(ret.toString());
-
-
-        var ret1 = pyStep.callAs(ref.getClass(), inputSignal);
-        System.out.println(ret1.getClass().toString());
-        */
-
-        ArrayList<Double> ret0 = pyStep.callAs(ref.getClass(), inputSignal);
-        System.out.println(ret0.getClass().toString());
-        return ret0;
-        /*
-        if (ret instanceof ArrayList al)
-        {
-            return (ArrayList<Double>)al;
-        }
-        else
-            throw new Exception();
-            */
+        simulationTime.start();
+        ArrayList<Double> ret = pyStep.callAs(new ArrayList<Double>().getClass(), inputSignal);
+        simulationTime.stop();
+        
+        return ret;
     }
 
 
@@ -131,12 +115,11 @@ public class PythonModel {
      */
     public ValueWithTime<List<Double>> execute(Word<List<Double>> inputSignal) throws Exception {
         reset();
-        this.inputSignal.addAll(inputSignal);
-
 
         ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
         ArrayList<Double> timestamps = new ArrayList<Double>();
-        outputs.add(origin());
+        //outputs.add(origin());
+        //timestamps.add(0.0);
         for(var e : inputSignal)
         {
             outputs.add(step(e));
@@ -151,9 +134,7 @@ public class PythonModel {
      */
     public void close() {
         PyCallable pyClose = this.pysul.getAttr("close", PyCallable.class);
-
         pyClose.call();
-        //this.interpreter.invoke("close");
     }
 
     public double getSimulationTimeSecond() {

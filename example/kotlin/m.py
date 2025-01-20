@@ -22,7 +22,10 @@ class Signal:
         return 0.0 if len(self.timestamps) == 0 else self.timestamps[-1]
     
     def add(self, inputValue : List[float]) -> None:
-        self.timestamps.append(self.duration() + self.timeStep)
+        if len(self.timestamps) == 0:
+            self.timestamps.append(0.0)
+        else:
+            self.timestamps.append(self.duration() + self.timeStep)
         self.signalValue.append(inputValue)
 
     def dimension(self) -> int:
@@ -53,10 +56,8 @@ class SimulinkSUL:
         self.simulinkSimulationStep = simulinkSimulationStep
         self.counter = 0
 
-        print("start_simulinksul")
         engines = matlab.engine.find_matlab()
         self.eng = matlab.engine.start_matlab() if len(engines) == 0 else matlab.engine.connect_matlab()
-        #self.eng = matlab.engine.start_matlab()
 
         self.eng.clear(nargout=0)
         self.eng.warning('off', 'Simulink:LoadSave:EncodingMismatch')
@@ -70,7 +71,6 @@ class SimulinkSUL:
         self.mdl = "Autotrans_shift"
         self.eng.load_system(self.mdl, nargout=0)
         self.reset()
-        print("finished initialization")
 
     def step(self, inputSignal : List[float]) -> List[List[float]]:
         assert (self.isInitial or not inputSignal.isEmpty())
@@ -105,14 +105,39 @@ class SimulinkSUL:
         # Final internal process
         assert not self.isInitial
 
-        print(t)
-        print(y)
+        #print(t)
+        #print(y)
         return y
         #ret = List()
         #for e in y[-1]:
         #    ret.Add(e)
 
         #return ret
+
+    def origin(self):
+        # For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
+
+        # Make the input signal
+        self.make_dataset()
+        self.configureSimulink()
+        self.preventHugeTempFile()
+
+        # Execute the simulation
+        self.eng.set_param(self.mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on', nargout=0)
+        self.eng.set_param(self.mdl, 'LoadInitialState', 'off', nargout=0)
+
+        # Run the simulation
+        self.runSimulation(0.0)
+
+        # get the simulation result and make the result
+        y = self.getResult()
+        t = self.getTimestamps()
+        assert(len(t) == len(y))
+
+        #print("origin")
+        #print(t)
+        #print(y)
+        return y
 
     def reset(self) -> None:
         self.inputSignal = Signal(self.signalStep)
@@ -130,6 +155,8 @@ class SimulinkSUL:
             tmp = matlab.double(self.inputSignal.dimensionGet(i))
             input = eng.timeseries(tmp, timeVector)
 
+            #eng.setfield(eng.getfield(input, "DataInfo"), "Interpolation", eng.tsdata.interpolation('zoh'))
+            
             # Assume InterpolationMethod is LINEAR
             eng.setfield(eng.getfield(input, "DataInfo"), "Interpolation", eng.tsdata.interpolation('linear'))
             
@@ -146,7 +173,7 @@ class SimulinkSUL:
         # Enable fast restart
         if self.useFastRestart:
             # on を off へ書き換え
-            eng.set_param(mdl,'FastRestart','off', nargout=0)
+            eng.set_param(mdl,'FastRestart','on', nargout=0)
         else:
             eng.set_param(mdl,'FastRestart','off', nargout=0)
 
@@ -254,18 +281,27 @@ class SUL:
         self.simulinkSUL = SimulinkSUL(paramNames, signalStep, simulinkSimulationStep)
 
     def origin(self) -> List[float]:
-        ret = self.simulinkSUL.getResult()[0]
+        #ret = self.simulinkSUL.getResult()[0]
+        #tmp = np.array(ret)
+        #ret = [float(e) for e in tmp[-1]]
+        #return ret
+
+        ret = self.simulinkSUL.step([0.0, 0.0]) #XXX :Magic Number
         tmp = np.array(ret)
         ret = [float(e) for e in tmp[-1]]
+        #print("origin:")
+        #print(ret)
         return ret
 
 
     def step(self, inputSignal : List[float]) -> List[float]:
         ret = self.simulinkSUL.step(inputSignal)
-        tmp = np.array(ret)
+        tmp = np.array(ret[0]) if len(ret) == 1 else np.array(ret)
         ret = [float(e) for e in tmp[-1]]
         #ret = [e[0][0] for e in tmp]
-        print(ret)
+        #print("step:")
+        #print(inputSignal)
+        #print(tmp)
         return ret
     
     def reset(self) -> None:
