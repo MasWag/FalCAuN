@@ -1,8 +1,6 @@
 package net.maswag.falcaun;
 
-import jep.JepConfig;
-import jep.JepException;
-import jep.SharedInterpreter;
+import jep.*;
 import jep.python.PyCallable;
 import jep.python.PyObject;
 import lombok.Getter;
@@ -18,8 +16,6 @@ import java.io.OutputStream;
 import java.util.*;
 //import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-
-import jep.SharedInterpreter;
 
 /**
  * Raw Simulink model. We use the fixed step execution of Simulink to make sampling easier.
