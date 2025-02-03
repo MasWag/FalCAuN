@@ -23,7 +23,7 @@ import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
  */
 public class SimulinkRandomTester {
     protected SUL<List<Double>, IOSignalPiece<List<Double>>> simulink;
-    private final PythonSUL rawSimulink;
+    private final PythonContinuousNumericSUL rawSimulink;
     private final Alphabet<String> abstractInputAlphabet;
     private final NumericSULMapper mapper;
     private final List<TemporalLogic.STLCost> costFunc;
@@ -52,7 +52,7 @@ public class SimulinkRandomTester {
      */
     public SimulinkRandomTester(String initScript, List<String> paramName, int length, double signalStep, List<String> properties, List<TemporalLogic.STLCost> costFunc, NumericSULMapper mapper) throws Exception {
         this.mapper = mapper;
-        this.rawSimulink = new PythonSUL(initScript, signalStep);
+        this.rawSimulink = new PythonContinuousNumericSUL(initScript, signalStep);
         Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
         this.signalStep = signalStep;

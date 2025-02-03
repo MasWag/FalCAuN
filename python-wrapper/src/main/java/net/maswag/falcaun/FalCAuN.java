@@ -132,7 +132,7 @@ public class FalCAuN {
             adaptiveSTLUpdater = new StaticSTLList<>(stl);
         }
 
-        PythonSULVerifier verifier = new PythonSULVerifier(
+        PythonContinuousNumericSULVerifier verifier = new PythonContinuousNumericSULVerifier(
                 argParser.getInitScript(),
                 argParser.getStepTime(),
                 adaptiveSTLUpdater,

@@ -22,7 +22,7 @@ class SimulinkSULVerifierTest {
      */
     private final List<String> paramNames = Arrays.asList("Pedal Angle", "Engine Speed");
     private Double signalStep = 10.0;
-    private PythonSULVerifier verifier;
+    private PythonContinuousNumericSULVerifier verifier;
     private AdaptiveSTLUpdater<List<Double>> properties;
     private NumericSULMapper mapper;
     private final List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = Collections.emptyList();
@@ -63,7 +63,7 @@ class SimulinkSULVerifierTest {
                 factory.parse("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
 
         try {
-            verifier = new PythonSULVerifier(initScript, signalStep, properties, mapper);
+            verifier = new PythonContinuousNumericSULVerifier(initScript, signalStep, properties, mapper);
             verifier.addWpMethodEQOracle(1);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -156,7 +156,7 @@ class SimulinkSULVerifierTest {
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
 
         try {
-            verifier = new PythonSULVerifier(initScript, signalStep, propertyZHA19_AFC1, mapper);
+            verifier = new PythonContinuousNumericSULVerifier(initScript, signalStep, propertyZHA19_AFC1, mapper);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
@@ -240,7 +240,7 @@ class SimulinkSULVerifierTest {
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
 
         try {
-            verifier = new PythonSULVerifier(initScript, signalStep, propertyZHA19_AFC1, mapper);
+            verifier = new PythonContinuousNumericSULVerifier(initScript, signalStep, propertyZHA19_AFC1, mapper);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assert false;
@@ -308,7 +308,7 @@ class SimulinkSULVerifierTest {
             TemporalLogic.STLCost stl = factory.parse(stlString, inputMapper, outputMapper, largest);
             properties = new StaticSTLList<>(Collections.singletonList(stl));
             // define the verifier
-            verifier = new PythonSULVerifier(initScript, signalStep, properties, mapper);
+            verifier = new PythonContinuousNumericSULVerifier(initScript, signalStep, properties, mapper);
             // set timeout
             long timeout = 2 * 60;
             verifier.setTimeout(timeout);
@@ -346,7 +346,7 @@ class SimulinkSULVerifierTest {
             @AfterEach
             void tearDown() throws Exception {
                 // define the verifier
-                verifier = new PythonSULVerifier(initScript, signalStep, properties, mapper);
+                verifier = new PythonContinuousNumericSULVerifier(initScript, signalStep, properties, mapper);
                 verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
@@ -385,7 +385,7 @@ class SimulinkSULVerifierTest {
 
             void verify() throws Exception {
                 // define the verifier
-                verifier = new PythonSULVerifier(initScript, signalStep, properties, mapper);
+                verifier = new PythonContinuousNumericSULVerifier(initScript, signalStep, properties, mapper);
                 verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());

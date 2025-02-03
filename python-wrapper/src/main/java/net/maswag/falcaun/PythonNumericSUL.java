@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
  * execution of Simulink to make sampling easier.
  */
 @Slf4j
-public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>, Closeable {
+public class PythonNumericSUL implements NumericSUL, Closeable {
     /**
      * The signal step of the input signal.
      */
@@ -31,7 +31,10 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     private final PyCallable pyPre, pyPost, pyStep, pyClose;
     private final TimeMeasure simulationTime = new TimeMeasure();
 
-    public PythonSUL(String initScript, Double signalStep)
+    @Getter
+    private int counter = 0;
+
+    public PythonNumericSUL(String initScript, Double signalStep)
             throws InterruptedException, ExecutionException {
         this.model = new PythonModel(initScript);
         this.signalStep = signalStep;
@@ -59,12 +62,22 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     }
 
     /**
+     * Clear the counter and the time measure.
+     */
+    @Override
+    public void clear() {
+        simulationTime.reset();
+        counter = 0;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public void pre() {
         inputSignal = new Signal(signalStep);
         pyPre.call();
+        counter++;
     }
 
     /**
@@ -101,6 +114,46 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     }
 
     /**
+     * Execute the Simulink model by feeding inputSignal
+     * <p>
+     * For inputSignal = a1, a2, ..., an, we construct a timed word w = (a1, 0),
+     * (a2, T), (a3, 2 * T), ... (an, (n - 1) * T) and execute the Simulink model by
+     * feeding the piecewise-linear interpolation of w.
+     *
+     * @param inputSignal The input signal
+     * @return The output signal. The size is same as the input.
+     */
+    @Override
+    public IOSignal<List<Double>> execute(Word<List<Double>> inputSignal)
+            throws InterruptedException, ExecutionException {
+        pre();
+
+        ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
+        ArrayList<Double> timestamps = new ArrayList<Double>();
+        // outputs.add(origin());
+        // timestamps.add(0.0);
+        for (var e : inputSignal) {
+            try {
+                ArrayList<Double> ret = this.pyStep.callAs(new ArrayList<Double>().getClass(), inputSignal);
+                outputs.add(ret);
+            } catch (Exception exc) {
+                // assert false; //利かない!?
+                System.out.printf("Raised error : %s\n", exc.toString());
+                throw new ExecutionException(new Throwable());
+                // return new IOContinuousSignal<>(inputSignal, inputSignal, null, null);
+            }
+            timestamps.add(this.getCurrentTime());
+        }
+        ValueWithTime<List<Double>> values = new ValueWithTime<>(timestamps, outputs);
+        ;
+        WordBuilder<List<Double>> builder = new WordBuilder<>();
+        for (int i = 0; i < inputSignal.size(); i++) {
+            builder.add(values.at(i * this.signalStep));
+        }
+        return new IOContinuousSignal<>(inputSignal, builder.toWord(), values, this.signalStep);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Nonnull
@@ -116,5 +169,12 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     @Override
     public void close() {
         pyClose.call();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double getSimulationTimeSecond() {
+        return this.simulationTime.getSecond();
     }
 }

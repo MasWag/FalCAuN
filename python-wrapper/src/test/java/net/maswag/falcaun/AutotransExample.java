@@ -439,6 +439,6 @@ public class AutotransExample {
     }
 
     void constructVerifier() throws Exception {
-        verifier = new PythonSULVerifier(initScript, signalStep, properties, mapper);
+        verifier = new PythonContinuousNumericSULVerifier(initScript, signalStep, properties, mapper);
     }
 }

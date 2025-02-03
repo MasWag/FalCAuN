@@ -27,7 +27,7 @@ class NumericMembershipOracleTest {
     private List<String> properties;
     private NumericSULMapper mapper;
     private List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = new ArrayList<>();
-    private PythonSUL simulink;
+    private PythonContinuousNumericSUL simulink;
     private MappedSUL<String, String, List<Double>, IOSignalPiece<List<Double>>> mappedSimulink;
     private MembershipOracle.MealyMembershipOracle<String, String> sulOracle, directOracle;
     private Alphabet<String> abstractInputAlphabet;
@@ -63,7 +63,7 @@ class NumericMembershipOracleTest {
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
         this.mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
-        this.simulink = new PythonSUL(initScript, signalStep);
+        this.simulink = new PythonContinuousNumericSUL(initScript, signalStep);
         this.concreteInputAlphabet = mapper.constructConcreteAlphabet();
         this.abstractInputAlphabet = mapper.constructAbstractAlphabet();
 

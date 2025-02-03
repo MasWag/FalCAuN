@@ -12,10 +12,10 @@ import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimulinkSULTest {
-    private PythonSUL sul;
+    private PythonContinuousNumericSUL sul;
 
     void setUp(String initScript, List<String> paramNames, double signalStep) throws Exception {
-        this.sul = new PythonSUL(initScript, signalStep);
+        this.sul = new PythonContinuousNumericSUL(initScript, signalStep);
     }
 
     @AfterEach

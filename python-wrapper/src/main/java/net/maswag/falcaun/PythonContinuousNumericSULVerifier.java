@@ -2,7 +2,7 @@ package net.maswag.falcaun;
 
 import java.util.List;
 
-public class PythonSULVerifier extends NumericSULVerifier {
+public class PythonContinuousNumericSULVerifier extends NumericSULVerifier {
     /**
      * <p>Constructor for SimulinkVerifier.</p>
      *
@@ -13,8 +13,8 @@ public class PythonSULVerifier extends NumericSULVerifier {
      * @param mapper     The I/O mapepr between abstract/concrete Simulink models.
      * @throws java.lang.Exception It can be thrown from the constructor of SimulinkSUL.
      */
-    public PythonSULVerifier(String initScript, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) throws Exception {
-        super(new PythonSUL(initScript, signalStep), signalStep, properties, mapper);
+    public PythonContinuousNumericSULVerifier(String initScript, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) throws Exception {
+        super(new PythonContinuousNumericSUL(initScript, signalStep), signalStep, properties, mapper);
     }
 
     /**
@@ -23,6 +23,6 @@ public class PythonSULVerifier extends NumericSULVerifier {
      * @param simulinkSimulationStep The fixed simulation step of Simulink. If this value is too large, Simulink can abort due to an computation error.
      */
     /* public void setSimulationStep(double simulinkSimulationStep) {
-        ((PythonSUL)this.rawSUL).setSimulationStep(simulinkSimulationStep);
+        ((PythonContinuousNumericSUL)this.rawSUL).setSimulationStep(simulinkSimulationStep);
     } */
 }

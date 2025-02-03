@@ -93,7 +93,7 @@ val crossoverProb = 0.5
 val mutationProb = 0.01
 
 // Load the automatic transmission model. This automatically closes MATLAB
-PythonSUL(initScript, signalStep).use { autoTransSUL ->
+PythonContinuousNumericSUL(initScript, signalStep).use { autoTransSUL ->
     // Configure and run the verifier
     val verifier = NumericSULVerifier(autoTransSUL, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
