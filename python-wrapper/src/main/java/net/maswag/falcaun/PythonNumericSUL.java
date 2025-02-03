@@ -1,7 +1,10 @@
 package net.maswag.falcaun;
 
 import de.learnlib.sul.SUL;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.automatalib.word.Word;
+import net.automatalib.word.WordBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,7 +19,7 @@ import java.util.concurrent.ExecutionException;
  * execution of Simulink to make sampling easier.
  */
 @Slf4j
-public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>, Closeable {
+public class PythonNumericSUL implements NumericSUL, Closeable {
     /**
      * The signal step of the input signal.
      */
@@ -25,7 +28,10 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     private final PythonModel model;
     private final TimeMeasure simulationTime = new TimeMeasure();
 
-    public PythonSUL(String initScript, Double signalStep) throws InterruptedException, ExecutionException {
+    @Getter
+    private int counter = 0;
+
+    public PythonNumericSUL(String initScript, Double signalStep) throws InterruptedException, ExecutionException {
         this.model = new PythonModel(initScript);
         this.signalStep = signalStep;
     }
@@ -48,12 +54,22 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     }
 
     /**
+     * Clear the counter and the time measure.
+     */
+    @Override
+    public void clear() {
+        simulationTime.reset();
+        counter = 0;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public void pre() {
         inputSignal = new Signal(signalStep);
         this.model.pre();
+        counter++;
     }
 
     /**
@@ -81,6 +97,47 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
 
         this.outputSignals.add(outputSignal);
         return new ExtendedIOSignalPiece<>(inputSignal, outputSignal, outputSignals);
+
+    }
+
+    /**
+     * Execute the Simulink model by feeding inputSignal
+     * <p>
+     * For inputSignal = a1, a2, ..., an, we construct a timed word w = (a1, 0),
+     * (a2, T), (a3, 2 * T), ... (an, (n - 1) * T) and execute the Simulink model by
+     * feeding the piecewise-linear interpolation of w.
+     *
+     * @param inputSignal The input signal
+     * @return The output signal. The size is same as the input.
+     */
+    @Override
+    public IOSignal<List<Double>> execute(Word<List<Double>> inputSignal)
+            throws InterruptedException, ExecutionException {
+        pre();
+
+        ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
+        ArrayList<Double> timestamps = new ArrayList<Double>();
+        ArrayList<Double> ret;
+
+        simulationTime.start();
+        for (var e : inputSignal) {
+            this.inputSignal.add(e);
+            try {
+                ret = this.model.step(e);
+            } catch (Exception exc) {
+                throw new InterruptedException(exc.toString());
+            }
+            outputs.add(ret);
+            timestamps.add(this.getCurrentTime());
+        }
+        simulationTime.stop();
+
+        ValueWithTime<List<Double>> values = new ValueWithTime<>(timestamps, outputs);
+        WordBuilder<List<Double>> builder = new WordBuilder<>();
+        for (int i = 0; i < inputSignal.size(); i++) {
+            builder.add(values.at(i * this.signalStep));
+        }
+        return new IOContinuousSignal<>(inputSignal, builder.toWord(), values, this.signalStep);
     }
 
     /**
@@ -99,5 +156,12 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     @Override
     public void close() {
         this.model.close();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double getSimulationTimeSecond() {
+        return this.simulationTime.getSecond();
     }
 }
