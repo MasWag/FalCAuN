@@ -1,12 +1,7 @@
 package net.maswag.falcaun;
 
-import jep.python.PyCallable;
-import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.automatalib.word.Word;
-import net.automatalib.word.WordBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,17 +23,11 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     private final Double signalStep;
     ArrayList<List<Double>> outputSignals = new ArrayList<List<Double>>();
     private final PythonModel model;
-    private final PyCallable pyPre, pyPost, pyStep, pyClose;
     private final TimeMeasure simulationTime = new TimeMeasure();
 
-    public PythonSUL(String initScript, Double signalStep)
-            throws InterruptedException, ExecutionException {
+    public PythonSUL(String initScript, Double signalStep) throws InterruptedException, ExecutionException {
         this.model = new PythonModel(initScript);
         this.signalStep = signalStep;
-        this.pyPre = this.model.getPysul().getAttr("pre", PyCallable.class);
-        this.pyPost = this.model.getPysul().getAttr("post", PyCallable.class);
-        this.pyStep = this.model.getPysul().getAttr("step", PyCallable.class);
-        this.pyClose = this.model.getPysul().getAttr("close", PyCallable.class);
     }
 
     private Signal inputSignal;
@@ -64,7 +53,7 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
     @Override
     public void pre() {
         inputSignal = new Signal(signalStep);
-        pyPre.call();
+        this.model.pre();
     }
 
     /**
@@ -72,7 +61,7 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
      */
     @Override
     public void post() {
-        pyPost.call();
+        this.model.post();
     }
 
     /**
@@ -88,7 +77,7 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
         this.inputSignal.add(inputSignal);
         simulationTime.start();
         try {
-            ArrayList<Double> ret = this.pyStep.callAs(new ArrayList<Double>().getClass(), inputSignal);
+            ArrayList<Double> ret = this.model.step(inputSignal);
             outputSignal = ret;
         } catch (Exception e) {
             System.out.printf("Raised error : %s\n", e.toString());
@@ -97,7 +86,6 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
         this.outputSignals.add(outputSignal);
 
         return new ExtendedIOSignalPiece<>(inputSignal, outputSignal, outputSignals);
-
     }
 
     /**
@@ -115,6 +103,6 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
      */
     @Override
     public void close() {
-        pyClose.call();
+        this.model.close();
     }
 }

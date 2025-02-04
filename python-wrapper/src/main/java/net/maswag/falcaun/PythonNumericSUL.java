@@ -1,7 +1,5 @@
 package net.maswag.falcaun;
 
-import jep.python.PyCallable;
-import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,20 +26,14 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     private final Double signalStep;
     ArrayList<List<Double>> outputSignals = new ArrayList<List<Double>>();
     private final PythonModel model;
-    private final PyCallable pyPre, pyPost, pyStep, pyClose;
     private final TimeMeasure simulationTime = new TimeMeasure();
 
     @Getter
     private int counter = 0;
 
-    public PythonNumericSUL(String initScript, Double signalStep)
-            throws InterruptedException, ExecutionException {
+    public PythonNumericSUL(String initScript, Double signalStep) throws InterruptedException, ExecutionException {
         this.model = new PythonModel(initScript);
         this.signalStep = signalStep;
-        this.pyPre = this.model.getPysul().getAttr("pre", PyCallable.class);
-        this.pyPost = this.model.getPysul().getAttr("post", PyCallable.class);
-        this.pyStep = this.model.getPysul().getAttr("step", PyCallable.class);
-        this.pyClose = this.model.getPysul().getAttr("close", PyCallable.class);
     }
 
     private Signal inputSignal;
@@ -76,7 +68,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     @Override
     public void pre() {
         inputSignal = new Signal(signalStep);
-        pyPre.call();
+        this.model.pre();
         counter++;
     }
 
@@ -85,7 +77,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      */
     @Override
     public void post() {
-        pyPost.call();
+        this.model.post();
     }
 
     /**
@@ -101,7 +93,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         this.inputSignal.add(inputSignal);
         simulationTime.start();
         try {
-            ArrayList<Double> ret = this.pyStep.callAs(new ArrayList<Double>().getClass(), inputSignal);
+            ArrayList<Double> ret = this.model.step(inputSignal);
             outputSignal = ret;
         } catch (Exception e) {
             System.out.printf("Raised error : %s\n", e.toString());
@@ -130,22 +122,23 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
 
         ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
         ArrayList<Double> timestamps = new ArrayList<Double>();
-        // outputs.add(origin());
-        // timestamps.add(0.0);
+        ArrayList<Double> ret;
         for (var e : inputSignal) {
+            this.inputSignal.add(e);
+            simulationTime.start();
+
             try {
-                ArrayList<Double> ret = this.pyStep.callAs(new ArrayList<Double>().getClass(), inputSignal);
-                outputs.add(ret);
+                ret = this.model.step(e);
             } catch (Exception exc) {
-                // assert false; //利かない!?
                 System.out.printf("Raised error : %s\n", exc.toString());
                 throw new ExecutionException(new Throwable());
-                // return new IOContinuousSignal<>(inputSignal, inputSignal, null, null);
             }
+            
+            simulationTime.stop();
+            outputs.add(ret);
             timestamps.add(this.getCurrentTime());
         }
         ValueWithTime<List<Double>> values = new ValueWithTime<>(timestamps, outputs);
-        ;
         WordBuilder<List<Double>> builder = new WordBuilder<>();
         for (int i = 0; i < inputSignal.size(); i++) {
             builder.add(values.at(i * this.signalStep));
@@ -168,7 +161,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      */
     @Override
     public void close() {
-        pyClose.call();
+        this.model.close();
     }
 
     /**

@@ -280,20 +280,6 @@ class SUL:
         simulinkSimulationStep = 0.0025
         self.simulinkSUL = SimulinkSUL(paramNames, signalStep, simulinkSimulationStep)
 
-    def origin(self) -> List[float]:
-        #ret = self.simulinkSUL.getResult()[0]
-        #tmp = np.array(ret)
-        #ret = [float(e) for e in tmp[-1]]
-        #return ret
-
-        ret = self.simulinkSUL.step([0.0, 0.0]) #XXX :Magic Number
-        tmp = np.array(ret)
-        ret = [float(e) for e in tmp[-1]]
-        #print("origin:")
-        #print(ret)
-        return ret
-
-
     def step(self, inputSignal : List[float]) -> List[float]:
         ret = self.simulinkSUL.step(inputSignal)
         tmp = np.array(ret[0]) if len(ret) == 1 else np.array(ret)
@@ -304,7 +290,10 @@ class SUL:
         #print(tmp)
         return ret
     
-    def reset(self) -> None:
+    def pre(self) -> None:
+        self.simulinkSUL.reset()
+
+    def post(self) -> None:
         self.simulinkSUL.reset()
 
     def close(self) -> None:
