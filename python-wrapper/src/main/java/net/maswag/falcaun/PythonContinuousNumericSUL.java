@@ -90,18 +90,13 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         if (inputSignal == null) {
             return null;
         }
-        List<Double> outputSignal = null;
         this.inputSignal.add(inputSignal);
-        simulationTime.start();
-        try {
-            ArrayList<Double> ret = this.model.step(inputSignal);
-            outputSignal = ret;
-        } catch (Exception e) {
-            System.out.printf("Raised error : %s\n", e.toString());
-        }
-        simulationTime.stop();
-        this.outputSignals.add(outputSignal);
 
+        simulationTime.start();
+        List<Double> outputSignal = this.model.step(inputSignal);
+        simulationTime.stop();
+
+        this.outputSignals.add(outputSignal);
         return new ExtendedIOSignalPiece<>(inputSignal, outputSignal, outputSignals);
 
     }
@@ -124,21 +119,22 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
         ArrayList<Double> timestamps = new ArrayList<Double>();
         ArrayList<Double> ret;
+
+        simulationTime.start();
         for (var e : inputSignal) {
             this.inputSignal.add(e);
-            simulationTime.start();
 
             try {
                 ret = this.model.step(e);
             } catch (Exception exc) {
-                System.out.printf("Raised error : %s\n", exc.toString());
-                throw new ExecutionException(new Throwable());
+                throw new InterruptedException(exc.toString());
             }
 
-            simulationTime.stop();
             outputs.add(ret);
             timestamps.add(this.getCurrentTime());
         }
+        simulationTime.stop();
+
         ValueWithTime<List<Double>> values = new ValueWithTime<>(timestamps, outputs);
         WordBuilder<List<Double>> builder = new WordBuilder<>();
         for (int i = 0; i < inputSignal.size(); i++) {

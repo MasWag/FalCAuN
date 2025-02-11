@@ -47,11 +47,11 @@ public class PythonModel {
     public ArrayList<Double> step(List<Double> inputSignal) throws JepException {
         var ret = this.pyStep.callAs(ArrayList.class, inputSignal);
         for (var e : ret) {
+            //Check if the each item in the returned list is double
             if (!(e instanceof Double)) {
                 throw new JepException();
             }
         }
-        // var ret = this.pyStep.callAs(ArrayList.class, inputSignal);
         return (ArrayList<Double>) ret;
     }
 

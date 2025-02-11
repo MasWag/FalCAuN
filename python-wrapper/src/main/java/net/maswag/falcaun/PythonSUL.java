@@ -73,18 +73,13 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
         if (inputSignal == null) {
             return null;
         }
-        List<Double> outputSignal = null;
         this.inputSignal.add(inputSignal);
-        simulationTime.start();
-        try {
-            ArrayList<Double> ret = this.model.step(inputSignal);
-            outputSignal = ret;
-        } catch (Exception e) {
-            System.out.printf("Raised error : %s\n", e.toString());
-        }
-        simulationTime.stop();
-        this.outputSignals.add(outputSignal);
 
+        simulationTime.start();
+        List<Double> outputSignal = this.model.step(inputSignal);
+        simulationTime.stop();
+
+        this.outputSignals.add(outputSignal);
         return new ExtendedIOSignalPiece<>(inputSignal, outputSignal, outputSignals);
     }
 
