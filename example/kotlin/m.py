@@ -105,38 +105,6 @@ class SimulinkSUL:
         # Final internal process
         assert not self.isInitial
 
-        #print(t)
-        #print(y)
-        return y
-        #ret = List()
-        #for e in y[-1]:
-        #    ret.Add(e)
-
-        #return ret
-
-    def origin(self):
-        # For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
-
-        # Make the input signal
-        self.make_dataset()
-        self.configureSimulink()
-        self.preventHugeTempFile()
-
-        # Execute the simulation
-        self.eng.set_param(self.mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on', nargout=0)
-        self.eng.set_param(self.mdl, 'LoadInitialState', 'off', nargout=0)
-
-        # Run the simulation
-        self.runSimulation(0.0)
-
-        # get the simulation result and make the result
-        y = self.getResult()
-        t = self.getTimestamps()
-        assert(len(t) == len(y))
-
-        #print("origin")
-        #print(t)
-        #print(y)
         return y
 
     def reset(self) -> None:
@@ -284,10 +252,6 @@ class SUL:
         ret = self.simulinkSUL.step(inputSignal)
         tmp = np.array(ret[0]) if len(ret) == 1 else np.array(ret)
         ret = [float(e) for e in tmp[-1]]
-        #ret = [e[0][0] for e in tmp]
-        #print("step:")
-        #print(inputSignal)
-        #print(tmp)
         return ret
     
     def pre(self) -> None:
