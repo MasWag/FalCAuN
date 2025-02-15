@@ -6,9 +6,6 @@ import jep.SharedInterpreter;
 import jep.python.PyCallable;
 import jep.python.PyObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,12 +13,13 @@ import lombok.extern.slf4j.Slf4j;
  * sampling easier.
  */
 @Slf4j
-public class PythonModel {
+public class PythonModel<I, O> {
     private final SharedInterpreter interpreter;
 
     private final PyCallable pyPre, pyPost, pyStep, pyClose;
-
-    public PythonModel(String initScript) throws JepException {
+    private final Class<O> outputClass;
+    public PythonModel(String initScript, Class<O> outputClass) throws JepException {
+        this.outputClass = outputClass;
         SharedInterpreter.setConfig(new JepConfig().redirectStdout(System.out).redirectStdErr(System.err));
         this.interpreter = new SharedInterpreter();
 
@@ -44,15 +42,10 @@ public class PythonModel {
         this.pyPost.call();
     }
 
-    public ArrayList<Double> step(List<Double> inputSignal) throws JepException {
-        var ret = this.pyStep.callAs(ArrayList.class, inputSignal);
-        for (var e : ret) {
-            //Check if the each item in the returned list is double
-            if (!(e instanceof Double)) {
-                throw new JepException();
-            }
-        }
-        return (ArrayList<Double>) ret;
+    public O step(I inputSignal) throws JepException {
+        //Type ty = getClass().getGenericSuperclass();
+        //var clazz = ((Class<O>)((ParameterizedType)ty).getActualTypeArguments()[1]);
+        return this.pyStep.callAs(this.outputClass, inputSignal);
     }
 
     public void close() {

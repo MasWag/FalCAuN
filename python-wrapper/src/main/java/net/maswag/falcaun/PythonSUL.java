@@ -7,8 +7,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.io.Closeable;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -16,27 +14,12 @@ import java.util.concurrent.ExecutionException;
  * execution of Simulink to make sampling easier.
  */
 @Slf4j
-public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>, Closeable {
-    /**
-     * The signal step of the input signal.
-     */
-    private final Double signalStep;
-    ArrayList<List<Double>> outputSignals = new ArrayList<List<Double>>();
-    private final PythonModel model;
-    private final TimeMeasure simulationTime = new TimeMeasure();
+public class PythonSUL<I, O> implements SUL<I, O>, Closeable {
+    protected final PythonModel<I, O> model;
+    protected final TimeMeasure simulationTime = new TimeMeasure();
 
-    public PythonSUL(String initScript, Double signalStep) throws InterruptedException, ExecutionException {
-        this.model = new PythonModel(initScript);
-        this.signalStep = signalStep;
-    }
-
-    private Signal inputSignal;
-
-    /**
-     * The current time of the simulation
-     */
-    public double getCurrentTime() {
-        return inputSignal.duration();
+    public PythonSUL(String initScript, Class<O> outputClass) throws InterruptedException, ExecutionException {
+        this.model = new PythonModel<I, O>(initScript, outputClass);
     }
 
     /**
@@ -52,7 +35,6 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
      */
     @Override
     public void pre() {
-        inputSignal = new Signal(signalStep);
         this.model.pre();
     }
 
@@ -69,18 +51,16 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
      */
     @Nullable
     @Override
-    public IOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) {
+    public O step(@Nullable I inputSignal) {
         if (inputSignal == null) {
             return null;
         }
-        this.inputSignal.add(inputSignal);
 
         simulationTime.start();
-        List<Double> outputSignal = this.model.step(inputSignal);
+        O outputSignal = this.model.step(inputSignal);
         simulationTime.stop();
 
-        this.outputSignals.add(outputSignal);
-        return new ExtendedIOSignalPiece<>(inputSignal, outputSignal, outputSignals);
+        return outputSignal;
     }
 
     /**
@@ -88,7 +68,7 @@ public class PythonSUL implements SUL<List<Double>, IOSignalPiece<List<Double>>>
      */
     @Nonnull
     @Override
-    public SUL<List<Double>, IOSignalPiece<List<Double>>> fork() throws UnsupportedOperationException {
+    public SUL<I, O> fork() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
