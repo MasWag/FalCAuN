@@ -3,21 +3,52 @@ package net.maswag.falcaun;
 import lombok.Getter;
 import net.automatalib.word.Word;
 
+/**
+ * Abstract class representing an Input-Output (IO) signal.
+ * This class provides a framework for handling input and output signals in a system, ensuring that the input and output signals have the same length.
+ *
+ * @param <I> Type of the input symbols
+ */
 @Getter
 abstract public class AbstractIOSignal<I> implements IOSignal<I> {
-    Word<I> inputSignal, outputSignal;
+    /**
+     * The input signal represented as a Word.
+     */
+    Word<I> inputSignal;
 
+    /**
+     * The output signal represented as a Word.
+     */
+    Word<I> outputSignal;
+
+    /**
+     * Constructs an instance of AbstractIOSignal with the given input and output signals.
+     *
+     * @param inputSignal  The input signal as a Word.
+     * @param outputSignal The output signal as a Word. Must have the same length as the input signal.
+     */
     public AbstractIOSignal(Word<I> inputSignal, Word<I> outputSignal) {
-        assert (inputSignal.size() == outputSignal.size());
+        assert (inputSignal.size() == outputSignal.size()) : "Input and output signals must have the same length.";
         this.inputSignal = inputSignal;
         this.outputSignal = outputSignal;
     }
 
+    /**
+     * Returns the size of the input signal.
+     *
+     * @return The number of symbols in the input signal.
+     */
     @Override
     public int size() {
         return this.inputSignal.size();
     }
 
+    /**
+     * Retrieves the output symbol at the specified index.
+     *
+     * @param i The index of the output symbol to retrieve.
+     * @return The output symbol at the specified index.
+     */
     @Override
     public I getOutputSymbol(int i) {
         return outputSignal.getSymbol(i);

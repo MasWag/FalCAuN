@@ -18,6 +18,10 @@
         </license>
     </licenses>
 
+    <organization>
+        <name>Masaki Waga</name>
+    </organization>
+
     <modules>
         <module>core</module>
         <module>examples</module>
@@ -66,10 +70,17 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.21.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
                 <configuration>
+                    <author>true</author>
                     <show>private</show>
+                    <detectOfflineLinks>true</detectOfflineLinks>
                 </configuration>
             </plugin>
         </plugins>

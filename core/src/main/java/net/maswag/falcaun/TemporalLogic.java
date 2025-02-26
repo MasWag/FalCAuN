@@ -33,6 +33,7 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
     /**
      * Evaluate the formula on the given signal and returns the RoSI, i.e., the range of the possible robustness values after concatenating a suffix.
      *
+     * @param signal The input-output signal to evaluate the formula on
      * @return a {@link RoSI} object representing the range of the possible robustness values after concatenating a suffix.
      */
     RoSI getRoSI(IOSignal<I> signal);
@@ -49,6 +50,8 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
      * If this formula contains only the input constraints, the atomic propositions are the input constraints.
      * If this formula contains only the output constraints, the atomic propositions are the output constraints.
      * If this formula contains both input and output constraints, the atomic propositions are one of the input and output constraints.
+     *
+     * @return A set of all atomic propositions in the formula
      */
     Set<String> getAllAPs();
 
@@ -67,6 +70,8 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
 
     /**
      * Returns true if the mapper is set.
+     *
+     * @return true if the formula is initialized with a mapper, false otherwise
      */
     boolean isInitialized();
 
@@ -96,6 +101,8 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
      * If there is no such collection, returns null
      *
      * <p>Such a set exists if the formula does not contain any temporal operators.</p>
+     *
+     * @return A collection of atomic propositions that satisfy the formula, or null if no such collection exists
      */
     @Nullable
     Collection<String> getSatisfyingAtomicPropositions();

@@ -16,10 +16,21 @@ public class Signal {
     @Getter
     protected List<Double> timestamps = new ArrayList<>();
 
+    /**
+     * Constructs a new Signal with the specified time step.
+     *
+     * @param timeStep the time step for the signal
+     */
     public Signal(double timeStep) {
         this.timeStep = timeStep;
     }
 
+    /**
+     * Adds a new value to the signal.
+     *
+     * @param inputValue the value to add
+     * @return true if the value was added successfully
+     */
     public boolean add(List<Double> inputValue) {
         if (this.timestamps.isEmpty()) {
             this.timestamps.add(0.0);
@@ -31,6 +42,11 @@ public class Signal {
         return true;
     }
 
+    /**
+     * Adds all values from the specified collection to the signal.
+     *
+     * @param inputValues the collection of values to add
+     */
     public void addAll(Collection<? extends List<Double>> inputValues) {
         for (List<Double> inputValue : inputValues) {
             this.add(inputValue);
@@ -38,6 +54,11 @@ public class Signal {
         assert this.signalValues.size() == timestamps.size();
     }
 
+    /**
+     * Adds all values from the specified word to the signal.
+     *
+     * @param inputValues the word of values to add
+     */
     public void addAll(Word<? extends List<Double>> inputValues) {
         for (List<Double> inputValue : inputValues) {
             this.add(inputValue);
@@ -46,7 +67,9 @@ public class Signal {
     }
 
     /**
-     * Returns the duration of the signal
+     * Returns the duration of the signal.
+     *
+     * @return the duration of the signal
      */
     public double duration() {
         if (this.timestamps.isEmpty()) {
@@ -76,7 +99,9 @@ public class Signal {
     }
 
     /**
-     * Return the length of the signal
+     * Returns the length of the signal.
+     *
+     * @return the length of the signal
      */
     public int size() {
         assert signalValues.size() == timestamps.size();
@@ -84,9 +109,9 @@ public class Signal {
     }
 
     /**
-     * Return the dimension of the signal
+     * Returns the dimension of the signal.
      *
-     * @return It returns the dimension of the signal if the input value is already set. Otherwise, it returns null.
+     * @return the dimension of the signal if the input value is already set, otherwise null
      */
     public Integer dimension() {
         if (signalValues.isEmpty()) {
@@ -97,7 +122,7 @@ public class Signal {
     }
 
     /**
-     * Clear the signal
+     * Clears the signal.
      */
     public void clear() {
         this.signalValues.clear();
@@ -105,20 +130,20 @@ public class Signal {
     }
 
     /**
-     * Return the value of the index-th control point of the signal
+     * Returns the value of the index-th control point of the signal.
      *
-     * @param index The index
-     * @return It returns the value of the index-th control point of the signal.
+     * @param index the index
+     * @return the value of the index-th control point of the signal
      */
     public List<Double> get(int index) {
         return this.signalValues.get(index);
     }
 
     /**
-     * Return the signal values of the index-th signal
+     * Returns the signal values of the index-th signal.
      *
-     * @param index The index
-     * @return It returns the signal values of the index-th signal.
+     * @param index the index
+     * @return the signal values of the index-th signal
      */
     public List<Double> dimensionGet(int index) {
         List<Double> result = new ArrayList<>();

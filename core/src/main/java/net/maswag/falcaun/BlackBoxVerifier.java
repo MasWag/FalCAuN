@@ -28,31 +28,76 @@ import java.util.stream.Collectors;
 import static net.automatalib.util.automaton.Automata.stateCover;
 
 /**
- * Verifier of a black-box system with respect to the given properties.
+ * Verifies a black-box system against specified properties using various equivalence oracles and model checking techniques.
  *
+ * This class provides a comprehensive framework for verifying the behavior of a black-box system by comparing it against a set of Signal Temporal Logic (STL) properties.
+ * It utilizes learning algorithms, equivalence oracles, and model checkers to identify any discrepancies between the expected and actual behaviors of the system.
+ *
+ * @param <I> The type of input symbols at each step.
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
- * @param <I> Type of the input at each step.
  */
 public class BlackBoxVerifier<I> {
     private static final Function<String, String> EDGE_PARSER = s -> s;
     @Getter
+    /**
+     * The membership oracle used to evaluate test cases and provide the system's output for given inputs.
+     */
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
+    /**
+     * The System Under Learning (SUL) representing the black-box system to be verified.
+     */
     private final SUL<String, String> verifiedSystem;
+    /**
+     * The learned Mealy machine that models the behavior of the black-box system based on test cases.
+     */
     private MealyMachine<?, String, ?, String> learnedMealy;
+    /**
+     * A list of Mealy machines representing counterexamples found during the verification process.
+     */
     private List<MealyMachine<?, String, ?, String>> cexMealy;
+    /**
+     * The alphabet of input symbols used in the verification process.
+     */
     private final Alphabet<String> inputAlphabet;
+    /**
+     * The learning algorithm used to learn the behavior of the black-box system from test cases.
+     */
     private final LearningAlgorithm.MealyLearner<String, String> learner;
+    /**
+     * The equivalence oracle used to find counterexamples by comparing the learned model with the black-box system.
+     */
     private final MealyEQOracleChain<String, String> eqOracle;
     @Getter
+    /**
+     * The adaptive STL updater that manages and updates the Signal Temporal Logic (STL) properties to be verified.
+     */
     private final AdaptiveSTLUpdater<I> properties;
     @Getter
+    /**
+     * A list of input words that led to counterexamples found during the verification process.
+     */
     private List<Word<String>> cexInput;
     @Getter
+    /**
+     * A list of Signal Temporal Logic (STL) properties that were violated by the counterexamples found during the verification process.
+     */
     private List<TemporalLogic<I>> cexProperty;
     @Getter
+    /**
+     * A list of output words produced by the black-box system for the counterexamples found during the verification process.
+     */
     private List<Word<String>> cexOutput;
+    /**
+     * The model checker used to verify the learned Mealy machine against Signal Temporal Logic (STL) properties.
+     */
     private final ModelChecker.MealyModelChecker<String, String, String, MealyMachine<?, String, ?, String>> modelChecker;
+    /**
+     * A list of timeout oracles used to manage timeouts for equivalence oracle operations.
+     */
     private final List<TimeoutEQOracle<String, String>> timeoutOracles = new ArrayList<>();
+    /**
+     * The timeout value in seconds used for equivalence oracle operations.
+     */
     private Long timeout = null;
 
     /**

@@ -14,13 +14,17 @@ import java.util.Set;
 public class TemporalNot<I> extends AbstractTemporalLogic<I> {
     private final TemporalLogic<I> subFml;
 
+    /**
+     * Constructs a new TemporalNot with the specified sub formula.
+     *
+     * @param subFml the sub formula
+     */
     TemporalNot(TemporalLogic<I> subFml) {
         this.subFml = subFml;
         this.nonTemporal = subFml.isNonTemporal();
         this.iOType = subFml.getIOType();
         this.initialized = subFml.isInitialized();
     }
-
 
     /**
      * {@inheritDoc}
@@ -47,19 +51,25 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<String> getAllAPs() {
         return subFml.getAllAPs();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toAbstractString() {
         return String.format("!( %s )", subFml.toAbstractString());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format("!( %s )", subFml.toString());
@@ -67,7 +77,8 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
 
     static class STLNot extends TemporalNot<List<Double>> implements STLCost {
         STLNot(STLCost subFml) {
-            super(subFml);}
+            super(subFml);
+        }
     }
 
     static class LTLNot extends TemporalNot<String> implements LTLFormula {
@@ -76,4 +87,3 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
         }
     }
 }
-

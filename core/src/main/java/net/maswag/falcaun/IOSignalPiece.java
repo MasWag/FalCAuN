@@ -4,11 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * A pair of input and output signals at one time step.
+ * Represents a pair of input and output signals at one time step in a system's behavior.
  *
- * @param <I> the type of the input and output signals
+ * This class encapsulates an input signal and its corresponding output signal for a single time step.
+ * It is used to store and manage the input-output pairs during simulations, verifications, and other analyses of system behavior.
+ *
+ * @param <I> The type of the input and output signals.
  */
-@Getter @AllArgsConstructor
+@Getter
+@AllArgsConstructor
 public class IOSignalPiece<I> {
-    final private I inputSignal, outputSignal;
+    /**
+     * The input signal at this time step.
+     */
+    final private I inputSignal;
+
+    /**
+     * The output signal at this time step.
+     */
+    final private I outputSignal;
 }

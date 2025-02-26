@@ -13,6 +13,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A membership oracle that computes the cost of input-output signals using a specified cost function.
+ *
+ * This class extends {@link NumericMembershipOracle} and implements {@link EvaluationCountable}.
+ * It processes queries to determine the output signals for given inputs and calculates the associated costs
+ * using a provided cost function. The results are cached to improve efficiency.
+ */
 class NumericMembershipOracleCost extends NumericMembershipOracle implements EvaluationCountable {
     private static final Logger LOGGER = LoggerFactory.getLogger(NumericMembershipOracleCost.class);
     private IncrementalMealyBuilder<String, Double> costCache;

@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  *
  * @param <I> Input symbol
  * @param <O> Output symbol
- * @param <C>
+ * @param <C> Type parameter for the AdaptiveSTLUpdater
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */

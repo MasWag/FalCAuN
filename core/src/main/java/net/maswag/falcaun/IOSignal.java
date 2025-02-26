@@ -82,9 +82,10 @@ public interface IOSignal<I> {
     }
 
     /**
-     * Returns the input symbol at the given index.
+     * Returns the output symbol at the given index.
      *
      * @param i the index
+     * @return the output symbol at the specified index
      */
     I getOutputSymbol(int i);
 
