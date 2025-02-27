@@ -47,7 +47,7 @@ class AbstractMapperReader {
 
             for (int j = 0; j < parsedData.get(i).size(); j++) {
                 if (parsedData.get(i).get(j) != null) {
-                    currentMap.put(charList[j], parsedData.get(i).get(j));
+                    currentMap.put(charList[i]++, parsedData.get(i).get(j));
                 }
             }
 
