@@ -7,6 +7,7 @@ import org.apache.commons.math3.util.Pair;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +33,11 @@ public class ValueWithTime<T> {
         if (timestamps.size() != values.size()) {
             throw new IllegalArgumentException("The size of timestamp and values must be the same");
         }
+        // Throws an exception if any of the value is null
+        if (values.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("The values must not be null");
+        }
+
         this.timestamps = timestamps;
         this.values = values;
     }
@@ -41,6 +47,13 @@ public class ValueWithTime<T> {
      */
     public int size() {
         return timestamps.size();
+    }
+
+    /**
+     * Check if the value is empty.
+     */
+    public boolean isEmpty() {
+        return timestamps.isEmpty();
     }
 
     /**
@@ -66,8 +79,27 @@ public class ValueWithTime<T> {
     public ValueWithTime<T> range(double from, double to) {
         assert(from < to);
         assert(timestamps.size() == values.size());
+        return this.range(from, to, false, true);
+    }
+
+    /**
+     * Get the values in the given time range.
+     *
+     * @param from The start time
+     * @param to The end time
+     * @param leftInclusive Whether the start time is inclusive
+     * @param rightInclusive Whether the end time is inclusive
+     */
+    public ValueWithTime<T> range(double from, double to, boolean leftInclusive, boolean rightInclusive) {
+        assert(from <= to);
+        assert(timestamps.size() == values.size());
         return Streams.zip(timestamps.stream(), values.stream(), Pair::new)
-                .filter(pair -> from < pair.getFirst() && pair.getFirst() <= to)
+                .filter(pair -> {
+                    double timestamp = pair.getFirst();
+                    boolean validStart = leftInclusive ? (from <= timestamp) : (from < timestamp);
+                    boolean validEnd = rightInclusive ? (timestamp <= to) : (timestamp < to);
+                    return validStart && validEnd;
+                })
                 .collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
                     List<Double> newTimestamp = list.stream().map(Pair::getFirst).collect(Collectors.toList());
                     List<T> newValues = list.stream().map(Pair::getSecond).collect(Collectors.toList());

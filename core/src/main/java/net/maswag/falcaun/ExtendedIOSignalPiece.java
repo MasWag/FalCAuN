@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 public class ExtendedIOSignalPiece<I> extends IOSignalPiece<I> {
     /**
-     * The previous output signals.
+     * The previous output signals. This must not include the previous step and must include the current step
      */
     protected List<I> previousOutputSignals;
 
@@ -30,6 +30,12 @@ public class ExtendedIOSignalPiece<I> extends IOSignalPiece<I> {
      */
     public ExtendedIOSignalPiece(I inputSignal, I outputSignal, List<I> previousOutputSignals) {
         super(inputSignal, outputSignal);
+        if (outputSignal == null) {
+            throw new IllegalArgumentException("The output signal must not be null");
+        }
+        if (previousOutputSignals == null) {
+            throw new IllegalArgumentException("The previous output signals must not be null");
+        }
         // The following equality must be based on the elements, not the references.
         if (!outputSignal.equals(previousOutputSignals.get(previousOutputSignals.size() - 1))) {
             throw new IllegalArgumentException("The current output signal must be the last element of previousOutputSignals");
@@ -42,10 +48,10 @@ public class ExtendedIOSignalPiece<I> extends IOSignalPiece<I> {
      *
      * @param inputStep the current step of the input signal
      * @param outputSignal the entire output signal with time stamps
-     * @param from the time when the current signal starts
-     * @param to the time when the current signal ends. This is the same as the current signal step.
+     * @param from the time when the current signal starts (non-inclusive)
+     * @param to the time when the current signal ends (inclusive). This is the same as the current signal step.
      */
-    public ExtendedIOSignalPiece(I inputStep, ValueWithTime<I> outputSignal, Double from, Double to) {
+    public ExtendedIOSignalPiece(I inputStep, ValueWithTime<I> outputSignal, double from, double to) {
         super(inputStep, outputSignal.at(to));
         this.previousOutputSignals = outputSignal.range(from, to).getValues();
     }
