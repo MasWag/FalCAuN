@@ -2,7 +2,9 @@ package net.maswag.falcaun;
 
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,6 +14,7 @@ import java.util.List;
  *
  * @param <I> the type of the input and output signals
  */
+@Slf4j
 @Getter
 public class ExtendedIOSignalPiece<I> extends IOSignalPiece<I> {
     /**
@@ -38,7 +41,8 @@ public class ExtendedIOSignalPiece<I> extends IOSignalPiece<I> {
         }
         // The following equality must be based on the elements, not the references.
         if (!outputSignal.equals(previousOutputSignals.get(previousOutputSignals.size() - 1))) {
-            throw new IllegalArgumentException("The current output signal must be the last element of previousOutputSignals");
+            log.warn("The current output signal does not match the last element of previousOutputSignals: {} != {}",
+                    outputSignal, previousOutputSignals.get(previousOutputSignals.size() - 1));
         }
         this.previousOutputSignals = previousOutputSignals;
     }

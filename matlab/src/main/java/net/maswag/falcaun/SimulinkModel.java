@@ -26,8 +26,9 @@ public class SimulinkModel {
     /**
      * The simulation step of Simulink.
      * <p>
-     * If this value is too large, Simulink can abort due to an computation error. In that case, you should make this value larger.
+     * If this value is too large, Simulink can abort due to a computation error. In that case, you should make this value larger.
      */
+    @Getter
     private double simulinkSimulationStep;
     private final MatlabEngine matlab;
     private final List<String> paramNames;

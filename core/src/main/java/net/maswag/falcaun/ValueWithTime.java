@@ -2,6 +2,7 @@ package net.maswag.falcaun;
 
 import com.google.common.collect.Streams;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.util.Pair;
 
 import javax.annotation.Nullable;
@@ -18,6 +19,7 @@ import static java.lang.Math.ceil;
  *
  * @param <T> The type of the values
  */
+@Slf4j
 @Getter
 public class ValueWithTime<T> {
     protected final List<Double> timestamps;
@@ -43,6 +45,17 @@ public class ValueWithTime<T> {
     }
 
     /**
+     * Get the duration of the signal.
+     */
+    public double duration() {
+        if (timestamps.isEmpty()) {
+            return 0.0;
+        } else {
+            return timestamps.get(timestamps.size() - 1) - timestamps.get(0);
+        }
+    }
+
+    /**
      * Get the number of contained values.
      */
     public int size() {
@@ -62,11 +75,25 @@ public class ValueWithTime<T> {
     @Nullable
     public T at(double time) {
         assert(timestamps.size() == values.size());
+        Double best = null;
+        double bestTime = 0;
         for (int i = 0; i < timestamps.size(); i++) {
+            best = timestamps.get(i);
+            bestTime = Math.max(time, bestTime);
             if (timestamps.get(i) == time) {
                 return values.get(i);
             }
+            if (timestamps.get(i) > time) {
+                if (time - bestTime < timestamps.get(i) - time) {
+                    log.info("Failed to find the exact time. Using the value at the closest time: {}", best);
+                    return values.get(i - 1);
+                } else {
+                    log.info("Found the exact time. Using the value at the closest time: {}", this.timestamps.get(i));
+                    return values.get(i);
+                }
+            }
         }
+        log.info("Failed to find the exact time. Using the value at the closest time: {}", best);
         return null;
     }
 

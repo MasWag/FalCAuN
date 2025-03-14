@@ -7,6 +7,7 @@ import net.automatalib.word.Word;
 import org.apache.commons.math3.util.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -39,7 +40,8 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
         if (inputSignal.isEmpty() != continuousOutputSignal.isEmpty()) {
             throw new IllegalArgumentException("The input signal and the continuous output signal must be both empty or non-empty");
         }
-        if (!inputSignal.isEmpty() && inputSignal.size() - 1 != Math.ceil((continuousOutputSignal.size() - 1)/ signalStep)) {
+        if (!inputSignal.isEmpty() && inputSignal.size() - 1 != Math.floor(continuousOutputSignal.duration() / signalStep)) {
+            log.error("Inconsistent duration is detected: inputSignal.size() = " + inputSignal.size() + ", signalStep = " + signalStep + ", continuousOutputSignal.duration() = " + continuousOutputSignal.duration());
             throw new IllegalArgumentException("The duration of the continuous output signal must be consistent with the input signal");
         }
         this.continuousOutputSignal = continuousOutputSignal;
@@ -48,8 +50,14 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
 
     @Override
     public Stream<IOSignalPiece<I>> stream() {
+        if (inputSignal.size() > continuousOutputSignal.stream(this.signalStep).toList().size()) {
+            throw new IllegalArgumentException("The signal step must be consistent with the input signal");
+        }
+        if (this.continuousOutputSignal.stream(this.signalStep).anyMatch(Objects::isNull)) {
+            throw new RuntimeException("The continuous output signal must not be null");
+        }
         return Streams.zip(Streams.zip(inputSignal.stream(), outputSignal.stream(), Pair::new),
-                continuousOutputSignal.stream(this.signalStep),
+                continuousOutputSignal.stream(this.signalStep).limit(inputSignal.size()),
                 (pair, value) -> new ExtendedIOSignalPiece<>(pair.getFirst(), pair.getSecond(), value));
     }
 
@@ -108,7 +116,7 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
     public IOSignal<I> suffix(int suffixLen) {
         double beginTime = signalStep * (inputSignal.size() - suffixLen);
         return new IOContinuousSignal<>(inputSignal.suffix(suffixLen), outputSignal.suffix(suffixLen),
-                continuousOutputSignal.range(beginTime, Double.POSITIVE_INFINITY), signalStep);
+                continuousOutputSignal.range(beginTime, Double.POSITIVE_INFINITY, true, true), signalStep);
     }
 
     @Override
