@@ -30,7 +30,7 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
      * @param inputSignal            the input signal
      * @param outputSignal           the output signal
      * @param continuousOutputSignal the continuous output signal values with time stamps
-     * @param signalStep             the time step between the continuous output signal values
+     * @param signalStep             the time between each element of inputSignal and outputSignal
      */
     public IOContinuousSignal(Word<I> inputSignal, Word<I> outputSignal, ValueWithTime<I> continuousOutputSignal, double signalStep) {
         super(inputSignal, outputSignal);
