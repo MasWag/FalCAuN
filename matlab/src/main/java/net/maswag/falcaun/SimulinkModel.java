@@ -88,7 +88,6 @@ public class SimulinkModel {
     public void reset() {
         inputSignal = new Signal(signalStep);
         isInitial = true;
-        counter++;
     }
 
     /**
@@ -106,6 +105,9 @@ public class SimulinkModel {
      */
     @Nonnull
     public ValueWithTime<List<Double>> step(@Nonnull List<Double> inputSignal) {
+        if (this.isInitial) {
+            counter++;
+        }
         assert isInitial || !inputSignal.isEmpty();
         List<List<Double>> result = new ArrayList<>();
         List<Double> timestamps;
@@ -312,6 +314,9 @@ public class SimulinkModel {
      * @return The output signal. The size is same as the input.
      */
     public ValueWithTime<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
+        if (this.isInitial) {
+            counter++;
+        }
         assert isInitial || !inputSignal.isEmpty();
         if (inputSignal == null) {
             return null;

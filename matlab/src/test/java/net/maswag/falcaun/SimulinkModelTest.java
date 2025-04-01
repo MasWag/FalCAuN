@@ -74,6 +74,32 @@ class SimulinkModelTest {
             // Since the total number of steps is 10, the last time stamp should be 18.0
             Assertions.assertEquals(signalStep * 9, lastTime);
         }
+
+        @Test
+        void count() throws ExecutionException, InterruptedException {
+            // Test that the counter is 0 at the beginning
+            Assertions.assertEquals(0, mdl.getCounter());
+            // Give [80.0, 900.0] by repeating 10 times
+            List<List<Double>> input = Arrays.asList(
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0),
+                    Arrays.asList(80.0, 900.0));
+            // Execute the model
+            mdl.execute(Word.fromList(input));
+            // Test that the counter is 1 after executing the model
+            Assertions.assertEquals(1, mdl.getCounter());
+            // Execute the model again
+            mdl.execute(Word.fromList(input));
+            // Test that the counter is 2 after executing the model again
+            Assertions.assertEquals(2, mdl.getCounter());
+        }
     }
 
     @Nested
