@@ -2,10 +2,14 @@ package net.maswag.falcaun;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import net.automatalib.word.Word;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Unit tests for the BouncingBallSUL class.
@@ -157,7 +161,33 @@ public class BouncingBallSULTest {
             assertEquals(3, sul.getCounter(), "Counter should be 3 after third simulation");
         }
     }
-    
+
+    /**
+     * Test the execute function
+     */
+    @Test
+    public void testExecute() {
+        try (BouncingBallSUL sul = new BouncingBallSUL()) {
+            assertEquals(0, sul.getCounter(), "Counter should be 0 initially");
+
+            // Perform a complete simulation
+            sul.pre();
+            List<List<Double>> input = new ArrayList<>();
+            input.add(Collections.singletonList(2.0)); // Wind strength
+            input.add(Collections.singletonList(2.0)); // Wind strength
+            input.add(Collections.singletonList(2.0)); // Wind strength
+            input.add(Collections.singletonList(2.0)); // Wind strength
+            IOContinuousSignal<List<Double>> result = sul.execute(Word.fromList(input));
+
+            // Counter should be 1 after executing a sequence
+            assertEquals(1, sul.getCounter(), "Counter should be 1 after executing a sequence");
+            assertEquals(3.0, result.continuousOutputSignal.duration(), 0.0001, "Duration should be 3 seconds");
+            result.prefixes(false);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Test that the initial state is correctly returned.
      */
@@ -184,9 +214,16 @@ public class BouncingBallSULTest {
             List<Double> input = new ArrayList<>();
             input.add(2.0); // Wind strength
             sul.step(input);
-            
+
             // State should be updated
             BouncingBall.SimulationState state = sul.getState();
+            assertNotNull(state, "State should not be null after step");
+            assertTrue(state.time == 0, "Time should be 0 after the first step");
+
+            sul.step(input);
+            
+            // State should be updated
+            state = sul.getState();
             assertNotNull(state, "State should not be null after step");
             assertTrue(state.time > 0, "Time should be greater than 0 after step");
             

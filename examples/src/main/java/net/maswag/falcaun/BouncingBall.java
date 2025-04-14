@@ -1,5 +1,7 @@
 package net.maswag.falcaun;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,7 @@ public class BouncingBall {
     // Default constants
     public static final double DEFAULT_INITIAL_POSITION = 50.0; // in meters
     public static final double DEFAULT_INITIAL_VELOCITY = 0.0;    // in m/s
-    public static final double DEFAULT_SIMULATION_STEP = 0.01;    // in seconds
+    public static final double DEFAULT_SIMULATION_STEP = 0.0001;    // in seconds
     public static final double DEFAULT_BOUNCE_COEFFICIENT = 0.9;  // energy loss factor at bounce
     public static final double DEFAULT_GRAVITY = 9.81;            // gravitational acceleration in m/s^2
     public static final double DEFAULT_WIND_STRENGTH = 2.0;         // upward acceleration from wind in m/s^2
@@ -21,7 +23,9 @@ public class BouncingBall {
     private double gravity;
 
     // Simulation state variables
+    @Getter
     private double position;
+    @Getter
     private double velocity;
     private double elapsedTime;
 
@@ -100,6 +104,7 @@ public class BouncingBall {
         double timePassed = 0.0;
         // Record the initial state.
         states.add(new SimulationState(elapsedTime, position, velocity));
+        double initialTime = elapsedTime;
 
         while (timePassed < duration) {
             // Use the smaller of the simulation step or the remaining time.
@@ -119,6 +124,10 @@ public class BouncingBall {
 
             timePassed += dt;
             elapsedTime += dt;
+            // Adjust elapsed time to ensure it doesn't exceed the total duration.
+            if (timePassed >= duration) {
+                elapsedTime = initialTime + duration;
+            }
 
             // Record the state after this simulation step.
             states.add(new SimulationState(elapsedTime, position, velocity));
