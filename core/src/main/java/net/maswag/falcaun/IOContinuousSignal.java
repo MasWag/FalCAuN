@@ -77,6 +77,9 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
             } else {
                 // The first signal is at 0
                 double endTime = signalStep * (inputPrefix.size() - 1);
+                int i = Collections.binarySearch(continuousOutputSignal.timestamps, endTime);
+                int index = i >= 0 ? i : i <= -continuousOutputSignal.size() - 1 ? continuousOutputSignal.size() - 1 : -i - 1;
+                endTime = continuousOutputSignal.timestamps.get(index);
                 result.add(new IOContinuousSignal<>(inputPrefix,
                         Objects.requireNonNull(outputPrefixes.poll()),
                         continuousOutputSignal.range(Double.NEGATIVE_INFINITY, endTime),
