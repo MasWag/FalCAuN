@@ -69,13 +69,15 @@ fi
 log "Check the version of LTSMin (= v3.1.0)"
 LTSMin_version="$(etf2lts-mc --version)"
 
-if [ "$LTSMin_version" = "v3.1.0" ]; then
+case "$LTSMin_version" in
+v3.1.0*)
     log_ok "Detected LTSMin $LTSMin_version"
-else
+;;
+*)
     log_error "Detected LTSMin $LTSMin_version"
     log_error "FalCAuN requires LTSMin version v3.1.0"
     exit 1
-fi
+esac
 
 ## Check MATLAB
 log "Check if the environment variable MATLAB_HOME is set"
