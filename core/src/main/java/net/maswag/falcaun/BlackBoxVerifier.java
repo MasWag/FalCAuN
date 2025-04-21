@@ -29,19 +29,19 @@ import static net.automatalib.util.automaton.Automata.stateCover;
 
 /**
  * Verifies a black-box system against specified properties using various equivalence oracles and model checking techniques.
- *
+ * <p>
  * This class provides a comprehensive framework for verifying the behavior of a black-box system by comparing it against a set of Signal Temporal Logic (STL) properties.
  * It utilizes learning algorithms, equivalence oracles, and model checkers to identify any discrepancies between the expected and actual behaviors of the system.
- *
+ * </p>
  * @param <I> The type of input symbols at each step.
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class BlackBoxVerifier<I> {
     private static final Function<String, String> EDGE_PARSER = s -> s;
-    @Getter
     /**
      * The membership oracle used to evaluate test cases and provide the system's output for given inputs.
      */
+    @Getter
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     /**
      * The System Under Learning (SUL) representing the black-box system to be verified.
@@ -67,25 +67,25 @@ public class BlackBoxVerifier<I> {
      * The equivalence oracle used to find counterexamples by comparing the learned model with the black-box system.
      */
     private final MealyEQOracleChain<String, String> eqOracle;
-    @Getter
     /**
      * The adaptive STL updater that manages and updates the Signal Temporal Logic (STL) properties to be verified.
      */
-    private final AdaptiveSTLUpdater<I> properties;
     @Getter
+    private final AdaptiveSTLUpdater<I> properties;
     /**
      * A list of input words that led to counterexamples found during the verification process.
      */
-    private List<Word<String>> cexInput;
     @Getter
+    private List<Word<String>> cexInput;
     /**
      * A list of Signal Temporal Logic (STL) properties that were violated by the counterexamples found during the verification process.
      */
-    private List<TemporalLogic<I>> cexProperty;
     @Getter
+    private List<TemporalLogic<I>> cexProperty;
     /**
      * A list of output words produced by the black-box system for the counterexamples found during the verification process.
      */
+    @Getter
     private List<Word<String>> cexOutput;
     /**
      * The model checker used to verify the learned Mealy machine against Signal Temporal Logic (STL) properties.

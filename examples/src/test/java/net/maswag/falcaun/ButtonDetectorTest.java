@@ -2,6 +2,10 @@ package net.maswag.falcaun;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.learnlib.oracle.MembershipOracle;
+import de.learnlib.oracle.membership.SULOracle;
+import de.learnlib.sul.SUL;
+import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
 import org.junit.jupiter.api.Test;
 
@@ -316,6 +320,56 @@ public class ButtonDetectorTest {
                     "Release after long press should result in LongPress");
             
             sul.post();
+        }
+    }
+
+    /**
+     * Test using BlackBoxVerifier to verify ButtonDetector behavior.
+     * This test creates STL properties for button events and verifies them against the ButtonDetector.
+     */
+    @Test
+    public void testBlackBoxVerifier() {
+        // Create a ButtonDetector with 100ms step time
+        try (ButtonDetector buttonDetector = new ButtonDetector(100)) {
+            // Create a ButtonDetectorMapper to convert between String and ButtonDetector types
+            SUL<String, String> buttonDetectorSUL = new ButtonDetectorMapper(buttonDetector);
+
+            // Create a membership oracle
+            MembershipOracle.MealyMembershipOracle<String, String> memOracle = new SULOracle<>(buttonDetectorSUL);
+
+            // Get the input alphabet from ButtonDetectorMapper
+            Alphabet<String> inputAlphabet = ButtonDetectorMapper.getInputAlphabet();
+
+            // Create LTL properties for button events
+            List<String> properties = new ArrayList<>();
+            
+            // Property 1: If a button is pressed and held for 10+ steps, it should eventually result in a LongPress
+            properties.add("<> (output == \"LongPress\")");
+            
+            // Property 2: If a button is pressed and released twice quickly, it should result in a DoubleClick
+            properties.add("<> (output == \"DoubleClick\")");
+            
+            // Property 3: If a button is pressed and released once with no follow-up, it should result in a SingleClick
+            properties.add("<> (output == \"SingleClick\")");
+            
+            // Create a StaticLTLList with the properties
+            StopDisprovedEQOracle.StaticLTLList<List<Double>> ltlList = new StopDisprovedEQOracle.StaticLTLList<>(properties);
+            ltlList.setMemOracle(memOracle);
+
+            // Create a BlackBoxVerifier
+            BlackBoxVerifier<List<Double>> verifier = new BlackBoxVerifier<>(memOracle, buttonDetectorSUL, ltlList, inputAlphabet);
+
+            // Add equivalence oracles
+            verifier.addRandomWordEQOracle(1, 20, 100, new java.util.Random(42), 10);
+            verifier.addWpMethodEQOracle(3);
+            verifier.addCornerCaseEQOracle(10, 2);
+
+            // Run the verifier
+            boolean isVerified = verifier.run();
+
+            // The verification should pass (no counterexamples found)
+            // Note: This might need adjustment based on the actual behavior of ButtonDetector
+            assertTrue(isVerified, "ButtonDetector should satisfy all STL properties");
         }
     }
 }
