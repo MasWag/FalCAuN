@@ -344,13 +344,13 @@ public class ButtonDetectorTest {
             List<String> properties = new ArrayList<>();
             
             // Property 1: If a button is pressed and held for 10+ steps, it should eventually result in a LongPress
-            properties.add("<> (output == \"LongPress\")");
+            properties.add("[] (output == \"LongPress\")");
             
             // Property 2: If a button is pressed and released twice quickly, it should result in a DoubleClick
-            properties.add("<> (output == \"DoubleClick\")");
+            properties.add("[] (output == \"DoubleClick\")");
             
             // Property 3: If a button is pressed and released once with no follow-up, it should result in a SingleClick
-            properties.add("<> (output == \"SingleClick\")");
+            properties.add("[] (output == \"SingleClick\")");
             
             // Create a StaticLTLList with the properties
             StopDisprovedEQOracle.StaticLTLList<List<Double>> ltlList = new StopDisprovedEQOracle.StaticLTLList<>(properties);
