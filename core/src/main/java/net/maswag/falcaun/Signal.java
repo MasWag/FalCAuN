@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class Signal {
     protected double timeStep;
+    @Getter
     protected List<List<Double>> signalValues = new ArrayList<>();
     @Getter
     protected List<Double> timestamps = new ArrayList<>();
