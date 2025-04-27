@@ -153,4 +153,18 @@ public class Signal {
         }
         return result;
     }
+
+    /**
+     * Returns the list containing both the timestamps and the signal values.
+     */
+    public List<List<Double>> asList() {
+        List<List<Double>> result = new ArrayList<>();
+        for (int i = 0; i < size(); i++) {
+            List<Double> combinedValue = new ArrayList<>();
+            combinedValue.add(timestamps.get(i));
+            combinedValue.addAll(signalValues.get(i));
+            result.add(combinedValue);
+        }
+        return result;
+    }
 }
