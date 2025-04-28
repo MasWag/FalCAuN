@@ -10,14 +10,14 @@ import net.automatalib.alphabet.ArrayAlphabet;
  */
 public class ButtonDetectorMapper implements SUL<String, String> {
     
-    private final ButtonDetector buttonDetector;
+    private final SUL<ButtonDetector.RawInput, ButtonDetector.ButtonEvent> buttonDetector;
     
     /**
      * Constructs a new ButtonDetectorMapper with the specified ButtonDetector.
      * 
      * @param buttonDetector The ButtonDetector to map
      */
-    public ButtonDetectorMapper(ButtonDetector buttonDetector) {
+    public ButtonDetectorMapper(SUL<ButtonDetector.RawInput, ButtonDetector.ButtonEvent> buttonDetector) {
         this.buttonDetector = buttonDetector;
     }
     
