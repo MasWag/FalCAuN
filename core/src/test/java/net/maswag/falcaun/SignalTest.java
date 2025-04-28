@@ -90,4 +90,31 @@ class SignalTest {
             assertEquals(rawInput.get(i), this.inputSignal.get(i));
         }
     }
+
+    @Test
+    void testLinearInterpolate() {
+        // prepare input
+        this.inputSignal.addAll(rawInput);
+        // interpolate with step = 1.0
+        Signal interp = this.inputSignal.linearInterpolate(1.0);
+        // expected 19 points (timestamps 0 through 18)
+        assertEquals(19, interp.size());
+        // check points 0..16: value should stay at 100.0, 0.0
+        for (int i = 0; i <= 16; i++) {
+            assertEquals((double) i, interp.getTimestamps().get(i));
+            List<Double> v = interp.get(i);
+            assertEquals(100.0, v.get(0));
+            assertEquals(0.0, v.get(1));
+        }
+        // check intermediate at t=17 -> should be halfway between 100 and 0
+        assertEquals(17.0, interp.getTimestamps().get(17));
+        List<Double> v17 = interp.get(17);
+        assertEquals(50.0, v17.get(0));
+        assertEquals(0.0, v17.get(1));
+        // final point at t=18 should match the last raw input (0.0, 0.0)
+        assertEquals(18.0, interp.getTimestamps().get(18));
+        List<Double> v18 = interp.get(18);
+        assertEquals(0.0, v18.get(0));
+        assertEquals(0.0, v18.get(1));
+    }
 }

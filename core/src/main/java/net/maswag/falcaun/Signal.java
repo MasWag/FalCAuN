@@ -167,4 +167,74 @@ public class Signal {
         }
         return result;
     }
+
+    /**
+     * Returns a new Signal whose values are linearly interpolated
+     * at the given timeStep, writing directly into the result.
+     *
+     * @param newTimeStep the time step for the interpolated signal
+     * @return a Signal containing the linearly interpolated data
+     */
+    public Signal linearInterpolate(double newTimeStep) {
+        // Build result with its own timeStep
+        Signal result = new Signal(newTimeStep);
+
+        // Quick return if too few points
+        if (this.size() < 2) {
+            // just copy timestamps & values
+            for (int i = 0; i < this.size(); i++) {
+                result.timestamps.add(this.timestamps.get(i));
+                result.signalValues.add(new ArrayList<>(this.signalValues.get(i)));
+            }
+            return result;
+        }
+
+        int cur = 0, next = 1;
+        // add the very first control point
+        result.timestamps.add(this.timestamps.get(0));
+        result.signalValues.add(new ArrayList<>(this.signalValues.get(0)));
+
+        while (next < this.size()) {
+            double t0 = this.timestamps.get(cur);
+            double t1 = this.timestamps.get(next);
+
+            // if duplicate time, just copy forward
+            if (t0 == t1) {
+                result.timestamps.add(t1);
+                result.signalValues.add(new ArrayList<>(this.signalValues.get(next)));
+                cur++;
+                next++;
+                continue;
+            }
+
+            double t = t0;
+            List<Double> v0 = this.signalValues.get(cur);
+            List<Double> v1 = this.signalValues.get(next);
+            int dim = v0.size();
+
+            // step by newTimeStep until we hit or pass t1
+            while (t + newTimeStep < t1) {
+                t += newTimeStep;
+                double ratio = (t - t0) / (t1 - t0);
+
+                // build interpolated value vector
+                List<Double> interpValues = new ArrayList<>(dim);
+                for (int i = 0; i < dim; i++) {
+                    interpValues.add(v0.get(i) + ratio * (v1.get(i) - v0.get(i)));
+                }
+
+                result.timestamps.add(t);
+                result.signalValues.add(interpValues);
+            }
+
+            // finally add the exact next control point
+            result.timestamps.add(t1);
+            result.signalValues.add(new ArrayList<>(v1));
+
+            cur++;
+            next++;
+        }
+
+        return result;
+    }
 }
