@@ -38,6 +38,7 @@ import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.maswag.falcaun.*
 import org.slf4j.LoggerFactory
 import kotlin.streams.toList
+import net.automatalib.word.Word;
 
 // The following surprises the debug log
 var updaterLogger = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
@@ -54,11 +55,11 @@ var SimulinkSteadyStateGeneticAlgorithmLogger = LoggerFactory.getLogger(EQSteady
 SimulinkSteadyStateGeneticAlgorithmLogger.level = Level.INFO
 
 // Define the input and output mappers
-val mealSizeValues = DoubleArray(30) { it * 10 }
+val mealSizeValues = listOf(0.0, 80.0) // <20?
 val inputMapper = InputMapperReader.make(listOf(mealSizeValues))
-val bgValues = DoubleArray(30) { it * 10 } + null
-val insulinValues = DoubleArray(30) { it * 0.1 } + null
-val outputMapperReader = OutputMapperReader(listOf(bgValues, insulinValuesValues))
+val bgValues = listOf(55.0, 70.0, 400.0) // <300?
+val insulinValues = listOf(0.5) //listOf(0.3, 0.6) // <3?
+val outputMapperReader = OutputMapperReader(listOf(bgValues, insulinValues, bgValues))
 outputMapperReader.parse()
 val signalMapper = ExtendedSignalMapper()
 val mapper =
@@ -66,13 +67,18 @@ val mapper =
 
 val bg = "signal(0)"
 val insulin = "signal(1)"
-val alpha = 30
+val max_bg = "signal(2)"
+val alpha = 10
 
 // Define the STL properties
 val stlFactory = STLFactory()
 val stlList = listOf(
-    "[] (55 <= $bg && $bg <= 210)",
-    "[] ($bg < 70 -> <>_[0, $alpha] ($bg > 70))", //下位10%以下を alpha 分以上取らない
+    //"[] ($bg > 55)",
+    //"[] ($bg > 55 && $bg < 400.0)",
+    "[] ($bg < 70.0 -> X ($max_bg > 70.0))", //下位10%以下を 30 分以上取らない
+    "! <> []_[0,5] ($max_bg < 70)", //低血糖状態が150分以上続かない
+    "($bg < 70) -> ($insulin < 0.5)", //低血糖状態で inslin を打たない
+    //"! <> X X X X X X ($bg > 240)", //高血糖状態が180分以上続かない
 ).stream().map { stlString ->
     stlFactory.parse(
         stlString,
@@ -81,7 +87,7 @@ val stlList = listOf(
         outputMapperReader.largest
     )
 }.toList()
-val signalLength = 30
+val signalLength = 24 //3*10 * 24 mins
 val properties = AdaptiveSTLList(stlList, signalLength)
 
 // Constants for the GA-based equivalence testing
@@ -116,6 +122,17 @@ PythonNumericSUL(initScript, signalStep).use { autoTransSUL ->
             println("cex concrete input: ${verifier.cexConcreteInput[i]}")
             println("cex abstract input: ${verifier.cexAbstractInput[i]}")
             println("cex output: ${verifier.cexOutput[i]}")
+
+
+            var rawOutput = mutableListOf<List<List<Double>>>()
+            val dim = mutableListOf<List<Double>>()
+            for (j in 0 until verifier.cexConcreteInput[i].size()) {
+                dim.add(verifier.cexConcreteInput[i].get(j))
+            }
+            val inputWord = Word.fromList(dim)
+            val resultWord = autoTransSUL.execute(inputWord).getOutputSignal()
+            rawOutput.add(resultWord.asList())
+            println("cex concrete output: ${rawOutput}")
         }
     }
     println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
