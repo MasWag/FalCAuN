@@ -27,6 +27,8 @@ class ContinuousGlucoseScenario(Scenario):
     def reset(self):
         pass
 
+INF=1e9
+
 # Unfold SimObj
 class SULBase:
     fixed_env : any
@@ -55,6 +57,8 @@ class SULBase:
         self.scenario = scenario
         self.env = T1DSimEnv(patient, sensor, pump, scenario)
 
+        self.pre_bg = INF
+
     def mini_step(self):
         obs, reward, done, info = self.state
         #if self.animate:
@@ -74,20 +78,26 @@ class SULBase:
         # Set glucose for each step
         self.scenario.set_action(glucose)
 
-        INF=1e9
         (last_bg, sum_insulin) = (0.0, 0.0)
+        pre_bg = self.pre_bg
         max_bg = 0.0
-        min_bg = INF
+        max_delta_bg = -INF
+        (min_bg, min_delta_bg) = (INF, INF)
         for i in range(self.step_n):
             (bg, insulin) = self.mini_step()
             last_bg = bg
             sum_insulin += insulin
             max_bg = max(max_bg, bg)
             min_bg = min(min_bg, bg)
+            delta_bg = 0.0 if pre_bg == INF else (bg - pre_bg) / self.env.sample_time
+            pre_bg = bg
+            max_delta_bg = max(max_delta_bg, delta_bg)
+            min_delta_bg = min(min_delta_bg, delta_bg)
             self.scenario.set_action(0) # Reset CHO to 0 after first iteration
 
-        print(last_bg, sum_insulin, max_bg)
-        return [last_bg, sum_insulin, max_bg]
+        self.pre_bg = last_bg
+        print(last_bg, sum_insulin, min_bg, max_bg, min_delta_bg, max_delta_bg)
+        return [last_bg, sum_insulin, min_bg, max_bg, min_delta_bg, max_delta_bg]
 
     def pre(self) -> None:
         # Put them together to create a simulation object
@@ -96,6 +106,7 @@ class SULBase:
         self.controller.reset()
         self.state = self.env.reset()
         self.tic = time.time()
+        self.pre_bg = INF
 
 
     def post(self) -> None:
