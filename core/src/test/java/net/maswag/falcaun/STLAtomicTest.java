@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
 class STLAtomicTest {
@@ -142,5 +144,58 @@ class STLAtomicTest {
         assertTrue(formula.toAbstractString().startsWith("( input =="));
         // The abstract string must not contain "output"
         assertFalse(formula.toAbstractString().contains("output"));
+    }
+
+    @Test
+    void toAbstractStringInputPositive() {
+        List<Map<Character, Double>> inputMapper = new ArrayList<>();
+        inputMapper.add(Map.of('a', 1.0, 'b', 2.0));
+        inputMapper.add(Map.of('x', 1.0));
+        inputMapper.add(Map.of('y', 0.0));
+
+        List<Pair<STLInputAtomic, Set<String>>> testCases = List.of(
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 0.5), Set.of()),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 1.0), Set.of()),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 1.5), Set.of("axy")),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 2.0), Set.of("axy")),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 2.5), Set.of("axy", "bxy")),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.gt, 0.5), Set.of("axy", "bxy")),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.gt, 1.0), Set.of("bxy")),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.gt, 1.5), Set.of("bxy")),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.gt, 2.0), Set.of()),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.gt, 2.5), Set.of()),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.eq, 1.0), Set.of("axy")),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.eq, 2.0), Set.of("bxy"))
+        );
+
+        for (Pair<STLInputAtomic, Set<String>> test : testCases) {
+            var formula = test.getLeft();
+            formula.setInputMapper(inputMapper);
+
+            // We do an ad hoc parsing of the abstract string to get the atomic propositions
+            var actual = Arrays.stream(formula.toAbstractString()
+                    .split("\"")).filter(s -> s.length() == inputMapper.size()).collect(Collectors.toSet());
+            var expected = test.getRight();
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    void toAbstractStringInputNegative() {
+        List<Map<Character, Double>> inputMapper = new ArrayList<>();
+        inputMapper.add(Map.of('a', 1.0, 'b', 2.0));
+        inputMapper.add(Map.of('x', 1.0));
+        inputMapper.add(Map.of('y', 0.0));
+
+        List<STLInputAtomic> testCases = List.of(
+            new STLInputAtomic(0, STLOutputAtomic.Operation.eq, 0.5),
+            new STLInputAtomic(0, STLOutputAtomic.Operation.eq, 1.5),
+            new STLInputAtomic(0, STLOutputAtomic.Operation.eq, 2.5)
+        );
+
+        for (STLInputAtomic formula : testCases) {
+            formula.setInputMapper(inputMapper);
+            assertThrows(RuntimeException.class, () -> formula.toAbstractString());
+        }
     }
 }

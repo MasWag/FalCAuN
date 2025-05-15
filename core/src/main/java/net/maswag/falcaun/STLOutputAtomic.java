@@ -1,6 +1,8 @@
 package net.maswag.falcaun;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,13 +35,86 @@ public class STLOutputAtomic extends STLAbstractAtomic {
      */
     @Override
     public Set<String> getAllAPs() {
-        return getAllAPs(abstractOutputs, largest);
+        return super.getAllAPs(abstractOutputs.size());
     }
 
     @Override
     public void constructSatisfyingAtomicPropositions() {
         super.constructSatisfyingAtomicPropositions();
-        constructAtomicStrings(concreteOutputs, abstractOutputs, largest);
+        constructAtomicStrings(abstractOutputs.size());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Set<Character> constructSmallerAPs(int index, double threshold) {
+        //Each element of concreteValus must be sorted in ascending order.
+        var concreteValues = concreteOutputs;
+        var abstractValues = abstractOutputs;
+
+        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
+        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
+        Set<Character> resultAPs = new HashSet<>(abstractValues.get(index).subList(0, thresholdIndex + 1));
+        if (bsResult < 0 && thresholdIndex == abstractValues.get(index).size() - 1) {
+            resultAPs.add(largest.get(index));
+        }
+
+        return resultAPs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Set<Character> constructLargerAPs(int index, double threshold) {
+        var concreteValues = concreteOutputs;
+        var abstractValues = abstractOutputs;
+
+        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
+        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
+        Set<Character> resultAPs = new HashSet<>(abstractValues.get(index).subList(thresholdIndex + 1, abstractValues.get(index).size()));
+
+        resultAPs.add(largest.get(index));
+
+        return resultAPs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Set<Character> constructEqAPs(int index, double threshold) {
+        var concreteValues = concreteOutputs;
+        var abstractValues = abstractOutputs;
+
+        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
+        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult);
+        Set<Character> resultAPs = new HashSet<>();
+        if (!abstractValues.get(index).isEmpty()) {
+            resultAPs.addAll(abstractValues.get(index).subList(thresholdIndex, thresholdIndex + 1));
+        }
+        if (abstractValues.get(index).isEmpty() || (bsResult < 0 && thresholdIndex == abstractValues.get(index).size() - 1)) {
+            resultAPs.add(largest.get(index));
+        }
+        assert resultAPs.size() == 1;
+
+        return resultAPs;
+    }
+
+    /**
+     * Construct the characters that represent the abstract values of the signal.
+     * largest is also used to construct the atomic propositions.
+     * 
+     * @param index The index of the signal
+     */
+    @Override
+    protected Set<Character> constructAllAPs(int index) {
+        var abstractValues = abstractOutputs;
+
+        Set<Character> resultAPs = new HashSet<>(abstractValues.get(index));
+        resultAPs.add(largest.get(index));
+        return resultAPs;
     }
 
     private void setOutputMaps() {
