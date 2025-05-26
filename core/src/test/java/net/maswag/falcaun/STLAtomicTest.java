@@ -212,7 +212,7 @@ class STLAtomicTest {
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 1.0), Set.of("axy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 1.5), Set.of("axy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 2.0), Set.of("axy", "bxy")),
-            Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 2.5), Set.of("axy", "bxy", "cxy")),
+            Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 2.5), Set.of("axy", "bxy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0.5), Set.of("axy", "bxy", "cxy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 1.0), Set.of("bxy", "cxy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 1.5), Set.of("bxy", "cxy")),
@@ -220,7 +220,7 @@ class STLAtomicTest {
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 2.5), Set.of("cxy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 0.5), Set.of("axy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 1.0), Set.of("axy")),
-            //Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 1.5), Set.of("bxy", "cxy")),
+            Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 1.5), Set.of("bxy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 2.0), Set.of("bxy"))
             //Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 2.5), Set.of("cxy"))
         );
