@@ -56,7 +56,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
         int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
         int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
         Set<Character> resultAPs = new HashSet<>(abstractValues.get(index).subList(0, thresholdIndex + 1));
-        if (bsResult < 0 && thresholdIndex == abstractValues.get(index).size() - 1) {
+        if (bsResult < 0 && thresholdIndex == abstractValues.get(index).size()) {
             resultAPs.add(largest.get(index));
         }
 
@@ -94,7 +94,8 @@ public class STLOutputAtomic extends STLAbstractAtomic {
         if (!abstractValues.get(index).isEmpty()) {
             resultAPs.addAll(abstractValues.get(index).subList(thresholdIndex, thresholdIndex + 1));
         }
-        if (abstractValues.get(index).isEmpty() || (bsResult < 0 && thresholdIndex == abstractValues.get(index).size() - 1)) {
+        if (abstractValues.get(index).isEmpty() ||
+            (bsResult < 0 && thresholdIndex == abstractValues.get(index).size())) {
             resultAPs.add(largest.get(index));
         }
         assert resultAPs.size() == 1;
