@@ -88,7 +88,26 @@
                     <author>true</author>
                     <show>private</show>
                     <detectOfflineLinks>true</detectOfflineLinks>
+                    <aggregate>true</aggregate>
+                    <windowtitle>FalCAuN API Documentation</windowtitle>
+                    <doctitle>FalCAuN - Falsification tool for CPSs via Automata Learning</doctitle>
+                    <bottom><![CDATA[<p>Copyright &copy; ${project.inceptionYear}-${maven.build.timestamp} Masaki Waga. All Rights Reserved.</p>]]></bottom>
+                    <links>
+                        <link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
+                        <link>https://learnlib.github.io/learnlib/maven-site/0.17.0/apidocs/</link>
+                    </links>
+                    <excludePackageNames>*.internal:*.impl</excludePackageNames>
+                    <failOnError>false</failOnError>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>aggregate</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <phase>site</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

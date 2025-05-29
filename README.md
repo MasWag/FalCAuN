@@ -171,8 +171,41 @@ INTERVAL : [ NATURAL , NATURAL ]
 Javadoc
 --------
 
-The source code is partially commented on using the Javadoc syntax. The document is hosted on [GitHub Pages](https://maswag.github.io/FalCAuN/maven-site/latest/apidocs/).
-If you want to generate the document locally under `./target/site/apidocs/` by `mvn javadoc:aggregate.`
+The source code is partially commented using the Javadoc syntax. The documentation is hosted on [GitHub Pages](https://maswag.github.io/FalCAuN/maven-site/latest/apidocs/).
+
+### Generating JavaDoc Locally
+
+To generate the JavaDoc documentation locally, you need:
+
+- Java 17 or later
+- Maven
+
+You can generate the documentation using the following Maven commands:
+
+```sh
+# Generate JavaDoc for all modules
+mvn javadoc:aggregate
+
+# Generate JavaDoc for a specific module (e.g., core)
+mvn javadoc:javadoc --projects core
+```
+
+The generated documentation will be available at:
+- All modules: `./target/site/apidocs/`
+- Specific module: `./<module-name>/target/site/apidocs/`
+
+You can open the documentation in your browser by opening the `index.html` file in the respective directory.
+
+### Including JavaDoc in Maven Site
+
+To include JavaDoc in the Maven site documentation:
+
+```sh
+# Generate the complete Maven site with JavaDoc included
+mvn site
+```
+
+This will generate a comprehensive site including JavaDoc at `./target/site/` with the JavaDoc available in the `apidocs/` subdirectory.
 
 Obsolete CLI interface
 -----------------------
