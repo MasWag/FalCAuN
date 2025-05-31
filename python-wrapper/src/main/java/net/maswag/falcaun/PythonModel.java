@@ -14,27 +14,43 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class PythonModel<I, O> {
-    private final SharedInterpreter interpreter;
-
-    private final PyCallable pyPre, pyPost, pyStep, pyClose;
+    private ThreadLocal<Boolean> initialized = ThreadLocal.withInitial(() -> false);
+    private ThreadLocal<SharedInterpreter> interpreter = ThreadLocal.withInitial(() -> {
+        try {
+            return new SharedInterpreter();
+        } catch (JepException e) {
+            throw new RuntimeException(e);
+        }
+    });
     private final Class<O> outputClass;
+    private final String initScript;
+
+    private PyCallable pyPre, pyPost, pyStep, pyClose;
     public PythonModel(String initScript, Class<O> outputClass) throws JepException {
         this.outputClass = outputClass;
+        this.initScript = initScript;
         SharedInterpreter.setConfig(new JepConfig().redirectStdout(System.out).redirectStdErr(System.err));
-        this.interpreter = new SharedInterpreter();
+        initialize();
+    }
 
-        this.interpreter.runScript(initScript);
-        // this.interpreter.eval(String.format("import %s as s", moduleName));
-        this.interpreter.eval("sul = SUL()");
-        var pysul = this.interpreter.getValue("sul", PyObject.class);
-
-        this.pyPre = pysul.getAttr("pre", PyCallable.class);
-        this.pyPost = pysul.getAttr("post", PyCallable.class);
-        this.pyStep = pysul.getAttr("step", PyCallable.class);
-        this.pyClose = pysul.getAttr("close", PyCallable.class);
+    public void initialize() {
+        if (!this.initialized.get()) {
+            var interp = this.interpreter.get();
+            interp.runScript(initScript);
+            // this.interpreter.eval(String.format("import %s as s", moduleName));
+            interp.eval("sul = SUL()");
+    
+            var pysul = interp.getValue("sul", PyObject.class);
+            this.pyPre = pysul.getAttr("pre", PyCallable.class);
+            this.pyPost = pysul.getAttr("post", PyCallable.class);
+            this.pyStep = pysul.getAttr("step", PyCallable.class);
+            this.pyClose = pysul.getAttr("close", PyCallable.class);
+        }
+        this.initialized.set(true);
     }
 
     public void pre() {
+        initialize();
         this.pyPre.call();
     }
 
