@@ -155,9 +155,9 @@ class STLAtomicTest {
 
         List<Pair<STLInputAtomic, Set<String>>> testCases = List.of(
             Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 0.5), Set.of()),
-            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 1.0), Set.of()),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 1.0), Set.of("axy")),
             Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 1.5), Set.of("axy")),
-            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 2.0), Set.of("axy")),
+            Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 2.0), Set.of("axy", "bxy")),
             Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 2.5), Set.of("axy", "bxy")),
             Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.gt, 0.5), Set.of("axy", "bxy")),
             Pair.of(new STLInputAtomic(0, STLInputAtomic.Operation.gt, 1.0), Set.of("bxy")),

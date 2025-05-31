@@ -48,7 +48,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
         var abstractValues = abstractInputs;
 
         int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
-        int thresholdIndex = (bsResult >= 0) ? (bsResult - 1) : (~bsResult - 1);
+        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
         Set<Character> resultAPs = new HashSet<>(abstractValues.get(index).subList(0, thresholdIndex + 1));
 
         return resultAPs;
