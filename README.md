@@ -93,6 +93,24 @@ mvn clean --projects matlab
 mvn install
 ```
 
+### Installation of the python-wrapper Module
+
+#### 1. Install the Requirements
+You need to install Jep manually. Follow the instructions on the [official site](https://github.com/ninia/jep)
+
+#### 2. Setup the environment variable
+Add the installed path, which has `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
+```shell
+export LD_LIBRARY_PATH=<path/to/jep>
+# Example:
+# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep
+```
+
+### 3. Build and Install FalCAuN
+```sh
+mvn install --also-make --projects python-wrapper
+```
+
 ### Installation of LTSMin 3.1.0 on macOS with ARM Processors
 
 FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports `x86_64`. One can still run LTSMin using Rosetta and libtool for `x86_64`.
