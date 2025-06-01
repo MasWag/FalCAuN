@@ -6,15 +6,20 @@ import jep.SharedInterpreter;
 import jep.python.PyCallable;
 import jep.python.PyObject;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
- * Raw Simulink model. We use the fixed step execution of Simulink to make
- * sampling easier.
+ * A PythonModel class wraps a model implemented by python.
+ * The model is expected to have methods pre(), post(), step(I inputSignal) -> O, and close().
+ * This class uses Jep library to interact with Python.
  */
-@Slf4j
 public class PythonModel<I, O> {
+    /**
+     * A thread-local variable to check if the interpreter has been initialized.
+     */
     private ThreadLocal<Boolean> initialized = ThreadLocal.withInitial(() -> false);
+
+    /**
+     * `interpreter` use ThreadLocal because SharedInterpreter cannot be used by the other thread.
+     */
     private ThreadLocal<SharedInterpreter> interpreter = ThreadLocal.withInitial(() -> {
         try {
             return new SharedInterpreter();
@@ -26,6 +31,15 @@ public class PythonModel<I, O> {
     private final String initScript;
 
     private PyCallable pyPre, pyPost, pyStep, pyClose;
+
+    /**
+     * Constructs a Python interpreter with the given initialization script as a Python model.
+     * The script should define a class SUL with methods pre(), post(), step(I inputSignal) -> O, and close().
+     * 
+     * @param initScript The Python script to initialize the model.
+     * @param outputClass The class object of the output signal produced by the step method.
+     * @throws JepException If there is an error initializing the Python interpreter or running the script.
+     */
     public PythonModel(String initScript, Class<O> outputClass) throws JepException {
         this.outputClass = outputClass;
         this.initScript = initScript;
@@ -33,13 +47,18 @@ public class PythonModel<I, O> {
         initialize();
     }
 
+    /**
+     * It simply runs the initialization script and sets up the Python callable methods.
+     * Calling them is equivalent to executing `sul = SUL()` and `sul.method()` on the Python side.
+     * 
+     * Note that the code under `if __name__ == "__main__":` is executed
+     */
     public void initialize() {
         if (!this.initialized.get()) {
             var interp = this.interpreter.get();
             interp.runScript(initScript);
-            // this.interpreter.eval(String.format("import %s as s", moduleName));
             interp.eval("sul = SUL()");
-    
+
             var pysul = interp.getValue("sul", PyObject.class);
             this.pyPre = pysul.getAttr("pre", PyCallable.class);
             this.pyPost = pysul.getAttr("post", PyCallable.class);
@@ -58,9 +77,10 @@ public class PythonModel<I, O> {
         this.pyPost.call();
     }
 
+    /**
+     * For the given outputClass, it tries to convert the output object by python to O type by Jep.
+     */
     public O step(I inputSignal) throws JepException {
-        //Type ty = getClass().getGenericSuperclass();
-        //var clazz = ((Class<O>)((ParameterizedType)ty).getActualTypeArguments()[1]);
         return this.pyStep.callAs(this.outputClass, inputSignal);
     }
 

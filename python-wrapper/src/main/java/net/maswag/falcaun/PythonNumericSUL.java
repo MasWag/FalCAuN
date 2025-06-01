@@ -3,7 +3,6 @@ package net.maswag.falcaun;
 import de.learnlib.sul.SUL;
 import jep.JepException;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 
@@ -17,16 +16,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * The System Under Learning implemented by a Simulink. We use the fixed step
- * execution of Simulink to make sampling easier.
- */
-@Slf4j
 public class PythonNumericSUL implements NumericSUL, Closeable {
     /**
-     * The signal step of the input signal.
+     * The signal step of the input signal
      */
     protected final Double signalStep;
+
+    /**
+     * Use rawtypes because classobject does not support generic type
+     */
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
     protected Signal inputSignal = null;
@@ -36,6 +34,11 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     @Getter
     private int counter = 0;
 
+    /**
+     * @param initScript The Python script to initialize the model.
+     *                   It defines a class SUL with methods pre(), post(), step(I inputSignal) -> O, and close().
+     * @throws JepException If there is an error initializing the Python interpreter or running the script.
+     */
     @SuppressWarnings("rawtypes")
     public PythonNumericSUL(String initScript, Double signalStep) throws InterruptedException, ExecutionException {
         this.model = new PythonModel<List<Double>, ArrayList>(initScript, ArrayList.class);
@@ -145,11 +148,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     }
 
     /**
-     * Execute the Simulink model by feeding inputSignal
-     * <p>
-     * For inputSignal = a1, a2, ..., an, we construct a timed word w = (a1, 0),
-     * (a2, T), (a3, 2 * T), ... (an, (n - 1) * T) and execute the Simulink model by
-     * feeding the piecewise-linear interpolation of w.
+     * Run all steps of the python model by feeding inputSignal
      *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
@@ -170,8 +169,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     }
 
     /**
-     * Close the MATLAB engine. This method must be called when the object is no
-     * longer used.
+     * {@inheritDoc}
      */
     @Override
     public void close() {
