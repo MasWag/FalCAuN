@@ -1,35 +1,13 @@
 #!/usr/bin/env kscript
-/*****h* kotlin/ATS1
- *  NAME
- *   ATS1.main.kts
- *  DESCRIPTION
- *   Script to falsify the automatic transmission benchmark against the S1 formula by FalCAuN
- *  AUTHOR
- *   Masaki Waga
- *  HISTORY
- *    - 2024/04/20: Use ExtendedSignalMapper
- *  COPYRIGHT
- *   Copyright (c) 2024 Masaki Waga
- *   Released under the MIT license
- *   https://opensource.org/licenses/mit-license.php
- *
- *  PORTABILITY
- *   This script assumes the following:
- *   - FalCAuN is installed, for example, by mvn install.
- *   - The environment variable MATLAB_HOME is set to the root directory of MATLAB, e.g., /Applications/MATLAB_R2024a.app/ or /usr/local/MATLAB/R2024a.
- *
- *  USAGE
- *   ./ATS1.main.kts
- *
- ********/
 
 var signalStep = 1.0
 val initScript = "./simglucose_example.py"
 
-// This script depends on FalCAuN-core and FalCAuN-matlab
+// This script depends on FalCAuN-core and FalCAuN-python
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-python:1.0-SNAPSHOT")
-// We assume that the MATLAB_HOME environment variable is set
-@file:KotlinOptions("-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64:/home/sugina/.pyenv/versions/3.10.15/lib/python3.10/site-packages/jep")
+// And requires JEP library
+// Below is an example path to the JEP library when using pyenv and python 3.10.15
+@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
@@ -79,8 +57,9 @@ val alpha = 10 //30mins * alpha tick
 val stlFactory = STLFactory()
 val stlList = listOf(
     //"[] ($bg > 55.0 && $bg < 240.0)",
-    "([] (input(0) >= 50 -> X (input(0) < 50))) -> [] ($bg > 90.0 -> (input(0) == 50.0 -> $insulin > 0.5))", //BG が低くなければ、食事にinsulin投与が伴う
-    "([] (input(0) >= 50 -> X (input(0) < 50))) -> [] ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)" // BG の変化量は -5 以上 3 未満に収まっている
+    "($bg > 90.0 -> (input(0) > 0 -> $insulin > 0.5))", //BG が低くなければ、食事にinsulin投与が伴う
+    "((input(0) > 0.0 && X (input(0) > 0.0))) R ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)", // BG の変化量は -5 以上 3 未満に収まっている
+    "(! (input(0) < 50.0 || X (input(0) < 50.0))) R ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)"
 ).stream().map { stlString ->
     stlFactory.parse(
         stlString,
@@ -98,7 +77,7 @@ val populationSize = 200
 val crossoverProb = 0.5
 val mutationProb = 0.01
 
-// Load the automatic transmission model. This automatically closes MATLAB
+// Load the simglucose model implemented by python
 PythonContinuousNumericSUL(initScript, signalStep).use { autoTransSUL ->
     // Configure and run the verifier
     val verifier = NumericSULVerifier(autoTransSUL, signalStep, properties, mapper)
