@@ -48,7 +48,7 @@ val bg = "signal(0)"
 val insulin = "signal(1)"
 val min_bg = "signal(2)"
 val max_bg = "signal(3)"
-val alpha = 10 //30mins * alpha tick
+val alpha = 5 //30mins * alpha tick
 
 // Define the STL properties
 val stlFactory = STLFactory()
@@ -56,7 +56,7 @@ val stlList = listOf(
     //"!((input(0) == 50.0 -> X (input(0) == 0.0)) U (! ($max_bg < 400.0)))",
     "(input(0) == 50.0 && X (input(0) == 50.0)) R ($max_bg < 400.0)",
     "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg < 70.0 -> X ($max_bg > 70.0))", //下位10%以下を 30 分以上取らない
-    "(<> (input(0) == 50.0 && X (input(0) == 50.0))) R ! []_[0,5] ($max_bg < 70.0)", //低血糖状態が150分以上続かない
+    "(<> (input(0) == 50.0 && X (input(0) == 50.0))) R ! []_[0,$alpha] ($max_bg < 70.0)", //低血糖状態が150分以上続かない
     "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg < 70.0) -> ($insulin < 0.5)", //低血糖状態で inslin を打たない
 ).stream().map { stlString ->
     stlFactory.parse(
@@ -66,7 +66,7 @@ val stlList = listOf(
         outputMapperReader.largest
     )
 }.toList()
-val signalLength = 24 //3*10 * 24 mins
+val signalLength = 48 //3*10 * 24 mins
 val properties = AdaptiveSTLList(stlList, signalLength)
 
 // Constants for the GA-based equivalence testing

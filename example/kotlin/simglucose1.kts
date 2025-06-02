@@ -67,7 +67,7 @@ val stlList = listOf(
         outputMapperReader.largest
     )
 }.toList()
-val signalLength = 24 //3*10 * 24 mins
+val signalLength = 48 //3*10 * 24 mins
 val properties = AdaptiveSTLList(stlList, signalLength)
 
 // Constants for the GA-based equivalence testing
