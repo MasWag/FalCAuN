@@ -28,9 +28,11 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     private int counter = 0;
 
     /**
-     * @param initScript The Python script to initialize the model.
-     *                   It defines a class SUL with methods pre(), post(), step(I inputSignal) -> O, and close().
-     * @throws JepException If there is an error initializing the Python interpreter or running the script.
+     * @param initScript The Python script to initialize the model. It defines a
+     *                   class SUL with methods pre(), post(), step(I inputSignal)
+     *                   -> O, and close().
+     * @throws JepException If there is an error initializing the Python interpreter
+     *                      or running the script.
      */
     @SuppressWarnings("rawtypes")
     public PythonNumericSUL(String initScript) throws InterruptedException, ExecutionException {
@@ -71,8 +73,12 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         this.model.post();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nullable
-    public ExtendedIOSignalPiece<List<Double>> step_aux(@Nullable List<Double> inputSignal) {
+    @Override
+    public IOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) {
         if (inputSignal == null) {
             return null;
         }
@@ -85,16 +91,13 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     }
 
     /**
-     * {@inheritDoc}
+     * Run all steps of the python model by feeding inputSignal
+     *
+     * @param inputSignal The input signal
+     * @return The output signal. The size is same as the input.
      */
-    @Nullable
     @Override
-    public IOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) {
-        return step_aux(inputSignal);
-
-    }
-
-    public IOContinuousSignal<List<Double>> execute_aux(Word<List<Double>> inputSignal)
+    public IOSignal<List<Double>> execute(Word<List<Double>> inputSignal)
             throws InterruptedException, ExecutionException {
         pre();
 
@@ -114,18 +117,6 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         }
         var outputSignal = Word.fromList(outputs);
         return new IODiscreteSignal<>(inputSignal, outputSignal);
-    }
-
-    /**
-     * Run all steps of the python model by feeding inputSignal
-     *
-     * @param inputSignal The input signal
-     * @return The output signal. The size is same as the input.
-     */
-    @Override
-    public IOSignal<List<Double>> execute(Word<List<Double>> inputSignal)
-            throws InterruptedException, ExecutionException {
-        return execute_aux(inputSignal);
     }
 
     /**
