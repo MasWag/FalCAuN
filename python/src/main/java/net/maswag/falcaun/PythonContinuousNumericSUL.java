@@ -161,9 +161,16 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         ArrayList<?> ret = null;
 
         try {
-            for (var e : inputSignal) {
-                this.inputSignal.add(e);
-                ret = this.model.step(e);
+            // Use exec() if it is available in the model for batch processing.
+            // Otherwise, use step() for each input signal.
+            if (this.model.hasExec()) {
+                this.inputSignal.addAll(inputSignal);
+                ret = this.model.exec(inputSignal.asList());
+            } else {
+                for (var e : inputSignal) {
+                    this.inputSignal.add(e);
+                    ret = this.model.step(e);
+                }
             }
         } catch (JepException exc) {
             throw new ExecutionException(exc);
