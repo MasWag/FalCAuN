@@ -77,7 +77,7 @@ val crossoverProb = 0.5
 val mutationProb = 0.01
 
 // Load the simglucose model implemented by python
-PythonNumericSUL(initScript, signalStep).use { autoTransSUL ->
+PythonNumericSUL(initScript).use { autoTransSUL ->
     // Configure and run the verifier
     val verifier = NumericSULVerifier(autoTransSUL, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing

@@ -18,7 +18,7 @@ class PythonNumericSULTest {
 
     @Test
     void numericStepTest() throws Exception {
-        try (var sul = new PythonNumericSUL(numericScript, 1.0)) {
+        try (var sul = new PythonNumericSUL(numericScript)) {
             sul.pre();
 
             var input1 = Arrays.asList(1.0, 2.0);
@@ -41,7 +41,7 @@ class PythonNumericSULTest {
 
     @Test
     void numericExecuteTest() throws Exception {
-        try (var sul = new PythonNumericSUL(numericScript, 1.0)) {
+        try (var sul = new PythonNumericSUL(numericScript)) {
             sul.pre();
 
             var inputSeq = java.util.List.of(

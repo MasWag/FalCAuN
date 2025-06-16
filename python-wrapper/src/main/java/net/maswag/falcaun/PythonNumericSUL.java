@@ -18,16 +18,10 @@ import java.util.stream.Stream;
 
 public class PythonNumericSUL implements NumericSUL, Closeable {
     /**
-     * The signal step of the input signal
-     */
-    protected final Double signalStep;
-
-    /**
      * Use rawtypes because classobject does not support generic type
      */
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
-    protected Signal inputSignal = null;
     protected ArrayList<List<Double>> outputSignals = new ArrayList<List<Double>>();
     protected final TimeMeasure simulationTime = new TimeMeasure();
 
@@ -40,16 +34,8 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      * @throws JepException If there is an error initializing the Python interpreter or running the script.
      */
     @SuppressWarnings("rawtypes")
-    public PythonNumericSUL(String initScript, Double signalStep) throws InterruptedException, ExecutionException {
+    public PythonNumericSUL(String initScript) throws InterruptedException, ExecutionException {
         this.model = new PythonModel<List<Double>, ArrayList>(initScript, ArrayList.class);
-        this.signalStep = signalStep;
-    }
-
-    /**
-     * The current time of the simulation
-     */
-    public double getCurrentTime() {
-        return inputSignal.duration();
     }
 
     /**
@@ -74,7 +60,6 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      */
     @Override
     public void pre() {
-        inputSignal = new Signal(signalStep);
         this.model.pre();
         counter++;
     }
@@ -92,7 +77,6 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         if (inputSignal == null) {
             return null;
         }
-        this.inputSignal.add(inputSignal);
 
         simulationTime.start();
         var ret = this.model.step(inputSignal);
@@ -119,12 +103,9 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         pre();
 
         ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
-        ArrayList<Double> timestamps = new ArrayList<Double>();
         ArrayList<?> ret;
 
         for (var e : inputSignal) {
-            this.inputSignal.add(e);
-
             simulationTime.start();
             try {
                 ret = this.model.step(e);
@@ -136,7 +117,6 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
             Stream<?> stream = ret.stream();
             var output = stream.map(obj -> Double.class.cast(obj)).collect(Collectors.toList());
             outputs.add(output);
-            timestamps.add(this.getCurrentTime());
         }
         var outputSignal = Word.fromList(outputs);
         return new IODiscreteSignal<>(inputSignal, outputSignal);
