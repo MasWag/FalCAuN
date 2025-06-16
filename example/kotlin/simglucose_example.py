@@ -1,3 +1,7 @@
+import sys
+sys.path.append(".")
+
+from abstract_sul import AbstractSUL
 from typing import List
 import datetime
 import os
@@ -31,7 +35,7 @@ class ContinuousGlucoseScenario(Scenario):
 INF=1e9
 
 # A class for SUL based on SimObj
-class SULBase:
+class SULBase(AbstractSUL):
     fixed_env : any
     controller : Controller
     start_time : datetime.datetime

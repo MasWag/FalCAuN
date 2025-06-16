@@ -1,5 +1,9 @@
+import sys
+sys.path.append(".")
+
+from abstract_sul import AbstractSUL
 from typing import Mapping, Tuple
-from enum import auto, Enum
+from enum import Enum
 
 #StrEnum is available since 3.11
 class State(Enum):
@@ -16,7 +20,7 @@ class OutputSignal(Enum):
     P = "p"
     Q = "q"
 
-class SUL:
+class SUL(AbstractSUL):
     mealy : Mapping[Tuple[State, InputSignal], Tuple[State, OutputSignal]]
     state : State
 
