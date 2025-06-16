@@ -101,7 +101,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         Stream<?> stream = ret.stream();
         var outputSignal = stream.map(e -> Double.class.cast(e)).collect(Collectors.toList());
         this.outputSignals.add(outputSignal);
-        return new ExtendedIOSignalPiece<>(inputSignal, outputSignal, outputSignals);
+        return new IOSignalPiece<>(inputSignal, outputSignal);
     }
 
     /**
@@ -138,13 +138,8 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
             outputs.add(output);
             timestamps.add(this.getCurrentTime());
         }
-
-        ValueWithTime<List<Double>> values = new ValueWithTime<>(timestamps, outputs);
-        WordBuilder<List<Double>> builder = new WordBuilder<>();
-        for (int i = 0; i < inputSignal.size(); i++) {
-            builder.add(values.at(i * this.signalStep));
-        }
-        return new IOContinuousSignal<>(inputSignal, builder.toWord(), values, this.signalStep);
+        var outputSignal = Word.fromList(outputs);
+        return new IODiscreteSignal<>(inputSignal, outputSignal);
     }
 
     /**
