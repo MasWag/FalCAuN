@@ -23,7 +23,6 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
     protected ArrayList<List<Double>> outputSignals = new ArrayList<List<Double>>();
-    protected final TimeMeasure simulationTime = new TimeMeasure();
 
     @Getter
     private int counter = 0;
@@ -51,7 +50,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      */
     @Override
     public void clear() {
-        simulationTime.reset();
+        this.model.getSimulationTime().reset();
         counter = 0;
     }
 
@@ -78,10 +77,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
             return null;
         }
 
-        simulationTime.start();
         var ret = this.model.step(inputSignal);
-        simulationTime.stop();
-
         Stream<?> stream = ret.stream();
         var outputSignal = stream.map(e -> Double.class.cast(e)).collect(Collectors.toList());
         this.outputSignals.add(outputSignal);
@@ -106,13 +102,11 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         ArrayList<?> ret;
 
         for (var e : inputSignal) {
-            simulationTime.start();
             try {
                 ret = this.model.step(e);
             } catch (JepException exc) {
                 throw new InterruptedException(exc.toString());
             }
-            simulationTime.stop();
 
             Stream<?> stream = ret.stream();
             var output = stream.map(obj -> Double.class.cast(obj)).collect(Collectors.toList());
@@ -155,6 +149,6 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      * {@inheritDoc}
      */
     public double getSimulationTimeSecond() {
-        return this.simulationTime.getSecond();
+        return this.model.getSimulationTime().getSecond();
     }
 }

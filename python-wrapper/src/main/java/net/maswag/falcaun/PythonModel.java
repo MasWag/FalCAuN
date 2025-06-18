@@ -5,6 +5,7 @@ import jep.JepException;
 import jep.SharedInterpreter;
 import jep.python.PyCallable;
 import jep.python.PyObject;
+import lombok.Getter;
 
 /**
  * A PythonModel class wraps a model implemented by python.
@@ -31,6 +32,9 @@ public class PythonModel<I, O> {
     private final String initScript;
 
     private PyCallable pyPre, pyPost, pyStep, pyClose;
+
+    @Getter
+    private final TimeMeasure simulationTime = new TimeMeasure();
 
     static {
         // JepConfig must be set before creating any SharedInterpreters
@@ -85,7 +89,10 @@ public class PythonModel<I, O> {
      * For the given outputClass, it tries to convert the output object by python to O type by Jep.
      */
     public O step(I inputSignal) throws JepException {
-        return this.pyStep.callAs(this.outputClass, inputSignal);
+        simulationTime.start();
+        var ret = this.pyStep.callAs(this.outputClass, inputSignal);
+        simulationTime.stop();
+        return ret;
     }
 
     public void close() {

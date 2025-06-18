@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutionException;
  */
 public class PythonSUL<I, O> implements SUL<I, O>, Closeable {
     protected final PythonModel<I, O> model;
-    protected final TimeMeasure simulationTime = new TimeMeasure();
 
     /**
      * @param initScript The Python script to initialize the model.
@@ -58,11 +57,7 @@ public class PythonSUL<I, O> implements SUL<I, O>, Closeable {
             return null;
         }
 
-        simulationTime.start();
-        O outputSignal = this.model.step(inputSignal);
-        simulationTime.stop();
-
-        return outputSignal;
+        return this.model.step(inputSignal);
     }
 
     /**
