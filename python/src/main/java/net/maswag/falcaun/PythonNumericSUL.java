@@ -104,17 +104,24 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
         ArrayList<?> ret;
 
-        for (var e : inputSignal) {
-            try {
-                ret = this.model.step(e);
-            } catch (JepException exc) {
-                throw new InterruptedException(exc.toString());
-            }
-
+        // Use exec() if it is available in the model for batch processing.
+        // Otherwise, use step() for each input signal.
+        if (this.model.hasExec()) {
+            ret = this.model.exec(inputSignal.asList());
             Stream<?> stream = ret.stream();
-            var output = stream.map(obj -> Double.class.cast(obj)).collect(Collectors.toList());
-            outputs.add(output);
+            outputs = stream.map(e1 -> {
+                Stream<?> s = List.class.cast(e1).stream();
+                return s.map(e2 -> Double.class.cast(e2)).collect(Collectors.toList());
+            }).collect(Collectors.toCollection(ArrayList::new));
+        } else {
+            for (var e : inputSignal) {
+                ret = this.model.step(e);
+                Stream<?> stream = ret.stream();
+                var output = stream.map(obj -> Double.class.cast(obj)).collect(Collectors.toList());
+                outputs.add(output);
+            }
         }
+
         var outputSignal = Word.fromList(outputs);
         return new IODiscreteSignal<>(inputSignal, outputSignal);
     }
