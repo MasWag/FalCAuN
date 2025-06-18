@@ -7,7 +7,7 @@ val initScript = "./simglucose_example.py"
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-python:1.0-SNAPSHOT")
 // And requires JEP library
 // Below is an example path to the JEP library when using pyenv and python 3.10.15
-@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
+//@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
