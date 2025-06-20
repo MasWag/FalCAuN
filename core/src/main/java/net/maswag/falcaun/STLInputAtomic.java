@@ -43,7 +43,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
      */
     @Override
     protected Set<Character> constructSmallerAPs(int index, double threshold) {
-        //Each element of concreateValues must be sorted in ascending order.
+        //Each element of concreteValues must be sorted in ascending order.
         var concreteValues = concreteInputs;
         var abstractValues = abstractInputs;
 
