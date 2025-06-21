@@ -296,6 +296,7 @@ Contributors
 
 - Masaki Waga: 2019--
 - Junya Shijubo: 2021--2022
+- Hiromasa Saito: 2024--
 
 
 FAQ
