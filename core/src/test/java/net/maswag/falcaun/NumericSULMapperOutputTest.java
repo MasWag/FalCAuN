@@ -55,8 +55,6 @@ class NumericSULMapperOutputTest {
                 if (e0 == e1) {
                     assertTrue(isSatisfiedBy(e0, Operation.eq, e1));
                 }
-                if (e0 != e1) {
-                }
             }
         }
 
