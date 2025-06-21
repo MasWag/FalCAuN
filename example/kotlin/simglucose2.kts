@@ -34,10 +34,10 @@ SimulinkSteadyStateGeneticAlgorithmLogger.level = Level.INFO
 
 // Define the input and output mappers
 val ignoreValues = listOf(null)
-val mealSizeValues = listOf(0.0, 50.0) // <20?
+val mealSizeValues = listOf(0.0, 50.0)
 val inputMapper = InputMapperReader.make(listOf(mealSizeValues))
-val bgValues = listOf(55.0, 70.0, 400.0) // <300?
-val insulinValues = listOf(0.5) //listOf(0.3, 0.6) // <3?
+val bgValues = listOf(55.0, 70.0, 400.0)
+val insulinValues = listOf(0.5)
 val outputMapperReader = OutputMapperReader(listOf(bgValues, insulinValues, ignoreValues, bgValues, ignoreValues, ignoreValues))
 outputMapperReader.parse()
 val signalMapper = ExtendedSignalMapper()
@@ -48,16 +48,19 @@ val bg = "signal(0)"
 val insulin = "signal(1)"
 val min_bg = "signal(2)"
 val max_bg = "signal(3)"
-val alpha = 5 //30mins * alpha tick
+val alpha = 5 // 30m ins * alpha tick
 
 // Define the STL properties
 val stlFactory = STLFactory()
 val stlList = listOf(
-    //"!((input(0) == 50.0 -> X (input(0) == 0.0)) U (! ($max_bg < 400.0)))",
+    // BG does not go above 400
     "(input(0) == 50.0 && X (input(0) == 50.0)) R ($max_bg < 400.0)",
-    "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg < 70.0 -> X ($max_bg > 70.0))", //下位10%以下を 30 分以上取らない
-    "(<> (input(0) == 50.0 && X (input(0) == 50.0))) R ! []_[0,$alpha] ($max_bg < 70.0)", //低血糖状態が150分以上続かない
-    "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg < 70.0) -> ($insulin < 0.5)", //低血糖状態で inslin を打たない
+    // Does not fall below the lower 10% for more than 30 minutes
+    "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg < 70.0 -> X ($max_bg > 70.0))",
+    // Hypoglycemia does not last longer than 150 minutes
+    "(<> (input(0) == 50.0 && X (input(0) == 50.0))) R ! []_[0,$alpha] ($max_bg < 70.0)",
+    // Does not administer insulin when hypoglycemia
+    "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg < 70.0) -> ($insulin < 0.5)",
 ).stream().map { stlString ->
     stlFactory.parse(
         stlString,

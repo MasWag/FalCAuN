@@ -6,12 +6,9 @@ from typing import List
 import datetime
 import os
 import time
-import numpy.random
 
 from simglucose.simulation.env import T1DSimEnv
-from simglucose.simulation.user_interface import simulate
-from simglucose.simulation.scenario import Scenario, CustomScenario, Action
-from simglucose.simulation.sim_engine import SimObj, sim, batch_sim
+from simglucose.simulation.scenario import Scenario, Action
 from simglucose.controller.basal_bolus_ctrller import BBController, Controller
 from simglucose.sensor.cgm import CGMSensor
 from simglucose.actuator.pump import InsulinPump
@@ -32,17 +29,15 @@ class ContinuousGlucoseScenario(Scenario):
     def reset(self):
         pass
 
-INF=1e9
-
 # A class for SUL based on SimObj
 class SULBase(AbstractSUL):
-    fixed_env : any
     controller : Controller
     start_time : datetime.datetime
     timedelta : datetime.timedelta
     len_time_list : int
     result_path : str
     inputSignals : List[int]
+    INF = 1e9
 
     def __init__(self, start_time, step_n, result_path):
         self.inputSignals = []
@@ -62,7 +57,7 @@ class SULBase(AbstractSUL):
         self.scenario = scenario
         self.env = T1DSimEnv(patient, sensor, pump, scenario)
 
-        self.pre_bg = INF
+        self.pre_bg = SULBase.INF
 
     def mini_step(self):
         obs, reward, done, info = self.state
@@ -84,8 +79,8 @@ class SULBase(AbstractSUL):
         (last_bg, sum_insulin) = (0.0, 0.0)
         pre_bg = self.pre_bg
         max_bg = 0.0
-        max_delta_bg = -INF
-        (min_bg, min_delta_bg) = (INF, INF)
+        max_delta_bg = -SULBase.INF
+        (min_bg, min_delta_bg) = (SULBase.INF, SULBase.INF)
         for i in range(self.step_n):
             (bg, insulin) = self.mini_step()
 
@@ -94,7 +89,7 @@ class SULBase(AbstractSUL):
             sum_insulin += insulin
             max_bg = max(max_bg, bg)
             min_bg = min(min_bg, bg)
-            delta_bg = 0.0 if pre_bg == INF else (bg - pre_bg) / self.env.sample_time
+            delta_bg = 0.0 if pre_bg == SULBase.INF else (bg - pre_bg) / self.env.sample_time
             pre_bg = bg
             max_delta_bg = max(max_delta_bg, delta_bg)
             min_delta_bg = min(min_delta_bg, delta_bg)
@@ -111,7 +106,7 @@ class SULBase(AbstractSUL):
         self.controller.reset()
         self.state = self.env.reset()
         self.tic = time.time()
-        self.pre_bg = INF
+        self.pre_bg = SULBase.INF
 
     def post(self) -> None:
         toc = time.time()

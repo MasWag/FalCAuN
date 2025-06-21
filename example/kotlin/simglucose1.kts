@@ -34,10 +34,10 @@ SimulinkSteadyStateGeneticAlgorithmLogger.level = Level.INFO
 
 // Define the input and output mappers
 val ignoreValues = listOf(null)
-val mealSizeValues = listOf(0.0, 50.0) // <20?
+val mealSizeValues = listOf(0.0, 50.0)
 val inputMapper = InputMapperReader.make(listOf(mealSizeValues))
-val bgValues = listOf(90.0) // <300?
-val insulinValues = listOf(0.5) //listOf(0.3, 0.6) // <3?
+val bgValues = listOf(90.0)
+val insulinValues = listOf(0.5)
 val deltaBgValues = listOf(-5.0, 3.0)
 val outputMapperReader = OutputMapperReader(listOf(bgValues, ignoreValues, ignoreValues, ignoreValues, deltaBgValues, deltaBgValues))
 outputMapperReader.parse()
@@ -56,9 +56,10 @@ val alpha = 10 //30mins * alpha tick
 // Define the STL properties
 val stlFactory = STLFactory()
 val stlList = listOf(
-    //"[] ($bg > 55.0 && $bg < 240.0)",
-    "($bg > 90.0 -> (input(0) > 0 -> $insulin > 0.5))", //BG が低くなければ、食事にinsulin投与が伴う
-    "((input(0) > 0.0 && X (input(0) > 0.0))) R ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)", // BG の変化量は -5 以上 3 未満に収まっている
+    // If BG is not low, insulin administration accompanies the diet
+    "($bg > 90.0 -> (input(0) > 0 -> $insulin > 0.5))",
+    // The change in BG is between -5 and 3.
+    "((input(0) > 0.0 && X (input(0) > 0.0))) R ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
 ).stream().map { stlString ->
     stlFactory.parse(
         stlString,
