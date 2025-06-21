@@ -222,8 +222,7 @@ class STLAtomicTest {
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 1.0), Set.of("axy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 1.5), Set.of("bxy")),
             Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 2.0), Set.of("bxy"))
-            //Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 2.5), Set.of("cxy"))
-        );
+            );
 
         for (Pair<STLOutputAtomic, Set<String>> test : testCases) {
             var formula = test.getLeft();
@@ -234,6 +233,22 @@ class STLAtomicTest {
                     .split("\"")).filter(s -> s.length() == outputMapper.size()).collect(Collectors.toSet());
             var expected = test.getRight();
             assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    void toAbstractStringOutputNegative() {
+        List<Map<Character, Double>> outputMapper = new ArrayList<>();
+        List<Character> largest = List.of('c', 'x', 'y');
+        outputMapper.add(Map.of('a', 1.0, 'b', 2.0));
+
+        List<STLOutputAtomic> testCases = List.of(
+            new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 2.5)
+        );
+
+        for (STLOutputAtomic formula : testCases) {
+            formula.setOutputMapper(outputMapper);
+            assertThrows(RuntimeException.class, () -> formula.toAbstractString());
         }
     }
 }
