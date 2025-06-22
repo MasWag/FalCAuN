@@ -79,7 +79,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
 
         int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
         if (bsResult < 0) {
-            var errMsg = String.format("%d-th input signal equals to %f does not exist.", index, threshold);
+            var errMsg = String.format("%d-th input signal equal to %f does not exist.", index, threshold);
             throw new RuntimeException(errMsg);
         }
         return Set.of(abstractValues.get(index).get(bsResult));
