@@ -49,7 +49,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
      */
     @Override
     protected Set<Character> constructSmallerAPs(int index, double threshold) {
-        //Each element of concreteValus must be sorted in ascending order.
+        //Each element of concreteValues must be sorted in ascending order.
         var concreteValues = concreteOutputs;
         var abstractValues = abstractOutputs;
 
