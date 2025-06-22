@@ -10,7 +10,6 @@ import java.util.*;
 public class STLInputAtomic extends STLAbstractAtomic {
     private final List<List<Character>> abstractInputs = new ArrayList<>();
     private final List<List<Double>> concreteInputs = new ArrayList<>();
-    private final List<Character> largest = Collections.emptyList();
     private List<Map<Character, Double>> inputMapper;
 
     /**
@@ -30,13 +29,70 @@ public class STLInputAtomic extends STLAbstractAtomic {
      */
     @Override
     public Set<String> getAllAPs() {
-        return getAllAPs(abstractInputs, largest);
+        return super.getAllAPs(abstractInputs.size());
     }
 
     @Override
     public void constructSatisfyingAtomicPropositions() {
         super.constructSatisfyingAtomicPropositions();
-        constructAtomicStrings(concreteInputs, abstractInputs, largest);
+        constructAtomicStrings(abstractInputs.size());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Set<Character> constructSmallerAPs(int index, double threshold) {
+        //Each element of concreteValues must be sorted in ascending order.
+        var concreteValues = concreteInputs;
+        var abstractValues = abstractInputs;
+
+        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
+        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
+        Set<Character> resultAPs = new HashSet<>(abstractValues.get(index).subList(0, thresholdIndex + 1));
+
+        return resultAPs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Set<Character> constructLargerAPs(int index, double threshold) {
+        var concreteValues = concreteInputs;
+        var abstractValues = abstractInputs;
+
+        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
+        int thresholdIndex = (bsResult >= 0) ? (bsResult + 1) : (~bsResult);
+        Set<Character> resultAPs = new HashSet<>(abstractValues.get(index).subList(thresholdIndex, abstractValues.get(index).size()));
+
+        return resultAPs;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Set<Character> constructEqAPs(int index, double threshold) {
+        var concreteValues = concreteInputs;
+        var abstractValues = abstractInputs;
+
+        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
+        if (bsResult < 0) {
+            var errMsg = String.format("%d-th input signal equal to %f does not exist.", index, threshold);
+            throw new NoSuchElementException(errMsg);
+        }
+        return Set.of(abstractValues.get(index).get(bsResult));
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Set<Character> constructAllAPs(int index) {
+        var abstractValues = abstractInputs;
+        return new HashSet<>(abstractValues.get(index));
     }
 
     private void setInputMaps() {

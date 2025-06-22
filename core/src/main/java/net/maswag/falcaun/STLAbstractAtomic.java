@@ -38,11 +38,15 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         this.nonTemporal = true;
     }
 
-    public Set<String> getAllAPs(List<List<Character>> abstractValues, List<Character> largest) {
+    /**
+     * {@inheritDoc}
+     * @param signalSize the length of the signal greater than this.sigIndex
+     */
+    protected Set<String> getAllAPs(int signalSize) {
         if (this.allAPs == null) {
-            List<Set<Character>> APList = new ArrayList<>(abstractValues.size());
-            for (int i = 0; i < abstractValues.size(); i++) {
-                APList.add(constructAllAPs(abstractValues, largest, i));
+            List<Set<Character>> APList = new ArrayList<>(signalSize);
+            for (int i = 0; i < signalSize; i++) {
+                APList.add(constructAllAPs(i));
             }
 
             this.allAPs = cartesianProductCharacters(APList);
@@ -94,33 +98,34 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         return null;
     }
 
-    protected void constructAtomicStrings(List<List<Double>> concreteValues,
-                                          List<List<Character>> abstractValues,
-                                          List<Character> largest) {
+    /**
+     * @param signalSize the length of the signal
+     */
+    protected void constructAtomicStrings(int signalSize) {
         if (this.satisfyingAtomicPropositions != null) {
             return;
         }
 
-        List<Set<Character>> APList = new ArrayList<>(abstractValues.size());
-        for (int i = 0; i < abstractValues.size(); i++) {
+        List<Set<Character>> APList = new ArrayList<>(signalSize);
+        for (int i = 0; i < signalSize; i++) {
             if (i == sigIndex) {
                 switch (op) {
                     case lt:
-                        APList.add(constructSmallerAPs(concreteValues, abstractValues, largest, i, comparator));
+                        APList.add(constructSmallerAPs(i, comparator));
                         break;
                     case eq:
-                        APList.add(constructEqAPs(concreteValues, abstractValues, largest, i, comparator));
+                        APList.add(constructEqAPs(i, comparator));
                         break;
                     case gt:
-                        APList.add(constructLargerAPs(concreteValues, abstractValues, largest, i, comparator));
+                        APList.add(constructLargerAPs(i, comparator));
                         break;
                     case ne:
-                        Set<Character> newAPs = constructAllAPs(abstractValues, largest, i);
-                        newAPs.removeAll(constructEqAPs(concreteValues, abstractValues, largest, i, comparator));
+                        Set<Character> newAPs = constructAllAPs(i);
+                        newAPs.removeAll(constructEqAPs(i, comparator));
                         APList.add(newAPs);
                 }
             } else {
-                APList.add(constructAllAPs(abstractValues, largest, i));
+                APList.add(constructAllAPs(i));
             }
         }
 
@@ -141,77 +146,39 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
     }
 
     /**
-     * @param concreteValues The list of the concrete values of each signal
-     *                       Each element of the list must be sorted in ascending order.
+     * Constructs a set of characters representing atomic propositions
+     * that are smaller than the given threshold for the specified signal index.
+     *
+     * @param index The index of the signal.
+     * @return A set of characters representing the atomic propositions.
      */
-    private Set<Character> constructSmallerAPs(List<List<Double>> concreteValues,
-                                               List<List<Character>> abstractValues,
-                                               List<Character> largest, int index, double threshold) {
-        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
-        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
-        Set<Character> resultAPs = new HashSet<>(abstractValues.get(index).subList(0, thresholdIndex + 1));
-        if (bsResult < 0 && thresholdIndex == abstractValues.size() - 1) {
-            resultAPs.add(largest.get(index));
-        }
-
-        return resultAPs;
-    }
+    abstract protected Set<Character> constructSmallerAPs(int index, double threshold);
 
     /**
-     * @param concreteValues The list of the concrete values of each signal
-     *                       Each element of the list must be sorted in ascending order.
+     * Constructs a set of characters representing atomic propositions
+     * that are greater than the given threshold for the specified signal index.
+     *
+     * @param index The index of the signal.
+     * @return A set of characters representing the atomic propositions.
      */
-    private Set<Character> constructLargerAPs(List<List<Double>> concreteValues,
-                                              List<List<Character>> abstractValues,
-                                              List<Character> largest, int index, double threshold) {
-        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
-        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
-        Set<Character> resultAPs = new HashSet<>(abstractValues.get(index).subList(thresholdIndex + 1, abstractValues.get(index).size()));
-
-        resultAPs.add(largest.get(index));
-
-
-        return resultAPs;
-    }
+    abstract protected Set<Character> constructLargerAPs(int index, double threshold);
 
     /**
-     * @param concreteValues The list of the concrete values of each signal
-     *                       Each element of the list must be sorted in ascending order.
+     * Constructs a set of characters representing atomic propositions
+     * that are equal to the given threshold for the specified signal index.
+     *
+     * @param index The index of the signal.
+     * @return A set of characters representing the atomic propositions.
      */
-    private Set<Character> constructEqAPs(List<List<Double>> concreteValues,
-                                          List<List<Character>> abstractValues,
-                                          List<Character> largest, int index, double threshold) {
-        int bsResult = Collections.binarySearch(concreteValues.get(index), threshold);
-        int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult);
-        Set<Character> resultAPs = new HashSet<>();
-        if (!abstractValues.get(index).isEmpty()) {
-            resultAPs.addAll(abstractValues.get(index).subList(thresholdIndex, thresholdIndex + 1));
-        }
-        if (abstractValues.get(index).isEmpty() ||
-                (bsResult < 0 && thresholdIndex == abstractValues.size() - 1)) {
-            resultAPs.add(largest.get(index));
-        }
-        assert resultAPs.size() == 1;
-
-        return resultAPs;
-    }
+    abstract protected Set<Character> constructEqAPs(int index, double threshold);
 
     /**
      * Construct the characters that represent the abstract values of the signal.
      *
-     * @param abstractValues The list of the abstract values of each signal.
-     * @param largest The largest value of each signal.
-     *                If the signal is output signal this value is used to construct the atomic propositions.
-     *                If the signal is input signal this value must be empty.
      * @param index The index of the signal
+     * 
      */
-    Set<Character> constructAllAPs(List<List<Character>> abstractValues, List<Character> largest, int index) {
-        Set<Character> resultAPs = new HashSet<>(abstractValues.get(index));
-        if (!largest.isEmpty()) {
-            resultAPs.add(largest.get(index));
-        }
-        return resultAPs;
-    }
+    abstract protected Set<Character> constructAllAPs(int index);
 
     /**
      * Take the cartesian product of a list of sets of characters and return a set of strings by concatenating the characters.
