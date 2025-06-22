@@ -64,8 +64,6 @@ class NumericSULMapperOutputTest {
                     if(isSatisfiedBy(e0, op, e1)) {
                         switch(op) {
                             case eq:
-                                // Counterexample: e0 == 0.5, e1 == 1.0
-                                //assertTrue(e0 == e1);
                                 break;
                             case gt:
                                 assertTrue(e0 > e1);
