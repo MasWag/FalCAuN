@@ -42,7 +42,6 @@ class NumericSULMapperOutputTest {
         // If `e0 op e1` is satisfied, the character representing e0 is included in the atomic propositions
         // representing `output op e1`
         for (var e0 : values) {
-            // for(var e1 : values) {
             for (var e1 : outputMapper.get(0).values()) {
                 if (e0 <= e1) {
                     assertTrue(isSatisfiedBy(e0, Operation.lt, e1));
