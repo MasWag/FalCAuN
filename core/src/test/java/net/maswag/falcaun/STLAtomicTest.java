@@ -246,7 +246,7 @@ class STLAtomicTest {
         );
 
         for (STLOutputAtomic formula : testCases) {
-            formula.setOutputMapper(outputMapper);
+            formula.setAtomic(outputMapper, largest);
             assertThrows(RuntimeException.class, () -> formula.toAbstractString());
         }
     }
