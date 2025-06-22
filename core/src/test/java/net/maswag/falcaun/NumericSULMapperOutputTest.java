@@ -23,8 +23,6 @@ class NumericSULMapperOutputTest {
         Map<Character, Double> m = new HashMap<>();
         m.put('a', 1.0);
         m.put('b', 2.0);
-        //This initialization below sometimes fails now
-        //outputMapper = List.of(Map.of('a', 1.0, 'b', 2.0));
         outputMapper = List.of(m);
         largest = List.of('c');
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper());

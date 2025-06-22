@@ -9,7 +9,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
 class STLAtomicTest {
@@ -101,7 +100,7 @@ class STLAtomicTest {
 
     @Test
     void toAbstractStringInput() {
-        STLInputAtomic formula = new STLInputAtomic(0, STLOutputAtomic.Operation.ne, 2);
+        STLInputAtomic formula = new STLInputAtomic(0, STLInputAtomic.Operation.ne, 2);
         List<Map<Character, Double>> inputMapper = new ArrayList<>();
         inputMapper.add(Map.of('a', 1.0, 'b', 2.0, 'c', 3.0));
         inputMapper.add(Map.of('a', 1.0, 'b', 2.0));
@@ -127,9 +126,9 @@ class STLAtomicTest {
         inputMapper.add(Map.of('a', 1.0, 'b', 2.0));
         inputMapper.add(Map.of('a', 1.0));
 
-        STLInputAtomic formula1 = new STLInputAtomic(0, STLOutputAtomic.Operation.ne, 2);
+        STLInputAtomic formula1 = new STLInputAtomic(0, STLInputAtomic.Operation.ne, 2);
         formula1.setInputMapper(inputMapper);
-        STLInputAtomic formula2 = new STLInputAtomic(1, STLOutputAtomic.Operation.ne, 2);
+        STLInputAtomic formula2 = new STLInputAtomic(1, STLInputAtomic.Operation.ne, 2);
         formula2.setInputMapper(inputMapper);
         STLCost formula = new TemporalOr.STLOr(formula1, formula2);
 
@@ -188,9 +187,9 @@ class STLAtomicTest {
         inputMapper.add(Map.of('y', 0.0));
 
         List<STLInputAtomic> testCases = List.of(
-            new STLInputAtomic(0, STLOutputAtomic.Operation.eq, 0.5),
-            new STLInputAtomic(0, STLOutputAtomic.Operation.eq, 1.5),
-            new STLInputAtomic(0, STLOutputAtomic.Operation.eq, 2.5)
+            new STLInputAtomic(0, STLInputAtomic.Operation.eq, 0.5),
+            new STLInputAtomic(0, STLInputAtomic.Operation.eq, 1.5),
+            new STLInputAtomic(0, STLInputAtomic.Operation.eq, 2.5)
         );
 
         for (STLInputAtomic formula : testCases) {
