@@ -1,0 +1,18 @@
+site_name: FalCAuN
+site_url: https://maswag.github.io/FalCAuN
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - content.code.copy
+
+nav:
+  - Home: .
+  - Installation: install.md
+  - STL: stl.md
+  - Examples: examples.md
+  - (Obsolete) CLI interface: cli.md
+  - FAQ: faq.md
+
+repo_url: https://github.com/MasWag/FalCAuN
