@@ -3,6 +3,7 @@ FalCAuN
 
 [![JUnit](https://github.com/MasWag/FalCAuN/workflows/JUnit/badge.svg)](https://github.com/MasWag/FalCAuN/actions?query=workflow%3AJUnit)
 [![CircleCI](https://circleci.com/gh/MasWag/FalCAuN/tree/master.svg?style=svg)](https://circleci.com/gh/MasWag/FalCAuN/tree/master)
+[![Documentation](https://img.shields.io/badge/docs-FalCAuN-blue)](https://maswag.github.io/FalCAuN/)
 [![Javadoc](https://img.shields.io/badge/Javadoc-latest-green)](https://maswag.github.io/FalCAuN/maven-site/latest/apidocs/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE)
 
