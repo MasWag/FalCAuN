@@ -29,7 +29,7 @@ Usage of the CLI interface
 **-v**, **--verbose** It outputs extra information, mainly for debugging. <br />
 **-V**, **--version** Print the version <br />
 **-t** *timeout*, **--timeout** *timeout* Set timeout [seconds]
-**-f** *file*, **--stl-file** *file* Read a STL formula from *file*. <br />
+**-f** *file*, **--stl-file** *file* Read an STL formula from *file*. <br />
 **-e** *STLFormula*, **--stl** *STLFormula* Specify *STLFormula* by signal temporal logic. <br />
 **-I** *file*, **--input-mapper** *file* Read the input mapper configuration from *file*. <br />
 **-O** *file*, **--output-mapper** *file* Read the output mapper configuration from *file*. <br />
@@ -71,7 +71,7 @@ Both input and output mappers are specified by TSV files.
 
 ### Input mapper
 
-Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take different number of inputs i.e., N0 and N1 can be different.
+Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take a different number of inputs i.e., N0 and N1 can be different.
 
 ```
 <value 1 of signal(0)>	<value 2 of signal(0)>	...	<value N0 of signal(0)>

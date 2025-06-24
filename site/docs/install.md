@@ -17,7 +17,7 @@ The requirements for the core and examples modules of FalCAuN are as follows.
 The matlab module also requires the following.
 
 - MATLAB/Simulink
-    - We tested with MATLAB R2024a but any later version should be fine.
+    - We tested with MATLAB R2024a, but any later version should be fine.
 
 Installation of the core Module
 -------------------------------

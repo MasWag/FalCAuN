@@ -27,7 +27,7 @@ The requirements for the core module of FalCAuN are as follows.
 The matlab module also requires the following.
 
 - MATLAB/Simulink
-  - We tested with MATLAB R2024a but any later version should be fine.
+  - We tested with MATLAB R2024a, but any later version should be fine.
 
 ### Installation of the core Module
 
@@ -94,11 +94,11 @@ mvn install
 
 ### Installation of LTSMin 3.1.0 on macOS with ARM Processors
 
-FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86\_64. One can still run LTSMin using Rosetta and libtool for x86\_64.
+FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports `x86_64`. One can still run LTSMin using Rosetta and libtool for `x86_64`.
 
 1. Set up Rosetta on the macOS
 2. Install Homebrew for intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
-3. Install `libtool` for x86_64 with `/usr/local/bin/brew install libtool`
+3. Install `libtool` for `x86_64` with `/usr/local/bin/brew install libtool`
 
 ### Notes
 
@@ -237,7 +237,7 @@ sudo install falcaun /usr/local/bin
 **-v**, **--verbose** It outputs extra information, mainly for debugging. <br />
 **-V**, **--version** Print the version <br />
 **-t** *timeout*, **--timeout** *timeout* Set timeout [seconds]
-**-f** *file*, **--stl-file** *file* Read a STL formula from *file*. <br />
+**-f** *file*, **--stl-file** *file* Read an STL formula from *file*. <br />
 **-e** *STLFormula*, **--stl** *STLFormula* Specify *STLFormula* by signal temporal logic. <br />
 **-I** *file*, **--input-mapper** *file* Read the input mapper configuration from *file*. <br />
 **-O** *file*, **--output-mapper** *file* Read the output mapper configuration from *file*. <br />
@@ -278,7 +278,7 @@ Both input and output mappers are specified by TSV files.
 
 #### Input mapper
 
-Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take different number of inputs i.e., N0 and N1 can be different.
+Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take a different number of inputs i.e., N0 and N1 can be different.
 
 ```
 <value 1 of signal(0)>	<value 2 of signal(0)>	...	<value N0 of signal(0)>
