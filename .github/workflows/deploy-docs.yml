@@ -16,12 +16,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r site/requirements.txt
       - name: Build docs
-        run: mkdocs build --config-file site/mkdocs.yml --site-dir site
+        run: mkdocs build --config-file site/mkdocs.yml --site-dir generated
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./site
+          publish_dir: ./site/generated
           destination_dir: .
           keep_files: true
