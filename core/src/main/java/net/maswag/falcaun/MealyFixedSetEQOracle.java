@@ -9,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.word.Word;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +59,6 @@ public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalence
      * {@inheritDoc}
      */
     @Nullable
-    @ParametersAreNonnullByDefault
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> inputs) {
         if (isDisproved()) {

@@ -7,8 +7,7 @@ import net.automatalib.word.Word;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNullableByDefault;
+import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 /**
@@ -44,7 +43,6 @@ public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalence
     /** {@inheritDoc} */
     @Nullable
     @Override
-    @ParametersAreNullableByDefault
     public DefaultQuery<I, Word<O>> findCounterExample(MealyMachine<?, I, ?, O> objects, Collection<? extends I> collection) {
         if ((System.nanoTime() - startTime) > timeout) {
             LOGGER.info("EQQuery finished because of timeout!!");

@@ -12,8 +12,8 @@ import net.maswag.falcaun.IOContinuousSignal;
 import net.maswag.falcaun.IOSignalPiece;
 import net.maswag.falcaun.ValueWithTime;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -113,7 +113,7 @@ public class SimulinkSUL implements ContinuousNumericSUL, Closeable {
     /**
      * {@inheritDoc}
      */
-    @Nonnull
+    @NotNull
     @Override
     public SUL<List<Double>, IOSignalPiece<List<Double>>> fork() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();

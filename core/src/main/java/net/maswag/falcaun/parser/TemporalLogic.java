@@ -6,11 +6,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.maswag.falcaun.IOSignal;
 import net.maswag.falcaun.LTLAPs;
+
 
 /**
  * <p>Interface of a TemporalLogic formula.</p>
@@ -102,7 +103,7 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
         }
     }
 
-    @Nonnull
+    @NotNull
     IOType getIOType();
 
     /**
