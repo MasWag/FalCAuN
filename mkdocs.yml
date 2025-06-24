@@ -1,0 +1,33 @@
+site_name: FalCAuN
+site_url: https://maswag.github.io/FalCAuN
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - content.code.copy
+
+nav:
+  - Home: .
+  - Installation: install.md
+  - Tutorial: tutorial/tutorial.md
+  - Examples: examples.md
+  - STL: stl.md
+  - FAQ: faq.md
+  - CLI interface (deprecated): cli.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+
+repo_url: https://github.com/MasWag/FalCAuN
+edit_uri: blob/master/site/docs/

@@ -1,0 +1,809 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://maswag.github.io/FalCAuN/cli/">
+      
+      
+        <link rel="prev" href="../faq/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>CLI interface (deprecated) - FalCAuN</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#obsolete-cli-interface" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="FalCAuN" class="md-header__button md-logo" aria-label="FalCAuN" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            FalCAuN
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CLI interface (deprecated)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/MasWag/FalCAuN" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="FalCAuN" class="md-nav__button md-logo" aria-label="FalCAuN" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    FalCAuN
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/MasWag/FalCAuN" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorial
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    STL
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    CLI interface (deprecated)
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI interface (deprecated)
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage-of-the-cli-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage of the CLI interface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage of the CLI interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Synopsis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#general-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      General Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options-specific-to-the-equivalence-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options Specific to the Equivalence Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ga-genetic-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      GA (Genetic Algorithm)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sa-simulated-annealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      SA (Simulated Annealing)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SA (Simulated Annealing)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wp-wp-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      WP (Wp-method)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-format-of-the-mapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      File format of the mapper
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File format of the mapper">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-mapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input mapper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-mapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output mapper
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage-of-the-cli-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage of the CLI interface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage of the CLI interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Synopsis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#general-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      General Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#options-specific-to-the-equivalence-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options Specific to the Equivalence Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ga-genetic-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      GA (Genetic Algorithm)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sa-simulated-annealing" class="md-nav__link">
+    <span class="md-ellipsis">
+      SA (Simulated Annealing)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SA (Simulated Annealing)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wp-wp-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      WP (Wp-method)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-format-of-the-mapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      File format of the mapper
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File format of the mapper">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-mapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input mapper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-mapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output mapper
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="obsolete-cli-interface">Obsolete CLI interface</h1>
+<p>After FalCAuN 1.0, FalCAuN is mainly intended to be used as a library called from a program written in some JVM language, such as Kotlin. The CLI interface is still available for backward compatibility, but it is not actively maintained.</p>
+<p>To execute FalCAuN via the CLI interface, you can use the helper shell script <code>falcaun</code> in the root directory of the repository. The script is a wrapper of the CLI interface of FalCAuN. The script is written in POSIX sh and should work on most UNIX-like operating systems.
+An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in <code>./example/AT_M4.stl</code>. Please be patient!!</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./falcaun<span class="w"> </span>--stl-file<span class="o">=</span>./example/AT_M4.stl<span class="w"> </span>--output-mapper<span class="o">=</span>./example/AT_M4.omap.tsv<span class="w"> </span>--input-mapper<span class="o">=</span>./example/AT.imap.tsv<span class="w"> </span>--equiv<span class="o">=</span>GA<span class="w"> </span>--step-time<span class="o">=</span><span class="m">1</span>.0<span class="w"> </span>--signal-length<span class="o">=</span><span class="m">30</span><span class="w">  </span>--init<span class="o">=</span><span class="s1">&#39;cd ./example; initAT&#39;</span><span class="w"> </span>--max-test<span class="o">=</span><span class="m">50000</span><span class="w"> </span>--param-names<span class="o">=</span><span class="s2">&quot;throttle brake&quot;</span><span class="w"> </span>--ga-crossover-prob<span class="o">=</span><span class="m">0</span>.5<span class="w"> </span>--ga-mutation-prob<span class="o">=</span><span class="m">0</span>.01<span class="w"> </span>--population-size<span class="o">=</span><span class="m">150</span><span class="w"> </span>--ga-selection-kind<span class="o">=</span>Tournament
+</span></code></pre></div>
+<p>You can also install this script as follows.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sudo<span class="w"> </span>install<span class="w"> </span>falcaun<span class="w"> </span>/usr/local/bin
+</span></code></pre></div>
+<h2 id="usage-of-the-cli-interface">Usage of the CLI interface</h2>
+<h3 id="synopsis">Synopsis</h3>
+<div class="language-text highlight"><pre><span></span><code> ./falcaun [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP|SA|GA]
+</code></pre></div>
+<h3 id="general-options">General Options</h3>
+<p><strong>-h</strong>, <strong>--help</strong> Print a help message. <br />
+<strong>-v</strong>, <strong>--verbose</strong> It outputs extra information, mainly for debugging. <br />
+<strong>-V</strong>, <strong>--version</strong> Print the version <br />
+<strong>-t</strong> <em>timeout</em>, <strong>--timeout</strong> <em>timeout</em> Set timeout [seconds]
+<strong>-f</strong> <em>file</em>, <strong>--stl-file</strong> <em>file</em> Read an STL formula from <em>file</em>. <br />
+<strong>-e</strong> <em>STLFormula</em>, <strong>--stl</strong> <em>STLFormula</em> Specify <em>STLFormula</em> by signal temporal logic. <br />
+<strong>-I</strong> <em>file</em>, <strong>--input-mapper</strong> <em>file</em> Read the input mapper configuration from <em>file</em>. <br />
+<strong>-O</strong> <em>file</em>, <strong>--output-mapper</strong> <em>file</em> Read the output mapper configuration from <em>file</em>. <br />
+<strong>-S</strong> <em>file</em>, <strong>--signal-mapper</strong> <em>file</em> Read the signal mapper from <em>file</em>. <br />
+<strong>-E</strong> <em>algorithm</em>, <strong>--equiv</strong> <em>algorithm</em> Specify the equivalence testing algorithm. See below for the detail. <br />
+<strong>-o</strong> <em>file</em>, <strong>--output-dot</strong> <em>file</em> Write the learned Mealy machine to <em>file</em> in DOT format. <br />
+<strong>--output-etf</strong> <em>file</em> Write the learned Mealy machine to <em>file</em> in ETF format. <br />
+<strong>-s</strong> <em>step-time</em>, <strong>--step-time</strong> <em>step-time</em> Specify the step time of the sampling. <br />
+<strong>-l</strong> <em>length</em>, <strong>--signal-length</strong> <em>length</em> Specify the length of the sampled signals. <br />
+<strong>-i</strong> <em>script</em>, <strong>--init</strong> <em>script</em> The initial script of MATLAB <br />
+<strong>-p</strong> <em>param1 param2 ... paramN</em>, <strong>--param-names</strong> <em>param1 param2 ... paramN</em> The parameter names of the Simulink
+model <br />
+<strong>-M</strong> <em>test-size</em>, <strong>--max-test</strong> <em>test-size</em> The maximum test size <br />
+<strong>--disable-adaptive-stl</strong> Disable the adaptive STL updater in [Shijubo+, RV'21]</p>
+<h3 id="options-specific-to-the-equivalence-testing">Options Specific to the Equivalence Testing</h3>
+<p>When you use GA, SA, or WP for the equivalence testing, you have to specify the following options in addition.</p>
+<h3 id="ga-genetic-algorithm">GA (Genetic Algorithm)</h3>
+<p><strong>--population-size</strong> <em>size</em> The size of the population <br />
+<strong>--ga-crossover-prob</strong> <em>prob</em> The crossover probability (should be between 0 and 1) <br />
+<strong>--ga-mutation-prob</strong> <em>prob</em> The mutation probability (should be between 0 and 1) <br />
+<strong>--ga-selection-kind</strong> <em>[bestsolution|tournament]</em> The selection in the genetic algorithm. Either best solution selection or binary tournament.</p>
+<h3 id="sa-simulated-annealing">SA (Simulated Annealing)</h3>
+<p><strong>--sa-alpha</strong> <em>alpha</em> The alpha parameter for simulated annealing (should be between 0 and 1)</p>
+<h4 id="wp-wp-method">WP (Wp-method)</h4>
+<p><strong>--wp-max-depth</strong> <em>depth</em> The maximum depth in the Wp-method</p>
+<h2 id="file-format-of-the-mapper">File format of the mapper</h2>
+<p>Both input and output mappers are specified by TSV files.</p>
+<h3 id="input-mapper">Input mapper</h3>
+<p>Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take a different number of inputs i.e., N0 and N1 can be different.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&lt;value 1 of signal(0)&gt;  &lt;value 2 of signal(0)&gt;  ... &lt;value N0 of signal(0)&gt;
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>&lt;value 1 of signal(1)&gt;  &lt;value 2 of signal(1)&gt;  ... &lt;value N1 of signal(1)&gt;
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>...                     
+</span></code></pre></div>
+<p>For example, the following shows that:</p>
+<ul>
+<li>the domain of <code>signal(0)</code> is 10 and 40; and</li>
+<li>the domain of <code>signal(1)</code> is 0, 50, and 100.</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>10  40
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>0   50  100
+</span></code></pre></div>
+<h3 id="output-mapper">Output mapper</h3>
+<p>Output mapper specifies how we map the real-valued signal to an atomic proposition. Precisely, we split the vector space R^n by grids. Each grid is one atomic proposition. Since the maximum upper bound is the positive infinity, the last cell for each signal must be <code>inf</code>.</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;upper bound of signal(0) for AP0-1&gt;    &lt;upper bound of signal(0) for AP0-2&gt;    ... &lt;upper bound of signal(0) for AP0-N0&gt;
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>&lt;upper bound of signal(0) for AP1-1&gt;    &lt;upper bound of signal(1) for AP1-2&gt;    ... &lt;upper bound of signal(1) for AP1-N1&gt;
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>...
+</span></code></pre></div>
+For example, the following output mapper stands for as follows.</p>
+<ul>
+<li>For <code>signal(0)</code>:</li>
+<li><code>AP0-1</code> holds if <code>signal(0)</code> &lt;= 10;</li>
+<li><code>AP0-2</code> holds if 10 &lt; <code>signal(0)</code> &lt;= 40; and</li>
+<li><code>AP0-3</code> holds if 40 &lt; <code>signal(0)</code>.</li>
+<li>For <code>signal(1)</code>:</li>
+<li><code>AP1-1</code> holds if <code>signal(1)</code> &lt;= 0;</li>
+<li><code>AP1-2</code> holds if 0 &lt; <code>signal(1)</code> &lt;= 50;</li>
+<li><code>AP1-3</code> holds if 50 &lt; <code>signal(1)</code> &lt;= 100; and</li>
+<li><code>AP1-4</code> holds if 100 &lt; <code>signal(1)</code>.</li>
+<li>For <code>signal(2)</code>, <code>AP2-1</code> always holds.</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>10  40  inf
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>0   50  100 inf
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>inf
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
