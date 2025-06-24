@@ -10,9 +10,24 @@ theme:
 nav:
   - Home: .
   - Installation: install.md
-  - STL: stl.md
+  - Tutorial: tutorial/tutorial.md
   - Examples: examples.md
-  - (Obsolete) CLI interface: cli.md
+  - STL: stl.md
   - FAQ: faq.md
+  - CLI interface (deprecated): cli.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
 
 repo_url: https://github.com/MasWag/FalCAuN
+edit_uri: blob/master/site/docs/
