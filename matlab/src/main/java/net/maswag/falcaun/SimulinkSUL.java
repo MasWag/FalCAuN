@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -108,7 +108,7 @@ public class SimulinkSUL implements ContinuousNumericSUL, Closeable {
     /**
      * {@inheritDoc}
      */
-    @Nonnull
+    @NotNull
     @Override
     public SUL<List<Double>, IOSignalPiece<List<Double>>> fork() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();

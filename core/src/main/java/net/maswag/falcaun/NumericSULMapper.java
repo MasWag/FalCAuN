@@ -2,7 +2,7 @@ package net.maswag.falcaun;
 
 import de.learnlib.sul.SULMapper;
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.alphabet.GrowingMapAlphabet;
+import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.word.Word;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

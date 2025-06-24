@@ -1,7 +1,7 @@
 package net.maswag.falcaun;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -93,7 +93,7 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
         }
     }
 
-    @Nonnull
+    @NotNull
     IOType getIOType();
 
     /**

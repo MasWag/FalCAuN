@@ -3,7 +3,7 @@ package net.maswag.falcaun;
 import lombok.extern.slf4j.Slf4j;
 import de.learnlib.sul.SUL;
 import de.learnlib.oracle.PropertyOracle.MealyPropertyOracle;
-import de.learnlib.sul.MappedSUL;
+import de.learnlib.mapper.MappedSUL;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
 

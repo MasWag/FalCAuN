@@ -17,8 +17,7 @@ import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.comparator.ObjectiveComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -83,7 +82,6 @@ class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, Str
     /** {@inheritDoc} */
     @Nullable
     @Override
-    @ParametersAreNonnullByDefault
     public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> symbolList) {
         if (isDisproved()) {
             LOGGER.info("The specification is already disproved!!");

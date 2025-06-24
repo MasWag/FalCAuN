@@ -11,7 +11,7 @@ import static java.lang.Math.abs;
 import net.maswag.falcaun.annotation.Sorted;
 import org.apache.commons.math3.util.Pair;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>STLAtomic class.</p>
@@ -187,7 +187,7 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
      * @param charList a list of sets of characters
      * @return a set of concatenated character combinations
      */
-    static public @Nonnull Set<String> cartesianProductCharacters(@Nonnull List<Set<Character>> charList) {
+    static public @NotNull Set<String> cartesianProductCharacters(@NotNull List<Set<Character>> charList) {
         if (charList.isEmpty()) {
             return Collections.emptySet();
         }

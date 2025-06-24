@@ -1,7 +1,7 @@
 package net.maswag.falcaun;
 
 import com.mathworks.engine.EngineException;
-import de.learnlib.sul.MappedSUL;
+import de.learnlib.mapper.MappedSUL;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.membership.SULOracle;
 import net.automatalib.alphabet.Alphabet;
