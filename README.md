@@ -20,6 +20,7 @@ FalCAuN is implemented in Java. We suppose FalCAuN works on many UNIX-like opera
 The requirements for the core module of FalCAuN are as follows.
 
 - Java 17
+  - LearnLib 0.18 requires Java 11 or later; we use Java 17 for compatibility.
 - Maven
 - LTSMin 3.1.0
   - This is not officially released yet.
