@@ -19,7 +19,7 @@ sudo install falcaun /usr/local/bin
 Usage of the CLI interface
 --------------------------
 
-### Symopsis
+### Synopsis
 
      ./falcaun [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP|SA|GA]
 
