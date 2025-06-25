@@ -11,9 +11,7 @@ import net.maswag.falcaun.IOContinuousSignal;
 import net.maswag.falcaun.IOSignalPiece;
 import net.maswag.falcaun.ValueWithTime;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -237,7 +235,7 @@ public class BouncingBallSUL implements ContinuousNumericSUL, ObservableSUL<Boun
     /**
      * {@inheritDoc}
      */
-    @Nonnull
+    @NotNull
     @Override
     public ObservableSUL<BouncingBall.SimulationState, List<Double>, IOSignalPiece<List<Double>>> fork() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("BouncingBallSUL does not support forking");
