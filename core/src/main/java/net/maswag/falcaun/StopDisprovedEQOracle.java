@@ -11,8 +11,7 @@ import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.word.Word;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,7 +48,6 @@ public class StopDisprovedEQOracle<I, O, C> implements EquivalenceOracle.MealyEq
      */
     @Nullable
     @Override
-    @ParametersAreNonnullByDefault
     public DefaultQuery<I, Word<O>> findCounterExample(MealyMachine<?, I, ?, O> hypothesis, Collection<? extends I> inputs) {
         if (ltlOracles.allDisproved()) {
             log.debug("A counterexample is already found!!");

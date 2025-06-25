@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -103,8 +103,8 @@ public class SimulinkModel {
      * @param inputSignal The input signal
      * @return The output signal with timestamps of the entire execution.
      */
-    @Nonnull
-    public ValueWithTime<List<Double>> step(@Nonnull List<Double> inputSignal) {
+    @NotNull
+    public ValueWithTime<List<Double>> step(@NotNull List<Double> inputSignal) {
         if (this.isInitial) {
             counter++;
         }
