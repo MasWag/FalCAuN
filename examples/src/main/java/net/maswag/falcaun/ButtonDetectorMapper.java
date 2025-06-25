@@ -2,7 +2,7 @@ package net.maswag.falcaun;
 
 import de.learnlib.sul.SUL;
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.alphabet.ArrayAlphabet;
+import net.automatalib.alphabet.impl.Alphabets;
 
 /**
  * A mapper for ButtonDetector that converts between String and ButtonDetector types.
@@ -74,6 +74,6 @@ public class ButtonDetectorMapper implements SUL<String, String> {
      * @return An Alphabet containing "Pressed" and "Released" inputs
      */
     public static Alphabet<String> getInputAlphabet() {
-        return new ArrayAlphabet<>("Pressed", "Released");
+        return Alphabets.fromArray("Pressed", "Released");
     }
 }
