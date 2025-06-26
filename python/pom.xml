@@ -13,10 +13,6 @@
 
     <artifactId>FalCAuN-python</artifactId>
 
-    <properties>
-        <skipTests>true</skipTests>
-    </properties>
-
     <build>
         <plugins>
             <!-- Copying project dependencies:
