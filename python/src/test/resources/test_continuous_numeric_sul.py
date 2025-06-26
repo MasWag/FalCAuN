@@ -19,16 +19,16 @@ class SUL:
 
         self.velocity = max(0.0, self.velocity + acc * self.dt)
         return [self.time, self.velocity]
-    
+
     def step(self, inputSignal: List[float]) -> List[List[float]]:
         [acc] = inputSignal
         if self.outputs == []:
             self.outputs = [[0.0, 0.0]]
             return self.outputs
-        
+
         for _e in range(8):
             self.outputs.append(self.ministep(acc))
-        print(f"step: {self.outputs}")
+
         return self.outputs
 
     def exec(self, inputSignals: List[List[float]]) -> List[List[float]]:
