@@ -42,6 +42,6 @@ class SUL:
     def pre(self) -> None:
         self.state = State.Q0
     def post(self) -> None:
-        return 0
+        pass
     def close(self) -> None:
-        return 0
+        pass

@@ -115,7 +115,7 @@ class SULBase(AbstractSUL):
         return 0
 
     def close(self) -> None:
-        return 0
+        pass
 
 
     def results(self):
