@@ -22,7 +22,6 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      */
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
-    protected ArrayList<List<Double>> outputSignals = new ArrayList<List<Double>>();
 
     @Getter
     private int counter = 0;
@@ -86,7 +85,6 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         var ret = this.model.step(inputSignal);
         Stream<?> stream = ret.stream();
         var outputSignal = stream.map(e -> Double.class.cast(e)).collect(Collectors.toList());
-        this.outputSignals.add(outputSignal);
         return new IOSignalPiece<>(inputSignal, outputSignal);
     }
 
