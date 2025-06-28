@@ -59,8 +59,9 @@ class SULBase(AbstractSUL):
         action = self.controller.policy(obs, reward, done, **info)
         self.state = self.env.step(action)
 
+        # The last row does not contain some data ("CHO" and "insulin" are not set) so we use the second last row
         row = self.results().iloc[-2]
-        #ret = [row["BG"], row["CGM"], row["CHO"], row["insulin"], row["LBGI"], row["HBGI"], row["Risk"]]
+        #return [row["BG"], row["CGM"], row["CHO"], row["insulin"], row["LBGI"], row["HBGI"], row["Risk"]]
         return (row["BG"], row["insulin"])
 
     # inputSignal : [glucose]
