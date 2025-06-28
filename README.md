@@ -101,12 +101,12 @@ You need to install Jep manually. Follow the instructions on the [official site]
 #### 2. Setup the environment variable
 Add the installed path, which has `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
 ```shell
-export LD_LIBRARY_PATH=<path/to/jep>
+export LD_LIBRARY_PATH=<path/to/jep>:${LD_LIBRARY_PATH}
 # Example:
 # export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep
 ```
 
-### 3. Build and Install FalCAuN
+#### 3. Build and Install FalCAuN
 ```sh
 mvn install --also-make --projects python
 ```
