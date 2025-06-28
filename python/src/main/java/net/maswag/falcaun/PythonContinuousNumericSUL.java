@@ -154,7 +154,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
      * @return The output signal. The size is same as the input.
      */
     @Override
-    public IOContinuousSignal<List<Double>> execute(Word<List<Double>> inputSignal)
+    public IOContinuousSignal<List<Double>> execute(@Nonnull Word<List<Double>> inputSignal)
             throws InterruptedException, ExecutionException {
         pre();
 

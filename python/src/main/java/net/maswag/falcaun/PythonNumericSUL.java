@@ -102,7 +102,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      * @return The output signal. The size is same as the input.
      */
     @Override
-    public IOSignal<List<Double>> execute(Word<List<Double>> inputSignal)
+    public IOSignal<List<Double>> execute(@Nonnull Word<List<Double>> inputSignal)
             throws InterruptedException, ExecutionException {
         pre();
 
