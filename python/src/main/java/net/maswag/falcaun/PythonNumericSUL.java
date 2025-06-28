@@ -1,10 +1,10 @@
 package net.maswag.falcaun;
 
+import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
 import jep.JepException;
 import lombok.Getter;
 import net.automatalib.word.Word;
-import net.automatalib.word.WordBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +34,8 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      *                      or running the script.
      */
     @SuppressWarnings("rawtypes")
-    public PythonNumericSUL(String initScript) throws InterruptedException, ExecutionException {
+    public PythonNumericSUL(String initScript)
+            throws JepException {
         this.model = new PythonModel<List<Double>, ArrayList>(initScript, ArrayList.class);
     }
 
@@ -77,12 +78,18 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
      */
     @Nullable
     @Override
-    public IOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) {
+    public IOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal)
+            throws SULException {
         if (inputSignal == null) {
             return null;
         }
 
-        var ret = this.model.step(inputSignal);
+        List<?> ret;
+        try {
+            ret = this.model.step(inputSignal);
+        } catch (JepException e) {
+            throw new SULException(e);
+        }
         Stream<?> stream = ret.stream();
         var outputSignal = stream.map(e -> Double.class.cast(e)).collect(Collectors.toList());
         return new IOSignalPiece<>(inputSignal, outputSignal);
@@ -106,7 +113,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
             try {
                 ret = this.model.step(e);
             } catch (JepException exc) {
-                throw new InterruptedException(exc.toString());
+                throw new ExecutionException(exc);
             }
 
             Stream<?> stream = ret.stream();

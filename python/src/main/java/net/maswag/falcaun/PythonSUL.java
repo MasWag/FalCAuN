@@ -1,12 +1,13 @@
 package net.maswag.falcaun;
 
+import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
+import jep.JepException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.io.Closeable;
-import java.util.concurrent.ExecutionException;
 
 /**
  * The System Under Learning implemented by a Python model.
@@ -19,7 +20,7 @@ public class PythonSUL<I, O> implements SUL<I, O>, Closeable {
      *                   It defines a class SUL with methods pre(), post(), step(I inputSignal) -> O, and close().
      * @param outputClass The class object of the output signal produced by the step method.
      */
-    public PythonSUL(String initScript, Class<O> outputClass) throws InterruptedException, ExecutionException {
+    public PythonSUL(String initScript, Class<O> outputClass) throws JepException {
         this.model = new PythonModel<I, O>(initScript, outputClass);
     }
 
@@ -52,12 +53,17 @@ public class PythonSUL<I, O> implements SUL<I, O>, Closeable {
      */
     @Nullable
     @Override
-    public O step(@Nullable I inputSignal) {
+    public O step(@Nullable I inputSignal)
+            throws SULException {
         if (inputSignal == null) {
             return null;
         }
 
-        return this.model.step(inputSignal);
+        try {
+            return this.model.step(inputSignal);
+        } catch (JepException e) {
+            throw new SULException(e);
+        }
     }
 
     /**

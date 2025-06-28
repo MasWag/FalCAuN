@@ -43,7 +43,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
      */
     @SuppressWarnings("rawtypes")
     public PythonContinuousNumericSUL(String initScript, Double signalStep)
-            throws InterruptedException, ExecutionException {
+            throws JepException {
         this.model = new PythonModel<List<Double>, ArrayList>(initScript, ArrayList.class);
         this.signalStep = signalStep;
     }
@@ -128,13 +128,19 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
      */
     @Nullable
     @Override
-    public ExtendedIOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) {
+    public ExtendedIOSignalPiece<List<Double>> step(@Nullable List<Double> inputSignal) 
+            throws SULException {
         if (inputSignal == null) {
             return null;
         }
         this.inputSignal.add(inputSignal);
 
-        var ret = this.model.step(inputSignal);
+        ArrayList<?> ret;
+        try {
+            ret = this.model.step(inputSignal);
+        } catch (JepException e) {
+            throw new SULException(e);
+        }
 
         var values = constructValueWithTime(ret);
         double endTime = getCurrentTime();
@@ -155,9 +161,13 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         @SuppressWarnings("rawtypes")
         ArrayList ret = null;
 
-        for (var e : inputSignal) {
-            this.inputSignal.add(e);
-            ret = this.model.step(e);
+        try {
+            for (var e : inputSignal) {
+                this.inputSignal.add(e);
+                ret = this.model.step(e);
+            }
+        } catch (JepException exc) {
+            throw new ExecutionException(exc);
         }
 
         var values = constructValueWithTime(ret);
