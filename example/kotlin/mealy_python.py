@@ -1,6 +1,3 @@
-import sys
-sys.path.append(".")
-
 from abstract_sul import AbstractSUL
 from typing import Mapping, Tuple
 from enum import Enum

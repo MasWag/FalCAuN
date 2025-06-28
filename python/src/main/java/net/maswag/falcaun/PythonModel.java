@@ -38,7 +38,13 @@ public class PythonModel<I, O> {
 
     static {
         // JepConfig must be set before creating any SharedInterpreters
-        SharedInterpreter.setConfig(new JepConfig().redirectStdout(System.out).redirectStdErr(System.err));
+        var config = new JepConfig().redirectStdout(System.out)
+                                    .redirectStdErr(System.err)
+        // Explicitly set the Python path to include the module in the same directory
+        // for abstract_sul.py using kotlin examples
+                                    .addIncludePaths("./");
+        SharedInterpreter.setConfig(config);
+        
     }
 
     /**
