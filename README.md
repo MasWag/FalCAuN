@@ -99,7 +99,7 @@ mvn install
 You need to install Jep manually. Follow the instructions on the [official site](https://github.com/ninia/jep)
 
 #### 2. Setup the environment variable
-Add the installed path, which has `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
+Add the installed path, which has the JEP native library including `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
 ```shell
 export LD_LIBRARY_PATH=<path/to/jep>:${LD_LIBRARY_PATH}
 # Example:
