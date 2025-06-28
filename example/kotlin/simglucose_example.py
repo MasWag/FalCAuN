@@ -32,16 +32,11 @@ class ContinuousGlucoseScenario(Scenario):
 # A class for SUL based on SimObj
 class SULBase(AbstractSUL):
     controller : Controller
-    start_time : datetime.datetime
-    timedelta : datetime.timedelta
-    len_time_list : int
     result_path : str
-    inputSignals : List[int]
     INF = 1e9
 
     def __init__(self, start_time, step_n, result_path):
         self.inputSignals = []
-        self.start_time = start_time
         self.step_n = step_n
         self.result_path = result_path
 
@@ -53,7 +48,7 @@ class SULBase(AbstractSUL):
         # Create a controller
         self.controller = BBController()
 
-        scenario = ContinuousGlucoseScenario(start_time=self.start_time)
+        scenario = ContinuousGlucoseScenario(start_time=start_time)
         self.scenario = scenario
         self.env = T1DSimEnv(patient, sensor, pump, scenario)
 
@@ -112,7 +107,6 @@ class SULBase(AbstractSUL):
         toc = time.time()
         print('Simulation took {} seconds.'.format(toc - self.tic))
         self.save_results()
-        return 0
 
     def close(self) -> None:
         pass
@@ -124,7 +118,7 @@ class SULBase(AbstractSUL):
     def save_results(self):
         df = self.results()
         if not os.path.isdir(self.result_path):
-            os.makedirs(self.result_path)
+            os.makedirs(self.result_path, exist_ok=True)
         filename = os.path.join(self.result_path, str(self.env.patient.name) + '.csv')
         df.to_csv(filename)
         print("Saved output to {}".format(filename))

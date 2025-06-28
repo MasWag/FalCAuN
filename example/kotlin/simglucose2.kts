@@ -79,9 +79,9 @@ val crossoverProb = 0.5
 val mutationProb = 0.01
 
 // Load the simglucose model implemented by python
-PythonNumericSUL(initScript).use { autoTransSUL ->
+PythonNumericSUL(initScript).use { sul ->
     // Configure and run the verifier
-    val verifier = NumericSULVerifier(autoTransSUL, signalStep, properties, mapper)
+    val verifier = NumericSULVerifier(sul, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
     verifier.setTimeout(5 * 60 * 8) // 5 minutes
     verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
@@ -105,16 +105,9 @@ PythonNumericSUL(initScript).use { autoTransSUL ->
             println("cex abstract input: ${verifier.cexAbstractInput[i]}")
             println("cex output: ${verifier.cexOutput[i]}")
 
-
-            var rawOutput = mutableListOf<List<List<Double>>>()
-            val dim = mutableListOf<List<Double>>()
-            for (j in 0 until verifier.cexConcreteInput[i].size()) {
-                dim.add(verifier.cexConcreteInput[i].get(j))
-            }
-            val inputWord = Word.fromList(dim)
-            val resultWord = autoTransSUL.execute(inputWord).getOutputSignal()
-            rawOutput.add(resultWord.asList())
-            println("cex concrete output: ${rawOutput}")
+            val inputWord = Word.fromList(verifier.cexConcreteInput[i].getSignalValues())
+            val concreteOutput = sul.execute(inputWord).getOutputSignal().asList()
+            println("cex concrete output: ${concreteOutput}")
         }
     }
     println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")

@@ -10,12 +10,12 @@ class SUL:
         The second output is the sum modulo 100.0.
         """
 
-        [sum0, sum1] = self.state
+        (sum0, sum1) = self.state
         sum0 = sum0 + sum(inputSignal)
         sum0 = max(0.0, min(100.0, sum0))
         sum1 = (sum1 + sum(inputSignal)) % 100.0
-        self.state = [sum0, sum1]
-        return self.state
+        self.state = (sum0, sum1)
+        return [sum0, sum1]
 
     def pre(self):
         self.state = (0.0, 0.0)
