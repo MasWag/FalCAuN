@@ -90,10 +90,9 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         this.model.post();
     }
 
-    private ValueWithTime<List<Double>> constructValueWithTime(@SuppressWarnings("rawtypes") ArrayList ary) {
+    private ValueWithTime<List<Double>> constructValueWithTime(@SuppressWarnings("rawtypes") ArrayList<?> ary) {
         // Convert the raw list to a typed list with runtime type checking
-        Stream<?> stream = ary.stream();
-        List<List<Double>> data = stream.map(e1 -> {
+        List<List<Double>> data = ary.stream().map(e1 -> {
                 Stream<?> s = List.class.cast(e1).stream();
                 return s.map(e2 -> Double.class.cast(e2)).collect(Collectors.toList());
             }).collect(Collectors.toList());
@@ -159,7 +158,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         pre();
 
         @SuppressWarnings("rawtypes")
-        ArrayList ret = null;
+        ArrayList<?> ret = null;
 
         try {
             for (var e : inputSignal) {

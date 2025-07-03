@@ -90,8 +90,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         } catch (JepException e) {
             throw new SULException(e);
         }
-        Stream<?> stream = ret.stream();
-        var outputSignal = stream.map(e -> Double.class.cast(e)).collect(Collectors.toList());
+        var outputSignal = ret.stream().map(e -> Double.class.cast(e)).collect(Collectors.toList());
         return new IOSignalPiece<>(inputSignal, outputSignal);
     }
 
@@ -116,8 +115,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
                 throw new ExecutionException(exc);
             }
 
-            Stream<?> stream = ret.stream();
-            var output = stream.map(obj -> Double.class.cast(obj)).collect(Collectors.toList());
+            var output = ret.stream().map(obj -> Double.class.cast(obj)).collect(Collectors.toList());
             outputs.add(output);
         }
         var outputSignal = Word.fromList(outputs);
