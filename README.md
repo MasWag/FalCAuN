@@ -93,6 +93,24 @@ mvn clean --projects matlab
 mvn install
 ```
 
+### Installation of the python binding Module
+
+#### 1. Install the Requirements
+You need to install Jep manually. Follow the instructions on the [official site](https://github.com/ninia/jep)
+
+#### 2. Setup the environment variable
+Add the installed path, which has the JEP native library including `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
+```shell
+export LD_LIBRARY_PATH=<path/to/jep>:${LD_LIBRARY_PATH}
+# Example:
+# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep
+```
+
+#### 3. Build and Install FalCAuN
+```sh
+mvn install --also-make --projects python
+```
+
 ### Installation of LTSMin 3.1.0 on macOS with ARM Processors
 
 FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports `x86_64`. One can still run LTSMin using Rosetta and libtool for `x86_64`.

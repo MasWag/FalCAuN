@@ -33,11 +33,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install jep
+        run: |
+          pip install --upgrade setuptools wheel
+          pip install --no-cache-dir --no-build-isolation jep==4.2.1
+          pip show jep
+
       - name: Build the core project with Maven
-        run: mvn dependency:go-offline --projects core
+        run: |
+          mvn dependency:go-offline --projects core
+          mvn install --also-make --projects core -DskipTests=True
 
       - name: Test the core project with Maven
         run: mvn test -DskipTests=False --projects core
+
+      - name: Test the python project with Maven
+        run: mvn test --projects python
+        env:
+          # Path to the jep library `jep-4.2.1.jar`
+          LD_LIBRARY_PATH: "/opt/hostedtoolcache/Python/3.13.5/x64/lib/python3.13/site-packages/jep"
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5.1.2
