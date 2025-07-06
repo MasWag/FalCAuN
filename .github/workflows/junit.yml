@@ -60,6 +60,6 @@ jobs:
           LD_LIBRARY_PATH: "/opt/hostedtoolcache/Python/3.13.5/x64/lib/python3.13/site-packages/jep"
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5.1.2
+        uses: codecov/codecov-action@v5.4.3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
