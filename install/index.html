@@ -374,6 +374,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#installation-of-the-python-binding-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation of the python binding Module
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation of the python binding Module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-the-requirements_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Install the Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-setup-the-environment-variable_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Setup the environment variable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-build-and-install-falcaun_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Build and Install FalCAuN
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation-of-ltsmin-310-on-macos-with-arm-processors" class="md-nav__link">
     <span class="md-ellipsis">
       Installation of LTSMin 3.1.0 on macOS with ARM Processors
@@ -620,6 +662,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#installation-of-the-python-binding-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation of the python binding Module
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation of the python binding Module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-the-requirements_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Install the Requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-setup-the-environment-variable_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Setup the environment variable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-build-and-install-falcaun_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Build and Install FalCAuN
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#installation-of-ltsmin-310-on-macos-with-arm-processors" class="md-nav__link">
     <span class="md-ellipsis">
       Installation of LTSMin 3.1.0 on macOS with ARM Processors
@@ -727,6 +811,19 @@
 <p>You can build and install FalCAuN using Maven. You have to execute <code>mvn clean</code> to set up the Java API of MATLAB. An example to install the matlab module, as well as the others, is as follows.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>--projects<span class="w"> </span>matlab
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>mvn<span class="w"> </span>install
+</span></code></pre></div>
+<h2 id="installation-of-the-python-binding-module">Installation of the python binding Module</h2>
+<p>Here, we provide the instructions to install the python binding module.</p>
+<h3 id="1-install-the-requirements_2">1. Install the Requirements</h3>
+<p>You need to install Jep manually. Follow the instructions on the <a href="https://github.com/ninia/jep">official site</a></p>
+<h3 id="2-setup-the-environment-variable_1">2. Setup the environment variable</h3>
+<p>Add the installed path, which has the JEP native library including <code>jep-VERSION.jar</code>, to the environment variable <code>LD_LIBRARY_PATH</code>.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>&lt;path/to/jep&gt;:<span class="si">${</span><span class="nv">LD_LIBRARY_PATH</span><span class="si">}</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># Example:</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep</span>
+</span></code></pre></div>
+<h3 id="3-build-and-install-falcaun_1">3. Build and Install FalCAuN</h3>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python
 </span></code></pre></div>
 <h2 id="installation-of-ltsmin-310-on-macos-with-arm-processors">Installation of LTSMin 3.1.0 on macOS with ARM Processors</h2>
 <p>FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86_64. One can still run LTSMin using Rosetta and libtool for x86_64.</p>
