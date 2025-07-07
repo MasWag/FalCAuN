@@ -1,7 +1,7 @@
 Examples
 ========
 
-The following is a list of examples. To run the `Kotlin` examples, you need to install [kscript](https://github.com/kscripting/kscript). To run the `Jupyter` example, you need to set up [Jupyter](https://jupyter.org/) with the [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter) kernel.
+The following is a list of examples. To run the `Kotlin` examples, you need to install [kscript](https://github.com/kscripting/kscript). To run the `Jupyter` example, you need to set up [Jupyter](https://jupyter.org/) with the [kotlin-jupyter](https://github.com/Kotlin/kotlin-jupyter) kernel. Some examples use the Python binding and require [JEP](https://github.com/ninia/jep).
 
 Examples not requiring MATLAB/Simulink
 --------------------------------------
@@ -12,6 +12,7 @@ The following examples do not require MATLAB/Simulink.
 |---------|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Mealy   | A small Mealy machine       | [Kotlin](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/mealy-nox.main.kts) [Jupyter](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/Mealy.ipynb) |
 | Counter | A toy system with a counter | [Jupyter](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/counter.ipynb)                                                                                         |
+| Python SUL | A Mealy machine implemented in Python | [Python](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/mealy_python.py) |
 
 Examples requiring MATLAB/Simulink
 ----------------------------------

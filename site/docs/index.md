@@ -3,7 +3,7 @@ FalCAuN
 
 [FalCAuN](https://github.com/MasWag/FalCAuN) is a toolkit for testing black-box systems (e.g., cyber-physical systems) based on automata learning and model checking. Currently, systems implemented in Java and Simulink are supported.
 
-FalCAuN is implemented in Java and can be used from any JVM languages including Kotlin and Clojure. The source code is partially commented on using the Javadoc syntax. The document is hosted on [GitHub Pages](https://maswag.github.io/FalCAuN/maven-site/latest/apidocs/). FalCAuN uses [LearnLib](https://learnlib.de/), an open source framework for automata learning. It is available under the GNU General Public License Version 3.0.
+FalCAuN is implemented in Java and can be used from any JVM language (for example Kotlin or Clojure). A Python binding using JEP is also available. The source code is partially commented on using the Javadoc syntax. The document is hosted on [GitHub Pages](https://maswag.github.io/FalCAuN/maven-site/latest/apidocs/). FalCAuN uses [LearnLib](https://learnlib.de/), an open source framework for automata learning. It is available under the GNU General Public License Version 3.0.
 
 Contributors
 ------------
