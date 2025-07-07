@@ -26,11 +26,7 @@ jobs:
             pip3 install --upgrade setuptools wheel
             pip3 install --no-cache-dir --no-build-isolation jep==4.2.1
             pip3 show jep
-            jep_path=$(python3 - <<'EOF'
-import site, os
-print(os.path.join(site.getsitepackages()[0], 'jep'))
-EOF
-)
+            jep_path=$(python3 -c 'import site, os; print(os.path.join(site.getsitepackages()[0], "jep"))')
             echo "export LD_LIBRARY_PATH=${jep_path}:$LD_LIBRARY_PATH" >> $BASH_ENV
       - matlab/install:
           release: R2024a
