@@ -8,8 +8,6 @@ import matlab.engine
 import matlab
 import numpy as np
 
-signalStep=0.00025
-
 class Signal:
     """
     Equivalent to Signal
