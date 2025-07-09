@@ -75,7 +75,7 @@ PythonContinuousNumericSUL(initScript, signalStep).use { autoTransSUL ->
     // Configure and run the verifier
     val verifier = NumericSULVerifier(autoTransSUL, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
-    verifier.setTimeout(5 * 60 * 8) // 5 minutes
+    verifier.setTimeout(60 * 40) // 40 minutes
     verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
     verifier.addGAEQOracleAll(
         signalLength,
