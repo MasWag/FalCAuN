@@ -25,13 +25,13 @@ public class ValueWithTime<T> {
     protected final List<Double> timestamps;
     protected final List<T> values;
 
-    ValueWithTime() {
+    public ValueWithTime() {
         // Initialization with empty lists
         this.timestamps = Collections.emptyList();
         this.values = Collections.emptyList();
     }
 
-    ValueWithTime(List<Double> timestamps, List<T> values) {
+    public ValueWithTime(List<Double> timestamps, List<T> values) {
         if (timestamps.size() != values.size()) {
             throw new IllegalArgumentException("The size of timestamp and values must be the same");
         }

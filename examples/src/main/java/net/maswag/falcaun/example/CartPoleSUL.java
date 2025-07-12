@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.example;
 
 import de.learnlib.sul.ObservableSUL;
 

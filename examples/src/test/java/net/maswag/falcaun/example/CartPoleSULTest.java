@@ -1,10 +1,15 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.example;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.generator.InRange;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
+
+import net.maswag.falcaun.example.CartPoleOutput;
+import net.maswag.falcaun.example.CartPoleSUL;
+import net.maswag.falcaun.example.CartPoleState;
+
 import org.junit.runner.RunWith;
 
 import static org.junit.jupiter.api.Assertions.*;
