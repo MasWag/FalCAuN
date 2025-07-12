@@ -1,10 +1,15 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.example;
 
 import de.learnlib.exception.SULException;
 import de.learnlib.sul.ObservableSUL;
 import lombok.Getter;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import net.maswag.falcaun.ContinuousNumericSUL;
+import net.maswag.falcaun.ExtendedIOSignalPiece;
+import net.maswag.falcaun.IOContinuousSignal;
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.ValueWithTime;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;

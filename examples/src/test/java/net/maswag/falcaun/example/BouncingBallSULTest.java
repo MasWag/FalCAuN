@@ -1,8 +1,12 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.example;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import net.automatalib.word.Word;
+import net.maswag.falcaun.IOContinuousSignal;
+import net.maswag.falcaun.example.BouncingBall;
+import net.maswag.falcaun.example.BouncingBallSUL;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -181,7 +185,7 @@ public class BouncingBallSULTest {
 
             // Counter should be 1 after executing a sequence
             assertEquals(1, sul.getCounter(), "Counter should be 1 after executing a sequence");
-            assertEquals(3.0, result.continuousOutputSignal.duration(), 0.0001, "Duration should be 3 seconds");
+            assertEquals(3.0, result.getContinuousOutputSignal().duration(), 0.0001, "Duration should be 3 seconds");
             result.prefixes(false);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);

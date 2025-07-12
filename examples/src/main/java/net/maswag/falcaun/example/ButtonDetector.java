@@ -1,11 +1,10 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.example;
 
 import de.learnlib.exception.SULException;
 import de.learnlib.sul.ObservableSUL;
 import de.learnlib.sul.SUL;
 import lombok.Getter;
 import net.automatalib.word.Word;
-import net.automatalib.word.WordBuilder;
 import net.automatalib.word.WordBuilder;
 
 import javax.annotation.Nonnull;
