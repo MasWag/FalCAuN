@@ -305,7 +305,7 @@ class SUL(AbstractSUL):
         ret = np.array(ary, dtype=np.float64)
         return ret.tolist()
 
-    def exec(self, inputSignals: List[List[float]]) -> np.ndarray:
+    def exec(self, inputSignals: List[List[float]]) -> List[List[float]]:
         (t, y) = self.simulinkModel.exec(inputSignals)
         y = np.array(y[0], dtype=np.float64)
         t = np.array(t, dtype=np.float64)
