@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.python;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.ExtendedIOSignalPiece;
+import net.maswag.falcaun.IOContinuousSignal;
+import net.maswag.falcaun.python.PythonContinuousNumericSUL;
 
 import static org.junit.jupiter.api.Assertions.*;
 
