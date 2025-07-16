@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.automatalib.modelchecker.ltsmin.LTSminVersion;
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.parser.STLFactory;
+import net.maswag.falcaun.parser.TemporalLogic;
+
 import org.apache.commons.cli.MissingOptionException;
 import org.slf4j.LoggerFactory;
 

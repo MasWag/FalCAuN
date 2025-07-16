@@ -1,6 +1,7 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.Getter;
+import net.maswag.falcaun.IOSignal;
 
 import java.util.List;
 import java.util.Set;
@@ -75,8 +76,8 @@ public class TemporalNext<I> extends AbstractTemporalLogic<I> {
         return String.format("X ( %s )", subFml.toString());
     }
 
-    static class STLNext extends TemporalNext<List<Double>> implements STLCost {
-        STLNext(STLCost subFml, boolean nullPositive) {
+    public static class STLNext extends TemporalNext<List<Double>> implements STLCost {
+        public STLNext(STLCost subFml, boolean nullPositive) {
             super(subFml, nullPositive);
         }
     }

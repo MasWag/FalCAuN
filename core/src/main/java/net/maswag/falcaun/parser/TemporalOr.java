@@ -1,6 +1,7 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.Getter;
+import net.maswag.falcaun.IOSignal;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,14 +16,14 @@ import java.util.stream.Collectors;
 public class TemporalOr<I> extends AbstractTemporalLogic<I> {
     private final List<TemporalLogic<I>> subFmls;
 
-    TemporalOr(TemporalLogic<I> subFml1, TemporalLogic<I> subFml2) {
+    public TemporalOr(TemporalLogic<I> subFml1, TemporalLogic<I> subFml2) {
         this.subFmls = Arrays.asList(subFml1, subFml2);
         this.nonTemporal = subFml1.isNonTemporal() && subFml2.isNonTemporal();
         this.iOType = subFml1.getIOType().merge(subFml2.getIOType());
         this.initialized = subFml1.isInitialized() && subFml2.isInitialized();
     }
 
-    TemporalOr(List<TemporalLogic<I>> subFmls) {
+    public TemporalOr(List<TemporalLogic<I>> subFmls) {
         this.subFmls = subFmls;
         this.nonTemporal = subFmls.stream().map(TemporalLogic::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
         this.iOType = subFmls.stream().map(TemporalLogic::getIOType).reduce(TemporalLogic.IOType::merge).orElse(null);

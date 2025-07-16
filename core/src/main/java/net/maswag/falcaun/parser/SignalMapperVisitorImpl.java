@@ -1,6 +1,9 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.extern.slf4j.Slf4j;
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.parser.SignalMapperBaseVisitor;
+import net.maswag.falcaun.parser.SignalMapperParser;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,12 +17,12 @@ import static java.lang.Math.abs;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class SignalMapperVisitorImpl extends net.maswag.falcaun.SignalMapperBaseVisitor<Function<IOSignalPiece<List<Double>>, Double>> {
+public class SignalMapperVisitorImpl extends SignalMapperBaseVisitor<Function<IOSignalPiece<List<Double>>, Double>> {
     /**
      * {@inheritDoc}
      */
     @Override
-    public Function<IOSignalPiece<List<Double>>, Double> visitExpr(net.maswag.falcaun.SignalMapperParser.ExprContext ctx) {
+    public Function<IOSignalPiece<List<Double>>, Double> visitExpr(SignalMapperParser.ExprContext ctx) {
         if (ctx.atomic() != null) {
             // atomic
             log.trace("atomic");
@@ -79,7 +82,7 @@ public class SignalMapperVisitorImpl extends net.maswag.falcaun.SignalMapperBase
      * {@inheritDoc}
      */
     @Override
-    public Function<IOSignalPiece<List<Double>>, Double> visitAtomic(net.maswag.falcaun.SignalMapperParser.AtomicContext ctx) {
+    public Function<IOSignalPiece<List<Double>>, Double> visitAtomic(SignalMapperParser.AtomicContext ctx) {
         if (ctx.signalID != null) {
             int sigIndex = Integer.parseInt(ctx.signalID.getText());
             if (Objects.nonNull(ctx.INPUT())) {

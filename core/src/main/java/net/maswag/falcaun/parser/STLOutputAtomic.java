@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.maswag.falcaun.IOSignal;
 
 /**
  * <p>STLAtomic class.</p>
@@ -119,7 +121,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
         initialized = true;
     }
 
-    void setAtomic(List<Map<Character, Double>> outputMapper, List<Character> largest) {
+    public void setAtomic(List<Map<Character, Double>> outputMapper, List<Character> largest) {
         this.outputMapper = outputMapper;
         this.largest = largest;
         setOutputMaps();

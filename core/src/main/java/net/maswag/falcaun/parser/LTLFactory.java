@@ -1,9 +1,15 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import net.maswag.falcaun.parser.TemporalLogic.LTLFormula;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+import net.maswag.falcaun.parser.LTLVisitor;
+import net.maswag.falcaun.parser.LTLLexer;
+import net.maswag.falcaun.parser.LTLParser;
 
 public class LTLFactory {
     /**
@@ -13,11 +19,11 @@ public class LTLFactory {
      * @return a {@link TemporalLogic.STLCost} object.
      */
     public TemporalLogic.LTLFormula parse(String formula) {
-        net.maswag.falcaun.LTLVisitor<TemporalLogic.LTLFormula> visitor = new LTLVisitorImpl();
+        LTLVisitor<TemporalLogic.LTLFormula> visitor = new LTLVisitorImpl();
         CharStream stream = CharStreams.fromString(formula);
-        net.maswag.falcaun.LTLLexer lexer = new net.maswag.falcaun.LTLLexer(stream);
+        LTLLexer lexer = new LTLLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        net.maswag.falcaun.LTLParser parser = new net.maswag.falcaun.LTLParser(tokens);
+        LTLParser parser = new LTLParser(tokens);
         ParseTree tree = parser.expr();
         return visitor.visit(tree);
     }

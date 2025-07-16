@@ -1,6 +1,8 @@
 package net.maswag.falcaun;
 
 import lombok.Getter;
+import net.maswag.falcaun.parser.SimpleSignalMapper;
+
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;

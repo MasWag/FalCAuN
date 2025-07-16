@@ -1,15 +1,18 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
-import net.maswag.falcaun.TemporalAnd.LTLAnd;
-import net.maswag.falcaun.TemporalEventually.LTLEventually;
-import net.maswag.falcaun.TemporalGlobally.LTLGlobally;
-import net.maswag.falcaun.TemporalImply.LTLImply;
-import net.maswag.falcaun.TemporalLogic.LTLFormula;
-import net.maswag.falcaun.TemporalNext.LTLNext;
-import net.maswag.falcaun.TemporalOr.LTLOr;
-import net.maswag.falcaun.TemporalRelease.LTLRelease;
-import net.maswag.falcaun.TemporalSub.LTLSub;
-import net.maswag.falcaun.TemporalUntil.LTLUntil;
+import net.maswag.falcaun.parser.LTLAtomic;
+import net.maswag.falcaun.parser.LTLFactory;
+import net.maswag.falcaun.parser.TemporalAnd.LTLAnd;
+import net.maswag.falcaun.parser.TemporalEventually.LTLEventually;
+import net.maswag.falcaun.parser.TemporalGlobally.LTLGlobally;
+import net.maswag.falcaun.parser.TemporalImply.LTLImply;
+import net.maswag.falcaun.parser.TemporalLogic.LTLFormula;
+import net.maswag.falcaun.parser.TemporalNext.LTLNext;
+import net.maswag.falcaun.parser.TemporalOr.LTLOr;
+import net.maswag.falcaun.parser.TemporalRelease.LTLRelease;
+import net.maswag.falcaun.parser.TemporalSub.LTLSub;
+import net.maswag.falcaun.parser.TemporalUntil.LTLUntil;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

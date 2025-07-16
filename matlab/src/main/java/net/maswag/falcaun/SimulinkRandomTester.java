@@ -5,6 +5,8 @@ import lombok.Getter;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import net.maswag.falcaun.parser.TemporalLogic;
+
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;

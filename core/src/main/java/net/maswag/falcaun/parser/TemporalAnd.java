@@ -1,6 +1,7 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.Getter;
+import net.maswag.falcaun.IOSignal;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,17 +13,17 @@ import java.util.stream.Collectors;
  * @param <I> Type of the input at each step
  */
 @Getter
-class TemporalAnd<I> extends AbstractTemporalLogic<I> {
+public class TemporalAnd<I> extends AbstractTemporalLogic<I> {
     private final List<TemporalLogic<I>> subFormulas;
 
-    TemporalAnd(TemporalLogic<I> subFml1, TemporalLogic<I> subFml2) {
+    public TemporalAnd(TemporalLogic<I> subFml1, TemporalLogic<I> subFml2) {
         this.subFormulas = Arrays.asList(subFml1, subFml2);
         this.nonTemporal = subFml1.isNonTemporal() && subFml2.isNonTemporal();
         this.iOType = subFml1.getIOType().merge(subFml2.getIOType());
         this.initialized = subFml1.isInitialized() && subFml2.isInitialized();
     }
 
-    TemporalAnd(List<TemporalLogic<I>> subFormulas) {
+    public TemporalAnd(List<TemporalLogic<I>> subFormulas) {
         this.subFormulas = subFormulas;
         this.nonTemporal = subFormulas.stream().map(TemporalLogic::isNonTemporal).reduce((a, b) -> a && b).orElse(false);
         this.iOType = subFormulas.stream().map(TemporalLogic::getIOType).reduce(TemporalLogic.IOType::merge).orElse(null);

@@ -1,6 +1,8 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.RequiredArgsConstructor;
+import net.maswag.falcaun.IOSignalPiece;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -54,15 +56,15 @@ public class SimpleSignalMapper implements SignalMapper {
     }
 
     static Function<IOSignalPiece<List<Double>>, Double> lineParse(String line) {
-        net.maswag.falcaun.SignalMapperVisitor<Function<IOSignalPiece<List<Double>>, Double>> visitor = new SignalMapperVisitorImpl();
+        SignalMapperVisitor<Function<IOSignalPiece<List<Double>>, Double>> visitor = new SignalMapperVisitorImpl();
         return parseSignalMapperImpl(line, visitor);
     }
 
-    private static Function<IOSignalPiece<List<Double>>, Double> parseSignalMapperImpl(String line, net.maswag.falcaun.SignalMapperVisitor<Function<IOSignalPiece<List<Double>>, Double>> visitor) {
+    private static Function<IOSignalPiece<List<Double>>, Double> parseSignalMapperImpl(String line, SignalMapperVisitor<Function<IOSignalPiece<List<Double>>, Double>> visitor) {
         CharStream stream = CharStreams.fromString(line);
-        net.maswag.falcaun.SignalMapperLexer lexer = new net.maswag.falcaun.SignalMapperLexer(stream);
+        SignalMapperLexer lexer = new SignalMapperLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        net.maswag.falcaun.SignalMapperParser parser = new net.maswag.falcaun.SignalMapperParser(tokens);
+        SignalMapperParser parser = new SignalMapperParser(tokens);
         ParseTree tree = parser.expr();
         return visitor.visit(tree);
     }

@@ -1,14 +1,26 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.maswag.falcaun.TemporalImply.LTLImply;
-import net.maswag.falcaun.TemporalRelease.LTLRelease;
+import net.maswag.falcaun.parser.TemporalAnd.LTLAnd;
+import net.maswag.falcaun.parser.TemporalEventually.LTLEventually;
+import net.maswag.falcaun.parser.TemporalGlobally.LTLGlobally;
+import net.maswag.falcaun.parser.TemporalImply.LTLImply;
+import net.maswag.falcaun.parser.TemporalLogic.LTLFormula;
+import net.maswag.falcaun.parser.TemporalNext.LTLNext;
+import net.maswag.falcaun.parser.TemporalNot.LTLNot;
+import net.maswag.falcaun.parser.TemporalOr.LTLOr;
+import net.maswag.falcaun.parser.TemporalRelease.LTLRelease;
+import net.maswag.falcaun.parser.TemporalSub.LTLSub;
+import net.maswag.falcaun.parser.TemporalUntil.LTLUntil;
+import net.maswag.falcaun.parser.LTLBaseVisitor;
+import net.maswag.falcaun.parser.LTLParser;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 
 /**
  * <p>LTLVisitorImpl class.</p>
@@ -18,12 +30,12 @@ import java.util.Optional;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-public class LTLVisitorImpl extends net.maswag.falcaun.LTLBaseVisitor<TemporalLogic.LTLFormula> {
+public class LTLVisitorImpl extends LTLBaseVisitor<TemporalLogic.LTLFormula> {
     private List<Map<Character, Double>> inputMapper;
     private List<Map<Character, Double>> outputMapper;
     private List<Character> largest;
 
-    private TemporalLogic.LTLFormula handleInterval(TemporalOp<String> subFml, net.maswag.falcaun.LTLParser.IntervalContext ctx) {
+    private TemporalLogic.LTLFormula handleInterval(TemporalOp<String> subFml, LTLParser.IntervalContext ctx) {
         log.trace("Bounded Globally or Eventually");
         int from = Integer.parseInt(ctx.left.getText());
         int to = Integer.parseInt(ctx.right.getText());
@@ -34,7 +46,7 @@ public class LTLVisitorImpl extends net.maswag.falcaun.LTLBaseVisitor<TemporalLo
      * {@inheritDoc}
      */
     @Override
-    public TemporalLogic.LTLFormula visitExpr(net.maswag.falcaun.LTLParser.ExprContext ctx) {
+    public TemporalLogic.LTLFormula visitExpr(LTLParser.ExprContext ctx) {
         if (ctx.INPUT() != null) {
             // atomic
             log.trace("atomic input");

@@ -1,16 +1,5 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
-import net.maswag.falcaun.TemporalAnd.STLAnd;
-import net.maswag.falcaun.TemporalEventually.STLEventually;
-import net.maswag.falcaun.TemporalGlobally.STLGlobally;
-import net.maswag.falcaun.TemporalImply.STLImply;
-import net.maswag.falcaun.TemporalLogic.STLCost;
-import net.maswag.falcaun.TemporalNext.STLNext;
-import net.maswag.falcaun.TemporalOr.STLOr;
-import net.maswag.falcaun.TemporalNot.STLNot;
-import net.maswag.falcaun.TemporalRelease.STLRelease;
-import net.maswag.falcaun.TemporalSub.STLSub;
-import net.maswag.falcaun.TemporalUntil.STLUntil;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -20,9 +9,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.maswag.falcaun.parser.STLFactory;
+import net.maswag.falcaun.parser.STLOutputAtomic;
+import net.maswag.falcaun.parser.STLVisitorImpl;
+import net.maswag.falcaun.parser.STLLexer;
+import net.maswag.falcaun.parser.STLVisitor;
+import net.maswag.falcaun.parser.TemporalAnd.STLAnd;
+import net.maswag.falcaun.parser.TemporalEventually.STLEventually;
+import net.maswag.falcaun.parser.TemporalGlobally.STLGlobally;
+import net.maswag.falcaun.parser.TemporalImply.STLImply;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+import net.maswag.falcaun.parser.TemporalNext.STLNext;
+import net.maswag.falcaun.parser.TemporalNot.STLNot;
+import net.maswag.falcaun.parser.TemporalOr.STLOr;
+import net.maswag.falcaun.parser.TemporalRelease.STLRelease;
+import net.maswag.falcaun.parser.TemporalSub.STLSub;
+import net.maswag.falcaun.parser.TemporalUntil.STLUntil;
+
 import java.util.*;
 
-import static net.maswag.falcaun.STLAbstractAtomic.Operation.*;
+import static net.maswag.falcaun.parser.STLAbstractAtomic.Operation.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class STLParserTest {
@@ -42,11 +48,11 @@ class STLParserTest {
 
         for (int i = 0; i < inputs.size(); i++) {
             CharStream stream = CharStreams.fromString(inputs.get(i));
-            net.maswag.falcaun.STLLexer lexer = new net.maswag.falcaun.STLLexer(stream);
+            STLLexer lexer = new STLLexer(stream);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            net.maswag.falcaun.STLParser parser = new net.maswag.falcaun.STLParser(tokens);
+            STLParser parser = new STLParser(tokens);
             ParseTree tree = parser.atomic();
-            net.maswag.falcaun.STLVisitor<STLCost> visitor = new STLVisitorImpl();
+            STLVisitor<STLCost> visitor = new STLVisitorImpl();
 
             assertEquals(expectedList.get(i).toString(), visitor.visit(tree).toString());
         }

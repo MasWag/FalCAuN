@@ -6,6 +6,8 @@ import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.membership.SULOracle;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.parser.SimpleSignalMapper;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

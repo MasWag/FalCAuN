@@ -1,6 +1,8 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import java.util.*;
+
+import net.maswag.falcaun.IOSignal;
 
 /**
  * <p>STLAtomic class.</p>

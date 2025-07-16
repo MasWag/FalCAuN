@@ -17,6 +17,8 @@ import net.automatalib.modelchecker.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.parser.TemporalLogic;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

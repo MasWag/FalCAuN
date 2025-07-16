@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.extern.slf4j.Slf4j;
 

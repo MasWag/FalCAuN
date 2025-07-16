@@ -1,9 +1,11 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import net.maswag.falcaun.IOSignal;
 
 /**
  * <p>STLImply class.</p>
@@ -73,8 +75,8 @@ public class TemporalImply<I> extends AbstractTemporalLogic<I> {
         return String.format("( %s ) -> ( %s )", subFml1.toString(), subFml2.toString());
     }
 
-    static class STLImply extends TemporalImply<List<Double>> implements STLCost {
-        STLImply(STLCost subFml1, STLCost subFml2) {
+    public static class STLImply extends TemporalImply<List<Double>> implements STLCost {
+        public STLImply(STLCost subFml1, STLCost subFml2) {
             super(subFml1, subFml2);
         }
     }

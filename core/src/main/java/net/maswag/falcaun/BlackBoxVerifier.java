@@ -18,6 +18,7 @@ import net.automatalib.serialization.dot.GraphDOT;
 import net.automatalib.serialization.etf.writer.Mealy2ETFWriterIO;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.parser.TemporalLogic;
 
 import java.io.IOException;
 import java.io.OutputStream;

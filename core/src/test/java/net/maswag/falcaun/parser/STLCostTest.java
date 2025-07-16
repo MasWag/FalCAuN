@@ -1,7 +1,20 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import net.maswag.falcaun.IODiscreteSignal;
+import net.maswag.falcaun.IOSignal;
+import net.maswag.falcaun.parser.RoSI;
+import net.maswag.falcaun.parser.STLFactory;
+import net.maswag.falcaun.parser.STLOutputAtomic;
+import net.maswag.falcaun.parser.TemporalOp;
+import net.maswag.falcaun.parser.TemporalEventually.STLEventually;
+import net.maswag.falcaun.parser.TemporalGlobally.STLGlobally;
+import net.maswag.falcaun.parser.TemporalImply.STLImply;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+import net.maswag.falcaun.parser.TemporalOr.STLOr;
+import net.maswag.falcaun.parser.TemporalSub.STLSub;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,12 +24,6 @@ import java.util.*;
 import static java.lang.Double.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import net.maswag.falcaun.TemporalLogic.STLCost;
-import net.maswag.falcaun.TemporalSub.STLSub;
-import net.maswag.falcaun.TemporalOr.STLOr;
-import net.maswag.falcaun.TemporalGlobally.STLGlobally;
-import net.maswag.falcaun.TemporalImply.STLImply;
-import net.maswag.falcaun.TemporalEventually.STLEventually;
 
 
 class STLCostTest {

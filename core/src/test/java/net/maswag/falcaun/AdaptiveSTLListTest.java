@@ -1,7 +1,9 @@
 package net.maswag.falcaun;
 
-import net.maswag.falcaun.TemporalLogic.STLCost;
 import org.junit.jupiter.api.Test;
+
+import net.maswag.falcaun.parser.STLFactory;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
 
 import java.util.ArrayList;
 import java.util.Arrays;

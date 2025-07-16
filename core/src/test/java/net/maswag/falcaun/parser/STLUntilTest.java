@@ -1,11 +1,14 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import com.pholser.junit.quickcheck.From;
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
-import net.maswag.falcaun.TemporalEventually.STLEventually;
-import net.maswag.falcaun.TemporalLogic.STLCost;
-import net.maswag.falcaun.TemporalUntil.STLUntil;
+
+import net.maswag.falcaun.IOSignal;
+import net.maswag.falcaun.IOSignalGenerator;
+import net.maswag.falcaun.parser.TemporalEventually.STLEventually;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+import net.maswag.falcaun.parser.TemporalUntil.STLUntil;
 import org.junit.runner.RunWith;
 
 import java.util.List;
