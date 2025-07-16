@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InputMapperReader extends AbstractMapperReader {
-    static List<Map<Character, Double>> parse(String filename) throws IOException {
+    public static List<Map<Character, Double>> parse(String filename) throws IOException {
         List<List<Double>> parsedData = rawParse(filename);
         return InputMapperReader.make(parsedData);
     }
