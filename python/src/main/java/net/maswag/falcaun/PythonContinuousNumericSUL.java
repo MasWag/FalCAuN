@@ -99,11 +99,6 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
 
         var length1 = data.size();
         var length2 = data.get(0).size();
-        if (length2 != this.inputSignal.get(0).size() + 1) { // +1 for the timestamp
-            throw new IllegalStateException("Unexpected shape: The length of the second dimension " +
-                "of the array returned by JEP (" + length2 + ") does not match expected size (" +
-                (this.inputSignal.get(0).size() + 1) + ").");
-        }
 
         var timestamps = new ArrayList<Double>();
         var result = new ArrayList<List<Double>>();
@@ -161,9 +156,16 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         ArrayList<?> ret = null;
 
         try {
-            for (var e : inputSignal) {
-                this.inputSignal.add(e);
-                ret = this.model.step(e);
+            // Use exec() if it is available in the model for batch processing.
+            // Otherwise, use step() for each input signal.
+            if (this.model.hasExec()) {
+                this.inputSignal.addAll(inputSignal);
+                ret = this.model.exec(inputSignal.asList());
+            } else {
+                for (var e : inputSignal) {
+                    this.inputSignal.add(e);
+                    ret = this.model.step(e);
+                }
             }
         } catch (JepException exc) {
             throw new ExecutionException(exc);
