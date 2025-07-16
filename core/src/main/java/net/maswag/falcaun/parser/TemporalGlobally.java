@@ -1,7 +1,9 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import java.util.List;
 import java.util.Objects;
+
+import net.maswag.falcaun.IOSignal;
 
 /**
  * <p>STLGlobal class.</p>
@@ -10,7 +12,7 @@ import java.util.Objects;
  * @param <I> Type of the input at each step
  */
 public class TemporalGlobally<I> extends TemporalOp<I> {
-    TemporalGlobally(TemporalLogic<I> subFml) {
+    public TemporalGlobally(TemporalLogic<I> subFml) {
         super(subFml);
     }
 
@@ -61,8 +63,8 @@ public class TemporalGlobally<I> extends TemporalOp<I> {
      */
     public TemporalLogic<I> getSubFml() { return this.subFml; }
 
-    static class STLGlobally extends TemporalGlobally<List<Double>> implements STLCost {
-        STLGlobally(STLCost subFml) {
+    public static class STLGlobally extends TemporalGlobally<List<Double>> implements STLCost {
+        public STLGlobally(STLCost subFml) {
             super(subFml);
         }
 

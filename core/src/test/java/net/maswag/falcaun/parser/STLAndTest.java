@@ -1,9 +1,15 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.generator.InRange;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.IODiscreteSignal;
+import net.maswag.falcaun.IOSignal;
+import net.maswag.falcaun.parser.STLAbstractAtomic;
+import net.maswag.falcaun.parser.TemporalAnd.STLAnd;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+
 import org.junit.runner.RunWith;
 
 import java.util.Collections;
@@ -11,8 +17,6 @@ import java.util.List;
 
 import static java.lang.Math.min;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import net.maswag.falcaun.TemporalLogic.STLCost;
-import net.maswag.falcaun.TemporalAnd.STLAnd;
 
 @RunWith(JUnitQuickcheck.class)
 public class STLAndTest {

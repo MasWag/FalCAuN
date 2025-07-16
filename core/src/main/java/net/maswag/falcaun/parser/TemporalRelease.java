@@ -1,6 +1,7 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.Getter;
+import net.maswag.falcaun.IOSignal;
 
 import java.util.List;
 import java.util.Objects;

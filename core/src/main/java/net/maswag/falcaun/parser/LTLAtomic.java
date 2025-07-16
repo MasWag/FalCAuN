@@ -1,6 +1,10 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import java.util.*;
+
+import net.maswag.falcaun.IOSignal;
+import net.maswag.falcaun.parser.TemporalLogic.IOType;
+import net.maswag.falcaun.parser.TemporalLogic.LTLFormula;
 
 /**
  * The atomic propositions in LTL formulas

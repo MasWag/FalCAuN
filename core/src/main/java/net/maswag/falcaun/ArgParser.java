@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin;
 import net.automatalib.modelchecker.ltsmin.LTSminUtil;
+import net.maswag.falcaun.parser.SimpleSignalMapper;
+import net.maswag.falcaun.parser.SignalMapper;
+
 import org.apache.commons.cli.*;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,15 @@
 package net.maswag.falcaun;
 
 import lombok.extern.slf4j.Slf4j;
+import net.maswag.falcaun.parser.TemporalAnd;
+import net.maswag.falcaun.parser.TemporalEventually;
+import net.maswag.falcaun.parser.TemporalGlobally;
+import net.maswag.falcaun.parser.TemporalLogic;
+import net.maswag.falcaun.parser.TemporalNext;
+import net.maswag.falcaun.parser.TemporalOp;
+import net.maswag.falcaun.parser.TemporalOr;
+import net.maswag.falcaun.parser.TemporalSub;
+import net.maswag.falcaun.parser.TemporalUntil;
 
 import java.util.*;
 import java.util.function.Function;

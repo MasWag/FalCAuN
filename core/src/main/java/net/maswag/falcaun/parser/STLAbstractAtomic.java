@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import com.google.common.collect.Sets;
 import net.automatalib.word.Word;
@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import static java.lang.Math.abs;
 
 import net.maswag.falcaun.annotation.Sorted;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+
 import org.apache.commons.math3.util.Pair;
 
 import javax.annotation.Nonnull;

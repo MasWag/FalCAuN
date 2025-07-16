@@ -1,6 +1,9 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import java.util.Objects;
+
+import net.maswag.falcaun.IOSignal;
+
 import java.util.List;
 
 
@@ -11,7 +14,7 @@ import java.util.List;
  * @param <I> Type of the input at each step
  */
 public class TemporalEventually<I> extends TemporalOp<I> {
-    TemporalEventually(TemporalLogic<I> subFml) {
+    public TemporalEventually(TemporalLogic<I> subFml) {
         super(subFml);
     }
 

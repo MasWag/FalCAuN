@@ -1,15 +1,17 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.maswag.falcaun.TemporalImply.STLImply;
-import net.maswag.falcaun.TemporalRelease.STLRelease;
+import net.maswag.falcaun.parser.STLVisitor;
+import net.maswag.falcaun.parser.STLParser;
+import net.maswag.falcaun.parser.TemporalImply.STLImply;
+import net.maswag.falcaun.parser.TemporalRelease.STLRelease;
+
+import static net.maswag.falcaun.parser.STLAbstractAtomic.Operation.*;
 
 import java.util.List;
 import java.util.Map;
-
-import static net.maswag.falcaun.STLAbstractAtomic.Operation.*;
 
 /**
  * <p>STLVisitorImpl class.</p>
@@ -19,12 +21,12 @@ import static net.maswag.falcaun.STLAbstractAtomic.Operation.*;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-public class STLVisitorImpl extends net.maswag.falcaun.STLBaseVisitor<TemporalLogic.STLCost> {
+public class STLVisitorImpl extends STLBaseVisitor<TemporalLogic.STLCost> {
     private List<Map<Character, Double>> inputMapper;
     private List<Map<Character, Double>> outputMapper;
     private List<Character> largest;
 
-    private TemporalLogic.STLCost handleInterval(TemporalOp<List<Double>> subFml, net.maswag.falcaun.STLParser.IntervalContext ctx) {
+    private TemporalLogic.STLCost handleInterval(TemporalOp<List<Double>> subFml, STLParser.IntervalContext ctx) {
         assert (ctx != null);
         log.trace("Bounded Globally or Eventually");
         int from = Integer.parseInt(ctx.left.getText());
@@ -36,7 +38,7 @@ public class STLVisitorImpl extends net.maswag.falcaun.STLBaseVisitor<TemporalLo
      * {@inheritDoc}
      */
     @Override
-    public TemporalLogic.STLCost visitExpr(net.maswag.falcaun.STLParser.ExprContext ctx) {
+    public TemporalLogic.STLCost visitExpr(STLParser.ExprContext ctx) {
         if (ctx.atomic() != null) {
             // atomic
             log.trace("atomic");
@@ -142,7 +144,7 @@ public class STLVisitorImpl extends net.maswag.falcaun.STLBaseVisitor<TemporalLo
      * {@inheritDoc}
      */
     @Override
-    public TemporalLogic.STLCost visitAtomic(net.maswag.falcaun.STLParser.AtomicContext ctx) {
+    public TemporalLogic.STLCost visitAtomic(STLParser.AtomicContext ctx) {
         int sigIndex = Integer.parseInt(ctx.signalID.getText());
 
         STLAbstractAtomic.Operation op;

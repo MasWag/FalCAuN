@@ -2,6 +2,10 @@ package net.maswag.falcaun;
 
 import org.junit.jupiter.api.*;
 
+import net.maswag.falcaun.parser.STLFactory;
+import net.maswag.falcaun.parser.SimpleSignalMapper;
+import net.maswag.falcaun.parser.TemporalLogic;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;

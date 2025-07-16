@@ -1,8 +1,15 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
-import net.maswag.falcaun.TemporalLogic.STLCost;
+import net.maswag.falcaun.IODiscreteSignal;
+import net.maswag.falcaun.IOSignal;
+import net.maswag.falcaun.parser.STLAbstractAtomic;
+import net.maswag.falcaun.parser.STLInputAtomic;
+import net.maswag.falcaun.parser.STLOutputAtomic;
+import net.maswag.falcaun.parser.TemporalOr;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.*;

@@ -1,7 +1,8 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.maswag.falcaun.IOSignal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
      * @param from   the first index, inclusive
      * @param to     the last index, inclusive.
      */
-    TemporalSub(TemporalOp<I> subFml, int from, int to) {
+    public TemporalSub(TemporalOp<I> subFml, int from, int to) {
         this.subFml = subFml;
         this.from = from;
         this.to = to;

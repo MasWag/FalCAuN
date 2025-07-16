@@ -1,9 +1,11 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import net.maswag.falcaun.IOSignal;
 
 /**
  * <p>STLTemporalNot class.</p>

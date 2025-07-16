@@ -4,13 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.maswag.falcaun.parser.STLFactory;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.*;
-import net.maswag.falcaun.TemporalLogic.STLCost;
 
 class StaticSTLListTest {
     private AdaptiveSTLUpdater<List<Double>> properties;

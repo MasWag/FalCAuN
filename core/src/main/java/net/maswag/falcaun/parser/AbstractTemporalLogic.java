@@ -1,6 +1,7 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import lombok.Getter;
+import net.maswag.falcaun.parser.TemporalLogic.IOType;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {
      * Indicates whether the formula is non-temporal.
      */
     @Getter
-    boolean nonTemporal;
+    protected boolean nonTemporal;
     
     /**
      * Indicates whether the formula has been initialized.
@@ -38,7 +39,7 @@ public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {
      * A set of atomic propositions such that the formula is satisfied if and only if one of these propositions is satisfied.
      * This field is null for temporal formulas.
      */
-    Set<String> satisfyingAtomicPropositions;
+    protected Set<String> satisfyingAtomicPropositions;
     
     /**
      * The type of input/output (I/O) that the formula is concerned with, either {@link IOType#INPUT} or {@link IOType#OUTPUT}.

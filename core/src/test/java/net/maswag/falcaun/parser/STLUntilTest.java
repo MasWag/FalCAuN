@@ -1,9 +1,14 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import net.automatalib.word.WordBuilder;
-import net.maswag.falcaun.TemporalEventually.STLEventually;
-import net.maswag.falcaun.TemporalLogic.STLCost;
-import net.maswag.falcaun.TemporalUntil.STLUntil;
+import net.maswag.falcaun.IODiscreteSignal;
+import net.maswag.falcaun.IOSignal;
+import net.maswag.falcaun.parser.RoSI;
+import net.maswag.falcaun.parser.STLOutputAtomic;
+import net.maswag.falcaun.parser.TemporalEventually.STLEventually;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+import net.maswag.falcaun.parser.TemporalUntil.STLUntil;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

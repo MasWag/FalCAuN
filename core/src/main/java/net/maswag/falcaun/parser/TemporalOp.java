@@ -1,8 +1,10 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import java.util.Set;
 
-abstract class TemporalOp<I> extends AbstractTemporalLogic<I> {
+import net.maswag.falcaun.IOSignal;
+
+public abstract class TemporalOp<I> extends AbstractTemporalLogic<I> {
     TemporalLogic<I> subFml;
 
     TemporalOp(TemporalLogic<I> subFml) {

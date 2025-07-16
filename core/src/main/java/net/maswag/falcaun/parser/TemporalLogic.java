@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+
+import net.maswag.falcaun.IOSignal;
 
 /**
  * <p>Interface of a TemporalLogic formula.</p>

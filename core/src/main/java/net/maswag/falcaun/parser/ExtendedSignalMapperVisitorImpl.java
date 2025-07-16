@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import com.google.common.collect.Streams;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +12,9 @@ import java.util.stream.Collectors;
 
 import static java.lang.Math.abs;
 
-import net.maswag.falcaun.ExtendedSignalMapperBaseVisitor;
-import net.maswag.falcaun.ExtendedSignalMapperParser.*;
+import net.maswag.falcaun.ExtendedIOSignalPiece;
+import net.maswag.falcaun.parser.ExtendedSignalMapperBaseVisitor;
+import net.maswag.falcaun.parser.ExtendedSignalMapperParser.*;
 
 /**
  * <p>ExtendedSignalMapperVisitorImpl class.</p>
@@ -110,7 +111,7 @@ public class ExtendedSignalMapperVisitorImpl extends ExtendedSignalMapperBaseVis
      * {@inheritDoc}
      */
     @Override
-    public Function<ExtendedIOSignalPiece<List<Double>>, List<Double>> visitAtomic(net.maswag.falcaun.ExtendedSignalMapperParser.AtomicContext ctx) {
+    public Function<ExtendedIOSignalPiece<List<Double>>, List<Double>> visitAtomic(ExtendedSignalMapperParser.AtomicContext ctx) {
         if (ctx.signalID != null) {
             int sigIndex = Integer.parseInt(ctx.signalID.getText());
             if (Objects.nonNull(ctx.INPUT())) {

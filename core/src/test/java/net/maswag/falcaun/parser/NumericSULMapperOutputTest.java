@@ -1,7 +1,12 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.parser;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.NumericSULMapper;
+import net.maswag.falcaun.parser.STLOutputAtomic;
+import net.maswag.falcaun.parser.SimpleSignalMapper;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static net.maswag.falcaun.STLOutputAtomic.Operation;
+import static net.maswag.falcaun.parser.STLOutputAtomic.Operation;
 
 class NumericSULMapperOutputTest {
     private List<Map<Character, Double>> inputMapper;
