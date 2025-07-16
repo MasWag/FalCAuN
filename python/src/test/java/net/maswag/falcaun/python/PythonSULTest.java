@@ -1,6 +1,8 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.python;
 
 import org.junit.jupiter.api.*;
+
+import net.maswag.falcaun.python.PythonSUL;
 
 import static org.junit.jupiter.api.Assertions.*;
 

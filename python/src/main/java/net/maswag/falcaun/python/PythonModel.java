@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.python;
 
 import jep.JepConfig;
 import jep.JepException;
@@ -6,6 +6,7 @@ import jep.SharedInterpreter;
 import jep.python.PyCallable;
 import jep.python.PyObject;
 import lombok.Getter;
+import net.maswag.falcaun.TimeMeasure;
 
 import java.util.Optional;
 import java.util.ArrayList;

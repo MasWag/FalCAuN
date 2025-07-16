@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.python;
 
 import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
@@ -6,6 +6,12 @@ import jep.JepException;
 import lombok.Getter;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import net.maswag.falcaun.ContinuousNumericSUL;
+import net.maswag.falcaun.ExtendedIOSignalPiece;
+import net.maswag.falcaun.IOContinuousSignal;
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.Signal;
+import net.maswag.falcaun.ValueWithTime;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

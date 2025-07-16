@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.python;
 
 import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
