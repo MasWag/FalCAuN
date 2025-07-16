@@ -1,10 +1,14 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.simulink;
 
 import de.learnlib.sul.SUL;
 import lombok.Getter;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import net.maswag.falcaun.IOSignal;
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.NumericSULMapper;
+import net.maswag.falcaun.Signal;
 import net.maswag.falcaun.parser.TemporalLogic;
 
 import org.slf4j.LoggerFactory;

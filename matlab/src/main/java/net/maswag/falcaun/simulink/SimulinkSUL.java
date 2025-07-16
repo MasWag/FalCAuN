@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.simulink;
 
 import com.mathworks.engine.EngineException;
 import de.learnlib.exception.SULException;
@@ -6,6 +6,11 @@ import de.learnlib.sul.SUL;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import net.maswag.falcaun.ContinuousNumericSUL;
+import net.maswag.falcaun.ExtendedIOSignalPiece;
+import net.maswag.falcaun.IOContinuousSignal;
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.ValueWithTime;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
