@@ -53,14 +53,14 @@ val stlList = listOf(
     "[] (signal(0) < 60)",
     "[] (signal(0) < 40)",
     "[] (signal(0) < 20)"
-).stream().map { stlString ->
+).map { stlString ->
     stlFactory.parse(
         stlString,
         inputMapper,
         outputMapperReader.outputMapper,
         outputMapperReader.largest
     )
-}.toList()
+}
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
