@@ -69,7 +69,7 @@ public class ArgParser {
     @Getter
     Double simulinkSimulationStep = 0.0025;
 
-    ArgParser(String[] args) throws MissingOptionException, IOException {
+    public ArgParser(String[] args) throws MissingOptionException, IOException {
         options.addOption("h", "help", false, "Print a help message");
         options.addOption("v", "verbose", false, "Outputs extra information, mainly for debugging");
         options.addOption("V", "version", false, "Print the version");
@@ -281,7 +281,7 @@ public class ArgParser {
         Tournament
     }
 
-    enum EquivType {
+    public enum EquivType {
         HC,
         RANDOM,
         WP,
