@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.simulink;
 
 import com.mathworks.engine.EngineException;
 import de.learnlib.mapper.MappedSUL;
@@ -6,7 +6,11 @@ import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.membership.SULOracle;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.NumericMembershipOracle;
+import net.maswag.falcaun.NumericSULMapper;
 import net.maswag.falcaun.parser.SimpleSignalMapper;
+import net.maswag.falcaun.simulink.SimulinkSUL;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

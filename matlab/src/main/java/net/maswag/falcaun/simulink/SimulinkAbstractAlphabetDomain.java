@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.simulink;
 
 /**
  * <p>SimulinkAbstractAlphabetDomain class.</p>

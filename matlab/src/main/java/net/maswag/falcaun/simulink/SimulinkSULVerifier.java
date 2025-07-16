@@ -1,6 +1,10 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.simulink;
 
 import java.util.List;
+
+import net.maswag.falcaun.AdaptiveSTLUpdater;
+import net.maswag.falcaun.NumericSULMapper;
+import net.maswag.falcaun.NumericSULVerifier;
 
 public class SimulinkSULVerifier extends NumericSULVerifier {
     /**

@@ -1,6 +1,9 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.simulink;
 
 import net.automatalib.word.Word;
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.simulink.SimulinkSUL;
+
 import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 

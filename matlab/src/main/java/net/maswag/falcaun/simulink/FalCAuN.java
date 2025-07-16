@@ -1,4 +1,4 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.simulink;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -6,6 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import net.automatalib.modelchecker.ltsmin.LTSminVersion;
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.AdaptiveSTLList;
+import net.maswag.falcaun.AdaptiveSTLUpdater;
+import net.maswag.falcaun.ArgParser;
+import net.maswag.falcaun.EQSearchProblem;
+import net.maswag.falcaun.EQSteadyStateGeneticAlgorithm;
+import net.maswag.falcaun.GAEQOracle;
+import net.maswag.falcaun.InputMapperReader;
+import net.maswag.falcaun.NumericSULMapper;
+import net.maswag.falcaun.OutputMapperReader;
+import net.maswag.falcaun.Signal;
+import net.maswag.falcaun.StaticSTLList;
+import net.maswag.falcaun.TimeMeasure;
+import net.maswag.falcaun.ArgParser.EquivType;
 import net.maswag.falcaun.parser.STLFactory;
 import net.maswag.falcaun.parser.TemporalLogic;
 

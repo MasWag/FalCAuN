@@ -1,7 +1,10 @@
-package net.maswag.falcaun;
+package net.maswag.falcaun.simulink;
 
 import com.mathworks.engine.EngineException;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.ValueWithTime;
+import net.maswag.falcaun.simulink.SimulinkModel;
+
 import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
