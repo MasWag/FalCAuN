@@ -1,6 +1,7 @@
 import sys
 sys.path.append(".")
 
+import os
 from abstract_sul import AbstractSUL
 from typing import List, Callable, Tuple
 #from java.util import ArrayList
@@ -86,12 +87,12 @@ class SimulinkModel:
         self.reset()
 
     def step(self, inputSignal : List[float]) -> Tuple[List[float], List[List[float]]]:
-        assert (self.isInitial or not inputSignal == [])
+        assert self.isInitial or not inputSignal
         self.inputSignal.add(inputSignal)
         return self.exec_aux()
 
     def exec(self, inputSignals: List[List[float]]) -> Tuple[List[float], List[List[float]]]:
-        assert (self.isInitial or not inputSignals == [])
+        assert self.isInitial or not inputSignals
 
         for e in inputSignals:
             self.inputSignal.add(e)
@@ -162,7 +163,7 @@ class SimulinkModel:
 
         # Enable fast restart
         if self.useFastRestart:
-            # on を off へ書き換え
+            # Switch FastRestart on
             eng.set_param(mdl,'FastRestart','on', nargout=0)
         else:
             eng.set_param(mdl,'FastRestart','off', nargout=0)
@@ -277,7 +278,7 @@ class SUL(AbstractSUL):
         versionString = eng.version('-release')
         oldpath = eng.path()
         userpath = eng.userpath()
-        arg0 = userpath + "/Examples/" + versionString + "/simulink_automotive/ModelingAnAutomaticTransmissionControllerExample/"
+        arg0 = os.path.join(userpath, "Examples", versionString, "simulink_automotive", "ModelingAnAutomaticTransmissionControllerExample")
         eng.path(arg0, oldpath)
 
         eng.load_system(SUL.MDL, nargout=0)
