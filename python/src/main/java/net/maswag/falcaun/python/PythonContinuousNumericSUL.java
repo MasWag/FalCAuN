@@ -23,7 +23,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+/**
+ * A {@link net.maswag.falcaun.ContinuousNumericSUL} for {@link PythonModel}.
+ *
+ * @see net.maswag.falcaun.python.PythonModel
+ * @see net.maswag.falcaun.ContinuousNumericSUL
+ */
 public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeable {
     /**
      * The signal step of the input signal.
@@ -31,19 +36,27 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     protected final Double signalStep;
 
     /**
-     * Use rawtypes because classobject does not support generic type
+     * A Python model that wraps a model implemented in Python.
+     * It uses rawtype {@link ArrayList} because classobject does not support generic type
      */
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
+
+    /**
+     * input signal given at each step.
+     */
     protected Signal inputSignal = null;
 
+    /**
+     * Counts the number of times {@link pre} method is called.
+     */
     @Getter
     private int counter = 0;
 
     /**
      * @param initScript The Python script to initialize the model. It defines a
-     *                   class SUL with methods pre(), post(), step(I inputSignal)
-     *                   -> O, and close().
+     *                   class name {@code SUL} with methods {@code pre()}, {@code post()},
+     *                   {@code step(I inputSignal) -> O}, and {@code close()}.
      * @throws JepException If there is an error initializing the Python interpreter
      *                      or running the script.
      */
@@ -96,6 +109,17 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         this.model.post();
     }
 
+    /**
+     * Try to convert 1D raw {@link ArrayList} returned by Jep to 2D {@link ArrayList}
+     * and construct a {@link ValueWithTime} object.
+     *
+     * @param ary The raw list returned by Jep.
+     *            It is a 2D list where the first column is the timestamp and the
+     *            rest columns are the output values.
+     * @return A {@link ValueWithTime} object that contains the timestamps and the output
+     *         values.
+     * @throws IllegalStateException if the shape of the array is unexpected.
+     */
     private ValueWithTime<List<Double>> constructValueWithTime(@SuppressWarnings("rawtypes") ArrayList<?> ary) {
         // Convert the raw list to a typed list with runtime type checking
         List<List<Double>> data = ary.stream().map(e1 -> {
@@ -122,8 +146,8 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
 
     /**
      * Make one step on the SUL in python.
-     * step function in python must return a 2D numpy array
-     * which first column is the timestamp and the rest columns are the output values.
+     * step function in python must return a 2D array
+     * which <b>first column is the timestamp and the rest columns are the output values</b>.
      *
      * @param inputSignal The input signal to the SUL
      * @return output of SUL

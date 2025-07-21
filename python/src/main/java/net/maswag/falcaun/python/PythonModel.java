@@ -9,18 +9,20 @@ import lombok.Getter;
 import net.maswag.falcaun.TimeMeasure;
 
 /**
- * A PythonModel class wraps a model implemented by python.
- * The model is expected to have methods pre(), post(), step(I inputSignal) -> O, and close().
+ * A {@link PythonModel} class that wraps a model implemented by python.
+ * The model in python is expected to have methods {@code pre()}, {@code post()},
+ * {@code step(I inputSignal) -> O}, and {@code close()} in a class named {@code SUL}.
  * This class uses Jep library to interact with Python.
  */
 public class PythonModel<I, O> {
     /**
-     * A thread-local variable to check if the interpreter has been initialized.
+     * A thread-local variable to check if {@code interpreter} has been initialized.
      */
     private ThreadLocal<Boolean> initialized = ThreadLocal.withInitial(() -> false);
 
     /**
-     * `interpreter` use ThreadLocal because SharedInterpreter cannot be used by the other thread.
+     * A {@link Jep.SharedInterpreter} variable to hold the Python interpreter instance.
+     * {@code interpreter} use ThreadLocal because {@link Jep.SharedInterpreter} cannot be used by the other thread.
      */
     private ThreadLocal<SharedInterpreter> interpreter = ThreadLocal.withInitial(() -> {
         try {
@@ -29,11 +31,23 @@ public class PythonModel<I, O> {
             throw new RuntimeException(e);
         }
     });
+
+    /**
+     * The class object produced by the step method.
+     * It is used to convert the output object returned by Python to the expected type {@code O}.
+     */
     private final Class<O> outputClass;
+
+    /**
+     * The filename of Python script that defines the model.
+     */
     private final String initScript;
 
     private PyCallable pyPre, pyPost, pyStep, pyClose;
 
+    /**
+     * A time measure to track the simulation time of the step method.
+     */
     @Getter
     private final TimeMeasure simulationTime = new TimeMeasure();
 
@@ -50,7 +64,8 @@ public class PythonModel<I, O> {
 
     /**
      * Constructs a Python interpreter with the given initialization script as a Python model.
-     * The script should define a class SUL with methods pre(), post(), step(I inputSignal) -> O, and close().
+     * The script should define a class named {@code SUL} with methods {@code pre()}, {@code post()},
+     * {@code step(I inputSignal) -> O}, and {@code close()}.
      * 
      * @param initScript The Python script to initialize the model.
      * @param outputClass The class object of the output signal produced by the step method.
@@ -64,11 +79,12 @@ public class PythonModel<I, O> {
 
     /**
      * It simply runs the initialization script and sets up the Python callable methods.
-     * Calling them is equivalent to executing `sul = SUL()` and `sul.method()` on the Python side.
-     * 
-     * Note that the code under `if __name__ == "__main__":` is executed
+     * Calling a callable method like {@literal pyPre.call()} is equivalent to executing
+     * {@literal sul = SUL()} and {@literal sul.pre()} on the Python side.
+     *
+     * Note that the code under {@literal if __name__ == "__main__":} branch is executed
      */
-    public void initialize() {
+    private void initialize() {
         if (!this.initialized.get()) {
             var interp = this.interpreter.get();
             interp.runScript(initScript);
@@ -83,16 +99,25 @@ public class PythonModel<I, O> {
         this.initialized.set(true);
     }
 
+    /**
+     * Executes the pre-processing method of the Python model.
+     * It is equivalent to calling {@literal sul.pre()} in Python.
+     */
     public void pre() {
         initialize();
         this.pyPre.call();
     }
 
+    /**
+     * Executes the post-processing method of the Python model.
+     * It is equivalent to calling {@literal sul.post()} in Python.
+     */
     public void post() {
         this.pyPost.call();
     }
 
     /**
+     * Executes the step method defined in the Python model.
      * For the given outputClass, it tries to convert the output object by python to O type by Jep.
      */
     public O step(I inputSignal) throws JepException {
@@ -102,6 +127,10 @@ public class PythonModel<I, O> {
         return ret;
     }
 
+    /**
+     * Executes the close method of the Python model.
+     * It is equivalent to calling {@literal sul.close()} in Python.
+     */
     public void close() {
         this.pyClose.call();
         this.interpreter.get().close();

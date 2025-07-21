@@ -20,20 +20,30 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A {@link net.maswag.falcaun.NumericSUL} for {@link PythonModel}.
+ *
+ * @see net.maswag.falcaun.python.PythonModel
+ * @see net.maswag.falcaun.NumericSUL
+ */
 public class PythonNumericSUL implements NumericSUL, Closeable {
     /**
-     * Use rawtypes because classobject does not support generic type
+     * A Python model that wraps a model implemented in Python.
+     * It uses rawtype {@link ArrayList} because classobject does not support generic type
      */
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
 
+    /**
+     * Counts the number of times {@link pre} method is called.
+     */
     @Getter
     private int counter = 0;
 
     /**
      * @param initScript The Python script to initialize the model. It defines a
-     *                   class SUL with methods pre(), post(), step(I inputSignal)
-     *                   -> O, and close().
+     *                   class name {@code SUL} with methods {@code pre()}, {@code post()},
+     *                   {@code step(I inputSignal) -> O}, and {@code close()}.
      * @throws JepException If there is an error initializing the Python interpreter
      *                      or running the script.
      */
@@ -99,10 +109,10 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     }
 
     /**
-     * Run all steps of the python model by feeding inputSignal
+     * Run all steps of the python model by feeding all inputs.
      *
-     * @param inputSignal The input signal
-     * @return The output signal. The size is same as the input.
+     * @param inputSignal A sequence of input signals
+     * @return The output signal. The size of output is same as the one of the input.
      */
     @Override
     public IOSignal<List<Double>> execute(@Nonnull Word<List<Double>> inputSignal)

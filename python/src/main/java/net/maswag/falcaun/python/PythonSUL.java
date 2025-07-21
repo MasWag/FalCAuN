@@ -10,7 +10,9 @@ import javax.annotation.Nullable;
 import java.io.Closeable;
 
 /**
- * The System Under Learning implemented by a Python model.
+ * The System Under Learning for {@link PythonModel}.
+ *
+ * @see net.maswag.falcaun.python.PythonModel
  */
 public class PythonSUL<I, O> implements SUL<I, O>, Closeable {
     protected final PythonModel<I, O> model;
