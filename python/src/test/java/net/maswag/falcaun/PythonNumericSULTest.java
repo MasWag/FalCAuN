@@ -15,6 +15,7 @@ class PythonNumericSULTest {
     // The first output is truncated to 100.0 if it exceeds 100.0.
     // The second output is the sum modulo 100.0.
     static final String numericScript = "./src/test/resources/test_numeric_sul.py";
+    static final String numericScriptWithExec = "./src/test/resources/test_numeric_sul_with_exec.py";
 
     @Test
     void numericStepTest() throws Exception {
@@ -42,6 +43,33 @@ class PythonNumericSULTest {
     @Test
     void numericExecuteTest() throws Exception {
         try (var sul = new PythonNumericSUL(numericScript)) {
+            sul.pre();
+
+            var inputSeq = java.util.List.of(
+                java.util.Arrays.asList(10.0, 0.5),
+                java.util.Arrays.asList(20.0, 0.5),
+                java.util.Arrays.asList(50.0, 0.5),
+                java.util.Arrays.asList(80.0, 0.5),
+                java.util.Arrays.asList(-20.0, 0.5)
+            );
+            var word = net.automatalib.word.Word.fromList(inputSeq);
+            var ioSignal = sul.execute(word);
+            var outputs = ioSignal.getOutputSignal();
+            assertEquals(5, outputs.size());
+            assertIterableEquals(java.util.Arrays.asList(10.5, 10.5), outputs.getSymbol(0));
+            assertIterableEquals(java.util.Arrays.asList(31.0, 31.0), outputs.getSymbol(1));
+            assertIterableEquals(java.util.Arrays.asList(81.5, 81.5), outputs.getSymbol(2));
+            assertIterableEquals(java.util.Arrays.asList(100.0, 62.0), outputs.getSymbol(3));
+            assertIterableEquals(java.util.Arrays.asList(80.5, 42.5), outputs.getSymbol(4));
+
+            sul.post();
+        }
+    }
+
+    @Test
+    void numericExecuteTest2() throws Exception {
+        // Same results as numericExecuteTest, but using exec function in python.
+        try (var sul = new PythonNumericSUL(numericScriptWithExec)) {
             sul.pre();
 
             var inputSeq = java.util.List.of(
