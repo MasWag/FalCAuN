@@ -1,5 +1,11 @@
 package net.maswag.falcaun;
 
+/**
+ * Time measurement utility for tracking elapsed time in nanoseconds.
+ *
+ * This class provides methods to start, stop, and reset time measurements,
+ * as well as retrieve the accumulated time in seconds or nanoseconds.
+ */
 public class TimeMeasure {
     private long accumulatedTime = 0;
     private boolean measuring = false;
