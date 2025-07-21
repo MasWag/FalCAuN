@@ -8,12 +8,22 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Signal of Simulink
+ * Signal is a sequence of values, each associated with an increasing timestamp.
  */
 public class Signal {
+    /**
+     * The time step of signals.
+     * When calling {@link add(List)} or {@link addAll(Collection)},
+     * {@code timestamps} are added as {@code duration() + timeStep}.
+     */
     protected double timeStep;
+
     @Getter
     protected List<List<Double>> signalValues = new ArrayList<>();
+
+    /**
+     * The timestamps corresponds to the each signal {@code signalValues}.
+     */
     @Getter
     protected List<Double> timestamps = new ArrayList<>();
 
@@ -28,9 +38,11 @@ public class Signal {
 
     /**
      * Adds a new value to the signal.
+     * The first value is added at time 0.0,
+     * and the other values are added at the last timestamp + {@code timeStep}.
      *
      * @param inputValue the value to add
-     * @return true if the value was added successfully
+     * @return {@code true} if the value was added successfully
      */
     public boolean add(List<Double> inputValue) {
         if (this.timestamps.isEmpty()) {
@@ -56,7 +68,7 @@ public class Signal {
     }
 
     /**
-     * Adds all values from the specified word to the signal.
+     * Adds all values from the specified {@link Word} to the signal.
      *
      * @param inputValues the word of values to add
      */
@@ -68,7 +80,9 @@ public class Signal {
     }
 
     /**
-     * Returns the duration of the signal.
+     * Returns the duration of the signal, the difference between the last and first timestamps.
+     * In this class, the duration is the same as the last timestamp.
+     * If the signal is empty, returns 0.0.
      *
      * @return the duration of the signal
      */
@@ -156,6 +170,8 @@ public class Signal {
 
     /**
      * Returns the list containing both the timestamps and the signal values.
+     *
+     * @return a list of lists. The each inner list contains the timestamp followed by the signal values
      */
     public List<List<Double>> asList() {
         List<List<Double>> result = new ArrayList<>();
@@ -170,7 +186,7 @@ public class Signal {
 
     /**
      * Returns a new Signal whose values are linearly interpolated
-     * at the given timeStep, writing directly into the result.
+     * at the given {@code timeStep}, writing directly into the result.
      *
      * @param newTimeStep the time step for the interpolated signal
      * @return a Signal containing the linearly interpolated data

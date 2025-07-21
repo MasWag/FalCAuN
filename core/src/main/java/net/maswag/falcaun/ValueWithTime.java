@@ -15,9 +15,9 @@ import java.util.stream.Stream;
 import static java.lang.Math.ceil;
 
 /**
- * A pair of time and values.
+ * A sequence of values each associated with an increasing timestamp.
  *
- * @param <T> The type of the values
+ * @param <T> the type of values
  */
 @Slf4j
 @Getter
@@ -25,12 +25,24 @@ public class ValueWithTime<T> {
     protected final List<Double> timestamps;
     protected final List<T> values;
 
+    /**
+     * Initialization with empty lists
+     */
     public ValueWithTime() {
-        // Initialization with empty lists
         this.timestamps = Collections.emptyList();
         this.values = Collections.emptyList();
     }
 
+    /**
+     * Initialization with given timestamps and values.
+     *
+     * i-th timestamp corresponds to i-th value.
+     * So the sizes of timestamps and values must be equal.
+     *
+     * @param timestamps The list of timestamps
+     * @param values The list of values
+     * @throws IllegalArgumentException If the sizes of timestamps and values are not equal or if any value is null
+     */
     public ValueWithTime(List<Double> timestamps, List<T> values) {
         if (timestamps.size() != values.size()) {
             throw new IllegalArgumentException("The size of timestamp and values must be the same");
@@ -46,6 +58,9 @@ public class ValueWithTime<T> {
 
     /**
      * Get the duration of the signal.
+     * That is the difference between the last and first timestamps.
+     *
+     * @return The duration of the signal, or 0 if the signal is empty
      */
     public double duration() {
         if (timestamps.isEmpty()) {
@@ -71,6 +86,8 @@ public class ValueWithTime<T> {
 
     /**
      * Get the value at the given time.
+     *
+     * @return the value at the closest time
      */
     @Nullable
     public T at(double time) {
@@ -136,7 +153,11 @@ public class ValueWithTime<T> {
 
     /**
      * Stream the List of values between each signal step.
-     * <p>The i-th element is the list of values between (i-1) * signalStep and i * signalStep </p>
+     * Since the values between each signal step can be multiple in general,
+     * each element of the stream is a list.
+     *
+     * <p>The i-th element is the list of values whose timestamp is
+     * between {@literal ((i-1) * signalStep, i * signalStep]}. </p>
      *
      * @param signalStep The time step between each signal
      */
