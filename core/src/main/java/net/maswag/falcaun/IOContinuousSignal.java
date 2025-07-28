@@ -48,6 +48,16 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
         this.signalStep = signalStep;
     }
 
+    /**
+     * Constructs a stream of signals {@link ExtendedIOSignalPiece}
+     * that holds an input signal, an output signal, and continuous output signals
+     * from the previous input exclusive to this input inclusive.
+     * 
+     * @return                          a stream of {@link ExtendedIOSignalPiece}
+     * @throws IllegalArgumentException if the length of output signal {@code continuousOutputSignal} is shorter than
+     *                                  the length of {@code inputSignal}
+     * @throws RuntimeException         if {@code continuousOutputSignal} contains null
+     */
     @Override
     public Stream<IOSignalPiece<I>> stream() {
         if (inputSignal.size() > continuousOutputSignal.stream(this.signalStep).toList().size()) {

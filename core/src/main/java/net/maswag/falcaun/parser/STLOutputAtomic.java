@@ -12,6 +12,33 @@ import net.maswag.falcaun.OutputMapper;
 
 /**
  * <p>STLAtomic class.</p>
+ * This class represents an atomic formula in STL for output signals.
+ * 
+ * This class has the functions to construct the atomic propositions,
+ * a set of alphabets representing the output signal,
+ * from the atomic formula and its output mapper.
+ * 
+ * For example, let an atomic formula be {@literal output(0) > 1.0},
+ * the 0-th output mapper be {@literal {a: 1.0, b: 2.0, c: 3.0}},
+ * the 0-th largest be {@literal 'd'},
+ * the set of alphabets of 1-th output signal be {@literal {'x', 'y'}},
+ * and the 1-th largest be {@literal 'z'},
+ * then the atomic propositions are {@literal {"bx", "by", "bz", "cx", "cy", "cz", "dx", "dy", "dz"}}.
+ *
+ * <p>
+ * When the 0-th output mapper is {@literal {a: 1.0, b: 2.0, c: 3.0}} and largest is {@literal {'d'}},
+ * The comparator in ranges of {@literal (-inf, 1.0], (1.0, 2.0], (2.0, 3.0]} is mapped to {@literal 'a', 'b', 'c'} for each and
+ * this in range of (3.0, +inf) is mapped to {@literal 'd'}.
+ * 
+ * <ul>
+ * <li> Given {@literal output(0) > 2.0}, the satisfying 0-th alphabets are {@literal {'c', 'd'}}.
+ * <li> Given {@literal output(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
+ *  Note that {@literal <} ({@Operation.lt}) represents a less-than-or-equal-to operator.
+ * <li> Given {@literal output(0) == 4.0}, {@code getAllAPs()} raises an {@link RuntimeException}.
+ * </p>
+ * </ul>
+ *
+ * @see STLAtomicTest.toAbstractStringOutputPositive
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
@@ -23,8 +50,9 @@ public class STLOutputAtomic extends STLAbstractAtomic {
 
     /**
      * <p>Constructor for STLAtomic.</p>
+     * Constructs an atomic proposition {@literal output(sigIndex) op comparator}.
      *
-     * @param sigIndex   a int.
+     * @param sigIndex   an index of output signals.
      * @param op         a {@link Operation} object.
      * @param comparator a double.
      */
@@ -41,6 +69,9 @@ public class STLOutputAtomic extends STLAbstractAtomic {
         return super.getAllAPs(abstractOutputs.size());
     }
 
+    /**
+     * Constructs {@code #satisfyingAtomicPropositions} if not initialized.
+     */
     @Override
     public void constructSatisfyingAtomicPropositions() {
         super.constructSatisfyingAtomicPropositions();
@@ -133,12 +164,24 @@ public class STLOutputAtomic extends STLAbstractAtomic {
         this.largest = largest;
         setOutputMaps();
     }
-
+    
+    /**
+     * Gives the output mapper for the atomic formula.
+     * It is required to construct the atomic propositions.
+     * 
+     * @param outputMapper
+     */
     void setOutputMapper(List<Map<Character, Double>> outputMapper) {
         this.outputMapper = outputMapper;
         setOutputMaps();
     }
 
+    /**
+     * Gives the largest alphabets for the atomic formula.
+     * It is required to construct the atomic propositions.
+     * 
+     * @param largest
+     */
     void setLargest(List<Character> largest) {
         this.largest = largest;
         setOutputMaps();
