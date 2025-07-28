@@ -29,10 +29,13 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
     /**
      * <p>Constructor for SimulinkSULMapper.</p>
      *
-     * @param inputMapper    a {@link java.util.List} object.
-     * @param largestOutputs a {@link java.util.List} object.
-     * @param outputMapper   a {@link java.util.List} object.
-     * @param sigMap         a {@link java.util.List} object.
+     * @param inputMapper    A {@link java.util.List} of {@link java.util.Map}s
+     *                       from a concrete value to the corresponding abstract alphabet.
+     * @param largestOutputs A {@link java.util.List} of abstract ablphabets representing
+     *                       a larger values for each index of outputs.
+     * @param outputMapper   A {@link java.util.List} of {@link java.util.Map}s
+     *                       from an abstract alphabet to the corresponding concrete value.
+     * @param sigMap         A {@link SignalMapper} object that constructs additinal values from concrete output values.
      */
     public NumericSULMapper(List<Map<Character, Double>> inputMapper,
                             List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,
@@ -84,6 +87,12 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
         return (s == null) ? null : inputMapper.get(s);
     }
 
+    /**
+     * Maps an abstract input words to its corresponding concrete values.
+     *
+     * @param abstractInput the abstract input word to be mapped
+     * @return a {@link Word} of concrete values corresponding to the abstract input word
+     */
     public Word<List<Double>> mapInput(@NonNull Word<String> abstractInput) {
         return Word.fromList(abstractInput.stream().map(this::mapInput).collect(Collectors.toList()));
     }
@@ -122,6 +131,12 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
         return result.toString();
     }
 
+    /**
+     * Applies {@link SignalMapper} passed to the constructor {@code sigMap}
+     * to {@code concreteIO}
+     * 
+     * @param concreteIO
+     */
     public List<Double> mapConcrete(IOSignalPiece<List<Double>> concreteIO) {
         List<Double> concreteOutput = concreteIO.getOutputSignal();
         List<Double> result = new ArrayList<>(concreteOutput);

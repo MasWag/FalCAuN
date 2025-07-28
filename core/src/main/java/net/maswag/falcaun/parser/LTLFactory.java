@@ -11,6 +11,13 @@ import net.maswag.falcaun.parser.LTLVisitor;
 import net.maswag.falcaun.parser.LTLLexer;
 import net.maswag.falcaun.parser.LTLParser;
 
+/**
+ * This class provides a method to parse an LTL (Linear Temporal Logic) formula.
+ * The format is compatible with LTSmin. Its parser is generated using ANTLR.
+ * 
+ * @see TemporalLogic
+ *
+ */
 public class LTLFactory {
     /**
      * <p>parse an LTL formula</p>

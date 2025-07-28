@@ -42,15 +42,32 @@ public class SimpleSignalMapper implements SignalMapper {
         return this.sigMap.size();
     }
 
+    /**
+     * Get {@link SignalMapper} by parsing the given file
+     * 
+     * @param filename
+     * @return
+     * @throws IOException
+     */
     public static SignalMapper parse(String filename) throws IOException {
         return SimpleSignalMapper.parse(new BufferedReader(
                 new InputStreamReader(new FileInputStream(filename))));
     }
 
+    /**
+     * 
+     * @param reader
+     * @return
+     */
     public static SignalMapper parse(BufferedReader reader) {
         return SimpleSignalMapper.parse(reader.lines().collect(Collectors.toList()));
     }
 
+    /**
+     * 
+     * @param mapperDefinitions
+     * @return
+     */
     public static SignalMapper parse(List<String> mapperDefinitions) {
         List<Function<IOSignalPiece<List<Double>>, Double>> rawList =
                 mapperDefinitions.stream().map(SimpleSignalMapper::lineParse).collect(Collectors.toList());

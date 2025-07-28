@@ -6,9 +6,17 @@ import java.util.List;
  * Interface to construct pseudo signals from concrete signals
  */
 public interface SignalMapper {
-    //@ requires 0 <= index < size()
+    /**
+     * Given {@literal concreteSignal}, construct {@literal index}-th signal
+     * 
+     * @param index is required to be 0 <= index < size()
+     * @param concreteSignal
+     * @return constructed concrete output
+     */
     double apply(int index, IOSignalPiece<List<Double>> concreteSignal);
 
-    //@ ensures \result >= 0
+    /**
+     * @return is ensured to be >= 0
+     */
     int size();
 }
