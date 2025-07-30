@@ -45,8 +45,8 @@ public class SimpleSignalMapper implements SignalMapper {
     /**
      * Get {@link SignalMapper} by parsing the given file
      * 
-     * @param filename
-     * @return
+     * @param filename The filename to parse
+     * @return The {@link SignalMapper} object constructed from the file
      * @throws IOException
      */
     public static SignalMapper parse(String filename) throws IOException {
@@ -55,18 +55,18 @@ public class SimpleSignalMapper implements SignalMapper {
     }
 
     /**
+     * Get {@link SignalMapper} by parsing from a {@link BufferedReader}
      * 
      * @param reader
-     * @return
      */
     public static SignalMapper parse(BufferedReader reader) {
         return SimpleSignalMapper.parse(reader.lines().collect(Collectors.toList()));
     }
 
     /**
+     * Get {@link SignalMapper} by parsing a list of strings.
      * 
-     * @param mapperDefinitions
-     * @return
+     * @param mapperDefinitions The list of strings
      */
     public static SignalMapper parse(List<String> mapperDefinitions) {
         List<Function<IOSignalPiece<List<Double>>, Double>> rawList =

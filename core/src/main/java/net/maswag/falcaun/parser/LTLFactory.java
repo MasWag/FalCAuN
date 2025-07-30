@@ -23,7 +23,7 @@ public class LTLFactory {
      * <p>parse an LTL formula</p>
      *
      * @param formula a {@link String} object.
-     * @return a {@link TemporalLogic.STLCost} object.
+     * @return a {@link TemporalLogic.LTLFormula} object.
      */
     public TemporalLogic.LTLFormula parse(String formula) {
         LTLVisitor<TemporalLogic.LTLFormula> visitor = new LTLVisitorImpl();
