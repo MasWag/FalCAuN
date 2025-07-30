@@ -22,7 +22,7 @@ public class Signal {
     protected List<List<Double>> signalValues = new ArrayList<>();
 
     /**
-     * The timestamps corresponds to the each signal {@code signalValues}.
+     * The timestamps correspond to the signal values in {@code signalValues}.
      */
     @Getter
     protected List<Double> timestamps = new ArrayList<>();
@@ -171,7 +171,7 @@ public class Signal {
     /**
      * Returns the list containing both the timestamps and the signal values.
      *
-     * @return a list of lists. The each inner list contains the timestamp followed by the signal values
+     * @return a list of lists. Each inner list contains the timestamp followed by the signal values
      */
     public List<List<Double>> asList() {
         List<List<Double>> result = new ArrayList<>();

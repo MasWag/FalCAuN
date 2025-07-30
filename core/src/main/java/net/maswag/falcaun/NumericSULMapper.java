@@ -35,7 +35,7 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
      *                       a larger values for each index of outputs.
      * @param outputMapper   A {@link java.util.List} of {@link java.util.Map}s
      *                       from an abstract alphabet to the corresponding concrete value.
-     * @param sigMap         A {@link SignalMapper} object that constructs additinal values from concrete output values.
+     * @param sigMap         A {@link SignalMapper} object that constructs additional values from concrete output values.
      */
     public NumericSULMapper(List<Map<Character, Double>> inputMapper,
                             List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,
@@ -132,10 +132,11 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
     }
 
     /**
-     * Applies {@link SignalMapper} passed to the constructor {@code sigMap}
+     * Applies {@link SignalMapper} passed to the constructor as {@code sigMap}
      * to {@code concreteIO}
      * 
-     * @param concreteIO
+     * @param concreteIO The concrete input and output signal pair
+     * @return A list of concrete output values, including the original concrete output values and additional values constructed by {@code sigMap}
      */
     public List<Double> mapConcrete(IOSignalPiece<List<Double>> concreteIO) {
         List<Double> concreteOutput = concreteIO.getOutputSignal();
