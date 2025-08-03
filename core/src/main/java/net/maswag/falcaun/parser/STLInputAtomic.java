@@ -26,12 +26,9 @@ import net.maswag.falcaun.IOSignal;
  * When the 0-th input mapper is {@literal {a: 1.0, b: 2.0, c: 3.0}},
  * <ul>
  * <li> Given {@literal input(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
- *  Note that {@literal <} ({@Operation.lt}) represents a less-than-or-equal-to operator.
+ *  Note that {@literal <} ({@literal Operation.lt}) represents a less-than-or-equal-to operator.
  * <li> Given {@literal input(0) == 1.5}, {@code getAllAPs()} raises an {@link RuntimeException}.
- * </p>
  * </ul>
- *
- * @see STLAtomicTest.toAbstractStringInputPositive
  * 
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */

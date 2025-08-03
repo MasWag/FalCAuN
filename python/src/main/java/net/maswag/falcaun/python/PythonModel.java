@@ -26,7 +26,8 @@ public class PythonModel<I, O> {
     private ThreadLocal<Boolean> initialized = ThreadLocal.withInitial(() -> false);
 
     /**
-     * `interpreter` use ThreadLocal because SharedInterpreter cannot be used by the other thread.
+     * A {@link jep.SharedInterpreter} variable to hold the Python interpreter instance.
+     * {@code interpreter} use ThreadLocal because {@link jep.SharedInterpreter} cannot be used by the other thread.
      */
     private ThreadLocal<SharedInterpreter> interpreter = ThreadLocal.withInitial(() -> {
         try {

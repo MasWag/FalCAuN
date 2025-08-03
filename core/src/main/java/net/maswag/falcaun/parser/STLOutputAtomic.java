@@ -33,12 +33,9 @@ import net.maswag.falcaun.OutputMapper;
  * <ul>
  * <li> Given {@literal output(0) > 2.0}, the satisfying 0-th alphabets are {@literal {'c', 'd'}}.
  * <li> Given {@literal output(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
- *  Note that {@literal <} ({@Operation.lt}) represents a less-than-or-equal-to operator.
+ *  Note that {@literal <} ({@literal Operation.lt}) represents a less-than-or-equal-to operator.
  * <li> Given {@literal output(0) == 4.0}, {@code getAllAPs()} raises an {@link RuntimeException}.
  * </ul>
- * </p>
- *
- * @see STLAtomicTest.toAbstractStringOutputPositive
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
@@ -70,7 +67,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
     }
 
     /**
-     * Constructs {@code #satisfyingAtomicPropositions} if not initialized.
+     * Constructs {@link #satisfyingAtomicPropositions} if not initialized.
      */
     @Override
     public void constructSatisfyingAtomicPropositions() {
