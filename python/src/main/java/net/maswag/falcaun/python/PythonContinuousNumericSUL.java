@@ -110,7 +110,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     }
 
     /**
-     * Try to convert 1D raw {@link ArrayList} returned by Jep to 2D {@link ArrayList}
+     * Try to convert a raw {@link ArrayList} returned by Jep to 2D list {@code List<List<Double>>}
      * and construct a {@link ValueWithTime} object.
      *
      * @param ary The raw list returned by Jep.

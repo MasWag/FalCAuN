@@ -15,7 +15,7 @@ import java.util.*;
  * than any of the given concrete values.
  * 
  * After construction, call {@link #parse()} to initialize the mappings
- * and then {@link #getOutputMapper()} and {@link #getLargest()} will be available.
+ * and then {@link #outputMapper} and {@link #largest} will be available.
  * 
  */
 public class OutputMapperReader extends AbstractMapperReader {
