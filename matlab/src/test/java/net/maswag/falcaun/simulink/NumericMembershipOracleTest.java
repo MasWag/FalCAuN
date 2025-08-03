@@ -9,7 +9,7 @@ import net.automatalib.word.Word;
 import net.maswag.falcaun.IOSignalPiece;
 import net.maswag.falcaun.NumericMembershipOracle;
 import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.parser.SimpleSignalMapper;
+import net.maswag.falcaun.SimpleSignalMapper;
 import net.maswag.falcaun.simulink.SimulinkSUL;
 
 import org.junit.jupiter.api.AfterEach;

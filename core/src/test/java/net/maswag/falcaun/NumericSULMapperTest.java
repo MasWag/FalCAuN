@@ -1,7 +1,6 @@
 package net.maswag.falcaun;
 
 import net.automatalib.word.Word;
-import net.maswag.falcaun.parser.SimpleSignalMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

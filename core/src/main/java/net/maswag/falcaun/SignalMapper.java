@@ -1,8 +1,6 @@
-package net.maswag.falcaun.parser;
+package net.maswag.falcaun;
 
 import java.util.List;
-
-import net.maswag.falcaun.IOSignalPiece;
 
 /**
  * Interface to construct pseudo signals from concrete signals

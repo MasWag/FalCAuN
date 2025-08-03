@@ -3,7 +3,7 @@ package net.maswag.falcaun.simulink;
 import net.automatalib.word.Word;
 import net.maswag.falcaun.IOSignalPiece;
 import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.parser.SimpleSignalMapper;
+import net.maswag.falcaun.SimpleSignalMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
