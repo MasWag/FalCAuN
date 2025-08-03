@@ -57,7 +57,8 @@ public class SimpleSignalMapper implements SignalMapper {
     /**
      * Get {@link SignalMapper} by parsing from a {@link BufferedReader}
      * 
-     * @param reader
+     * @param reader The {@link BufferedReader} to parse
+     * @return The {@link SignalMapper} object constructed from the reader.
      */
     public static SignalMapper parse(BufferedReader reader) {
         return SimpleSignalMapper.parse(reader.lines().collect(Collectors.toList()));
@@ -67,6 +68,7 @@ public class SimpleSignalMapper implements SignalMapper {
      * Get {@link SignalMapper} by parsing a list of strings.
      * 
      * @param mapperDefinitions The list of strings
+     * @return The {@link SignalMapper} object constructed from the string list.
      */
     public static SignalMapper parse(List<String> mapperDefinitions) {
         List<Function<IOSignalPiece<List<Double>>, Double>> rawList =

@@ -10,7 +10,7 @@ import net.maswag.falcaun.NumericSULVerifier;
  * Verifies Simulink models with specified properties.
  *
  * @see net.maswag.falcaun.simulink.SimulinkSUL
- * @see net.maswag.falcaun.simulink.NumericSULVerifier
+ * @see net.maswag.falcaun.NumericSULVerifier
  */
 public class SimulinkSULVerifier extends NumericSULVerifier {
     /**
