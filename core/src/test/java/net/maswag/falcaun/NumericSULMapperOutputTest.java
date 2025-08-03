@@ -3,6 +3,8 @@ package net.maswag.falcaun;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.maswag.falcaun.STLAbstractAtomic.Operation;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +22,7 @@ class NumericSULMapperOutputTest {
     @BeforeEach
     void setUp() {
         inputMapper = List.of(Map.of('a', 1.0, 'b', 2.0));
-        Map<Character, Double> m = new HashMap<>();
-        m.put('a', 1.0);
-        m.put('b', 2.0);
-        outputMapper = List.of(m);
+        outputMapper = List.of(Map.of('a', 1.0, 'b', 2.0)); 
         largest = List.of('c');
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper());
     }

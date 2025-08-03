@@ -66,8 +66,17 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
         concreteOutputs = new ArrayList<>();
 
         for (Map<Character, Double> entry : outputMapper) {
-            ArrayList<Character> cList = new ArrayList<>(entry.keySet());
-            ArrayList<Double> dList = new ArrayList<>(entry.values());
+            // Sort the entry by value and extract keys and values in sorted order
+            List<Map.Entry<Character, Double>> sortedEntries = entry.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toList());
+            ArrayList<Character> cList = new ArrayList<>();
+            ArrayList<Double> dList = new ArrayList<>();
+            for (Map.Entry<Character, Double> e : sortedEntries) {
+                cList.add(e.getKey());
+                dList.add(e.getValue());
+            }
             assert cList.size() == dList.size();
             abstractOutputs.add(cList);
             concreteOutputs.add(dList);
