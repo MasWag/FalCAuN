@@ -35,7 +35,6 @@
 @file:KotlinOptions("-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64")
 
 import net.maswag.falcaun.*
-import net.maswag.falcaun.parser.ExtendedSignalMapper
 import net.maswag.falcaun.parser.STLFactory
 import net.maswag.falcaun.simulink.SimulinkSUL
 import java.io.BufferedReader
