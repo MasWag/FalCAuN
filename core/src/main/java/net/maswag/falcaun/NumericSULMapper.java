@@ -28,7 +28,7 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
      *
      * @param inputMapper    A {@link java.util.List} of {@link java.util.Map}s
      *                       from a concrete value to the corresponding abstract alphabet.
-     * @param largestOutputs A {@link java.util.List} of abstract ablphabets representing
+     * @param largestOutputs A {@link java.util.List} of abstract alphabets representing
      *                       a larger values for each index of outputs.
      * @param outputMapper   A {@link java.util.List} of {@link java.util.Map}s
      *                       from an abstract alphabet to the corresponding concrete value.

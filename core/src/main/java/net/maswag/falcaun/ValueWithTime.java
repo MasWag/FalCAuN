@@ -87,6 +87,7 @@ public class ValueWithTime<T> {
     /**
      * Get the value at the given time.
      *
+     * @param time The time to get the value at
      * @return the value at the closest time
      */
     @Nullable
@@ -160,6 +161,7 @@ public class ValueWithTime<T> {
      * between {@literal ((i-1) * signalStep, i * signalStep]}. </p>
      *
      * @param signalStep The time step between each signal
+     * @return A stream of lists of values, grouped by signal step.
      */
     public Stream<List<T>> stream(double signalStep) {
         assert(timestamps.size() == values.size());

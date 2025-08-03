@@ -44,9 +44,9 @@ public class STLInputAtomic extends STLAbstractAtomic {
      * <p>Constructor for STLAtomic.</p>
      * Constructs an atomic proposition {@literal input(sigIndex) op comparator}.
      *
-     * @param sigIndex   an index of input signals.
-     * @param op         a {@link Operation} object.
-     * @param comparator a double.
+     * @param sigIndex   An index of input signals
+     * @param op         The comparison operator {@link Operation}
+     * @param comparator The value to compare against
      */
     public STLInputAtomic(int sigIndex, Operation op, double comparator) {
         super(sigIndex, op, comparator);
@@ -136,7 +136,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
      * Gives the input mapper for the atomic formula.
      * It is required to construct the atomic propositions.
      * 
-     * @param inputMapper
+     * @param inputMapper The input mapper to set
      */
     void setInputMapper(List<Map<Character, Double>> inputMapper) {
         this.inputMapper = inputMapper;

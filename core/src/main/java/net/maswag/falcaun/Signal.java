@@ -186,7 +186,7 @@ public class Signal {
 
     /**
      * Returns a new Signal whose values are linearly interpolated
-     * at the given {@code timeStep}, writing directly into the result.
+     * at the given {@code newTimeStep}, writing directly into the result.
      *
      * @param newTimeStep the time step for the interpolated signal
      * @return a Signal containing the linearly interpolated data

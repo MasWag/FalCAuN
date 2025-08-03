@@ -54,8 +54,8 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
      * from the previous input exclusive to this input inclusive.
      * 
      * @return                          a stream of {@link ExtendedIOSignalPiece}
-     * @throws IllegalArgumentException if the length of output signal {@code continuousOutputSignal} is shorter than
-     *                                  the length of {@code inputSignal}
+     * @throws IllegalArgumentException if the number of steps in {@code continuousOutputSignal} (determined by {@code signalStep})
+     *                                  is less than the length of {@code inputSignal}
      * @throws RuntimeException         if {@code continuousOutputSignal} contains null
      */
     @Override

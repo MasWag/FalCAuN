@@ -27,7 +27,7 @@ import net.maswag.falcaun.OutputMapper;
  *
  * <p>
  * When the 0-th output mapper is {@literal {a: 1.0, b: 2.0, c: 3.0}} and largest is {@literal {'d'}},
- * The comparator in ranges of {@literal (-inf, 1.0], (1.0, 2.0], (2.0, 3.0]} is mapped to {@literal 'a', 'b', 'c'} for each and
+ * the comparator in ranges of {@literal (-inf, 1.0], (1.0, 2.0], (2.0, 3.0]} is mapped to {@literal 'a', 'b', 'c'} for each and
  * this in range of (3.0, +inf) is mapped to {@literal 'd'}.
  * 
  * <ul>
@@ -35,8 +35,8 @@ import net.maswag.falcaun.OutputMapper;
  * <li> Given {@literal output(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
  *  Note that {@literal <} ({@Operation.lt}) represents a less-than-or-equal-to operator.
  * <li> Given {@literal output(0) == 4.0}, {@code getAllAPs()} raises an {@link RuntimeException}.
- * </p>
  * </ul>
+ * </p>
  *
  * @see STLAtomicTest.toAbstractStringOutputPositive
  *
@@ -52,9 +52,9 @@ public class STLOutputAtomic extends STLAbstractAtomic {
      * <p>Constructor for STLAtomic.</p>
      * Constructs an atomic proposition {@literal output(sigIndex) op comparator}.
      *
-     * @param sigIndex   an index of output signals.
-     * @param op         a {@link Operation} object.
-     * @param comparator a double.
+     * @param sigIndex   An index of input signals
+     * @param op         The comparison operator {@link Operation}
+     * @param comparator The value to compare against
      */
     public STLOutputAtomic(int sigIndex, Operation op, double comparator) {
         super(sigIndex, op, comparator);
@@ -169,7 +169,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
      * Gives the output mapper for the atomic formula.
      * It is required to construct the atomic propositions.
      * 
-     * @param outputMapper
+     * @param outputMapper The output mapper to set
      */
     void setOutputMapper(List<Map<Character, Double>> outputMapper) {
         this.outputMapper = outputMapper;
@@ -180,7 +180,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
      * Gives the largest alphabets for the atomic formula.
      * It is required to construct the atomic propositions.
      * 
-     * @param largest
+     * @param largest The list of largest characters to set
      */
     void setLargest(List<Character> largest) {
         this.largest = largest;

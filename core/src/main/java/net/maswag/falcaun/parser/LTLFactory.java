@@ -22,7 +22,7 @@ public class LTLFactory {
     /**
      * <p>parse an LTL formula</p>
      *
-     * @param formula a {@link String} object.
+     * @param formula a LTL formula as a string to parse
      * @return a {@link TemporalLogic.LTLFormula} object.
      */
     public TemporalLogic.LTLFormula parse(String formula) {
