@@ -35,7 +35,6 @@ import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.maswag.falcaun.*
-import net.maswag.falcaun.parser.ExtendedSignalMapper
 import net.maswag.falcaun.parser.STLFactory
 import net.maswag.falcaun.simulink.SimulinkSUL
 import org.slf4j.LoggerFactory
