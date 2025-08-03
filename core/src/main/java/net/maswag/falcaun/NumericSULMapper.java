@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import net.maswag.falcaun.parser.SignalMapper;
-
 /**
  * I/O Mapper between abstract/concrete NumericSUL.
  * <p>

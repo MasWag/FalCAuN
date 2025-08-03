@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import net.maswag.falcaun.IOSignalPiece;
 import net.maswag.falcaun.NumericSULMapper;
+import net.maswag.falcaun.SimpleSignalMapper;
 import net.maswag.falcaun.parser.STLOutputAtomic;
-import net.maswag.falcaun.parser.SimpleSignalMapper;
 
 import java.util.Collections;
 import java.util.List;

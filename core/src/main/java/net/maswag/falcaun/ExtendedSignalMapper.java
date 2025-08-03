@@ -1,12 +1,10 @@
-package net.maswag.falcaun.parser;
+package net.maswag.falcaun;
 
 import lombok.RequiredArgsConstructor;
-import net.maswag.falcaun.ExtendedIOSignalPiece;
-import net.maswag.falcaun.IOSignalPiece;
-import net.maswag.falcaun.parser.SignalMapper;
 import net.maswag.falcaun.parser.ExtendedSignalMapperLexer;
 import net.maswag.falcaun.parser.ExtendedSignalMapperParser;
 import net.maswag.falcaun.parser.ExtendedSignalMapperVisitor;
+import net.maswag.falcaun.parser.ExtendedSignalMapperVisitorImpl;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;

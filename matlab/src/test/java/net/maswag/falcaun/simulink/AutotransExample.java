@@ -5,7 +5,7 @@ import net.maswag.falcaun.AdaptiveSTLUpdater;
 import net.maswag.falcaun.IOSignalPiece;
 import net.maswag.falcaun.NumericSULMapper;
 import net.maswag.falcaun.NumericSULVerifier;
-import net.maswag.falcaun.parser.SimpleSignalMapper;
+import net.maswag.falcaun.SimpleSignalMapper;
 import net.maswag.falcaun.simulink.SimulinkSULVerifier;
 
 import org.apache.commons.collections4.CollectionUtils;

@@ -3,9 +3,6 @@ package net.maswag.falcaun;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.maswag.falcaun.parser.ExtendedSignalMapper;
-import net.maswag.falcaun.parser.SignalMapper;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
