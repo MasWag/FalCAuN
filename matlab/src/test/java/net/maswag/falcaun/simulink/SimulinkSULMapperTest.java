@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-class NumericSULMapperTest {
+class SimulinkSULMapperTest {
 
     private List<Map<Character, Double>> inputMapper;
     private NumericSULMapper mapper;
