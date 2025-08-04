@@ -72,9 +72,10 @@ public class PythonModel<I, O> {
 
     /**
      * It simply runs the initialization script and sets up the Python callable methods.
-     * Calling them is equivalent to executing `sul = SUL()` and `sul.method()` on the Python side.
-     * 
-     * Note that the code under `if __name__ == "__main__":` is executed
+     * Calling a callable method like {@literal pyPre.call()} is equivalent to executing
+     * {@literal sul = SUL()} and {@literal sul.pre()} on the Python side.
+     *
+     * Note that the code under {@literal if __name__ == "__main__":} branch in python is also executed
      */
     public void initialize() {
         if (!this.initialized.get()) {
