@@ -46,7 +46,7 @@ public class OutputMapperReader extends AbstractMapperReader {
     }
 
     /**
-     * <p>Constructor for OutputMapperReader from data</p>
+     * Constructor for OutputMapperReader from data
      * 
      * @param data Each dimension of data is an ascending list of concrete values
      */
@@ -61,7 +61,7 @@ public class OutputMapperReader extends AbstractMapperReader {
      * When the instance is constructed by filename, this method reads and parses the specified file,
      * then constructs them from the parsed data.
      * 
-     * @throws IOException
+     * @throws IOException if an I/O error occurs while reading the file
      */
     public void parse() throws IOException {
         if (Objects.isNull(parsedData)) {

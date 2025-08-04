@@ -159,7 +159,6 @@ public class ValueWithTime<T> {
      *
      * <p>The i-th element is the list of values whose timestamp is
      * between {@literal ((i-1) * signalStep, i * signalStep]}. </p>
-     *
      * @param signalStep The time step between each signal
      * @return A stream of lists of values, grouped by signal step.
      */

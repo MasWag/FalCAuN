@@ -27,7 +27,7 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
     private final List<List<Double>> concreteOutputs;
 
     /**
-     * <p>Constructor for SimulinkSULMapper.</p>
+     * <p>Constructor for NumericSULMapper.</p>
      *
      * @param inputMapper    A {@link java.util.List} of {@link java.util.Map}s
      *                       from a concrete value to the corresponding abstract alphabet.

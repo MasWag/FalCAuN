@@ -47,7 +47,7 @@ public class SimpleSignalMapper implements SignalMapper {
      * 
      * @param filename The filename to parse
      * @return The {@link SignalMapper} object constructed from the file
-     * @throws IOException
+     * @throws IOException if an I/O error occurs while reading the file
      */
     public static SignalMapper parse(String filename) throws IOException {
         return SimpleSignalMapper.parse(new BufferedReader(
