@@ -82,7 +82,7 @@ public class PythonModel<I, O> {
      * Calling a callable method like {@literal pyPre.call()} is equivalent to executing
      * {@literal sul = SUL()} and {@literal sul.pre()} on the Python side.
      *
-     * Note that the code under {@literal if __name__ == "__main__":} branch is executed
+     * Note that the code under {@literal if __name__ == "__main__":} branch in python is also executed
      */
     private void initialize() {
         if (!this.initialized.get()) {
