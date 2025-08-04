@@ -250,7 +250,7 @@ public class NumericSULVerifier {
     }
 
     /**
-     * @return A list of output words produced by the black-box system for the counterexamples
+     * @return a list of output words produced by the black-box system for the counterexamples
      *         found during the verification process.
      */
     public List<Word<String>> getCexOutput() {
