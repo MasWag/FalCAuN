@@ -41,7 +41,7 @@ public class ValueWithTime<T> {
      *
      * @param timestamps The list of timestamps
      * @param values The list of values
-     * @throws IllegalArgumentException If the sizes of timestamps and values are not equal or if any value is null
+     * @throws IllegalArgumentException if the sizes of timestamps and values are not equal or if any value is null
      */
     public ValueWithTime(List<Double> timestamps, List<T> values) {
         if (timestamps.size() != values.size()) {
