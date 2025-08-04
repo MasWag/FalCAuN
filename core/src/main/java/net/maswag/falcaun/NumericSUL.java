@@ -43,14 +43,14 @@ public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>
     void clear();
 
     /**
-     * Setup SUL.
+     * Performs setup SUL before the first step
      */
     default void pre() {
         // do nothing
     }
 
     /**
-     * Shut down SUL.
+     * Performs cleanup operations after the last step
      */
     default void post() {
         // do nothing

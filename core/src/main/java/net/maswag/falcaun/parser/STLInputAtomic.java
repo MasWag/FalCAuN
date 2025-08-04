@@ -38,7 +38,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
     private List<Map<Character, Double>> inputMapper;
 
     /**
-     * <p>Constructor for STLAtomic.</p>
+     * <p>Constructor for STLInputAtomic.</p>
      * Constructs an atomic proposition {@literal input(sigIndex) op comparator}.
      *
      * @param sigIndex   An index of input signals
@@ -59,7 +59,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
     }
 
     /**
-     * Constructs {@code #satisfyingAtomicPropositions} if not initialized.
+     * Constructs {@link #satisfyingAtomicPropositions} if not initialized.
      */
     @Override
     public void constructSatisfyingAtomicPropositions() {

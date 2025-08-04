@@ -76,7 +76,7 @@ public class OutputMapperReader extends AbstractMapperReader {
      * When the instance is constructed by filename, this method reads and parses the specified file,
      * then constructs them from the parsed data.
      *
-     * @throws IOException
+     * @throws IOException if an I/O error occurs while reading the file
      * @deprecated You do not need to call this method directly anymore.
      */
     @Deprecated

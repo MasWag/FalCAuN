@@ -46,10 +46,10 @@ public class STLOutputAtomic extends STLAbstractAtomic {
     private List<Map<Character, Double>> outputMapper;
 
     /**
-     * <p>Constructor for STLAtomic.</p>
+     * <p>Constructor for STLOutputAtomic.</p>
      * Constructs an atomic proposition {@literal output(sigIndex) op comparator}.
      *
-     * @param sigIndex   An index of input signals
+     * @param sigIndex   An index of output signals
      * @param op         The comparison operator {@link Operation}
      * @param comparator The value to compare against
      */

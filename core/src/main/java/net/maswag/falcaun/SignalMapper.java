@@ -10,7 +10,7 @@ public interface SignalMapper {
      * Given {@literal concreteSignal}, construct {@literal index}-th signal
      * 
      * @param index The index of the signal to apply the mapper. It is required to be {@literal 0 <= index < size()}
-     * @param concreteSignal
+     * @param concreteSignal The concrete signal to be mapped
      * @return The constructed concrete output value
      */
     double apply(int index, IOSignalPiece<List<Double>> concreteSignal);
