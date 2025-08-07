@@ -14,6 +14,7 @@ import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.automatalib.util.automaton.builder.AutomatonBuilders
 import net.automatalib.visualization.Visualization
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.LTLFactory
 import org.slf4j.LoggerFactory
 import java.util.*
 

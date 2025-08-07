@@ -31,7 +31,7 @@ import java.util.List;
  *
  * <p>We use uniform crossover and random mutation.</p>
  */
-class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String>,
+public class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String>,
         EvaluationCountable.MealyEquivalenceOracle<String, String> {
     private final Algorithm<IntegerSolution> algorithm;
     private final EQSearchProblem problem;

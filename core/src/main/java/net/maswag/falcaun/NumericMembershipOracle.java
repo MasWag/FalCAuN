@@ -32,7 +32,7 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
         this.cache = cache;
     }
 
-    NumericMembershipOracle(NumericSUL sul, NumericSULMapper mapper) {
+    public NumericMembershipOracle(NumericSUL sul, NumericSULMapper mapper) {
         this.sul = sul;
         this.mapper = mapper;
         this.cache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());

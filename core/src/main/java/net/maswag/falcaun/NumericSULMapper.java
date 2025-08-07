@@ -27,12 +27,15 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
     private final List<List<Double>> concreteOutputs;
 
     /**
-     * <p>Constructor for SimulinkSULMapper.</p>
+     * <p>Constructor for NumericSULMapper.</p>
      *
-     * @param inputMapper    a {@link java.util.List} object.
-     * @param largestOutputs a {@link java.util.List} object.
-     * @param outputMapper   a {@link java.util.List} object.
-     * @param sigMap         a {@link java.util.List} object.
+     * @param inputMapper    A {@link java.util.List} of {@link java.util.Map}s
+     *                       from a concrete value to the corresponding abstract alphabet.
+     * @param largestOutputs A {@link java.util.List} of abstract alphabets representing
+     *                       a larger values for each index of outputs.
+     * @param outputMapper   A {@link java.util.List} of {@link java.util.Map}s
+     *                       from an abstract alphabet to the corresponding concrete value.
+     * @param sigMap         A {@link SignalMapper} object that constructs additional values from concrete output values.
      */
     public NumericSULMapper(List<Map<Character, Double>> inputMapper,
                             List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,
@@ -84,11 +87,17 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
         return (s == null) ? null : inputMapper.get(s);
     }
 
+    /**
+     * Maps an abstract input word to its corresponding concrete values.
+     *
+     * @param abstractInput the abstract input word to be mapped
+     * @return a {@link Word} of concrete values corresponding to the abstract input word
+     */
     public Word<List<Double>> mapInput(@NonNull Word<String> abstractInput) {
         return Word.fromList(abstractInput.stream().map(this::mapInput).collect(Collectors.toList()));
     }
 
-    List<Word<List<Double>>> mapInputs(List<Word<String>> abstractInputs) {
+    public List<Word<List<Double>>> mapInputs(List<Word<String>> abstractInputs) {
         return abstractInputs.stream().map(
                 word -> (word == null) ? null : Word.fromList(word.stream().map(this::mapInput).collect(Collectors.toList()))
         ).collect(Collectors.toList());
@@ -122,6 +131,13 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
         return result.toString();
     }
 
+    /**
+     * Applies {@link SignalMapper} passed to the constructor as {@code sigMap}
+     * to {@code concreteIO}
+     * 
+     * @param concreteIO The concrete input and output signal pair
+     * @return A list of concrete output values, including the original concrete output values and additional values constructed by {@code sigMap}
+     */
     public List<Double> mapConcrete(IOSignalPiece<List<Double>> concreteIO) {
         List<Double> concreteOutput = concreteIO.getOutputSignal();
         List<Double> result = new ArrayList<>(concreteOutput);
@@ -131,11 +147,11 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
         return result;
     }
 
-    Alphabet<String> constructAbstractAlphabet() {
+    public Alphabet<String> constructAbstractAlphabet() {
         return new GrowingMapAlphabet<>(this.inputMapper.keySet());
     }
 
-    Alphabet<List<Double>> constructConcreteAlphabet() {
+    public Alphabet<List<Double>> constructConcreteAlphabet() {
         return new GrowingMapAlphabet<>(this.inputMapper.values());
     }
 }
