@@ -21,84 +21,56 @@
 (import '(java.util Random))
 (import '(net.maswag.falcaun
           AdaptiveSTLList
-          ArgParser$GASelectionKind
-          InputMapperReader
-          NumericSULMapper
-          NumericSULVerifier
-          OutputMapperReader
-          PythonNumericSUL
           STLFactory))
 
 (load-file "common.clj")
+(load-file "simglucose.clj")
 
-;; Step size (seconds) per high-level step sent to Python SUL
-(def signal-step 1.0)
-;; Python initialization script implementing SUL
-(def init-script "./simglucose_example.py")
+;; Reduce verbose logs
+(suppress-logs)
 
 ;; Define input and output mappers (match simglucose_example.py return shape)
-(def input-mapper
-  (let [meal-size-values [0.0 50.0]]
-    (InputMapperReader/make [meal-size-values])))
+(def input-mapper (make-default-input-mapper))
 
 ;; Output: [last_bg, sum_insulin, min_bg, max_bg, min_delta_bg, max_delta_bg]
 (def output-mapper-reader
-  (let [bg-values       [90.0]
+  (let [bg-values       [90.0 nil]
         ignore-values   [nil]
-        delta-bg-values [-5.0 3.0]]
-    (doto (OutputMapperReader. [bg-values ignore-values ignore-values ignore-values delta-bg-values delta-bg-values])
-      (.parse))))
+        delta-bg-values [-5.0 3.0 nil]]
+    (OutputMapperReader. [ignore-values ignore-values ignore-values bg-values delta-bg-values delta-bg-values])))
 
-(def mapper
-  (let [signal-deriver (make-signal-deriver)]
-    (NumericSULMapper.
-     input-mapper
-     (.getLargest output-mapper-reader)
-     (.getOutputMapper output-mapper-reader)
-     signal-deriver)))
+(def mapper (make-mapper input-mapper output-mapper-reader))
 
-;; Helpful aliases for signals in STL formulas
-(def bg "signal(0)")
-(def insulin "signal(1)")
-(def min-bg "signal(2)")
-(def max-bg "signal(3)")
-(def min-dbg "signal(4)")
-(def max-dbg "signal(5)")
+;; Alias min-dbg and max-dbg for this specific case
+(def min-dbg min-delta-bg)
+(def max-dbg max-delta-bg)
 
 ;; Define STL properties
 (def stl-list
   (parse-stl-list
    [;; If BG is not low, insulin administration accompanies the diet
-    (format "G(%s > 90.0 -> (input(0) > 0 -> %s > 0.5))" bg insulin)
+    ;; We use || instead of -> because specification strengthening does not support -> yet
+    (format "G(%s < 90.0 || %s != 50 || %s > 0.5)" max-bg meal-size insulin)
     ;; The change in BG is between -5 and 3 with weak-release over two steps of input>0
     (format "((input(0) > 0.0 && X (input(0) > 0.0))) R (%s > -5.0 && %s < 3.0)" min-dbg max-dbg)]
    input-mapper
    output-mapper-reader))
 
-(def signal-length 48) ; 3*10 * 24 mins
-(def properties (AdaptiveSTLList. stl-list signal-length))
+(def properties (AdaptiveSTLList. stl-list default-signal-length))
 
-;; GA-based equivalence testing params
-(def max-test 20)           ; aggressively reduced for fast runs
-(def population-size 50)
+;; Constants for the GA-based equivalence testing
+(def max-test 50000)
+(def population-size 200)
 (def crossover-prob 0.5)
 (def mutation-prob 0.01)
+(def timeout-minutes 40)
 
-;; Build Python SUL
-(def sul (PythonNumericSUL. init-script))
-(def verifier
-  (doto (NumericSULVerifier. sul signal-step properties mapper)
-    ;; Lower timeout to keep runtime reasonable
-    (.setTimeout (* 5 60 2)) ; 10 minutes
-    (.addCornerCaseEQOracle signal-length (/ signal-length 2))
-    (.addGAEQOracleAll
-     signal-length
-     max-test
-     ArgParser$GASelectionKind/Tournament
-     population-size
-     crossover-prob
-     mutation-prob)))
+;; Build Python SUL and verifier
+(def sul (make-simglucose-sul))
+(def verifier (make-verifier sul signal-step properties mapper default-signal-length
+                            max-test population-size crossover-prob mutation-prob timeout-minutes))
 
+;; Run verification
 (def result (.run verifier))
 
 ;; Show result and stats

@@ -1,6 +1,18 @@
 (import '(java.io BufferedReader StringReader))
+(import '(org.slf4j LoggerFactory))
+(import '(ch.qos.logback.classic Level Logger))
+(import '(net.automatalib.modelchecker.ltsmin AbstractLTSmin LTSminVersion))
 (import '(net.maswag.falcaun
+          AbstractAdaptiveSTLUpdater
+          AdaptiveSTLList
+          GASelectionKind
+          EQSearchProblem
+          EQSteadyStateGeneticAlgorithm
           ExtendedSignalMapper
+          InputMapperReader
+          NumericSULMapper
+          NumericSULVerifier
+          OutputMapperReader
           STLFactory))
 
 (defn make-signal-deriver
@@ -100,3 +112,73 @@
   (println "Number of simulations: " (.getSimulinkCount verifier))
   (println "Number of simulations for equivalence testing: "
            (.getSimulinkCountForEqTest verifier)))
+
+(defn suppress-logs
+  "Adjust logger levels to reduce verbose output.
+   
+   Sets several FalCAuN/LTSmin-related loggers to INFO to suppress
+   debug/trace messages during runs of the examples."
+  []
+  (let [set-level (fn [class-name]
+                    (let [logger (LoggerFactory/getLogger class-name)]
+                      (.setLevel logger Level/INFO)))]
+    (set-level AbstractAdaptiveSTLUpdater)
+    (set-level AdaptiveSTLList)
+    (set-level LTSminVersion)
+    (set-level AbstractLTSmin)
+    (set-level EQSearchProblem)
+    (set-level EQSteadyStateGeneticAlgorithm)))
+
+(defn make-mapper
+  "Create a NumericSULMapper from input and output mappers.
+   
+   - input-mapper: InputMapperReader instance.
+   - output-mapper-reader: OutputMapperReader instance.
+   - signal-deriver-exprs: Optional expressions for the signal deriver.
+   
+   Returns a NumericSULMapper instance."
+  ([input-mapper output-mapper-reader]
+   (make-mapper input-mapper output-mapper-reader []))
+  ([input-mapper output-mapper-reader signal-deriver-exprs]
+   (let [signal-deriver (apply make-signal-deriver signal-deriver-exprs)]
+     (NumericSULMapper.
+      input-mapper
+      output-mapper-reader
+      signal-deriver))))
+
+(defn make-verifier
+  "Create a NumericSULVerifier with common configuration.
+   
+   - sul: The system under learning.
+   - signal-step: Step size for the signal.
+   - properties: AdaptiveSTLList of properties to verify.
+   - mapper: NumericSULMapper instance.
+   - signal-length: Length of the signal.
+   - max-test: Maximum number of tests.
+   - population-size: GA population size.
+   - crossover-prob: GA crossover probability.
+   - mutation-prob: GA mutation probability.
+   - timeout-minutes: Timeout in minutes.
+   
+   Returns a configured NumericSULVerifier instance."
+  ([sul signal-step properties mapper signal-length]
+   (make-verifier sul signal-step properties mapper signal-length 20))
+  ([sul signal-step properties mapper signal-length max-test]
+   (make-verifier sul signal-step properties mapper signal-length max-test 50))
+  ([sul signal-step properties mapper signal-length max-test population-size]
+   (make-verifier sul signal-step properties mapper signal-length max-test population-size 0.5))
+  ([sul signal-step properties mapper signal-length max-test population-size crossover-prob]
+   (make-verifier sul signal-step properties mapper signal-length max-test population-size crossover-prob 0.01))
+  ([sul signal-step properties mapper signal-length max-test population-size crossover-prob mutation-prob]
+   (make-verifier sul signal-step properties mapper signal-length max-test population-size crossover-prob mutation-prob 10))
+  ([sul signal-step properties mapper signal-length max-test population-size crossover-prob mutation-prob timeout-minutes]
+   (doto (NumericSULVerifier. sul signal-step properties mapper)
+     (.setTimeout (* timeout-minutes 60))
+     (.addCornerCaseEQOracle signal-length (/ signal-length 2))
+     (.addGAEQOracleAll
+      signal-length
+      max-test
+      GASelectionKind/Tournament
+      population-size
+      crossover-prob
+      mutation-prob))))

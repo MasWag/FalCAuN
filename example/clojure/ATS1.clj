@@ -34,6 +34,9 @@
 (load-file "common.clj")
 (load-file "auto_trans.clj")
 
+;; Reduce verbose logs
+(suppress-logs)
+
 ;; Define the input and output mappers
 (def input-mapper
   (let [throttle-values [0.0 100.0]
@@ -44,16 +47,9 @@
   (let [velocity-values [20.0 40.0 60.0 80.0 100.0 120.0 nil]
         acceleration-values [nil]
         gear-values [nil]]
-    (doto (OutputMapperReader. [velocity-values acceleration-values gear-values])
-      (.parse))))
+    (OutputMapperReader. [velocity-values acceleration-values gear-values])))
 
-(def mapper
-  (let [signal-deriver (make-signal-deriver)]
-    (NumericSULMapper.
-     input-mapper
-     (.getLargest output-mapper-reader)
-     (.getOutputMapper output-mapper-reader)
-     signal-deriver)))
+(def mapper (make-mapper input-mapper output-mapper-reader))
 
 ;; Define the STL properties
 (def stl-list
@@ -73,25 +69,16 @@
 ;; Build the automatic transmission model and set up the verifier
 (def autotrans
   (build-autotrans))
+;; Constants for the GA-based equivalence testing
+(def max-test 50000)
+(def population-size 200)
+(def crossover-prob 0.5)
+(def mutation-prob 0.01)
+(def timeout-minutes 5)
+
 (def verifier
-  ;; Constants for the GA-based equivalence testing
-  (let [max-test 50000
-        population-size 200
-        crossover-prob 0.5
-        mutation-prob  0.01]
-    (doto (NumericSULVerifier. autotrans signal-step properties mapper)
-      ;; seconds
-      (.setTimeout (* 5 60))
-      ;; First, we try corner case inputs in equivalence testing
-      (.addCornerCaseEQOracle signal-length (/ signal-length 2))
-      ;; Then, we use robustness-guided equivalence testing
-      (.addGAEQOracleAll
-       signal-length
-       max-test
-       ArgParser$GASelectionKind/Tournament
-       population-size
-       crossover-prob
-       mutation-prob))))
+  (make-verifier autotrans signal-step properties mapper signal-length
+                max-test population-size crossover-prob mutation-prob timeout-minutes))
 
 ;; Run the verifier
 (def result (.run verifier))

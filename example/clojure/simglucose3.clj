@@ -21,48 +21,25 @@
 (import '(java.util Random))
 (import '(net.maswag.falcaun
           AdaptiveSTLList
-          ArgParser$GASelectionKind
-          InputMapperReader
-          NumericSULMapper
-          NumericSULVerifier
-          OutputMapperReader
-          PythonNumericSUL
           STLFactory))
 
 (load-file "common.clj")
+(load-file "simglucose.clj")
 
-;; Step size (seconds) per high-level step sent to Python SUL
-(def signal-step 1.0)
-;; Python initialization script implementing SUL
-(def init-script "./simglucose_example.py")
+;; Reduce verbose logs
+(suppress-logs)
 
 ;; Define input and output mappers
-(def input-mapper
-  (let [meal-size-values [0.0 50.0]]
-    (InputMapperReader/make [meal-size-values])))
+(def input-mapper (make-default-input-mapper))
 
-;; Output mapping as in the Kotlin script:
-;; [bgValues, insulinValues, bgValues, ignore, ignore, ignore]
+;; Output mapping: [bgValues, insulinValues, bgValues, ignore, ignore, ignore]
 (def output-mapper-reader
   (let [ignore-values   [nil]
         bg-values       [55.0 180.0 240.0]
         insulin-values  [0.5]]
-    (doto (OutputMapperReader. [bg-values insulin-values bg-values ignore-values ignore-values ignore-values])
-      (.parse))))
+    (OutputMapperReader. [bg-values insulin-values bg-values ignore-values ignore-values ignore-values])))
 
-(def mapper
-  (let [signal-deriver (make-signal-deriver)]
-    (NumericSULMapper.
-     input-mapper
-     (.getLargest output-mapper-reader)
-     (.getOutputMapper output-mapper-reader)
-     signal-deriver)))
-
-;; Helpful aliases for signals in STL formulas
-(def bg "signal(0)")
-(def insulin "signal(1)")
-(def min-bg "signal(2)")
-(def max-bg "signal(3)")
+(def mapper (make-mapper input-mapper output-mapper-reader))
 (def alpha 6)
 
 ;; Define STL properties
@@ -79,29 +56,21 @@
    input-mapper
    output-mapper-reader))
 
-(def signal-length 48)
-(def properties (AdaptiveSTLList. stl-list signal-length))
+(def properties (AdaptiveSTLList. stl-list default-signal-length))
 
-;; GA-based equivalence testing params (reduced)
-(def max-test 20)
-(def population-size 50)
+;; Constants for the GA-based equivalence testing
+(def max-test 50000)
+(def population-size 200)
 (def crossover-prob 0.5)
 (def mutation-prob 0.01)
+(def timeout-minutes 40)
 
 ;; Build Python SUL and verifier
-(def sul (PythonNumericSUL. init-script))
-(def verifier
-  (doto (NumericSULVerifier. sul signal-step properties mapper)
-    (.setTimeout (* 5 60 2))
-    (.addCornerCaseEQOracle signal-length (/ signal-length 2))
-    (.addGAEQOracleAll
-     signal-length
-     max-test
-     ArgParser$GASelectionKind/Tournament
-     population-size
-     crossover-prob
-     mutation-prob)))
+(def sul (make-simglucose-sul))
+(def verifier (make-verifier sul signal-step properties mapper default-signal-length
+                            max-test population-size crossover-prob mutation-prob timeout-minutes))
 
+;; Run verification
 (def result (.run verifier))
 
 ;; Show result and stats
