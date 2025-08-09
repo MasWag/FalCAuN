@@ -1,12 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; NAME
-;;   ATS1.clj
+;;   ATS6a.clj
 ;; DESCRIPTION
-;;   Script to falsify the automatic transmission benchmark against the S1 formula by FalCAuN
+;;   Script to falsify the automatic transmission benchmark against the S6a formula by FalCAuN
 ;; AUTHOR
 ;;   Masaki Waga
 ;; HISTORY
-;;   2025/08/09: Initial version
+;;   2025/08/09: Initial Clojure port from kotlin/ATS6a.main.kts
 ;; COPYRIGHT
 ;;   Copyright (c) 2025 Masaki Waga
 ;;   Released under the MIT license
@@ -18,37 +18,47 @@
 ;;   - The environment variable MATLAB_HOME is set to the root directory of MATLAB, e.g., /Applications/MATLAB_R2024a.app/ or /usr/local/MATLAB/R2024a.
 ;;
 ;; USAGE
-;;   lein exec -p ATS1.clj
+;;   lein exec -p ATS6a.clj
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import '(net.maswag.falcaun
           AdaptiveSTLList
           ArgParser$GASelectionKind
-          BlackBoxVerifier
           InputMapperReader
           NumericSULMapper
           NumericSULVerifier
           OutputMapperReader
-          SimulinkSUL))
+          SimulinkSUL
+          STLFactory))
 
 (load-file "common.clj")
 (load-file "auto_trans.clj")
 
 ;; Define the input and output mappers
 (def input-mapper
-  (let [throttle-values [0.0 100.0]
-        brake-values [0.0 325.0]]
+  (let [throttle-values [0.0 50.0 100.0]
+        brake-values    [0.0 325.0]]
     (InputMapperReader/make [throttle-values brake-values])))
 
+;; Output mapping: ignore velocity/acceleration for discretization, keep gear, and add pseudo-signals
 (def output-mapper-reader
-  (let [velocity-values [20.0 40.0 60.0 80.0 100.0 120.0 nil]
-        acceleration-values [nil]
-        gear-values [nil]]
-    (doto (OutputMapperReader. [velocity-values acceleration-values gear-values])
+  (let [ignore-values       [nil]
+        gear-values         [nil]
+        velocity-values     [35.0 nil]
+        acceleration-values [3000.0 nil]]
+    ;; Note: order is [ignore, ignore, gear, velocity, acceleration]
+    (doto (OutputMapperReader. [ignore-values ;; velocity
+                                ignore-values ;; acceleration
+                                gear-values ;; gear
+                                velocity-values ;; previous_min(velocity)
+                                acceleration-values]) ;; previous_min(acceleration)
       (.parse))))
 
+;; Extended signal mapper for previous_max_output(0) and previous_max_output(1)
 (def mapper
-  (let [signal-deriver (make-signal-deriver)]
+  (let [signal-deriver   (make-signal-deriver
+                         "previous_max_output(0)"
+                         "previous_max_output(1)")]
     (NumericSULMapper.
      input-mapper
      (.getLargest output-mapper-reader)
@@ -57,15 +67,17 @@
 
 ;; Define the STL properties
 (def stl-list
-  (parse-stl-list
-   ["[] (output(0) < 120)"
-    "[] (output(0) < 100)"
-    "[] (output(0) < 80)"
-    "[] (output(0) < 60)"
-    "[] (output(0) < 40)"
-    "[] (output(0) < 20)"]
-   input-mapper
-   output-mapper-reader))
+  (let [horizon-rot (int (/ 30.0 signal-step))
+        horizon-vel (int (/ 4.0 signal-step))
+        prev-max-velocity "output(3)"
+        prev-max-rotation "output(4)"
+        stl-not-g-rot-lt3000 (format "<>_[0,%d] (%s > 3000.0)" horizon-rot prev-max-rotation)
+        stl-g-vel-lt35        (format "[]_[0,%d] (%s < 35.0)"  horizon-vel prev-max-velocity)
+        stl-str               (format "(%s) || (%s)" stl-not-g-rot-lt3000 stl-g-vel-lt35)]
+    (parse-stl-list
+     [stl-str]
+     input-mapper
+     output-mapper-reader)))
 
 (def signal-length 30)
 (def properties (AdaptiveSTLList. stl-list signal-length))
@@ -81,7 +93,7 @@
         mutation-prob  0.01]
     (doto (NumericSULVerifier. autotrans signal-step properties mapper)
       ;; seconds
-      (.setTimeout (* 5 60))
+      (.setTimeout (* 50 60))
       ;; First, we try corner case inputs in equivalence testing
       (.addCornerCaseEQOracle signal-length (/ signal-length 2))
       ;; Then, we use robustness-guided equivalence testing
@@ -100,3 +112,4 @@
 ;; Show the results
 (print-results verifier result)
 (print-stats verifier)
+
