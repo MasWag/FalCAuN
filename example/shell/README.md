@@ -1,4 +1,4 @@
-This directory contains the example input/output mappers and STL.
+This directory contains the example input/output mappers and STL. The examples in this directory uses the obsolete CLI interface of FalCAuN.
 
 Files
 =====

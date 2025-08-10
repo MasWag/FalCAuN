@@ -13,7 +13,7 @@ class OutputMapperReaderTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        String path = "../example/AT_S4.omap.tsv";
+        String path = "../example/shell/AT_S4.omap.tsv";
         reader = new OutputMapperReader(path);
         reader.parse();
     }
