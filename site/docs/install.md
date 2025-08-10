@@ -119,6 +119,8 @@ export LD_LIBRARY_PATH=<path/to/jep>:${LD_LIBRARY_PATH}
 
 ### 3. Build and Install FalCAuN
 
+Build FalCAuN using Maven. You may need to set the environment variable `PYTHONEXECUTABLE` to the full path of the Python executable, for example: `export PYTHONEXECUTABLE="$PWD/.venv/bin/python3"`.
+
 ```sh
 mvn install --also-make --projects python
 ```
@@ -126,11 +128,11 @@ mvn install --also-make --projects python
 Installation of LTSMin 3.1.0 on macOS with ARM Processors
 ---------------------------------------------------------
 
-FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86\_64. One can still run LTSMin using Rosetta and libtool for x86\_64.
+FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86\_64. One can still run LTSMin using Rosetta and libtool for x86\_64. You can also build and install LTSMin using Homebrew (for x86\_64) by `brew install maswag/scientific/ltsmin-beta`.
 
 1. Set up Rosetta on the macOS
 2. Install Homebrew for intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
-3. Install `libtool` for x86_64 with `/usr/local/bin/brew install libtool`
+3. Install `libtool` for x86\_64 with `/usr/local/bin/brew install libtool`
 
 Notes
 -----

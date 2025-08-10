@@ -3,6 +3,13 @@ FalCAuN Examples with Kotlin
 
 This directory contains examples to directly execute FalCAuN via Kotlin. Our examples depends on [kscript](https://github.com/kscripting/kscript) or [kotlin-jupyter kernel](https://github.com/Kotlin/kotlin-jupyter) to execute the examples.
 
+For the scripts using python, probably you have to set some environment variables appropriately, such as:
+
+```sh
+export JEP_JAVA_LIBRARY_PATH="$PWD/.venv/lib/python3.10/site-packages/jep"
+export PYTHONEXECUTABLE="$PWD/.venv/bin/python3.10"
+```
+
 Usage of kotlin scripts
 -----------------------
 

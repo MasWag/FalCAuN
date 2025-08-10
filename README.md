@@ -113,7 +113,7 @@ mvn install --also-make --projects python
 
 ### Installation of LTSMin 3.1.0 on macOS with ARM Processors
 
-FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports `x86_64`. One can still run LTSMin using Rosetta and libtool for `x86_64`.
+FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports `x86_64`. One can still run LTSMin using Rosetta and libtool for `x86_64`. You can also build and install LTSMin using Homebrew (for x86\_64): `brew install maswag/scientific/ltsmin-beta`.
 
 1. Set up Rosetta on the macOS
 2. Install Homebrew for intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
