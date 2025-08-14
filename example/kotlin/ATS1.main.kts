@@ -23,6 +23,8 @@
  *
  ********/
 
+// Import the common utilities
+@file:Import("./Common.kt")
 // Import the constants for AutoTrans
 @file:Import("./AutoTrans.kt")
 // This script depends on FalCAuN-core and FalCAuN-matlab
@@ -30,27 +32,12 @@
 // We assume that the MATLAB_HOME environment variable is set
 @file:KotlinOptions("-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64")
 
-import ch.qos.logback.classic.Level
-import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.maswag.falcaun.*
-import org.slf4j.LoggerFactory
 import kotlin.streams.toList
 
-// The following surprises the debug log
-var updaterLogger = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
-updaterLogger.level = Level.INFO
-var updateListLogger = LoggerFactory.getLogger(AdaptiveSTLList::class.java) as Logger
-updateListLogger.level = Level.INFO
-var LTSminVersionLogger = LoggerFactory.getLogger(LTSminVersion::class.java) as Logger
-LTSminVersionLogger.level = Level.INFO
-var AbstractLTSminLogger = LoggerFactory.getLogger(AbstractLTSmin::class.java) as Logger
-AbstractLTSminLogger.level = Level.INFO
-var EQSearchProblemLogger = LoggerFactory.getLogger(EQSearchProblem::class.java) as Logger
-EQSearchProblemLogger.level = Level.INFO
-var SimulinkSteadyStateGeneticAlgorithmLogger = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm::class.java) as Logger
-SimulinkSteadyStateGeneticAlgorithmLogger.level = Level.INFO
+// The following suppresses the debug log
 
 // Define the input and output mappers
 val throttleValues = listOf(0.0, 100.0)
@@ -64,22 +51,16 @@ val signalMapper = ExtendedSignalMapper()
 val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
 // Define the STL properties
-val stlFactory = STLFactory()
-val stlList = listOf(
-    "[] (signal(0) < 120)",
-    "[] (signal(0) < 100)",
-    "[] (signal(0) < 80)",
-    "[] (signal(0) < 60)",
-    "[] (signal(0) < 40)",
-    "[] (signal(0) < 20)"
-).stream().map { stlString ->
-    stlFactory.parse(
-        stlString,
-        inputMapper,
-        outputMapperReader.outputMapper,
-        outputMapperReader.largest
-    )
-}.toList()
+val stlList = parseStlList(listOf(
+                               "[] (signal(0) < 120)",
+                               "[] (signal(0) < 100)",
+                               "[] (signal(0) < 80)",
+                               "[] (signal(0) < 60)",
+                               "[] (signal(0) < 40)",
+                               "[] (signal(0) < 20)"
+                           ),
+                           inputMapper,
+                           outputMapperReader)
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
@@ -107,17 +88,6 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { au
     val result = verifier.run()
 
     // Print the result
-    if (result) {
-        println("The property is likely satisfied")
-    } else {
-        for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified by the following counterexample")
-            println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-            println("cex abstract input: ${verifier.cexAbstractInput[i]}")
-            println("cex output: ${verifier.cexOutput[i]}")
-        }
-    }
-    println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
-    println("Number of simulations: ${verifier.simulinkCount}")
-    println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
+    printResults(verifier, result)
+    printStats(verifier)
 }

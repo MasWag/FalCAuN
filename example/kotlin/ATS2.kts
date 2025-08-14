@@ -1,5 +1,7 @@
 #!/usr/bin/env kscript
 
+// Import the common utilities and constants
+@file:Import("./Common.kt")
 // Import the constants for AutoTrans
 @file:Import("./AutoTrans.kt")
 // This script depends on FalCAuN-core and FalCAuN-matlab
@@ -22,21 +24,17 @@ val signalMapper = SimpleSignalMapper()
 val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
 // Define the STL properties
-val stlFactory = STLFactory()
-val stlList = listOf(
-    "[]((signal(2) == 3) -> signal(0) > 20)",
-    "[]((signal(2) == 3) -> signal(0) > 22.5)",
-    "[]((signal(2) == 3) -> signal(0) > 25)",
-    "[]((signal(2) == 3) -> signal(0) > 27.5)",
-    "[]((signal(2) == 3) -> signal(0) > 30)"
-).stream().map { stlString ->
-    stlFactory.parse(
-        stlString,
-        inputMapper,
-        outputMapperReader.outputMapper,
-        outputMapperReader.largest
-    )
-}.toList()
+val stlList = parseStlList(
+    listOf(
+        "[]((signal(2) == 3) -> signal(0) > 20)",
+        "[]((signal(2) == 3) -> signal(0) > 22.5)",
+        "[]((signal(2) == 3) -> signal(0) > 25)",
+        "[]((signal(2) == 3) -> signal(0) > 27.5)",
+        "[]((signal(2) == 3) -> signal(0) > 30)"
+    ),
+    inputMapper,
+    outputMapperReader
+)
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
@@ -62,16 +60,7 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { au
     )
     val result = verifier.run()
 
-    // Print the result
-    if (result) {
-        println("The property is likely satisfied")
-    } else {
-        println("The property is falsified")
-        for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified by the following counterexample)")
-            println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-            println("cex abstract input: ${verifier.cexAbstractInput[i]}")
-            println("cex output: ${verifier.cexOutput[i]}")
-        }
-    }
+    // Print the result and stats (shared helpers)
+    printResults(verifier, result)
+    printStats(verifier)
 }

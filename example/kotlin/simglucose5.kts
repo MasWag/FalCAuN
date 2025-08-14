@@ -10,35 +10,44 @@
 //@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
 import net.maswag.falcaun.*
-// Reduce verbose logs via common helper
+
+// Reduce verbose logs
 surpressesLog()
 
 // Define the input and output mappers
 val ignoreValues = listOf(null)
 val mealSizeValues = listOf(0.0, 50.0)
 val inputMapper = InputMapperReader.make(listOf(mealSizeValues))
-val bgValues = listOf(55.0, 180.0, 240.0)
-val insulinValues = listOf(0.5)
-val outputMapperReader = OutputMapperReader(listOf(bgValues, insulinValues, bgValues, ignoreValues, ignoreValues, ignoreValues))
+// The 10th-percentile and 90th-percentile thresholds
+val tenthBg = 66.2
+val ninetiethBg = 189.2
+val bgValues = listOf(tenthBg, ninetiethBg, null)
+val minbgValues = listOf(189.2, null)
+val maxbgValues = listOf(66.2, null)
+val insulinValues = listOf(0.5, null)
+val deltaBgValues = listOf(null)
+val outputMapperReader = OutputMapperReader(listOf(bgValues, insulinValues, minbgValues, maxbgValues, deltaBgValues, deltaBgValues))
 val signalMapper = ExtendedSignalMapper()
 val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
-// Define the STL properties
+// Define the STL properties. The properties are taken from the following paper.
+// - Young, William, et al. "DAMON: A data authenticity monitoring
+//   system for diabetes management." 2018 IEEE/ACM Third International
+//   Conference on Internet-of-Things Design and Implementation
+//   (IoTDI). IEEE, 2018.
 val stlList = parseStlList(
     listOf(
-        // BG does not go below 55
-        "G($min_bg > 55.0)",
-        // Does not exceed the upper 10% for more than 30 minutes
-        "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg > 180.0 -> X ($min_bg < 180.0))",
-        // Does not exceed the upper 10% for more than 30 minutes after insulin administration
-        "(input(0) == 50.0 && X (input(0) == 50.0)) R ($insulin > 0.5 -> X ($min_bg < 180.0))",
-        // Hyperglycemia does not last longer than 180 minutes
-        "(input(0) == 50.0 && X (input(0) == 50.0)) R ! []_[0, ${(180.0 / stepDuration).toInt()}] ($min_bg > 240.0)",
+        // BG should not stay below 10th-percentile threshold for more than 120 minutes.
+        "G($bg > $tenthBg || F_[0, ${(120 / stepDuration).toInt()}] $max_bg > $tenthBg)",
+        // BG should not stay above 90th-percentile threshold for more than 120 minutes.
+        "G($bg < $ninetiethBg || F_[0, ${(120 / stepDuration).toInt()}] $min_bg < $ninetiethBg)",
+        // BG should not stay above 90th-percentile threshold for more than 150 minutes after an insuline injection.
+        "G($bg < $ninetiethBg || $insulin < 0.5 || F_[0, ${(150 / stepDuration).toInt()}] $min_bg < $ninetiethBg)",
     ),
     inputMapper,
     outputMapperReader
 )
-val signalLength = 48 //3*10 * 24 mins
+val signalLength = 30 // 30 * 30 mins
 val properties = AdaptiveSTLList(stlList, signalLength)
 
 // Constants for the GA-based equivalence testing
@@ -52,7 +61,7 @@ makeSimglucoseSUL().use { sul ->
     // Configure and run the verifier
     val verifier = NumericSULVerifier(sul, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
-    verifier.setTimeout(5 * 60 * 8) // 5 minutes
+    verifier.setTimeout(5 * 60 * 8) // 40 minutes
     verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
     verifier.addGAEQOracleAll(
         signalLength,

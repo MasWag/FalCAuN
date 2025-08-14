@@ -94,7 +94,7 @@ class SULBase(AbstractSUL):
 
     def pre(self) -> None:
         # Put them together to create a simulation object
-        print("Process ID: {}".format(os.getpid()))
+        # print("Process ID: {}".format(os.getpid()))
 
         self.controller.reset()
         self.state = self.env.reset()

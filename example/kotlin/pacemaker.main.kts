@@ -26,6 +26,8 @@
  *
  ********/
 
+// Import the common utilities
+@file:Import("./Common.kt")
 // This script depends on FalCAuN-core and FalCAuN-matlab
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT")
 @file:DependsOn("net.maswag.falcaun:FalCAuN-matlab:1.0-SNAPSHOT")
@@ -74,18 +76,14 @@ val prevMaxPaceCount = "output(3)"
 val prevMinPaceCount = "output(4)" // We do not use the minimum values show as an example
 
 // Define the STL properties
-val stlFactory = STLFactory()
 // Signal must be long enough
 val stlSignalLength = "alw_[${(10 / signalStep).toInt()},${(10 / signalStep).toInt()}] $LRL > 0"
 val stlGPaceCountLt15 = "($paceCount < 16.0 && alw_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount < 16.0)"
 val stlFPaceCountGt8 = "($paceCount > 7.0 || ev_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount > 7.0)"
-val stlList = listOf(
-    stlFactory.parse(
-        "(!($stlSignalLength)) || ($stlGPaceCountLt15 && $stlFPaceCountGt8)",
-        inputMapper,
-        outputMapperReader.outputMapper,
-        outputMapperReader.largest
-    )
+val stlList = parseStlList(
+    listOf("(!($stlSignalLength)) || ($stlGPaceCountLt15 && $stlFPaceCountGt8)"),
+    inputMapper,
+    outputMapperReader
 )
 println(stlList.get(0).toAbstractString())
 val signalLength = (12 / signalStep).toInt()
@@ -117,18 +115,7 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { pa
     //verifier.addWpMethodEQOracle(6)
     val result = verifier.run()
 
-    // Print the result
-    if (result) {
-        println("The property is likely satisfied")
-    } else {
-        for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified by the following counterexample")
-            println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-            println("cex abstract input: ${verifier.cexAbstractInput[i]}")
-            println("cex output: ${verifier.cexOutput[i]}")
-        }
-    }
-    println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
-    println("Number of simulations: ${verifier.simulinkCount}")
-    println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
+    // Print the result and stats (shared helpers)
+    printResults(verifier, result)
+    printStats(verifier)
 }

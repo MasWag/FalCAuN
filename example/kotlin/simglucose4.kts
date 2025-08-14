@@ -10,30 +10,38 @@
 //@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
 import net.maswag.falcaun.*
-// Reduce verbose logs via common helper
+
+// Reduce verbose logs
 surpressesLog()
 
 // Define the input and output mappers
 val ignoreValues = listOf(null)
 val mealSizeValues = listOf(0.0, 50.0)
 val inputMapper = InputMapperReader.make(listOf(mealSizeValues))
-val bgValues = listOf(55.0, 180.0, 240.0)
-val insulinValues = listOf(0.5)
-val outputMapperReader = OutputMapperReader(listOf(bgValues, insulinValues, bgValues, ignoreValues, ignoreValues, ignoreValues))
+val minbgValues = listOf(70.0, null)
+val maxbgValues = listOf(180.0, null)
+val insulinValues = listOf(null)
+val deltaBgValues = listOf(-5.0, 3.0, null)
+val outputMapperReader = OutputMapperReader(listOf(ignoreValues, insulinValues, minbgValues, maxbgValues, deltaBgValues, deltaBgValues))
 val signalMapper = ExtendedSignalMapper()
 val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
-// Define the STL properties
+// Define the STL properties. The properties are taken from the following paper.
+// - Young, William, et al. "DAMON: A data authenticity monitoring
+//   system for diabetes management." 2018 IEEE/ACM Third International
+//   Conference on Internet-of-Things Design and Implementation
+//   (IoTDI). IEEE, 2018.
 val stlList = parseStlList(
     listOf(
-        // BG does not go below 55
-        "G($min_bg > 55.0)",
-        // Does not exceed the upper 10% for more than 30 minutes
-        "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg > 180.0 -> X ($min_bg < 180.0))",
-        // Does not exceed the upper 10% for more than 30 minutes after insulin administration
-        "(input(0) == 50.0 && X (input(0) == 50.0)) R ($insulin > 0.5 -> X ($min_bg < 180.0))",
-        // Hyperglycemia does not last longer than 180 minutes
-        "(input(0) == 50.0 && X (input(0) == 50.0)) R ! []_[0, ${(180.0 / stepDuration).toInt()}] ($min_bg > 240.0)",
+        // BG must be in a good range
+        "G($min_bg > 70.0)",
+        "G($max_bg < 180.0)",
+        // BG must be below 180 if the meal is not given too much
+        "(G_[0,5] $mealSize == 50.0) R ($max_bg < 180.0)",
+        // The change in BG is between -5 and 3.
+        "G($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
+        // The change in BG is between -5 and 3 if the meal is not given too much
+        "(G_[0,5] $mealSize == 50.0) R ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
     ),
     inputMapper,
     outputMapperReader
@@ -52,7 +60,7 @@ makeSimglucoseSUL().use { sul ->
     // Configure and run the verifier
     val verifier = NumericSULVerifier(sul, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
-    verifier.setTimeout(5 * 60 * 8) // 5 minutes
+    verifier.setTimeout(5 * 60 * 8) // 40 minutes
     verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
     verifier.addGAEQOracleAll(
         signalLength,
