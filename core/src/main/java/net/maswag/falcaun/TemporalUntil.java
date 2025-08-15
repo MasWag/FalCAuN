@@ -7,10 +7,11 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * <p>STLUntil class.</p>
+ * <p>TemporalUntil class.</p>
+ * <p>This class implements the until operator in STL and LTL.</p>
  *
- * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  * @param <I> Type of the input at each step
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Getter
 public class TemporalUntil<I> extends AbstractTemporalLogic<I> {
@@ -33,14 +34,21 @@ public class TemporalUntil<I> extends AbstractTemporalLogic<I> {
     }
 
     public RoSI getRoSIRaw(IOSignal<I> signal) {
+        // The semantics of p U q is max_i (q_i && (p_0 && p_1 && ... && p_i)),
+        // where p_i is the RoSI of the left formula at the i-th prefix of the signal,
+        // and q_i is the RoSI of the right formula at the i-th prefix of the signal.
         RoSI result = new RoSI(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
 
+        // Take the suffixes of signal in the longest-first order and compute their RoSI.
+        List<RoSI> historyRoSIs = signal.suffixes(true).stream().map(this.left::getRoSI).toList();
         for (int i = 0; i < signal.length(); i++) {
-            RoSI nextRoSI = this.right.getRoSI(signal.subWord(i));
-            RoSI globalRoSI = signal.prefixes(true).stream().sorted((left, right) ->
-                    right.length() - left.length()).limit(i + 1).map(this.left::getRoSI)
-                    .filter(Objects::nonNull).reduce(nextRoSI, RoSI::min);
-            result.assignMax(globalRoSI);
+            // Compute q_i && (p_0 && p_1 && ... && p_i)
+            RoSI releasedRoSI = this.right.getRoSI(signal.subWord(i));
+            RoSI reducedRoSI = historyRoSIs.stream().limit(i + 1)
+                    .filter(Objects::nonNull)
+                    .reduce(releasedRoSI, RoSI::min);
+
+            result.assignMax(reducedRoSI);
         }
         return result;
     }
