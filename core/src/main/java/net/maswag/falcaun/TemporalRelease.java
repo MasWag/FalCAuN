@@ -34,19 +34,13 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
     }
 
     public RoSI getRoSIRaw(IOSignal<I> signal) {
-        // The semantics of p U q is max_i (q_i && (p_0 && p_1 && ... && p_i)),
-        // where p_i is the RoSI of the left formula at the i-th prefix of the signal,
-        // and q_i is the RoSI of the right formula at the i-th prefix of the signal.
-        // Since p R q is equivalent to !((!p) U (!q)), the semantics of p R q is
-        // !(max_i (!q_i && (!p_0 && !p_1 && ... && !p_i)))
-        // = (min_i (q_i || (p_0 || p_1 || ... || p_i)))
-        RoSI result = new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
         // The semantics of the Release operator (p R q) is:
         // min_i (q_i || (p_0 || p_1 || ... || p_i)),
         // where p_i is the RoSI of the left formula at the i-th prefix of the signal,
         // and q_i is the RoSI of the right formula at the i-th prefix of the signal.
         // This follows from the equivalence: p R q ≡ !((!p) U (!q)).
         RoSI result = new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+
         // Take the suffixes of signal in the longest-first order and compute their RoSI.
         List<RoSI> historyRoSIs = signal.suffixes(true).stream().map(this.left::getRoSI).toList();
         for (int i = 0; i < signal.length(); i++) {

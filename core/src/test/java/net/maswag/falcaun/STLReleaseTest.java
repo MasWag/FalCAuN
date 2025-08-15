@@ -30,9 +30,6 @@ public class STLReleaseTest {
 
     @Property
     public void releaseUntil(@From(IOSignalGenerator.class) IOSignal<List<Double>> signal) {
-        STLCost release = new STLRelease(new STLInputAtomic(0, STLOutputAtomic.Operation.lt, 0),
-                new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
-        STLCost until = new STLNot(new STLUntil(
         STLCost release = new STLRelease(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 0),
                 new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
         STLCost until = new STLNot(new STLUntil(
