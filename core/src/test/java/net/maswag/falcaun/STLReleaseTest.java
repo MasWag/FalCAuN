@@ -33,7 +33,10 @@ public class STLReleaseTest {
         STLCost release = new STLRelease(new STLInputAtomic(0, STLOutputAtomic.Operation.lt, 0),
                 new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
         STLCost until = new STLNot(new STLUntil(
-                new STLNot(new STLInputAtomic(0, STLOutputAtomic.Operation.lt, 0)),
+        STLCost release = new STLRelease(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 0),
+                new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
+        STLCost until = new STLNot(new STLUntil(
+                new STLNot(new STLInputAtomic(0, STLInputAtomic.Operation.lt, 0)),
                 new STLNot(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0))));
         RoSI releaseRoSI = release.getRoSI(signal);
         RoSI untilRoSI = until.getRoSI(signal);
