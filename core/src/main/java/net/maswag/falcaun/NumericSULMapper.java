@@ -77,6 +77,19 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
     }
 
     /**
+     * <p>Constructor for SimulinkSULMapper.</p>
+     *
+     * @param inputMapper        An input mapper.
+     * @param outputMapperReader The reader of output mapper.
+     * @param sigMap             An signal mapper.
+     */
+    public NumericSULMapper(List<Map<Character, Double>> inputMapper,
+                            OutputMapperReader outputMapperReader,
+                            SignalMapper sigMap) {
+        this(inputMapper, outputMapperReader.getLargest(), outputMapperReader.getOutputMapper(), sigMap);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

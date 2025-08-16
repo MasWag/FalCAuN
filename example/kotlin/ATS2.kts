@@ -18,10 +18,8 @@ val velocityValues = listOf(20.0, 22.5, 25.0, 27.5, 30.0, null)
 val accelerationValues = listOf(null)
 val gearValues = listOf(2.0, 3.0, null)
 val outputMapperReader = OutputMapperReader(listOf(velocityValues, accelerationValues, gearValues))
-outputMapperReader.parse()
 val signalMapper = SimpleSignalMapper()
-val mapper =
-    NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
+val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
 // Define the STL properties
 val stlFactory = STLFactory()

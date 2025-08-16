@@ -40,10 +40,8 @@ val bgValues = listOf(90.0)
 val insulinValues = listOf(0.5)
 val deltaBgValues = listOf(-5.0, 3.0)
 val outputMapperReader = OutputMapperReader(listOf(bgValues, ignoreValues, ignoreValues, ignoreValues, deltaBgValues, deltaBgValues))
-outputMapperReader.parse()
 val signalMapper = ExtendedSignalMapper()
-val mapper =
-    NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
+val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
 val bg = "signal(0)"
 val insulin = "signal(1)"

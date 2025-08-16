@@ -45,11 +45,9 @@ val ignoreValues = listOf(null)
 val gearValues = listOf(null)
 //val outputMapperReader = OutputMapperReader(listOf(velocityValues, accelerationValues, gearValues, velocityValues, accelerationValues))
 val outputMapperReader = OutputMapperReader(listOf(ignoreValues, ignoreValues, gearValues, velocityValues, accelerationValues))
-outputMapperReader.parse()
 val mapperString = listOf("previous_max_output(0)", "previous_max_output(1)").joinToString("\n")
 val signalMapper: ExtendedSignalMapper = ExtendedSignalMapper.parse(BufferedReader(StringReader(mapperString)))
-val mapper =
-    NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
+val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
 // Define the output signal names
 val velocity = "signal(0)"
