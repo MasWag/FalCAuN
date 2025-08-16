@@ -823,10 +823,11 @@
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep</span>
 </span></code></pre></div>
 <h3 id="3-build-and-install-falcaun_1">3. Build and Install FalCAuN</h3>
+<p>Build FalCAuN using Maven. You may need to set the environment variable <code>PYTHONEXECUTABLE</code> to the full path of the Python executable, for example: <code>export PYTHONEXECUTABLE="$PWD/.venv/bin/python3"</code>.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python
 </span></code></pre></div>
 <h2 id="installation-of-ltsmin-310-on-macos-with-arm-processors">Installation of LTSMin 3.1.0 on macOS with ARM Processors</h2>
-<p>FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86_64. One can still run LTSMin using Rosetta and libtool for x86_64.</p>
+<p>FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86_64. One can still run LTSMin using Rosetta and libtool for x86_64. You can also build and install LTSMin using Homebrew (for x86_64) by <code>brew install maswag/scientific/ltsmin-beta</code>.</p>
 <ol>
 <li>Set up Rosetta on the macOS</li>
 <li>Install Homebrew for intel processors with <code>arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"</code></li>
