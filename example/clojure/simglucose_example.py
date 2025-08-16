@@ -110,6 +110,7 @@ class SULBase(AbstractSUL):
     def close(self) -> None:
         pass
 
+
     def results(self):
         return self.env.show_history()
 

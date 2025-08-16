@@ -33,7 +33,6 @@
 (def input-mapper (make-default-input-mapper))
 
 ;; Output mapping: [bgValues, insulinValues, ignore, bgValues, ignore, ignore]
->>>>>>> 72f25fe (Simplified the examples in Clojure)
 (def output-mapper-reader
   (let [ignore-values   [nil]
         bg-values       [55.0 70.0 400.0]
