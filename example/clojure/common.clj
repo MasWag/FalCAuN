@@ -43,7 +43,10 @@
   (if result
     (println "All the properties are likely satisfied")
     (do
-      (println "Some properties are falsified")
+      (if (= (.size (.getProperties verifier))
+             (.size (.getCexProperty verifier)))
+        (println "All the properties are falsified")
+        (println "Some properties are falsified"))
       (let [properties (.getCexProperty verifier)
             concrete-inputs (.getCexConcreteInput verifier)
             abstract-inputs (.getCexAbstractInput verifier)
@@ -67,7 +70,10 @@
   (if result
     (println "All the properties are likely satisfied")
     (do
-      (println "Some properties are falsified")
+      (if (= (.size (.getProperties verifier))
+             (.size (.getCexProperty verifier)))
+        (println "All the properties are falsified")
+        (println "Some properties are falsified"))
       (let [properties (.getCexProperty verifier)
             inputs     (.getCexInput verifier)
             outputs (.getCexOutput verifier)]
