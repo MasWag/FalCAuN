@@ -195,4 +195,12 @@ example/hscc2020/results
 example/hscc2020/result.with.number.tsv
 example/hscc2020/result_name.list.txt
 example/hscc2020/vagrant
+
 .idea
+.venv
+.vscode
+.settings
+.classpath
+.factorypath
+.project
+gen
