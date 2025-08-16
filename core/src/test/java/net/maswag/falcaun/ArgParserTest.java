@@ -517,7 +517,7 @@ class ArgParserTest {
                 assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
                 assertEquals(ArgParser.EquivType.GA, argParser.getEquiv());
                 assertEquals("stl.txt", argParser.getStlFile());
-                assertEquals(ArgParser.GASelectionKind.BestSolution, argParser.getSelectionKind());
+                assertEquals(GASelectionKind.BestSolution, argParser.getSelectionKind());
                 assertNull(argParser.getStlFormula());
             }
 
@@ -548,7 +548,7 @@ class ArgParserTest {
                 assertEquals("output.mapper.txt", argParser.getOutputMapperFile());
                 assertEquals(ArgParser.EquivType.GA, argParser.getEquiv());
                 assertEquals("stl.txt", argParser.getStlFile());
-                assertEquals(ArgParser.GASelectionKind.Tournament, argParser.getSelectionKind());
+                assertEquals(GASelectionKind.Tournament, argParser.getSelectionKind());
                 assertNull(argParser.getStlFormula());
             }
 

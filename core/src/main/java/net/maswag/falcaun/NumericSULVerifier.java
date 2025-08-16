@@ -219,7 +219,7 @@ public class NumericSULVerifier {
     public void addGAEQOracle(Function<IOSignal<List<Double>>, Double> costFunc,
                        int length,
                        int maxTests,
-                       ArgParser.GASelectionKind selectionKind,
+                       GASelectionKind selectionKind,
                        int generationSize,
                        double crossoverProb,
                        double mutationProbability, // e.g., 1.0 / length
@@ -326,7 +326,7 @@ public class NumericSULVerifier {
         }
     }
 
-    public void addGAEQOracleAll(int length, int maxTest, ArgParser.GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProb) {
+    public void addGAEQOracleAll(int length, int maxTest, GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProb) {
         for (int i = 0; i < this.getProperties().size(); i++) {
             this.addGAEQOracle(this.getProperties().getSTLProperties().get(i),
                     length, maxTest, selectionKind, populationSize, crossoverProb, mutationProb, this.getProperties().list().get(i));

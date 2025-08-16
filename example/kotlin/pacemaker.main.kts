@@ -107,7 +107,7 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { pa
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
-        ArgParser.GASelectionKind.Tournament,
+        GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
         mutationProb

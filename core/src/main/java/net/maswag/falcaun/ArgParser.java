@@ -273,11 +273,6 @@ public class ArgParser {
         System.out.println(ArgParser.class.getPackage().getImplementationTitle() + " version " + ArgParser.class.getPackage().getImplementationVersion());
     }
 
-    public enum GASelectionKind {
-        BestSolution,
-        Tournament
-    }
-
     enum EquivType {
         HC,
         RANDOM,

@@ -314,7 +314,7 @@ class SimulinkSULVerifierTest {
             long timeout = 2 * 60;
             verifier.setTimeout(timeout);
             // add equivalence oracle
-            verifier.addGAEQOracleAll(25, 1000, ArgParser.GASelectionKind.Tournament,
+            verifier.addGAEQOracleAll(25, 1000, GASelectionKind.Tournament,
                     50, 0.9, 0.01);
             long startTime = System.nanoTime();
             assertTrue(verifier.run());
@@ -348,7 +348,7 @@ class SimulinkSULVerifierTest {
             void tearDown() throws Exception {
                 // define the verifier
                 verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
-                verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
+                verifier.addGAEQOracleAll(15, 5000, GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
             }
@@ -387,7 +387,7 @@ class SimulinkSULVerifierTest {
             void verify() throws Exception {
                 // define the verifier
                 verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
-                verifier.addGAEQOracleAll(15, 5000, ArgParser.GASelectionKind.Tournament,
+                verifier.addGAEQOracleAll(15, 5000, GASelectionKind.Tournament,
                         50, 0.9, 0.01);
                 assertFalse(verifier.run());
                 // Confirm that the number of the properties is correctly handled

@@ -23,7 +23,7 @@
 
 (import '(net.maswag.falcaun
           AdaptiveSTLList
-          ArgParser$GASelectionKind
+          GASelectionKind
           InputMapperReader
           NumericSULMapper
           NumericSULVerifier

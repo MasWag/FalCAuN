@@ -57,7 +57,7 @@ makeSimglucoseSUL().use { sul ->
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
-        ArgParser.GASelectionKind.Tournament,
+        GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
         mutationProb
