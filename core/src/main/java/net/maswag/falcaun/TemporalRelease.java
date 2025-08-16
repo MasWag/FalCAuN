@@ -7,10 +7,11 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * <p>STLRelease class.</p>
+ * <p>TemporalRelease class.</p>
+ * <p>This class implements the release operator in STL and LTL.</p>
  *
- * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  * @param <I> Type of the input at each step
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Getter
 public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
@@ -29,17 +30,26 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
      */
     @Override
     public RoSI getRoSI(IOSignal<I> signal) {
-        return getRoSIRaw(signal).assignMax(new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
+        return getRoSIRaw(signal).assignMin(new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
     }
 
     public RoSI getRoSIRaw(IOSignal<I> signal) {
-        RoSI result = new RoSI(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        // The semantics of the Release operator (p R q) is:
+        // min_i (q_i || (p_0 || p_1 || ... || p_i)),
+        // where p_i is the RoSI of the left formula at the i-th prefix of the signal,
+        // and q_i is the RoSI of the right formula at the i-th prefix of the signal.
+        // This follows from the equivalence: p R q ≡ !((!p) U (!q)).
+        RoSI result = new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 
+        // Take the suffixes of signal in the longest-first order and compute their RoSI.
+        List<RoSI> historyRoSIs = signal.suffixes(true).stream().map(this.left::getRoSI).toList();
         for (int i = 0; i < signal.length(); i++) {
-            RoSI nextRoSI = this.right.getRoSI(signal.subWord(i));
-            RoSI globalRoSI = signal.prefixes(true).stream().sorted((left, right) ->
-                    right.length() - left.length()).limit(i + 1).map(this.left::getRoSI).filter(Objects::nonNull).reduce(nextRoSI, RoSI::max);
-            result.assignMin(globalRoSI);
+            // Compute q_i || (p_0 || p_1 || ... || p_i)
+            RoSI releasedRoSI = this.right.getRoSI(signal.subWord(i));
+            RoSI reducedRoSI = historyRoSIs.stream().limit(i + 1)
+                    .filter(Objects::nonNull)
+                    .reduce(releasedRoSI, RoSI::max);
+            result.assignMin(reducedRoSI);
         }
         return result;
     }

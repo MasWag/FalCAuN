@@ -1,39 +1,22 @@
 package net.maswag.falcaun;
 
-import net.automatalib.word.WordBuilder;
+import com.pholser.junit.quickcheck.From;
+import com.pholser.junit.quickcheck.Property;
+import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
 import net.maswag.falcaun.TemporalEventually.STLEventually;
 import net.maswag.falcaun.TemporalLogic.STLCost;
 import net.maswag.falcaun.TemporalUntil.STLUntil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import static java.lang.Double.POSITIVE_INFINITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class STLUntilTest {
-    IOSignal signal;
-
-    @BeforeEach
-    void setUp() {
-        Random random = new Random();
-        int size = random.nextInt(32);
-        WordBuilder<List<Double>> inputBuilder = new WordBuilder<>();
-        WordBuilder<List<Double>> outputBuilder = new WordBuilder<>();
-
-        for (int i = 0; i < size; i++) {
-            inputBuilder.append(Collections.singletonList((random.nextDouble() - 0.5) * 2000));
-            outputBuilder.append(Collections.singletonList((random.nextDouble() - 0.5) * 2000));
-        }
-        signal = new IODiscreteSignal(inputBuilder.toWord(), outputBuilder.toWord());
-        assert signal.size() == size;
-    }
-
-    @Test
-    void UntilEventually() {
+@RunWith(JUnitQuickcheck.class)
+public class STLUntilTest {
+    @Property
+    public void UntilEventually(@From(IOSignalGenerator.class) IOSignal<List<Double>> signal) {
         STLCost until = new STLUntil(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, POSITIVE_INFINITY),
                 new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
         STLCost eventually = new STLEventually(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));

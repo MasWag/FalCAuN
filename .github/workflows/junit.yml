@@ -57,7 +57,9 @@ jobs:
         run: mvn test --projects python
         env:
           # Path to the jep library `jep-4.2.1.jar`
-          LD_LIBRARY_PATH: "/opt/hostedtoolcache/Python/3.13.5/x64/lib/python3.13/site-packages/jep"
+          LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
+          JEP_JAVA_LIBRARY_PATH: ${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
+
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5.4.3
