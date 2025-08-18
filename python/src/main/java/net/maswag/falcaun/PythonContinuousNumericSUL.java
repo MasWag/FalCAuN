@@ -98,7 +98,13 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
             }).collect(Collectors.toList());
 
         var length1 = data.size();
+        if (length1 == 0) {
+            throw new IllegalArgumentException("Input data is empty.");
+        }
         var length2 = data.get(0).size();
+        if (length2 < 2) {
+            throw new IllegalArgumentException("Each row must contain at least a timestamp and one output value.");
+        }
 
         var timestamps = new ArrayList<Double>();
         var result = new ArrayList<List<Double>>();

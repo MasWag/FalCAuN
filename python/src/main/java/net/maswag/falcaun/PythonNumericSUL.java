@@ -106,20 +106,19 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
         pre();
 
         ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
-        ArrayList<?> ret = null;
 
         try {
             // Use exec() if it is available in the model for batch processing.
             // Otherwise, use step() for each input signal.
             if (this.model.hasExec()) {
-                ret = this.model.exec(inputSignal.asList());
+                ArrayList<?> ret = this.model.exec(inputSignal.asList());
                 outputs = ret.stream().map(e1 -> {
                     Stream<?> s = List.class.cast(e1).stream();
                     return s.map(e2 -> Double.class.cast(e2)).collect(Collectors.toList());
                 }).collect(Collectors.toCollection(ArrayList::new));
             } else {
                 for (var e : inputSignal) {
-                    ret = this.model.step(e);
+                    ArrayList<?> ret = this.model.step(e);
                     var output = ret.stream().map(obj -> Double.class.cast(obj)).collect(Collectors.toList());
                     outputs.add(output);
                 }

@@ -4,7 +4,6 @@ sys.path.append(".")
 import os
 from abstract_sul import AbstractSUL
 from typing import List, Callable, Tuple
-#from java.util import ArrayList
 import matlab.engine
 import matlab
 import numpy as np
@@ -328,9 +327,3 @@ class SUL(AbstractSUL):
 
     def close(self) -> None:
         self.simulinkModel.close()
-
-#if __name__ == "__main__":
-#    sul = SUL()
-#    sul.step([0.0, 0.0])
-#    sul.close()
-#    print("terminated main")
