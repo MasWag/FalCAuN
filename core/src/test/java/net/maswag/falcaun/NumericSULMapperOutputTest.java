@@ -3,10 +3,7 @@ package net.maswag.falcaun;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.maswag.falcaun.STLAbstractAtomic.Operation;
-
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
