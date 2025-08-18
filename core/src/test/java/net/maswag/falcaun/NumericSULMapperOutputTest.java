@@ -45,7 +45,7 @@ class NumericSULMapperOutputTest {
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, signalMapper);
     }
 
-    boolean isSatisfiedBy(Double e0, Operation op, Double e1) {
+    private boolean isSatisfiedBy(Double e0, Operation op, Double e1) {
         String result = mapper.mapOutput(new IOSignalPiece<>(Collections.emptyList(), List.of(e0)));
         var formula = new STLOutputAtomic(0, op, e1);
         formula.setAtomic(outputMapper, largest);
