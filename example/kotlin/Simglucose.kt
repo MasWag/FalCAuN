@@ -1,6 +1,6 @@
 package net.maswag
 
-import net.maswag.falcaun.PythonNumericSUL
+import net.maswag.falcaun.python.PythonNumericSUL
 
 /**
  * Common utilities/constants for simglucose examples.

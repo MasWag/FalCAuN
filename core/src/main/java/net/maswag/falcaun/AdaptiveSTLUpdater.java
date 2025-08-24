@@ -5,6 +5,8 @@ import de.learnlib.oracle.InclusionOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.PropertyOracle;
 import net.automatalib.alphabet.Alphabet;
+import net.maswag.falcaun.parser.TemporalLogic;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

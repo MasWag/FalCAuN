@@ -2,6 +2,8 @@ package net.maswag.falcaun;
 
 import java.util.*;
 
+import net.maswag.falcaun.parser.TemporalLogic;
+
 /**
  * List of STL/LTL formulas without update
  *
