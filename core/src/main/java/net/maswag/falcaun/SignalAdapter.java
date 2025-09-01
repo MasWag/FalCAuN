@@ -62,8 +62,18 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
         concreteOutputs = new ArrayList<>();
         
         for (Map<Character, Double> entry : outputMapper.getOutputMapper()) {
-            ArrayList<Character> cList = new ArrayList<>(entry.keySet());
-            ArrayList<Double> dList = new ArrayList<>(entry.values());
+            ArrayList<Character> cList = new ArrayList<>();
+            ArrayList<Double> dList = new ArrayList<>();
+
+            // Sort the entry by value and add keys and values to cList and dList in sorted order
+            entry.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .forEachOrdered(e -> {
+                        cList.add(e.getKey());
+                        dList.add(e.getValue());
+                    });
+
             assert cList.size() == dList.size();
             abstractOutputs.add(cList);
             concreteOutputs.add(dList);
