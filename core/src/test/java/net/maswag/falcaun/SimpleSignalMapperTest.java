@@ -3,6 +3,10 @@ package net.maswag.falcaun;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.SignalMapper;
+import net.maswag.falcaun.SimpleSignalMapper;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
