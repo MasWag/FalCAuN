@@ -61,12 +61,11 @@ public class StopDisprovedEQOracle<I, O, C> implements EquivalenceOracle.MealyEq
 
     @Slf4j
     @AllArgsConstructor
-    static
-    class StaticLTLList<I> extends AbstractAdaptiveSTLUpdater<I> {
+    public static class StaticLTLList<I> extends AbstractAdaptiveSTLUpdater<I> {
         List<String> ltlProperties;
         Set<Integer> disprovedIndices = new HashSet<>();
 
-        StaticLTLList(List<String> ltlProperties) {
+        public StaticLTLList(List<String> ltlProperties) {
             this.ltlProperties = ltlProperties;
         }
 
