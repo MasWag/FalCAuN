@@ -1,12 +1,13 @@
 package net.maswag.falcaun;
 
+import java.util.List;
+import java.util.Map;
+
 import de.learnlib.sul.SULMapper;
-import net.automatalib.alphabet.Alphabet;
-import net.automatalib.word.Word;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.*;
+import net.automatalib.alphabet.Alphabet;
+import net.automatalib.word.Word;
 
 /**
  * I/O Mapper between abstract/concrete NumericSUL.
@@ -18,7 +19,7 @@ import java.util.*;
 @Slf4j
 public class NumericSULMapper implements SULMapper<String, String, List<Double>, IOSignalPiece<List<Double>>> {
     // Internal delegates for the new implementation
-    private final SignalAdapter signalAdapter;
+    protected final SignalAdapter signalAdapter;
     private final SignalDeriver signalDeriver;
 
     /**

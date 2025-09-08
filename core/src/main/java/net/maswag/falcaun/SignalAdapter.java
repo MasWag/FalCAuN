@@ -1,14 +1,18 @@
 package net.maswag.falcaun;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import de.learnlib.sul.SULMapper;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.GrowingMapAlphabet;
 import net.automatalib.word.Word;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * I/O Mapper between abstract/concrete signals using InputMapper and OutputMapper.
@@ -173,5 +177,13 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
      */
     Alphabet<List<Double>> constructConcreteAlphabet() {
         return new GrowingMapAlphabet<>(this.inputMappings.values());
+    }
+
+    public List<List<Character>> getAbstractOutputs() {
+        return abstractOutputs;
+    }
+
+    public List<Character> getLargestOutputs() {
+        return largestOutputs;
     }
 }

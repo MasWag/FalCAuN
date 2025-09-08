@@ -1,9 +1,9 @@
 package net.maswag.falcaun;
 
-import lombok.Getter;
-
 import java.util.List;
 import java.util.Set;
+
+import lombok.Getter;
 
 /**
  * <p>STLNext class.</p>
@@ -73,6 +73,26 @@ public class TemporalNext<I> extends AbstractTemporalLogic<I> {
     @Override
     public String toString() {
         return String.format("X ( %s )", subFml.toString());
+    }
+
+    @Override
+    public String toOwlString(){
+        return String.format("X ( %s )", subFml.toOwlString());
+    }
+    
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        return new TemporalNext<>(subFml.toNnf(negate), nullPositive);
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        return new TemporalNext<>(subFml.toDisjunctiveForm(), nullPositive);
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        return subFml.getAllConjunctions();
     }
 
     static class STLNext extends TemporalNext<List<Double>> implements STLCost {

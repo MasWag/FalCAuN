@@ -1,6 +1,11 @@
 package net.maswag.falcaun;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * The atomic propositions in LTL formulas
@@ -56,6 +61,13 @@ public class LTLAtomic extends AbstractTemporalLogic<String> implements Temporal
     }
 
     @Override
+    public String toOwlString(){
+        if (inputString.isPresent()) { return inputString.get(); }
+        else if (outputString.isPresent()) { return outputString.get(); }
+        else { return "true"; }
+    }
+
+    @Override
     public RoSI getRoSI(IOSignal<String> signal) {
         if (signal.isEmpty()) {
             return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -65,5 +77,24 @@ public class LTLAtomic extends AbstractTemporalLogic<String> implements Temporal
         } else {
             return new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
+    }
+
+    @Override
+    public LTLFormula toNnf(boolean negate){
+        if (negate){
+            return new TemporalNot.LTLNot(this);
+        } else {
+            return this;
+        }
+    }
+
+    @Override
+    public LTLFormula toDisjunctiveForm(){
+        return this;
+    }
+
+    @Override
+    public List<TemporalLogic<String>> getAllConjunctions(){
+        return new ArrayList<>();
     }
 }

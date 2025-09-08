@@ -1,9 +1,14 @@
 package net.maswag.falcaun;
 
-import lombok.Getter;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import lombok.Getter;
 
 /**
  * <p>The class representing the OR operator of temporal logic.</p>
@@ -46,6 +51,12 @@ public class TemporalOr<I> extends AbstractTemporalLogic<I> {
         return subFmls.stream().map(TemporalLogic<I>::toString).collect(Collectors.joining(" || "));
     }
 
+    @Override
+    public String toOwlString(){
+        return this.subFmls.stream().map(TemporalLogic<I>::toOwlString).map(
+                    s -> "( " + s + " )").collect(Collectors.joining(" | "));
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -78,6 +89,38 @@ public class TemporalOr<I> extends AbstractTemporalLogic<I> {
             return this.subFmls.stream().map(TemporalLogic::toAbstractString).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" || "));
         }
+    }
+
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        if (negate){
+            return new TemporalAnd<>(subFmls.stream().map(f -> f.toNnf(negate)).collect(Collectors.toList()));
+        } else {
+            return new TemporalOr<>(subFmls.stream().map(f -> f.toNnf(negate)).collect(Collectors.toList()));
+        }
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        List<TemporalLogic<I>> convertedSubFmls = subFmls.stream().map(f -> f.toDisjunctiveForm()).collect(Collectors.toList());
+        List<TemporalLogic<I>> newList = new ArrayList<>();
+        for (TemporalLogic<I> formula: convertedSubFmls){
+            if (formula instanceof TemporalOr<?>){
+                newList.addAll(((TemporalOr<I>)formula).getSubFmls());
+            } else {
+                newList.add(formula);
+            }
+        }
+        return new TemporalOr<>(newList);
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        List<TemporalLogic<I>> result = new ArrayList<>(subFmls);
+        for (TemporalLogic<I> subFml: subFmls){
+            result.addAll(subFml.getAllConjunctions());
+        }
+        return result;
     }
 
     static class STLOr extends TemporalOr<List<Double>> implements STLCost {

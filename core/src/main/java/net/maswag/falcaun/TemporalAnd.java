@@ -1,9 +1,14 @@
 package net.maswag.falcaun;
 
-import lombok.Getter;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import lombok.Getter;
 
 /**
  * <p>The class representing the AND operator of temporal logic.</p>
@@ -68,6 +73,12 @@ class TemporalAnd<I> extends AbstractTemporalLogic<I> {
     public Set<String> getAllAPs() {
         return subFormulas.get(0).getAllAPs();
     }
+    
+    @Override
+    public String toOwlString(){
+        return this.subFormulas.stream().map(TemporalLogic<I>::toOwlString).map(
+                    s -> "( " + s + " )").collect(Collectors.joining(" & "));
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -78,6 +89,54 @@ class TemporalAnd<I> extends AbstractTemporalLogic<I> {
             return this.subFormulas.stream().map(TemporalLogic::toAbstractString).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" && "));
         }
+    }
+
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        if (negate){
+            return new TemporalOr<>(subFormulas.stream().map(f -> f.toNnf(negate)).collect(Collectors.toList()));
+        } else {
+            return new TemporalAnd<>(subFormulas.stream().map(f -> f.toNnf(negate)).collect(Collectors.toList()));
+        }
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        List<TemporalLogic<I>> convertedSubFmls = subFormulas.stream().map(f -> f.toDisjunctiveForm()).collect(Collectors.toList());
+        List<TemporalLogic<I>> currentList = new ArrayList<>();
+        for (TemporalLogic<I> formula: convertedSubFmls){
+            List<TemporalLogic<I>> newList = new ArrayList<>();
+            if (formula instanceof TemporalOr<?>){
+                if (currentList.isEmpty()){
+                    newList.addAll(((TemporalOr<I>)formula).getSubFmls());
+                } else {
+                    for (TemporalLogic<I> currentFormula: currentList){
+                        for (TemporalLogic<I> subSubFormula: ((TemporalOr<I>)formula).getSubFmls()){
+                            newList.add(new TemporalAnd<>(currentFormula, subSubFormula));
+                        }
+                    }
+                }
+            } else {
+                if (currentList.isEmpty()){
+                    newList.add(formula);
+                } else {
+                    for (TemporalLogic<I> currentFormula: currentList){
+                        newList.add(new TemporalAnd<>(formula, currentFormula));
+                    }
+                }
+            }
+            currentList = newList;
+        }
+        return new TemporalOr<>(currentList);
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        List<TemporalLogic<I>> result = new ArrayList<>();
+        for (TemporalLogic<I> subFml: subFormulas){
+            result.addAll(subFml.getAllConjunctions());
+        }
+        return result;
     }
 
     static class STLAnd extends TemporalAnd<List<Double>> implements STLCost {

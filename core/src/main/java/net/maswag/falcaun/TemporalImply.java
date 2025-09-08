@@ -1,5 +1,6 @@
 package net.maswag.falcaun;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -71,6 +72,28 @@ public class TemporalImply<I> extends AbstractTemporalLogic<I> {
     @Override
     public String toString() {
         return String.format("( %s ) -> ( %s )", subFml1.toString(), subFml2.toString());
+    }
+
+    @Override
+    public String toOwlString(){
+        return String.format("( %s ) -> ( %s )", subFml1.toOwlString(), subFml2.toOwlString());
+    }
+    
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        TemporalLogic<I> simplified = new TemporalOr<>(new TemporalNot<>(subFml1), subFml2);
+        return simplified.toNnf(negate);
+    } 
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        TemporalLogic<I> simplified = new TemporalOr<>(new TemporalNot<>(subFml1), subFml2);
+        return simplified.toDisjunctiveForm();
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        return Arrays.asList(new TemporalNot<>(subFml1), subFml2);
     }
 
     static class STLImply extends TemporalImply<List<Double>> implements STLCost {

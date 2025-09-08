@@ -147,4 +147,23 @@ public class STLOutputAtomic extends STLAbstractAtomic {
     protected String getSignalName() {
         return "output";
     }
+
+    @Override
+    public STLCost toNnf(boolean negate){
+        if (negate){
+            return new TemporalNot.STLNot(this);
+        } else {
+            return this;
+        }
+    }
+
+    @Override
+    public STLCost toDisjunctiveForm(){
+        return this;
+    }
+
+    @Override
+    public List<TemporalLogic<List<Double>>> getAllConjunctions(){
+        return new ArrayList<>();
+    }
 }
