@@ -57,7 +57,6 @@ For example, the commented-out line in `stlList` in [simglucose2.kts](./simgluco
 It is because of a bug in Spot, which LTSMin internally uses.
 
 First, install Spot using https://spot.lre.epita.fr/install.html as a reference.
-(If you use an older distribution, you should specify an older version of Spot like `spot=2.11.6.0-1`)
 
 Then build LTSMin following https://github.com/Meijuh/ltsmin/tree/v3.1.0-beta2.
 
