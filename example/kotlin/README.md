@@ -53,8 +53,8 @@ On Linux, you can likely find suitable directory to set `JAVA_HOME` by `ls /usr/
 ## Note
 ### Installation of LTSMin with a newer Spot
 Some STL properties require building LTSMin by yourself with a newer library.
-For example, the commented-out line in `stlList` in [simglucose2.kts](./simglucose2.kts) applies.
-It is because of a bug in Spot, which LTSMin internally uses.
+For example, the commented-out lines in `stlList` in [simglucose2.kts](./simglucose2.kts) applies.
+It is because of the inefficient old Spot, which LTSMin internally uses.
 
 First, install Spot using https://spot.lre.epita.fr/install.html as a reference.
 
