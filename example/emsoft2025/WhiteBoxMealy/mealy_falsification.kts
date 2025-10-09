@@ -60,54 +60,50 @@ val ltlList =
 val signalLength = 50 // We believe that the traces of length 50 are enough to verify/falsify the properties
 val properties = AdaptiveSTLList(ltlList, signalLength)
 
-println(ltlList[0].toAbstractString())
-// println(ltlList[0].toString())
-// println(ltlList[0].getAllAPs())
+// Define the SUL and oracle
+var mapper : Map<String, String>? = null
+if (args[0] == "original") {
+    mapper = HashMap<String, String>()
+} else if (args[0] == "partial") {
+    mapper = SGAMapper(ltlList, sigma, gamma, true).outputMapper
+} else if (args[0] == "abstract") {
+    mapper = SGAMapper(ltlList, sigma, gamma, false).outputMapper
+}
+val target = wrapper.createMealy(mapper)
 
-// // Define the SUL and oracle
-// var mapper : Map<String, String>? = null
-// if (args[0] == "original") {
-//     mapper = HashMap<String, String>()
-// } else if (args[0] == "partial") {
-//     mapper = SGAMapper(ltlList, sigma, gamma, true).outputMapper
-// } else if (args[0] == "abstract") {
-//     mapper = SGAMapper(ltlList, sigma, gamma, false).outputMapper
-// }
-// val target = wrapper.createMealy(mapper)
+var sul : SUL<String, String> = MealySimulatorSUL(target)
 
-// var sul : SUL<String, String> = MealySimulatorSUL(target)
+val memOracle = SULOracle(sul)
+val counterOracle = MealyCounterOracle(memOracle)
+properties.setMemOracle(counterOracle)
 
-// val memOracle = SULOracle(sul)
-// val counterOracle = MealyCounterOracle(memOracle)
-// properties.setMemOracle(counterOracle)
+// Configure and run the verifier
+val verifier = BlackBoxVerifier(counterOracle, sul, properties, sigma)
+// Timeout must be set before adding equivalence testing
+verifier.setTimeout(10 * 60) // 5 minutes
+val eqOracle = WhiteBoxEqOracle(target)
+verifier.addEqOracle(eqOracle)
 
-// // Configure and run the verifier
-// val verifier = BlackBoxVerifier(counterOracle, sul, properties, sigma)
-// // Timeout must be set before adding equivalence testing
-// verifier.setTimeout(10 * 60) // 5 minutes
-// val eqOracle = WhiteBoxEqOracle(target)
-// verifier.addEqOracle(eqOracle)
+val timeBeforeFalsification = System.currentTimeMillis()
 
-// val timeBeforeFalsification = System.currentTimeMillis()
+val result = verifier.run()
 
-// val result = verifier.run()
+val timeAfterFalsification = System.currentTimeMillis()
 
-// val timeAfterFalsification = System.currentTimeMillis()
+// Print the result
+if (result) {
+    println("All the properties are likely satisfied")
+} else {
+    println("Some properties are falsified")
+    for (i in 0 until verifier.cexProperty.size) {
+        println("${verifier.cexProperty[i]} is falsified by the following counterexample:")
+        println("cex concrete input: ${verifier.cexInput[i]}")
+        println("cex output: ${verifier.cexOutput[i]}")
+    }
+}
 
-// // Print the result
-// if (result) {
-//     println("All the properties are likely satisfied")
-// } else {
-//     println("Some properties are falsified")
-//     for (i in 0 until verifier.cexProperty.size) {
-//         println("${verifier.cexProperty[i]} is falsified by the following counterexample:")
-//         println("cex concrete input: ${verifier.cexInput[i]}")
-//         println("cex output: ${verifier.cexOutput[i]}")
-//     }
-// }
-
-// println("# of ltl formulae: ${ltlList.size}")
-// println("# of falsified ltl formulae: ${verifier.cexProperty.size}")
-// println("# of MQ: ${counterOracle.getQueryCounter().getCount()}")
-// println("Time for initialize: ${(timeBeforeFalsification - timeBeforeInit)}")
-// println("Time for falsification: ${(timeAfterFalsification - timeBeforeFalsification)}")
+println("# of ltl formulae: ${ltlList.size}")
+println("# of falsified ltl formulae: ${verifier.cexProperty.size}")
+println("# of MQ: ${counterOracle.getQueryCounter().getCount()}")
+println("Time for initialize: ${(timeBeforeFalsification - timeBeforeInit)}")
+println("Time for falsification: ${(timeAfterFalsification - timeBeforeFalsification)}")
