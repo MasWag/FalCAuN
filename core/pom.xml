@@ -109,7 +109,7 @@
     </build>
 
     <properties>
-        <lib.dir>/usr/lib</lib.dir>
+        <lib.dir>/Users/matsu/tmp</lib.dir>
     </properties>
 
     <dependencies>
@@ -140,8 +140,6 @@
             <groupId>de.tum.in</groupId>
             <artifactId>owl</artifactId>
             <version>21.0</version>
-            <scope>system</scope>
-	        <systemPath>${lib.dir}/owl/owl-linux-musl-amd64-21.0/jar/owl-21.0.jar</systemPath>
         </dependency>
 
         <dependency>

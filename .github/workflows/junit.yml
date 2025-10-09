@@ -29,7 +29,14 @@ jobs:
         run: |
           wget https://github.com/owl-toolkit/owl/releases/download/release-21.0/owl-linux-amd64-21.0.zip
           unzip owl-linux-amd64-21.0.zip -d owl
-          sudo cp -r owl /usr/lib/
+          mvn install:install-file -N \
+            -Dfile=./owl/owl-linux-musl-amd64-21.0/jar/owl-21.0.jar \
+            -DgroupId=de.tum.in \
+            -DartifactId=owl \
+            -Dversion=21.0 \
+            -Dpackaging=jar \
+            -DgeneratePom=true
+
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
