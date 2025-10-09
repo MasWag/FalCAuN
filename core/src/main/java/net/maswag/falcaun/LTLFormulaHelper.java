@@ -63,33 +63,65 @@ public class LTLFormulaHelper {
     
     private static void collectAtomicPropositionsRecursive(Object formula, LTLAPs aps) {
         if (formula instanceof LTLAtomic) {
-            ((LTLAtomic) formula).collectAtomicPropositions(aps);
+            handleAtomicFormula((LTLAtomic) formula, aps);
         } else if (formula instanceof TemporalNot<?> not) {
-            collectAtomicPropositionsRecursive(not.subFml, aps);
+            handleUnaryOperator(not.subFml, aps);
         } else if (formula instanceof TemporalOr<?> or) {
-            for (TemporalLogic<?> subFml : or.getSubFmls()) {
-                collectAtomicPropositionsRecursive(subFml, aps);
-            }
+            handleMultiaryOperator(or.getSubFmls(), aps);
         } else if (formula instanceof TemporalAnd<?> and) {
-            for (TemporalLogic<?> subFml : and.getSubFormulas()) {
-                collectAtomicPropositionsRecursive(subFml, aps);
-            }
+            handleMultiaryOperator(and.getSubFormulas(), aps);
         } else if (formula instanceof TemporalGlobally<?> globally) {
-            collectAtomicPropositionsRecursive(globally.getSubFml(), aps);
+            handleUnaryOperator(globally.getSubFml(), aps);
         } else if (formula instanceof TemporalEventually<?> eventually) {
-            collectAtomicPropositionsRecursive(eventually.getSubFml(), aps);
+            handleUnaryOperator(eventually.getSubFml(), aps);
         } else if (formula instanceof TemporalUntil<?> until) {
-            collectAtomicPropositionsRecursive(until.getLeft(), aps);
-            collectAtomicPropositionsRecursive(until.getRight(), aps);
+            handleBinaryOperator(until.getLeft(), until.getRight(), aps);
         } else if (formula instanceof TemporalRelease<?> release) {
-            collectAtomicPropositionsRecursive(release.getLeft(), aps);
-            collectAtomicPropositionsRecursive(release.getRight(), aps);
+            handleBinaryOperator(release.getLeft(), release.getRight(), aps);
         } else if (formula instanceof TemporalNext<?> next) {
-            collectAtomicPropositionsRecursive(next.getSubFml(), aps);
+            handleUnaryOperator(next.getSubFml(), aps);
         } else if (formula instanceof TemporalImply<?> imply) {
-            collectAtomicPropositionsRecursive(imply, aps);
+            handleSelfRecursive(imply, aps);
         } else if (formula instanceof TemporalSub<?> sub) {
-            collectAtomicPropositionsRecursive(sub, aps);
+            handleSelfRecursive(sub, aps);
         }
+    }
+    
+    /**
+     * Handles atomic formulas by collecting their atomic propositions.
+     */
+    private static void handleAtomicFormula(LTLAtomic atomic, LTLAPs aps) {
+        atomic.collectAtomicPropositions(aps);
+    }
+    
+    /**
+     * Handles unary operators (operators with a single subformula).
+     */
+    private static void handleUnaryOperator(Object subFormula, LTLAPs aps) {
+        collectAtomicPropositionsRecursive(subFormula, aps);
+    }
+    
+    /**
+     * Handles binary operators (operators with two subformulas).
+     */
+    private static void handleBinaryOperator(Object leftFormula, Object rightFormula, LTLAPs aps) {
+        collectAtomicPropositionsRecursive(leftFormula, aps);
+        collectAtomicPropositionsRecursive(rightFormula, aps);
+    }
+    
+    /**
+     * Handles multiary operators (operators with multiple subformulas).
+     */
+    private static void handleMultiaryOperator(Iterable<? extends TemporalLogic<?>> subFormulas, LTLAPs aps) {
+        for (TemporalLogic<?> subFml : subFormulas) {
+            collectAtomicPropositionsRecursive(subFml, aps);
+        }
+    }
+    
+    /**
+     * Handles formulas that need to be recursively processed as themselves.
+     */
+    private static void handleSelfRecursive(Object formula, LTLAPs aps) {
+        collectAtomicPropositionsRecursive(formula, aps);
     }
 }
