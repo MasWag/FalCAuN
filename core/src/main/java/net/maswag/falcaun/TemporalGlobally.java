@@ -1,17 +1,29 @@
 package net.maswag.falcaun;
 
+import lombok.Getter;
+
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 
 /**
- * <p>STLGlobal class.</p>
+ * <p>TemporalGlobally class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  * @param <I> Type of the input at each step
  */
+@Getter
 public class TemporalGlobally<I> extends TemporalOp<I> {
+
     TemporalGlobally(TemporalLogic<I> subFml) {
         super(subFml);
+    }
+    
+    /**
+     * Get the sub-formula
+     * @return the sub-formula
+     */
+    public TemporalLogic<I> getSubFml() {
+        return subFml;
     }
 
     /**
@@ -25,25 +37,40 @@ public class TemporalGlobally<I> extends TemporalOp<I> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public RoSI getRoSIRaw(IOSignal<I> signal) {
-        return signal.suffixes(true).stream().filter(w -> !w.isEmpty()).map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
-                .reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public RoSI getRoSIRawWithLen(IOSignal<I> signal, int length) {
-        return signal.suffixes(true).subList(0, length).stream().filter(w -> !w.isEmpty()).map(w -> subFml.getRoSI(w)).filter(Objects::nonNull)
-                .reduce(new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY), RoSI::min);
+        RoSI result = new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        for (int i = 0; i < signal.length(); i++) {
+            // suffix(n) returns the last n elements, so for position i we need suffix(length - i)
+            IOSignal<I> suffix = signal.suffix(signal.length() - i);
+            if (!suffix.isEmpty()) {
+                RoSI subResult = subFml.getRoSI(suffix);
+                if (subResult != null) {
+                    result.assignMin(subResult);
+                }
+            }
+        }
+        return result;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String toAbstractString() {
-        return String.format("[] ( %s )", subFml.toAbstractString());
+    public RoSI getRoSIRawWithLen(IOSignal<I> signal, int length) {
+        RoSI result = new RoSI(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        int end = Math.min(length, signal.length());
+        for (int i = 0; i < end; i++) {
+            // suffix(n) returns the last n elements, so for position i we need suffix(length - i)
+            IOSignal<I> suffix = signal.suffix(signal.length() - i);
+            if (!suffix.isEmpty()) {
+                RoSI subResult = subFml.getRoSI(suffix);
+                if (subResult != null) {
+                    result.assignMin(subResult);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -51,30 +78,49 @@ public class TemporalGlobally<I> extends TemporalOp<I> {
      */
     @Override
     public String toString() {
-        return String.format("[] ( %s )", subFml.toString());
+        return "[] ( " + subFml.toString() + " )";
     }
 
     /**
-     * <p>getSubFml.</p>
-     *
-     * @return a {@link TemporalLogic<I>} object.
+     * {@inheritDoc}
      */
-    public TemporalLogic<I> getSubFml() { return this.subFml; }
+    @Override
+    public String toAbstractString() {
+        return "[] ( " + subFml.toAbstractString() + " )";
+    }
 
     static class STLGlobally extends TemporalGlobally<List<Double>> implements STLCost {
         STLGlobally(STLCost subFml) {
             super(subFml);
         }
-
-        @Override
-        public STLCost getSubFml() {
-            return (STLCost) this.subFml;
-        }
     }
 
     static class LTLGlobally extends TemporalGlobally<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLGlobally(LTLFormula subFml) {
             super(subFml);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                if (subFml instanceof LTLFormula) {
+                    ((LTLFormula) subFml).setAPs(aps);
+                }
+            });
+        }
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            if (subFml instanceof LTLFormula) {
+                ((LTLFormula) subFml).collectAtomicPropositions(aps);
+            }
         }
     }
 }

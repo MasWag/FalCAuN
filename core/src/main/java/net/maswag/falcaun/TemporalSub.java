@@ -85,8 +85,32 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
     }
 
     static class LTLSub extends TemporalSub<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLSub(TemporalOp<String> subFml, int from, int to) {
             super(subFml, from, to);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                if (getSubFml() instanceof LTLFormula) {
+                    ((LTLFormula) getSubFml()).setAPs(aps);
+                }
+            });
+        }
+        
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            if (getSubFml() instanceof LTLFormula) {
+                ((LTLFormula) getSubFml()).collectAtomicPropositions(aps);
+            }
         }
     }
 }

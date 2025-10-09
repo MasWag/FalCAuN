@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * The atomic propositions in LTL formulas
  */
-public class LTLAtomic extends AbstractTemporalLogic<String> implements TemporalLogic.LTLFormula {
+public class LTLAtomic extends AbstractLTLFormula {
     private final Optional<String> inputString, outputString;
 
     public LTLAtomic(Optional<String> inputString, Optional<String> outputString) {
@@ -27,15 +27,35 @@ public class LTLAtomic extends AbstractTemporalLogic<String> implements Temporal
     }
 
     /*
-     * Typically, we need to return the set of atomic propositions, but it is not possible to get all atomic propositions.
-     * Instead, we return the set of atomic propositions that are satisfied by the formula, which works for the current implementation.
+     * Returns all atomic propositions. If APs are set, returns the appropriate
+     * set from the APs. Otherwise, returns just the APs from this atomic formula.
      */
     @Override
     public Set<String> getAllAPs() {
-        Set<String> result = new HashSet<>();
-        result.add(inputString.orElse(outputString.orElse("")));
-        result.add(outputString.orElse(inputString.orElse("")));
-        return result;
+        if (aps == null) {
+            throw new IllegalStateException("Atomic propositions (APs) have not been set. " +
+                    "Please call LTLFormulaHelper.prepareFormula() or setAPs() before using getAllAPs().");
+        }
+        
+        // Return the appropriate set from the APs
+        if (iOType == IOType.INPUT) {
+            return aps.getInputAPs();
+        } else if (iOType == IOType.OUTPUT) {
+            return aps.getOutputAPs();
+        } else {
+            // For BOTH type, we might need to return both sets
+            // This is a fallback for edge cases
+            Set<String> result = new HashSet<>();
+            inputString.ifPresent(result::add);
+            outputString.ifPresent(result::add);
+            return result;
+        }
+    }
+
+    @Override
+    public void collectAtomicPropositions(LTLAPs aps) {
+        inputString.ifPresent(aps::addInputAP);
+        outputString.ifPresent(aps::addOutputAP);
     }
 
     // We construct satisfyingAtomicPropositions in the constructor. So, we don't need to do anything here.
