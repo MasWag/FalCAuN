@@ -25,6 +25,12 @@ jobs:
           tar xvf ltsmin-v3.1.0-linux.tgz
           sudo cp -r v3.1.0/* /usr
 
+      - name: Install Owl
+        run: |
+          wget https://github.com/owl-toolkit/owl/releases/download/release-21.0/owl-linux-amd64-21.0.zip
+          unzip owl-linux-amd64-21.0.zip -d owl
+          sudo cp -r owl /usr/lib/
+
       - name: Cache local Maven repository
         uses: actions/cache@v4
         with:
