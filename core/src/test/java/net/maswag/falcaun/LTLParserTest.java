@@ -162,4 +162,18 @@ class LTLParserTest {
             assertEquals(input, result.toAbstractString().replaceAll("\"", ""));
         }
     }
+
+    @Test
+    void toAbstractStringWithNestedNegationInsideGlobally() {
+        String input = "[] ( (! output == p) || (! output == q))";
+        LTLFormula parsed = factory.parse(input);
+        
+        // Need to prepare the formula to set up atomic propositions properly
+        LTLFormulaHelper.prepareFormula(parsed);
+        
+        String actual = parsed.toAbstractString().replaceAll("\"", "");
+        // After the fix, the negations are resolved to their satisfying APs
+        // The expected output should match what TemporalNotTest shows
+        assertEquals("[] ( ( output == p ) || ( output == q ) )", actual);
+    }
 }
