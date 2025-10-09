@@ -34,7 +34,7 @@ public class LTLAtomic extends AbstractLTLFormula {
     public Set<String> getAllAPs() {
         if (aps == null) {
             throw new IllegalStateException("Atomic propositions (APs) have not been set. " +
-                    "Please call LTLFormulaHelper.prepareFormula() or setAPs() before using getAllAPs().");
+                    "Ensure that APs are initialized before calling getAllAPs().");
         }
         
         // Return the appropriate set from the APs
