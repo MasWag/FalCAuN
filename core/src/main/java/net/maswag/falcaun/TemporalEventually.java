@@ -98,8 +98,31 @@ public class TemporalEventually<I> extends TemporalOp<I> {
     }
 
     static class LTLEventually extends TemporalEventually<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLEventually(LTLFormula subFml) {
             super(subFml);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                if (getSubFml() instanceof LTLFormula) {
+                    ((LTLFormula) getSubFml()).setAPs(aps);
+                }
+            });
+        }
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            if (subFml instanceof LTLFormula) {
+                ((LTLFormula) subFml).collectAtomicPropositions(aps);
+            }
         }
     }
 }

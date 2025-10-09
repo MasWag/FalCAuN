@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import lombok.Getter;
+
 /**
  * <p>STLImply class.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  * @param <I> Type of the input at each step
  */
+@Getter
 public class TemporalImply<I> extends AbstractTemporalLogic<I> {
-    private final TemporalLogic<I> subFml1;
-    private final TemporalLogic<I> subFml2;
+    protected final TemporalLogic<I> subFml1;
+    protected final TemporalLogic<I> subFml2;
 
     TemporalImply(TemporalLogic<I> subFml1, TemporalLogic<I> subFml2) {
         this.subFml1 = subFml1;
@@ -103,8 +106,37 @@ public class TemporalImply<I> extends AbstractTemporalLogic<I> {
     }
 
     static class LTLImply extends TemporalImply<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLImply(LTLFormula subFml1, LTLFormula subFml2) {
             super(subFml1, subFml2);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                if (subFml1 instanceof LTLFormula) {
+                    ((LTLFormula) subFml1).setAPs(aps);
+                }
+                if (subFml2 instanceof LTLFormula) {
+                    ((LTLFormula) subFml2).setAPs(aps);
+                }
+            });
+        }
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            if (subFml1 instanceof LTLFormula) {
+                ((LTLFormula) subFml1).collectAtomicPropositions(aps);
+            }
+            if (subFml2 instanceof LTLFormula) {
+                ((LTLFormula) subFml2).collectAtomicPropositions(aps);
+            }
         }
     }
 }

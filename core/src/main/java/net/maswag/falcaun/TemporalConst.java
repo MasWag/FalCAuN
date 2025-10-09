@@ -78,8 +78,23 @@ public class TemporalConst<I> extends AbstractTemporalLogic<I>{
     }
     
     static class LTLConst extends TemporalConst<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
         LTLConst(boolean b) {
             super(b);
+        }
+
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAps(aps);
+        }
+
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
         }
     }
 }

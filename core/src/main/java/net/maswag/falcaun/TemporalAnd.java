@@ -150,12 +150,40 @@ class TemporalAnd<I> extends AbstractTemporalLogic<I> {
     }
 
     static class LTLAnd extends TemporalAnd<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLAnd(LTLFormula subFml1, LTLFormula subFml2) {
             super(subFml1, subFml2);
         }
 
         LTLAnd(List<TemporalLogic<String>> subFormulas) {
             super(subFormulas);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                // Propagate to subformulas
+                for (TemporalLogic<String> subFml : getSubFormulas()) {
+                    if (subFml instanceof LTLFormula) {
+                        ((LTLFormula) subFml).setAPs(aps);
+                    }
+                }
+            });
+        }
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            for (TemporalLogic<String> subFml : getSubFormulas()) {
+                if (subFml instanceof LTLFormula) {
+                    ((LTLFormula) subFml).collectAtomicPropositions(aps);
+                }
+            }
         }
     }
 }

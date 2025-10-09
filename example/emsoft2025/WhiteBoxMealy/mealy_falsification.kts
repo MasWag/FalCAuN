@@ -2,8 +2,6 @@
 
 // This script depends on FalCAuN-core and FalCAuN-matlab
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT")
-// @file:DependsOn("org.jgrapht:jgrapht-core:1.5.2", "org.jgrapht:jgrapht-io:1.5.2")
-// @file:DependsOn("org.antlr:antlr4-maven-plugin:4.12.0", "org.antlr:antlr4-runtime:4.12.0")
 // We assume that the MATLAB_HOME environment variable is set
 @file:KotlinOptions("-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64")
 
@@ -58,6 +56,9 @@ val ltlList =
         ltlFactory.parse(stlString)
     }.toList()
 val signalLength = 50 // We believe that the traces of length 50 are enough to verify/falsify the properties
+for (formula in ltlList) {
+    LTLFormulaHelper.prepareFormula(formula);
+}
 val properties = AdaptiveSTLList(ltlList, signalLength)
 
 // Define the SUL and oracle
