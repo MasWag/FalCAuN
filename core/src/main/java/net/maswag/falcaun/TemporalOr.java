@@ -87,8 +87,36 @@ public class TemporalOr<I> extends AbstractTemporalLogic<I> {
     }
 
     static class LTLOr extends TemporalOr<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLOr(TemporalLogic<String> subFml1, TemporalLogic<String> subFml2) {
             super(subFml1, subFml2);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                // Propagate to subformulas
+                for (TemporalLogic<String> subFml : getSubFmls()) {
+                    if (subFml instanceof LTLFormula) {
+                        ((LTLFormula) subFml).setAPs(aps);
+                    }
+                }
+            });
+        }
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            for (TemporalLogic<String> subFml : getSubFmls()) {
+                if (subFml instanceof LTLFormula) {
+                    ((LTLFormula) subFml).collectAtomicPropositions(aps);
+                }
+            }
         }
     }
 }

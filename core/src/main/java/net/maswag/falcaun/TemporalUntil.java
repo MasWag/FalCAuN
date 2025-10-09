@@ -106,8 +106,38 @@ public class TemporalUntil<I> extends AbstractTemporalLogic<I> {
     }
 
     static class LTLUntil extends TemporalUntil<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLUntil(TemporalLogic<String> left, TemporalLogic<String> right) {
             super(left, right);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                if (getLeft() instanceof LTLFormula) {
+                    ((LTLFormula) getLeft()).setAPs(aps);
+                }
+                if (getRight() instanceof LTLFormula) {
+                    ((LTLFormula) getRight()).setAPs(aps);
+                }
+            });
+        }
+            
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            if (getLeft() instanceof LTLFormula) {
+                ((LTLFormula) getLeft()).collectAtomicPropositions(aps);
+            }
+            if (getRight() instanceof LTLFormula) {
+                ((LTLFormula) getRight()).collectAtomicPropositions(aps);
+            }
         }
     }
 }

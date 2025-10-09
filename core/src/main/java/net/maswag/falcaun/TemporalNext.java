@@ -82,8 +82,31 @@ public class TemporalNext<I> extends AbstractTemporalLogic<I> {
     }
 
     static class LTLNext extends TemporalNext<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLNext(LTLFormula subFml, boolean nullPositive) {
             super(subFml, nullPositive);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                if (getSubFml() instanceof LTLFormula) {
+                    ((LTLFormula) getSubFml()).setAPs(aps);
+                }
+            });
+        }
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            if (getSubFml() instanceof LTLFormula) {
+                ((LTLFormula) getSubFml()).collectAtomicPropositions(aps);
+            }
         }
     }
 }

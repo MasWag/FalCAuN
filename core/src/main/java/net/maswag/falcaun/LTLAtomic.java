@@ -6,6 +6,7 @@ import java.util.*;
  * The atomic propositions in LTL formulas
  */
 public class LTLAtomic extends AbstractTemporalLogic<String> implements TemporalLogic.LTLFormula {
+    private final LTLFormulaBase formulaBase = new LTLFormulaBase();
     private final Optional<String> inputString, outputString;
 
     public LTLAtomic(Optional<String> inputString, Optional<String> outputString) {
@@ -26,16 +27,56 @@ public class LTLAtomic extends AbstractTemporalLogic<String> implements Temporal
         }
     }
 
-    /*
-     * Typically, we need to return the set of atomic propositions, but it is not possible to get all atomic propositions.
-     * Instead, we return the set of atomic propositions that are satisfied by the formula, which works for the current implementation.
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAPs(LTLAPs aps) {
+        formulaBase.setAps(aps);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LTLAPs getAPs() {
+        return formulaBase.getAps();
+    }
+
+    /**
+     * Returns all atomic propositions from the appropriate set based on the IO type.
+     * Requires that APs have been set via setAPs() before calling this method.
+     *
+     * @return Set of atomic propositions based on the IO type (input, output, or both)
+     * @throws IllegalStateException if APs have not been set
      */
     @Override
     public Set<String> getAllAPs() {
-        Set<String> result = new HashSet<>();
-        result.add(inputString.orElse(outputString.orElse("")));
-        result.add(outputString.orElse(inputString.orElse("")));
-        return result;
+        LTLAPs aps = formulaBase.getAps();
+        if (aps == null) {
+            throw new IllegalStateException("Atomic propositions (APs) have not been set. " +
+                    "Ensure that APs are initialized before calling getAllAPs().");
+        }
+        
+        // Return the appropriate set from the APs
+        if (iOType == IOType.INPUT) {
+            return aps.getInputAPs();
+        } else if (iOType == IOType.OUTPUT) {
+            return aps.getOutputAPs();
+        } else {
+            // For BOTH type, we might need to return both sets
+            // This is a fallback for edge cases
+            Set<String> result = new HashSet<>();
+            inputString.ifPresent(result::add);
+            outputString.ifPresent(result::add);
+            return result;
+        }
+    }
+
+    @Override
+    public void collectAtomicPropositions(LTLAPs aps) {
+        inputString.ifPresent(aps::addInputAP);
+        outputString.ifPresent(aps::addOutputAP);
     }
 
     // We construct satisfyingAtomicPropositions in the constructor. So, we don't need to do anything here.

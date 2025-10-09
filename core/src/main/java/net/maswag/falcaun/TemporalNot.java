@@ -12,7 +12,7 @@ import java.util.Set;
  * @param <I> Type of the input at each step
  */
 public class TemporalNot<I> extends AbstractTemporalLogic<I> {
-    private final TemporalLogic<I> subFml;
+    protected final TemporalLogic<I> subFml;
 
     /**
      * Constructs a new TemporalNot with the specified sub formula.
@@ -82,8 +82,47 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
     }
 
     static class LTLNot extends TemporalNot<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+        
         LTLNot(LTLFormula subFml) {
             super(subFml);
+        }
+        
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                // Propagate to subformula
+                if (subFml instanceof LTLFormula) {
+                    ((LTLFormula) subFml).setAPs(aps);
+                }
+            });
+        }
+        
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+        
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            if (subFml instanceof LTLFormula) {
+                ((LTLFormula) subFml).collectAtomicPropositions(aps);
+            }
+        }
+        
+        @Override
+        public Set<String> getAllAPs() {
+            LTLAPs aps = formulaBase.getAps();
+            if (aps != null) {
+                // Get the appropriate set from universe based on IOType
+                if (this.iOType == IOType.INPUT) {
+                    return aps.getInputAPs();
+                } else if (this.iOType == IOType.OUTPUT) {
+                    return aps.getOutputAPs();
+                }
+            }
+            // Fallback to subformula's APs
+            return subFml.getAllAPs();
         }
     }
 }
