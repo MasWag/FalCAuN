@@ -109,5 +109,27 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
 
     interface STLCost extends TemporalLogic<List<Double>> {}
 
-    interface LTLFormula extends TemporalLogic<String> {}
+    interface LTLFormula extends TemporalLogic<String> {
+        /**
+         * Sets the universe of atomic propositions for this formula.
+         * This is necessary for correctly computing negation.
+         *
+         * @param aps The atomic propositions containing all possible input and output APs
+         */
+        void setAPs(LTLAPs aps);
+
+        /**
+         * Gets the atomic propositions for this formula.
+         *
+         * @return The atomic propositions, or null if not set
+         */
+        LTLAPs getAPs();
+
+        /**
+         * Collects all atomic propositions from this formula and its subformulas.
+         *
+         * @param aps The atomic propositions to populate
+         */
+        void collectAtomicPropositions(LTLAPs aps);
+    }
 }
