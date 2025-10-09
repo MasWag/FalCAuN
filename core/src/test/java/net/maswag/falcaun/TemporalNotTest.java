@@ -208,4 +208,110 @@ class TemporalNotTest {
         assertTrue(abstractString.contains("output"),
                 "Abstract string should contain output references");
     }
+
+    /**
+     * Verification test for the bug reported in bug-report.txt
+     * This test verifies that the formula from the bug report now works correctly.
+     */
+    @Test
+    void testBugReportFormulaWithProperAPInitialization() {
+        // The exact formula from the bug report
+        String formulaStr = "[] ( (! output == p) || (! output == q))";
+        
+        // Parse the formula
+        TemporalLogic.LTLFormula formula = factory.parse(formulaStr);
+        assertNotNull(formula, "Formula should parse successfully");
+        
+        // Initialize atomic propositions - we need to provide the universe of possible values
+        List<String> inputAPs = new ArrayList<>();
+        List<String> outputAPs = List.of("output");
+        LTLAPs aps = new LTLAPs(inputAPs, outputAPs);
+        
+        // Add the possible values for output to the universe
+        aps.addOutputAP("p");
+        aps.addOutputAP("q");
+        
+        // Prepare the formula with atomic propositions
+        LTLFormulaHelper.prepareFormula(formula);
+        formula.setAPs(aps);
+        
+        // Get the abstract string - this was producing "[] ()" before the fix
+        String abstractStr = formula.toAbstractString();
+        
+        // PRIMARY FIX VERIFICATION: The abstract string is not empty
+        assertNotEquals("[] ()", abstractStr,
+            "Abstract string should not be empty - this was the bug!");
+        
+        // Verify it contains the expected content
+        assertTrue(abstractStr.contains("output"),
+            "Abstract string should contain 'output'");
+        
+        // The formula should produce a valid abstract string (not empty parentheses)
+        assertFalse(abstractStr.contains("()"),
+            "Abstract string should not contain empty parentheses");
+    }
+
+    /**
+     * Test similar formulas that would have had the same issue
+     */
+    @Test
+    void testSimilarProblematicFormulas() {
+        // Test other similar formulas that would have had the same issue
+        String[] formulas = {
+            "[] (! output == a)",
+            "[] ( (! output == x) && (! output == y))",
+            "<> (! output == test)"
+        };
+        
+        for (String formulaStr : formulas) {
+            TemporalLogic.LTLFormula formula = factory.parse(formulaStr);
+            assertNotNull(formula, "Formula should parse: " + formulaStr);
+            
+            // Initialize with both input and output APs
+            List<String> inputAPs = new ArrayList<>();
+            List<String> outputAPs = List.of("output");
+            LTLAPs aps = new LTLAPs(inputAPs, outputAPs);
+            
+            // Add possible values to the universe
+            aps.addOutputAP("a");
+            aps.addOutputAP("x");
+            aps.addOutputAP("y");
+            aps.addOutputAP("test");
+            
+            LTLFormulaHelper.prepareFormula(formula);
+            formula.setAPs(aps);
+            
+            String abstractStr = formula.toAbstractString();
+            
+            // PRIMARY FIX VERIFICATION: None should produce empty operators
+            assertFalse(abstractStr.contains("()"),
+                "Abstract string should not contain empty parentheses for: " + formulaStr);
+            assertFalse(abstractStr.contains("[] ()"),
+                "Abstract string should not be '[] ()' for: " + formulaStr);
+            assertFalse(abstractStr.contains("<> ()"),
+                "Abstract string should not be '<> ()' for: " + formulaStr);
+        }
+    }
+
+    /**
+     * Test reproduces the exact scenario from the bug report
+     */
+    @Test
+    void testOriginalBugScenarioWithoutFullAPInitialization() {
+        // This test reproduces the exact scenario from the bug report
+        String formulaStr = "[] ( (! output == p) || (! output == q))";
+        
+        // Parse the formula
+        TemporalLogic.LTLFormula formula = factory.parse(formulaStr);
+        
+        // Without proper AP initialization, this used to produce "[] ()"
+        LTLFormulaHelper.prepareFormula(formula);
+        
+        // Even without setting the full universe, the formula should not produce empty syntax
+        String abstractStr = formula.toAbstractString();
+        
+        // The critical bug fix: no more empty "[] ()" syntax
+        assertNotEquals("[] ()", abstractStr,
+            "The bug is fixed: Formula no longer produces '[] ()' which caused model checker crashes");
+    }
 }
