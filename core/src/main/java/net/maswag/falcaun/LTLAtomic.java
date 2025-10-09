@@ -5,7 +5,8 @@ import java.util.*;
 /**
  * The atomic propositions in LTL formulas
  */
-public class LTLAtomic extends AbstractLTLFormula {
+public class LTLAtomic extends AbstractTemporalLogic<String> implements TemporalLogic.LTLFormula {
+    private final LTLFormulaBase formulaBase = new LTLFormulaBase();
     private final Optional<String> inputString, outputString;
 
     public LTLAtomic(Optional<String> inputString, Optional<String> outputString) {
@@ -26,12 +27,29 @@ public class LTLAtomic extends AbstractLTLFormula {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAPs(LTLAPs aps) {
+        formulaBase.setAps(aps);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LTLAPs getAPs() {
+        return formulaBase.getAps();
+    }
+
     /*
      * Returns all atomic propositions. If APs are set, returns the appropriate
      * set from the APs. Otherwise, returns just the APs from this atomic formula.
      */
     @Override
     public Set<String> getAllAPs() {
+        LTLAPs aps = formulaBase.getAps();
         if (aps == null) {
             throw new IllegalStateException("Atomic propositions (APs) have not been set. " +
                     "Ensure that APs are initialized before calling getAllAPs().");
