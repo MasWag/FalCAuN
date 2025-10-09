@@ -43,9 +43,12 @@ public class LTLAtomic extends AbstractTemporalLogic<String> implements Temporal
         return formulaBase.getAps();
     }
 
-    /*
-     * Returns all atomic propositions. If APs are set, returns the appropriate
-     * set from the APs. Otherwise, returns just the APs from this atomic formula.
+    /**
+     * Returns all atomic propositions from the appropriate set based on the IO type.
+     * Requires that APs have been set via setAPs() before calling this method.
+     *
+     * @return Set of atomic propositions based on the IO type (input, output, or both)
+     * @throws IllegalStateException if APs have not been set
      */
     @Override
     public Set<String> getAllAPs() {
