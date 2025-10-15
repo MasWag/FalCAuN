@@ -43,7 +43,7 @@ You need to install the requirements above. For example, on Ubuntu, you can inst
 sudo apt-get install maven openjdk-17-jdk-headless -y
 ```
 
-You have to manually install LTSMin 3.1.0, Owl 21.0, and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 and Owl 21.0 with the following commands after isntalling maven.
+You have to manually install LTSMin 3.1.0, Owl 21.0, and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 and Owl 21.0 with the following commands after installing Maven.
 
 ```sh
 wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz -O ltsmin-v3.1.0-linux.tgz
@@ -85,9 +85,9 @@ Here, we provide the instructions to install the matlab module.
 
 #### 1. Install the Requirements
 
-You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of Mathworks.
+You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of MathWorks.
 
-#### 2. Setup the environment variable
+#### 2. Set up the environment variable
 
 We assume that the environment variable `MATLAB_HOME` shows where MATLAB is installed. An example is as follows.
 
@@ -111,7 +111,7 @@ mvn install
 #### 1. Install the Requirements
 You need to install Jep manually. Follow the instructions on the [official site](https://github.com/ninia/jep)
 
-#### 2. Setup the environment variable
+#### 2. Set up the environment variable
 Add the installed path, which has the JEP native library including `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
 ```shell
 export LD_LIBRARY_PATH=<path/to/jep>:${LD_LIBRARY_PATH}
@@ -124,20 +124,20 @@ export LD_LIBRARY_PATH=<path/to/jep>:${LD_LIBRARY_PATH}
 mvn install --also-make --projects python
 ```
 
-### Installation of LTSMin 3.1.0 on macOS with ARM Processors
+### Installation of LTSMin 3.1.0 on macOS with ARM processors
 
-FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports `x86_64`. One can still run LTSMin using Rosetta and libtool for `x86_64`. You can also build and install LTSMin using Homebrew (for x86\_64): `brew install maswag/scientific/ltsmin-beta`.
+FalCAuN works on macOS with ARM processors, but the setup of LTSMin is a bit tricky because it only supports `x86_64`. One can still run LTSMin using Rosetta and libtool for `x86_64`. You can also build and install LTSMin using Homebrew (for x86\_64): `brew install maswag/scientific/ltsmin-beta`.
 
 1. Set up Rosetta on the macOS
-2. Install Homebrew for intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
+2. Install Homebrew for Intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
 3. Install `libtool` for `x86_64` with `/usr/local/bin/brew install libtool`
 
 ### Notes
 
 - For the matlab module, the unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test -DskipTests=false`.
-    - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=False`.
-    - Also, the automatic transmission model requires parameters defined in an example by Mathworks. To load it, you probably need to set up the example by Mathworks and the path beforehand. 
-        - The example by Mathworks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
+    - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=false`.
+    - Also, the automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand. 
+        - The example by MathWorks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
         - See `./src/test/resources/MATLAB/initAT.m` for an example to set the path.
 
 Examples
@@ -259,7 +259,7 @@ sudo install falcaun /usr/local/bin
 
 ### Usage of the CLI interface
 
-#### Symopsis
+#### Synopsis
 
      ./falcaun [OPTIONS] --stl=[STLFormula] --input-mapper=[InputMapperFile] --output-mapper=[OutputMapperFile] --equiv=[HC|random|WP|SA|GA]
 
@@ -310,7 +310,7 @@ Both input and output mappers are specified by TSV files.
 
 #### Input mapper
 
-Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take a different number of inputs i.e., N0 and N1 can be different.
+Input mapper specifies the possible input values of each signal (e.g., brake and throttle). Each signal can take a different number of inputs i.e., N0 and N1 can be different.
 
 ```
 <value 1 of signal(0)>	<value 2 of signal(0)>	...	<value N0 of signal(0)>

@@ -77,9 +77,9 @@ Here, we provide the instructions to install the matlab module.
 
 ### 1. Install the Requirements
 
-You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of Mathworks.
+You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of MathWorks.
 
-### 2. Setup the environment variable
+### 2. Set up the environment variable
 
 We assume that the environment variable `MATLAB_HOME` shows where MATLAB is installed. An example is as follows.
 
@@ -107,7 +107,7 @@ Here, we provide the instructions to install the python binding module.
 
 You need to install Jep manually. Follow the instructions on the [official site](https://github.com/ninia/jep)
 
-### 2. Setup the environment variable
+### 2. Set up the environment variable
 
 Add the installed path, which has the JEP native library including `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
 
@@ -125,19 +125,19 @@ Build FalCAuN using Maven. You may need to set the environment variable `PYTHONE
 mvn install --also-make --projects python
 ```
 
-Installation of LTSMin 3.1.0 on macOS with ARM Processors
+Installation of LTSMin 3.1.0 on macOS with ARM processors
 ---------------------------------------------------------
 
-FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86\_64. One can still run LTSMin using Rosetta and libtool for x86\_64. You can also build and install LTSMin using Homebrew (for x86\_64) by `brew install maswag/scientific/ltsmin-beta`.
+FalCAuN works on macOS with ARM processors, but the setup of LTSMin is a bit tricky because it only supports x86\_64. One can still run LTSMin using Rosetta and libtool for x86\_64. You can also build and install LTSMin using Homebrew (for x86\_64) by `brew install maswag/scientific/ltsmin-beta`.
 
 1. Set up Rosetta on the macOS
-2. Install Homebrew for intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
+2. Install Homebrew for Intel processors with `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
 3. Install `libtool` for x86\_64 with `/usr/local/bin/brew install libtool`
 
 Notes
 -----
 
-- You may have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=False`.
-- The automatic transmission model requires parameters defined in an example by Mathworks. To load it, you probably need to set up the example by Mathworks and the path beforehand.
-    - The example by Mathworks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
+- You may have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=false`.
+- The automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand.
+    - The example by MathWorks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
     - See `./src/test/resources/MATLAB/initAT.m` for an example to set the path.

@@ -1,7 +1,7 @@
 docker
 ======
 
-This directory contains `Dockerfile` to run FalCAuN on Docker. We test this environment on linux/amd64.
+This directory contains `Dockerfile` to run FalCAuN on Docker. We tested this environment on linux/amd64.
 
 How to build
 ------------
@@ -46,4 +46,4 @@ If you use the AT environment, run `openExample('simulink_automotive/ModelingAnA
 
 ### Run the scripts
 
-Finally, you can run the Kotlin scripts. Open a terminal at the bottom of the desktop. Move to the directory containing examples of FalCAuN with `cd /home/matlab/FalCAuN/example/kotlin` and run a script, e.g., `./mealy-nox.main.kts` or `./ATS1.main.kts`. Most of the example scripts assumes that the current directory of MATLAB session is the directory of the script. Therefore, you also have to run `cd /home/matlab/FalCAuN/example/kotlin` in MATLAB.
+Finally, you can run the Kotlin scripts. Open a terminal at the bottom of the desktop. Move to the directory containing examples of FalCAuN with `cd /home/matlab/FalCAuN/example/kotlin` and run a script, e.g., `./mealy-nox.main.kts` or `./ATS1.main.kts`. Most of the example scripts assume that the current directory of MATLAB session is the directory of the script. Therefore, you also have to run `cd /home/matlab/FalCAuN/example/kotlin` in MATLAB.

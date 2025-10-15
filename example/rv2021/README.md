@@ -1,19 +1,19 @@
-Experiments Data for RV 2021
+Experimental Data for RV 2021
 ==============================
 
-This is a document on the experiment data for the RV 2021 paper.
+This document describes the experimental data for the RV 2021 paper.
 We implemented and evaluated our enhancement of BBC based on FalCAuN [Waga20].
 
 ### Experiments
 
-The scripts and data to reproduce the experiment results is included in this directory.
-We note that these scripts only generate CSV files that contains experiments data. In the paper, we computed their means and standard deviations. The results are saved under `./experiment_results`.
+The scripts and data to reproduce the experiment results are included in this directory.
+We note that these scripts only generate CSV files that contain experimental data. In the paper, we computed their means and standard deviations. The results are saved under `./experiment_results`.
 
 The experiments take more time than the timeout because we check the timeout only at the beginning of the equivalence testing. The time for the initialization of MATLAB/Simulink is not excluded from the timeout.
 
 #### FalCAuN
 
-As a baseline, we used [*FalCAuN*](https://github.com/MasWag/FalCAuN), which is black box checking tool.
+As a baseline, we used [*FalCAuN*](https://github.com/MasWag/FalCAuN), which is a black-box checking tool.
 We implemented BBC enhanced via model checking with strengthened formulas based on FalCAuN.
 
 You can run the experiments 50 times on FalCAuN and enhanced FalCAuN for all the settings simply by the following command.
@@ -22,13 +22,13 @@ You can run the experiments 50 times on FalCAuN and enhanced FalCAuN for all the
 ./run_falcaun_all.sh
 ```
 
-Since the timeout is 4 hour by default, it may take quite a lot of time. If you want to make the timeout shorter, you can specify as follows.
+Since the timeout is 4 hours by default, it may take quite a lot of time. If you want to shorten the timeout, specify it as follows.
 
 ```bash
 ./run_falcaun_all.sh $((30 * 60)) # The timeout is in seconds. Here, the timeout is 30 minutes for each benchmark.
 ```
 
-If you want to run the experiments one by one, you can use `./run_falcaun_static.sh` for baseline, or `./run_falcaun_adaptive` for enhanced FalCAuN. The following is an example.
+If you want to run the experiments one by one, you can use `./run_falcaun_static.sh` for the baseline, or `./run_falcaun_adaptive.sh` for enhanced FalCAuN. The following is an example.
 
 ```bash
 ./run_falcaun_adaptive.sh GA AT_F1 $((30 * 60)) #  [kind] [Spec] [timeout in sec.]
@@ -36,7 +36,7 @@ If you want to run the experiments one by one, you can use `./run_falcaun_static
 
 ### Analysis
 
-The following command generates CSV files that contains the experiment result under `./experiment_results` folder.
+The following command generates CSV files that contain the experiment results in the `./experiment_results` folder.
 
 ```bash
 ./to_csv.sh
@@ -45,7 +45,7 @@ The following command generates CSV files that contains the experiment result un
 Files
 -----
 
-The files in this directory is as follows.
+The files in this directory are as follows.
 
     .
     ├── README.md
@@ -77,11 +77,11 @@ In all of the benchmarks, we use the Simulink model (`Autotrans_shift.mdl`) of a
 
 ### F1
 
-The intuition of S4 specification is the velocity should not change too much in a short period. The amount of "too much" is different among the instances.
+The intuition of the S4 specification is that the velocity should not change too much in a short period. The amount of "too much" is different among the instances.
 
 ### F2
 
-The intuition of S5 specification is the engine rotation should not change too much in a short period. The amount of "too much" is different among the instances.
+The intuition of the S5 specification is that the engine rotation should not change too much in a short period. The amount of "too much" is different among the instances.
 
 References
 ----------
