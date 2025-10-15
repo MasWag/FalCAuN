@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,40 +11,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static net.maswag.falcaun.STLOutputAtomic.Operation;
 
 class NumericSULMapperOutputTest {
+    private List<Map<Character, Double>> inputMapper;
     private NumericSULMapper mapper;
     private List<Map<Character, Double>> outputMapper;
     private List<Character> largest;
 
     @BeforeEach
     void setUp() {
-        List<Map<Character, Double>> inputMapper = List.of(Map.of('a', 1.0, 'b', 2.0));
-        Map<Character, Double> m = new HashMap<>();
-        m.put('a', 1.0);
-        m.put('b', 2.0);
-        outputMapper = List.of(m);
+        inputMapper = List.of(Map.of('a', 1.0, 'b', 2.0));
+        outputMapper = List.of(Map.of('a', 1.0, 'b', 2.0)); 
         largest = List.of('c');
-        
-        // Create a custom SimpleSignalMapper that returns specific values for this test
-        SimpleSignalMapper signalMapper = new SimpleSignalMapper() {
-            @Override
-            public double apply(int index, IOSignalPiece<List<Double>> signal) {
-                if (signal.getOutputSignal().size() != 1) {
-                    throw new IllegalArgumentException("Signal must have exactly one output signal for this test.");
-                }
-                // For the specific test case that's failing
-                double value = signal.getOutputSignal().get(0);
-                if (value > 1.0) {
-                    return 1.0;
-                } else {
-                    return -1.0;
-                }
-            }
-        };
-        
-        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, signalMapper);
+        mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper());
     }
 
-    private boolean isSatisfiedBy(Double e0, Operation op, Double e1) {
+    Boolean isSatisfiedBy(Double e0, Operation op, Double e1) {
         String result = mapper.mapOutput(new IOSignalPiece<>(Collections.emptyList(), List.of(e0)));
         var formula = new STLOutputAtomic(0, op, e1);
         formula.setAtomic(outputMapper, largest);
@@ -66,7 +45,7 @@ class NumericSULMapperOutputTest {
                 if (e0 > e1) {
                     assertTrue(isSatisfiedBy(e0, Operation.gt, e1));
                 }
-                if (e0.equals(e1)) {
+                if (e0 == e1) {
                     assertTrue(isSatisfiedBy(e0, Operation.eq, e1));
                 }
             }
