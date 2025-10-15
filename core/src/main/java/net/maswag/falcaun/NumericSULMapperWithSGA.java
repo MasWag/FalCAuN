@@ -11,12 +11,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import owl.automaton.Automaton;
-import owl.collections.Either;
-import owl.ltl.Formula;
 import owl.ltl.LabelledFormula;
 import owl.ltl.parser.LtlParser;
 import owl.translations.ltl2dela.NormalformDELAConstruction;
-import owl.translations.ltl2nba.ProductState;
 
 public class NumericSULMapperWithSGA extends NumericSULMapper {
     private final Map<String, String> postOutputMapper;
@@ -31,16 +28,11 @@ public class NumericSULMapperWithSGA extends NumericSULMapper {
         this.formulaList = formulaList;
         this.gamma = constructAbstractAPs(signalAdapter.getAbstractOutputs());
         createNBAs(partial);
-        this.postOutputMapper = getOutputMapper(formulaList);
+        this.postOutputMapper = getOutputMapper();
     }
 
-    private Map<String, String> getOutputMapper(List<TemporalLogic.STLCost> formulaList){
+    private Map<String, String> getOutputMapper(){
         Map<String, String> mapper = new HashMap<>();
-        List<Either<Formula, ProductState>> states = new ArrayList<>();
-        // for (Automaton<Either<Formula, ProductState>, GeneralizedBuchiAcceptance> automaton: automata){
-        //     states.addAll(automaton.states());
-        // }
-        // System.out.println(derivatives.size());
 
         for (int i = 0; i < gamma.size(); i++){
             String o1 = gamma.get(i);
@@ -87,25 +79,14 @@ public class NumericSULMapperWithSGA extends NumericSULMapper {
         for (TemporalLogic.STLCost formula: formulaList) {
             owl.ltl.Formula owlFormula = LtlParser.parse(formula.toOwlString() + "&& ("+ gamma.get(gamma.size()-1) + "|| !" + gamma.get(gamma.size()-1) + ")", gamma).formula();
             LabelledFormula labelledFormula = LabelledFormula.of(owlFormula, gamma);
-            // System.out.println(gamma.size());
-            // System.out.println(gamma);
-            // System.out.println(owlFormula.atomicPropositions(true));
-            // System.out.println(labelledFormula.atomicPropositions().size());
-            // System.out.println(labelledFormula.atomicPropositions());
             NormalformDELAConstruction delaconst = new NormalformDELAConstruction(OptionalInt.empty());
             Automaton<NormalformDELAConstruction.State,?> automaton = delaconst.apply(labelledFormula);
             automata.add(automaton);
-            // System.out.println(automaton.atomicPropositions());
             if (partial) {
                 List<TemporalLogic<List<Double>>> conjunctions = formula.toNnf(false).toDisjunctiveForm().getAllConjunctions();
                 for (TemporalLogic<List<Double>> conjunction: conjunctions){
                     owl.ltl.Formula partialOwlFormula = LtlParser.parse(conjunction.toOwlString() + "&& ("+ gamma.get(gamma.size()-1) + "|| !" + gamma.get(gamma.size()-1) + ")", gamma).formula();
                     LabelledFormula partialLabelledFormula = LabelledFormula.of(partialOwlFormula, gamma);
-                    // System.out.println(gamma.size());
-                    // System.out.println(gamma);
-                    // System.out.println(owlFormula.atomicPropositions(true));
-                    // System.out.println(labelledFormula.atomicPropositions().size());
-                    // System.out.println(labelledFormula.atomicPropositions());
                     NormalformDELAConstruction partialDelaConst = new NormalformDELAConstruction(OptionalInt.empty());
                     Automaton<NormalformDELAConstruction.State,?> partialAutomaton = partialDelaConst.apply(partialLabelledFormula);
                     automata.add(partialAutomaton);
@@ -119,9 +100,9 @@ public class NumericSULMapperWithSGA extends NumericSULMapper {
     private List<String> constructAbstractAPs(List<List<Character>> abstractOutputs){
         List<String> result = new ArrayList<>();
         for (int i = 0; i < abstractOutputs.size(); i++){
-            List<Character> abstractOutputi = new ArrayList<Character>(abstractOutputs.get(i));
+            List<Character> abstractOutputi = new ArrayList<>(abstractOutputs.get(i));
             abstractOutputi.add(signalAdapter.getLargestOutputs().get(i));
-            List<String> tmpList = new ArrayList<String>();
+            List<String> tmpList = new ArrayList<>();
             if (result.isEmpty()){
                 tmpList = abstractOutputi.stream().map(c -> String.valueOf(c)).collect(Collectors.toList());
             } else {
