@@ -15,6 +15,11 @@ import owl.ltl.LabelledFormula;
 import owl.ltl.parser.LtlParser;
 import owl.translations.ltl2dela.NormalformDELAConstruction;
 
+/**
+ * Output Mapper for NumericSUL baed on Specification-Guided Abstraction.
+ *
+ * @author Tsubasa Matsumoto {@literal <tsubari96061@gmail.com>}
+ */
 public class NumericSULMapperWithSGA extends NumericSULMapper {
     private final Map<String, String> postOutputMapper;
     private final List<TemporalLogic.STLCost> formulaList;

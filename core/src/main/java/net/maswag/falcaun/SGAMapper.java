@@ -16,6 +16,11 @@ import owl.ltl.LabelledFormula;
 import owl.ltl.parser.LtlParser;
 import owl.translations.ltl2dela.NormalformDELAConstruction;
 
+/**
+ * Output Mapper for Mealy machine based on Specification-Guided Abstraction.
+ *
+ * @author Tsubasa Matsumoto {@literal <tsubari96061@gmail.com>}
+ */
 public class SGAMapper implements SULMapper<String, String, String, String>{
     @Getter
     private final Map<String, String> outputMapper;
@@ -56,13 +61,6 @@ public class SGAMapper implements SULMapper<String, String, String, String>{
                     BitSet bitSet2 = new BitSet(outputs.size()+ inputs.size());
                     bitSet2.set(j);
                     bitSet2.set(outputs.size () + k);
-                    // equal = automata.stream().allMatch(automaton -> {
-                    //   return automaton.states().stream().allMatch((state) -> {
-                    //     Set<NormalformDELAConstruction.State> successors1 = automaton.successors(state, bitSet1);
-                    //     Set<NormalformDELAConstruction.State> successors2 = automaton.successors(state, bitSet2);
-                    //     return successors1.equals(successors2);
-                    //   });
-                    // });
                     for (Automaton<NormalformDELAConstruction.State,?> automaton: automata){
                         for (NormalformDELAConstruction.State state : automaton.states()){ // for each phi in derivatives, check D_{o1}(phi) is equivalent to D_{o2}(phi)
                             Set<NormalformDELAConstruction.State> successors1 = automaton.successors(state, bitSet1);

@@ -19,6 +19,11 @@ import net.automatalib.automaton.transducer.CompactMealy;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import net.automatalib.util.automaton.builder.MealyBuilder;
 
+/**
+ * Unit tests for the {@link DotMealyWrapper} class.
+ * 
+ * @author Tsubasa Matsumoto {@literal <tsubari96061@gmail.com>}
+ */
 class DotMealyWrapperTest{
     @Test
     void dot1(){

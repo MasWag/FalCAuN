@@ -7,6 +7,11 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the {@link NumericSULMapperWithSGA} class.
+ * 
+ * @author Tsubasa Matsumoto {@literal <tsubari96061@gmail.com>}
+ */
 class SGAMapperTest {
     @Test
     void Mapper(){

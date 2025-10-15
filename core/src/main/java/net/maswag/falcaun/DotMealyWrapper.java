@@ -1,26 +1,39 @@
 package net.maswag.falcaun;
 
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
-import org.jgrapht.nio.*;
-import org.jgrapht.nio.dot.*;
-import org.jgrapht.traverse.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DirectedPseudograph;
+import org.jgrapht.nio.dot.DOTImporter;
 import org.jgrapht.util.SupplierUtil;
 
 import lombok.Getter;
+import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.Alphabets;
 import net.automatalib.automaton.CompactTransition;
 import net.automatalib.automaton.transducer.CompactMealy;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import net.automatalib.util.automaton.builder.MealyBuilder;
-import net.automatalib.alphabet.Alphabet;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
 
-// import org.jgrapht.io.DOTParser;
-
+/**
+ * 
+ * <p>
+ * This class provides construction of Mealy machine from DOT file
+ *
+ * @author Tsubasa Matsumoto {@literal <tsubari96061@gmail.com>}
+ */
 public class DotMealyWrapper{
     String fileName;
     Graph<String, LabeledEdge> graph;
@@ -31,7 +44,7 @@ public class DotMealyWrapper{
 
     public DotMealyWrapper(String fileName) {
         this.fileName = fileName;
-        graph = new DirectedPseudograph<String, LabeledEdge>(SupplierUtil.createStringSupplier(), SupplierUtil.createSupplier(LabeledEdge.class), false);
+        graph = new DirectedPseudograph<>(SupplierUtil.createStringSupplier(), SupplierUtil.createSupplier(LabeledEdge.class), false);
         readInputSymbols();
         readOutputSymbols();
         readFromDot();
