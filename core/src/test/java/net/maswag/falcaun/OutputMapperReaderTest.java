@@ -15,7 +15,6 @@ class OutputMapperReaderTest {
     void setUp() throws IOException {
         String path = "../example/shell/AT_S4.omap.tsv";
         reader = new OutputMapperReader(path);
-        reader.parse();
     }
 
     @Test
