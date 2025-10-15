@@ -113,8 +113,8 @@ println("# of states: ${hypothesisMealy.size()}")
 println("# of membership queries: ${counterOracle.getQueryCounter().getCount() - round}")
 println("# of symbols: ${counterOracle.getSymbolCounter().getCount()}")
 println("# of equivalence queries(rounds): ${round}")
-println("Time for initialize: ${(timeBeforeLearning - timeBeforeInit)}")
-println("Time for learning: ${(timeAfterLearning - timeBeforeLearning)}")
+println("Time for initialize: ${timeBeforeLearning - timeBeforeInit}")
+println("Time for learning: ${timeAfterLearning - timeBeforeLearning}")
 
 
 // Visualization.visualize(learnedMealy.transitionGraphView(sigma))

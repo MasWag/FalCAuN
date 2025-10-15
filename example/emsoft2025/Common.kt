@@ -126,7 +126,7 @@ fun runExperiment(verifier: NumericSULVerifier, systemName: String = "", propert
         timer.getSecond(),
         verifier.simulinkCountForEqTest,
         verifier.simulationTimeSecond,
-        (if (result) "no" else "yes"),
-        (if (result) "" else "\"${verifier.cexConcreteInput[0]}\"")
+        if (result) "no" else "yes",
+        if (result) "" else "\"${verifier.cexConcreteInput[0]}\""
     )
 }

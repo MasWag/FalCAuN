@@ -106,5 +106,5 @@ if (result) {
 println("# of ltl formulae: ${ltlList.size}")
 println("# of falsified ltl formulae: ${verifier.cexProperty.size}")
 println("# of MQ: ${counterOracle.getQueryCounter().getCount()}")
-println("Time for initialize: ${(timeBeforeFalsification - timeBeforeInit)}")
-println("Time for falsification: ${(timeAfterFalsification - timeBeforeFalsification)}")
+println("Time for initialize: ${timeBeforeFalsification - timeBeforeInit}")
+println("Time for falsification: ${timeAfterFalsification - timeBeforeFalsification}")
