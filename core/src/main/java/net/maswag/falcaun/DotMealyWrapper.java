@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.nio.dot.DOTImporter;
@@ -34,6 +35,7 @@ import net.automatalib.util.automaton.builder.MealyBuilder;
  *
  * @author Tsubasa Matsumoto {@literal <tsubari96061@gmail.com>}
  */
+@Slf4j
 public class DotMealyWrapper{
     String fileName;
     Graph<String, LabeledEdge> graph;
@@ -68,13 +70,9 @@ public class DotMealyWrapper{
             buffReader.close();
 
             sigma = Alphabets.fromList(inputSymbols);
-        } catch (FileNotFoundException e) {
-            System.out.println(e);
         } catch (IOException e) {
-            System.out.println(e);
+            log.error("Failed to read input symbols from {}", fileName, e);
         }
-        
-        return;
     }
 
     public void readOutputSymbols() {
@@ -95,12 +93,9 @@ public class DotMealyWrapper{
             buffReader.close();
 
             gamma = Alphabets.fromList(inputSymbols);
-        } catch (FileNotFoundException e) {
-            System.out.println(e);
         } catch (IOException e) {
-            System.out.println(e);
+            log.error("Failed to read output symbols from {}", fileName, e);
         }
-        return;
     }
 
     public void readFromDot() {
@@ -109,7 +104,7 @@ public class DotMealyWrapper{
         try {
             fileReader = new FileReader(file);
         } catch (FileNotFoundException e) {
-            System.out.println(e);
+            log.error("Unable to read DOT file {}", file, e);
             return;
         }
         DOTImporter<String, LabeledEdge> importer = new DOTImporter<>();
@@ -121,14 +116,6 @@ public class DotMealyWrapper{
         });
 
         importer.importGraph(graph, fileReader);
-
-        // Set<LabeledEdge> edges = graph.edgeSet();
-
-        // for (LabeledEdge edge : edges) {
-        //     System.out.println(edge);
-        // }
-
-        return;
     }
 
     public CompactMealy<String, String> createMealy() {
@@ -143,7 +130,7 @@ public class DotMealyWrapper{
 
         List<LabeledEdge> initialEdge = new ArrayList<>();  // edges without label
         Set<LabeledEdge> otherEdges = new HashSet<>();        // edges with label
-        edgeSet.stream().forEach(s -> {
+        edgeSet.forEach(s -> {
             if (s.isAtrrNull()) { initialEdge.add(s); }
             else { otherEdges.add(s); }
         });
@@ -156,7 +143,7 @@ public class DotMealyWrapper{
             String attribute = edge.getAttr();
             //System.out.println(attribute);
             String[] splited = attribute.split("/");
-            String input = splited[0].substring(1, splited[0].length()).replace("_", "");
+            String input = splited[0].substring(1).replace("_", "");
             inputs.add(input);
             String output = splited[1].substring(0, splited[1].length()-1).replace("_", "");
             if (mapper.containsKey(output)) {
@@ -180,12 +167,10 @@ public class DotMealyWrapper{
             }
         }
 
-        System.out.println("input size:" + inputs.size());
-        System.out.println("output size:" + outputs.size());
+        log.info("input size: {}", inputs.size());
+        log.info("output size: {}", outputs.size());
 
-        // System.out.println("initial: " + initialEdge.get(0).getTarget());
-        CompactMealy<String, String> result = mealyBuilderWithEdge.withInitial(initialEdge.get(0).getTarget()).create();
-
-        return result;
+        assert mealyBuilderWithEdge != null;
+        return mealyBuilderWithEdge.withInitial(initialEdge.get(0).getTarget()).create();
     }
 }
