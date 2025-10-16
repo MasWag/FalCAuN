@@ -20,3 +20,4 @@ References
 
 - [Shijubo+, RV'21] Efficient Black-Box Checking via Model Checking with Strengthened Specifications. Junya Shijubo, Masaki Waga, and Kohei Suenaga
 - [Waga, HSCC'20] Falsification of cyber-physical systems with robustness-guided black-box checking. Masaki Waga
+- [Matsumoto+, EMSOFT'25] Efficient Black-Box Checking with Specification-Guided Abstraction. Tsubasa Matsumoto, Kazuki Watanabe, Kohei Suenaga, and Masaki Waga.
