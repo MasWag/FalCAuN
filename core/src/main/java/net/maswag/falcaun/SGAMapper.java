@@ -49,18 +49,24 @@ public class SGAMapper implements SULMapper<String, String, String, String> {
         inputs.addAll(sigma);
         List<String> outputs = new ArrayList<>();
         outputs.addAll(gamma);
+        final boolean hasInputs = !inputs.isEmpty();
         for (int i = 0; i < outputs.size(); i++) {
             String o1 = outputs.get(i);
             for (int j = 0; j < i; j++) {
                 String o2 = outputs.get(j);
                 boolean equal = true;  // check if o1 is equivalent to o2
-                for (int k = 0; k < inputs.size(); k++) {
+                int iterationCount = hasInputs ? inputs.size() : 1;
+                for (int k = 0; k < iterationCount; k++) {
                     BitSet bitSet1 = new BitSet(outputs.size() + inputs.size());
                     bitSet1.set(i);
-                    bitSet1.set(outputs.size() + k);
+                    if (hasInputs) {
+                        bitSet1.set(outputs.size() + k);
+                    }
                     BitSet bitSet2 = new BitSet(outputs.size() + inputs.size());
                     bitSet2.set(j);
-                    bitSet2.set(outputs.size() + k);
+                    if (hasInputs) {
+                        bitSet2.set(outputs.size() + k);
+                    }
                     for (Automaton<NormalformDELAConstruction.State, ?> automaton : automata) {
                         for (NormalformDELAConstruction.State state : automaton.states()) { // for each phi in derivatives, check D_{o1}(phi) is equivalent to D_{o2}(phi)
                             Set<NormalformDELAConstruction.State> successors1 = automaton.successors(state, bitSet1);

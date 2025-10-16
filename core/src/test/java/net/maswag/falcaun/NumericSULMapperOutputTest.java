@@ -12,13 +12,14 @@ import static net.maswag.falcaun.STLOutputAtomic.Operation;
 
 class NumericSULMapperOutputTest {
     private NumericSULMapper mapper;
+    private List<Map<Character, Double>> inputMapper;
     private List<Map<Character, Double>> outputMapper;
     private List<Character> largest;
 
     @BeforeEach
     void setUp() {
         inputMapper = List.of(Map.of('a', 1.0, 'b', 2.0));
-        outputMapper = List.of(Map.of('a', 1.0, 'b', 2.0)); 
+        outputMapper = List.of(Map.of('a', 1.0, 'b', 2.0));
         largest = List.of('c');
         
         // Create a custom SimpleSignalMapper that returns specific values for this test
