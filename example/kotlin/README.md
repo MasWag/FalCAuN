@@ -49,3 +49,29 @@ JAVA_HOME=$(/usr/libexec/java_home -v 17) KOTLIN_JUPYTER_JAVA_OPTS="-Djava.libra
 ```
 
 On Linux, you can likely find a suitable directory to set `JAVA_HOME` by running `ls /usr/lib/jvm/`.
+
+## Note
+### Installation of LTSMin with a newer Spot
+Some STL properties require building LTSMin by yourself with a newer library.
+For example, the commented-out lines in `stlList` in [simglucose2.kts](./simglucose2.kts) applies.
+It is because of the inefficient old Spot, which LTSMin internally uses.
+
+First, install Spot using https://spot.lre.epita.fr/install.html as a reference.
+
+Then build LTSMin following https://github.com/Meijuh/ltsmin/tree/v3.1.0-beta2.
+
+```
+./configure --disable-dependency-tracking --prefix /path
+make
+make install
+```
+
+It will generate the artifacts under `/path` directory.
+Finally install them similarly to [../../README.md#installation](../../README.md#1-install-the-requirements)
+
+```
+cd /path
+sudo cp -r ./share /usr/local/share
+sudo cp -r ./include /usr/local/include
+sudo install ./bin/* /usr/local/bin
+```

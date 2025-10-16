@@ -250,4 +250,39 @@ class STLAtomicTest {
             assertThrows(RuntimeException.class, () -> formula.toAbstractString());
         }
     }
+
+    @Test
+    void eval() {
+        List<Map<Character, Double>> outputMapper = new ArrayList<>();
+        outputMapper.add(Map.of('a', 1.0, 'b', 2.0));
+        List<Character> largest = List.of('c');
+        SignalAdapter adapter = new SignalAdapter(
+                InputMapper.make(Collections.singletonList(Collections.singletonList(1.0))),
+                new OutputMapper(outputMapper, largest));
+
+        List<Pair<STLOutputAtomic, Boolean>> tests = List.of(
+                // lt is actually le
+                Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 1.0), true),
+                Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 2.0), true),
+                Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 1.0), false),
+                Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 2.0), false),
+                Pair.of(new STLOutputAtomic(0, STLOutputAtomic.Operation.eq, 1.0), true)
+        );
+
+        for (Pair<STLOutputAtomic, Boolean> test : tests) {
+            STLOutputAtomic formula = test.getLeft();
+            formula.setAtomic(outputMapper, largest);
+            IOSignalPiece<List<Double>> piece = new IOSignalPiece<>(
+                    Collections.singletonList(1.0),
+                    Collections.singletonList(1.0));
+            String asString = adapter.mapOutput(piece);
+            assertEquals("a", asString);
+
+            // We do an ad hoc parsing of the abstract string to get the atomic propositions
+            Set<String> satisfyingString = Arrays.stream(formula.toAbstractString()
+                    .split("\"")).filter(s -> s.length() == outputMapper.size()).collect(Collectors.toSet());
+            var expected = test.getRight();
+            assertEquals(expected, satisfyingString.contains(asString));
+        }
+    }
 }

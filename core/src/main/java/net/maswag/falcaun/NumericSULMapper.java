@@ -20,6 +20,7 @@ import net.automatalib.word.Word;
 public class NumericSULMapper implements SULMapper<String, String, List<Double>, IOSignalPiece<List<Double>>> {
     // Internal delegates for the new implementation
     protected final SignalAdapter signalAdapter;
+
     private final SignalDeriver signalDeriver;
 
     /**

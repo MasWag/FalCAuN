@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,11 +17,8 @@ class NumericSULMapperOutputTest {
 
     @BeforeEach
     void setUp() {
-        List<Map<Character, Double>> inputMapper = List.of(Map.of('a', 1.0, 'b', 2.0));
-        Map<Character, Double> m = new HashMap<>();
-        m.put('a', 1.0);
-        m.put('b', 2.0);
-        outputMapper = List.of(m);
+        inputMapper = List.of(Map.of('a', 1.0, 'b', 2.0));
+        outputMapper = List.of(Map.of('a', 1.0, 'b', 2.0)); 
         largest = List.of('c');
         
         // Create a custom SimpleSignalMapper that returns specific values for this test

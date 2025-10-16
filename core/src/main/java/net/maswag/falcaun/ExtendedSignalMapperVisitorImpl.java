@@ -164,6 +164,8 @@ public class ExtendedSignalMapperVisitorImpl extends ExtendedSignalMapperBaseVis
                     return Streams.zip(left.stream(), right.stream(), (a, b) -> a * b).collect(Collectors.toList());
                 } else if (ctx.DIV() != null) {
                     return Streams.zip(left.stream(), right.stream(), (a, b) -> a / b).collect(Collectors.toList());
+                } else if (ctx.MOD() != null) {
+                    return Streams.zip(left.stream(), right.stream(), (a, b) -> a % b).collect(Collectors.toList());
                 } else if (ctx.MIN() != null) {
                     return Streams.zip(left.stream(), right.stream(), Double::min).collect(Collectors.toList());
                 } else if (ctx.MAX() != null) {
@@ -185,6 +187,8 @@ public class ExtendedSignalMapperVisitorImpl extends ExtendedSignalMapperBaseVis
                     return left.stream().map(a -> a * right).collect(Collectors.toList());
                 } else if (ctx.DIV() != null) {
                     return left.stream().map(a -> a / right).collect(Collectors.toList());
+                } else if (ctx.MOD() != null) {
+                    return left.stream().map(a -> a % right).collect(Collectors.toList());
                 } else if (ctx.MIN() != null) {
                     return Collections.singletonList(left.stream().min(Double::compare).orElse(Double.POSITIVE_INFINITY));
                 } else if (ctx.MAX() != null) {
@@ -206,6 +210,8 @@ public class ExtendedSignalMapperVisitorImpl extends ExtendedSignalMapperBaseVis
                     return right.stream().map(a -> left * a).collect(Collectors.toList());
                 } else if (ctx.DIV() != null) {
                     return right.stream().map(a -> left / a).collect(Collectors.toList());
+                } else if (ctx.MOD() != null) {
+                    return right.stream().map(a -> left % a).collect(Collectors.toList());
                 } else if (ctx.MIN() != null) {
                     return Collections.singletonList(right.stream().min(Double::compare).orElse(Double.POSITIVE_INFINITY));
                 } else if (ctx.MAX() != null) {

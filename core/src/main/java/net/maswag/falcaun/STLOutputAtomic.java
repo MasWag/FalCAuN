@@ -119,6 +119,12 @@ public class STLOutputAtomic extends STLAbstractAtomic {
         initialized = true;
     }
 
+    void setMapper(OutputMapper mapper) {
+        this.outputMapper = mapper.getOutputMapper();
+        this.largest = mapper.getLargest();
+        setOutputMaps();
+    }
+
     void setAtomic(List<Map<Character, Double>> outputMapper, List<Character> largest) {
         this.outputMapper = outputMapper;
         this.largest = largest;

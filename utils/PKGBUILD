@@ -1,0 +1,92 @@
+# Maintainer: Masaki Waga <masakiwaga@gmail.com>
+pkgname=ltsmin-beta
+pkgver=3.1.0.beta2
+pkgrel=1
+pkgdesc="High-performance language-independent model checker (beta version)"
+arch=('x86_64')
+url="https://ltsmin.utwente.nl/"
+license=('BSD')
+provides=('ltsmin')
+conflicts=('ltsmin')
+options=('!lto')  # ensure no GCC/LLVM LTO mixing
+
+_ltl2ba_commit='ea33bb2'
+
+source=(
+  "git+https://github.com/Meijuh/ltsmin.git#tag=v3.1.0-beta2"
+  "ltl2ba-${_ltl2ba_commit}.tar.gz::https://github.com/utwente-fmt/ltl2ba/archive/${_ltl2ba_commit}.tar.gz"
+)
+sha256sums=('SKIP' 'd143e470d926b9ba33bbfd1f07bf25e0e26cf2edb754eafdba6c3d1a6d9fda08')
+
+depends=('popt' 'libxml2' 'xz' 'zlib' 'libtool' 'spot')
+makedepends=(
+  'git' 'autoconf' 'automake' 'libtool'
+  'bison' 'flex' 'doxygen' 'pkgconf'
+  'xmlto' 'asciidoc'
+  'jdk-openjdk' 'ant'
+  'gettext'
+  'clang' 'llvm' 'lld'
+)
+
+prepare() {
+  cd "${srcdir}/ltsmin"
+  git submodule update --init --recursive || true
+
+  # pin ltl2ba
+  rm -rf ltl2ba
+  if [[ -d "${srcdir}/ltl2ba-${_ltl2ba_commit}" ]]; then
+    cp -a "${srcdir}/ltl2ba-${_ltl2ba_commit}" ltl2ba
+  else
+    _guess="$(find "${srcdir}" -maxdepth 1 -type d -name "ltl2ba-${_ltl2ba_commit}*" | head -n1)"
+    [[ -n "${_guess}" ]] || { echo "Cannot find unpacked ltl2ba snapshot"; exit 1; }
+    cp -a "${_guess}" ltl2ba
+  fi
+
+  # your sed workaround
+  sed -i \
+    -e 's/^ltsmin_expr_t/extern ltsmin_expr_t/' \
+    -e 's/^ltsmin_parse_env_t/extern ltsmin_parse_env_t/' \
+    src/pins2lts-sym/aux/options.h
+
+  # keep lemon warnings relaxed (harmless)
+  if ! grep -q 'old-style-definition' lemon/Makefile.am 2>/dev/null; then
+    printf '\n# Local: tolerate legacy constructs in bundled lemon only\n' >> lemon/Makefile.am
+    printf 'AM_CFLAGS += -Wno-strict-prototypes -Wno-old-style-definition\n' >> lemon/Makefile.am
+  fi
+
+  libtoolize --force --copy
+  autoreconf -fi
+}
+
+build() {
+  cd "${srcdir}/ltsmin"
+
+  # Force clang everywhere (configure-time and make-time)
+  export CC=clang
+  export CXX=clang++
+  export LD=clang
+  export AR=llvm-ar
+  export RANLIB=llvm-ranlib
+  export NM=llvm-nm
+  export STRIP=llvm-strip
+
+  # (Optional) quiet down K&R warnings if needed:
+  # export CFLAGS="$CFLAGS -Wno-old-style-definition -Wno-strict-prototypes"
+  # export CXXFLAGS="$CXXFLAGS -Wno-old-style-cast"
+
+  # Reconfigure with these tool choices
+  ./configure \
+    CC="$CC" CXX="$CXX" LD="$LD" AR="$AR" RANLIB="$RANLIB" NM="$NM" STRIP="$STRIP" \
+    --prefix=/usr \
+    --disable-dependency-tracking \
+    --enable-pkgconf-static
+
+  # Also pass tool vars to make to override any subdir makefiles
+  make V=1 CC="$CC" CXX="$CXX" LD="$LD" AR="$AR" RANLIB="$RANLIB" NM="$NM" STRIP="$STRIP"
+}
+
+package() {
+  cd "${srcdir}/ltsmin"
+  make DESTDIR="${pkgdir}" install
+  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

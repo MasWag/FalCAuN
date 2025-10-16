@@ -37,14 +37,17 @@ extended_expr
      | leftv=value DIV right=extended_expr
      | leftv=value PLUS right=extended_expr
      | leftv=value MINUS right=extended_expr
+     | leftv=value MOD right=extended_expr
      | left=extended_expr TIMES rightv=value
      | left=extended_expr DIV rightv=value
      | left=extended_expr PLUS rightv=value
      | left=extended_expr MINUS rightv=value
+     | left=extended_expr MOD rightv=value
      | left=extended_expr TIMES right=extended_expr
      | left=extended_expr DIV right=extended_expr
      | left=extended_expr PLUS right=extended_expr
      | left=extended_expr MINUS right=extended_expr
+     | left=extended_expr MOD right=extended_expr
      | MIN LPAREN left=extended_expr COMMA right=extended_expr RPAREN
      | MAX LPAREN left=extended_expr COMMA right=extended_expr RPAREN
      | LPAREN extended_expr RPAREN

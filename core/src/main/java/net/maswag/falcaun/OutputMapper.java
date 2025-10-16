@@ -8,8 +8,10 @@ import lombok.Setter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A class for mapping output values to characters.
@@ -46,8 +48,8 @@ public class OutputMapper {
         if (outputMapper.size() != largest.size()) {
             throw new IllegalArgumentException("Output mapper and largest character list must have the same size.");
         }
-        this.outputMapper = outputMapper;
-        this.largest = largest;
+        this.outputMapper = sortOutputMappings(outputMapper);
+        this.largest = new ArrayList<>(largest);
     }
 
     /**
@@ -58,8 +60,26 @@ public class OutputMapper {
         char[] charList = new char[parsedData.size()];
         Arrays.fill(charList, 'a');
 
-        outputMapper = AbstractMapperReader.assignCharacters(parsedData, charList);
+        outputMapper = sortOutputMappings(AbstractMapperReader.assignCharacters(parsedData, charList));
 
         largest = new ArrayList<>(Chars.asList(charList));
+    }
+
+    private static List<Map<Character, Double>> sortOutputMappings(List<Map<Character, Double>> mappings) {
+        return mappings.stream()
+            .map(OutputMapper::sortByValue)
+            .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private static Map<Character, Double> sortByValue(Map<Character, Double> mapping) {
+        return mapping.entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByValue())
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (existing, replacement) -> existing,
+                LinkedHashMap::new
+            ));
     }
 }
