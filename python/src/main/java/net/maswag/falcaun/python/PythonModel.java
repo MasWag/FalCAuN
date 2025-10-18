@@ -14,8 +14,8 @@ import java.util.List;
 
 /**
  * A PythonModel class wraps a model implemented by python.
- * The model is expected to have methods pre(), post(), step(I inputSignal) -> O, and close().
- * If the model has an exec(List<I> inputSignals) -> List<O> method,
+ * The model is expected to have methods {@code pre()}, {@code post()}, {@code step(I inputSignal) -> O}, and {@code close()}.
+ * If the model has an {@code exec(List<I> inputSignals) -> List<O>} method,
  * NumericSUL can be used to execute a batch of input signals for optimization.
  * This class uses Jep library to interact with Python.
  */
@@ -58,7 +58,7 @@ public class PythonModel<I, O> {
 
     /**
      * Constructs a Python interpreter with the given initialization script as a Python model.
-     * The script should define a class SUL with methods pre(), post(), step(I inputSignal) -> O, and close().
+     * The script should define a class {@code SUL} with methods {@code pre()}, {@code post()}, {@code step(I inputSignal) -> O}, and {@code close()}.
      * 
      * @param initScript The Python script to initialize the model.
      * @param outputClass The class object of the output signal produced by the step method.
@@ -110,7 +110,7 @@ public class PythonModel<I, O> {
     }
 
     /**
-     * For the given outputClass, it tries to convert the output object by python to O type by Jep.
+     * For the given outputClass, it tries to convert the output object by python to {@code O} type by Jep.
      */
     public O step(I inputSignal) throws JepException {
         simulationTime.start();
