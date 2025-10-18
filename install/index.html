@@ -351,9 +351,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-setup-the-environment-variable" class="md-nav__link">
+  <a href="#2-set-up-the-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Setup the environment variable
+      2. Set up the environment variable
     </span>
   </a>
   
@@ -393,9 +393,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-setup-the-environment-variable_1" class="md-nav__link">
+  <a href="#2-set-up-the-environment-variable_1" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Setup the environment variable
+      2. Set up the environment variable
     </span>
   </a>
   
@@ -418,7 +418,7 @@
         <li class="md-nav__item">
   <a href="#installation-of-ltsmin-310-on-macos-with-arm-processors" class="md-nav__link">
     <span class="md-ellipsis">
-      Installation of LTSMin 3.1.0 on macOS with ARM Processors
+      Installation of LTSMin 3.1.0 on macOS with ARM processors
     </span>
   </a>
   
@@ -639,9 +639,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-setup-the-environment-variable" class="md-nav__link">
+  <a href="#2-set-up-the-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Setup the environment variable
+      2. Set up the environment variable
     </span>
   </a>
   
@@ -681,9 +681,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-setup-the-environment-variable_1" class="md-nav__link">
+  <a href="#2-set-up-the-environment-variable_1" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Setup the environment variable
+      2. Set up the environment variable
     </span>
   </a>
   
@@ -706,7 +706,7 @@
         <li class="md-nav__item">
   <a href="#installation-of-ltsmin-310-on-macos-with-arm-processors" class="md-nav__link">
     <span class="md-ellipsis">
-      Installation of LTSMin 3.1.0 on macOS with ARM Processors
+      Installation of LTSMin 3.1.0 on macOS with ARM processors
     </span>
   </a>
   
@@ -800,8 +800,8 @@
 <p>For the matlab module, the unit test on <code>mvn install</code> is disabled by default because it can be time-consuming. If you want, you can run it by <code>mvn test -DskipTests=false</code>.</p>
 </div>
 <h3 id="1-install-the-requirements_1">1. Install the Requirements</h3>
-<p>You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of Mathworks.</p>
-<h3 id="2-setup-the-environment-variable">2. Setup the environment variable</h3>
+<p>You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of MathWorks.</p>
+<h3 id="2-set-up-the-environment-variable">2. Set up the environment variable</h3>
 <p>We assume that the environment variable <code>MATLAB_HOME</code> shows where MATLAB is installed. An example is as follows.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MATLAB_HOME</span><span class="o">=</span>&lt;path/to/matlab/home&gt;
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1">## Example:</span>
@@ -816,7 +816,7 @@
 <p>Here, we provide the instructions to install the python binding module.</p>
 <h3 id="1-install-the-requirements_2">1. Install the Requirements</h3>
 <p>You need to install Jep manually. Follow the instructions on the <a href="https://github.com/ninia/jep">official site</a></p>
-<h3 id="2-setup-the-environment-variable_1">2. Setup the environment variable</h3>
+<h3 id="2-set-up-the-environment-variable_1">2. Set up the environment variable</h3>
 <p>Add the installed path, which has the JEP native library including <code>jep-VERSION.jar</code>, to the environment variable <code>LD_LIBRARY_PATH</code>.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>&lt;path/to/jep&gt;:<span class="si">${</span><span class="nv">LD_LIBRARY_PATH</span><span class="si">}</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># Example:</span>
@@ -826,18 +826,18 @@
 <p>Build FalCAuN using Maven. You may need to set the environment variable <code>PYTHONEXECUTABLE</code> to the full path of the Python executable, for example: <code>export PYTHONEXECUTABLE="$PWD/.venv/bin/python3"</code>.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python
 </span></code></pre></div>
-<h2 id="installation-of-ltsmin-310-on-macos-with-arm-processors">Installation of LTSMin 3.1.0 on macOS with ARM Processors</h2>
-<p>FalCAuN works on macOS with ARM Processors, but the setup of LTSMin is a bit tricky because it only supports x86_64. One can still run LTSMin using Rosetta and libtool for x86_64. You can also build and install LTSMin using Homebrew (for x86_64) by <code>brew install maswag/scientific/ltsmin-beta</code>.</p>
+<h2 id="installation-of-ltsmin-310-on-macos-with-arm-processors">Installation of LTSMin 3.1.0 on macOS with ARM processors</h2>
+<p>FalCAuN works on macOS with ARM processors, but the setup of LTSMin is a bit tricky because it only supports x86_64. One can still run LTSMin using Rosetta and libtool for x86_64. You can also build and install LTSMin using Homebrew (for x86_64) by <code>brew install maswag/scientific/ltsmin-beta</code>.</p>
 <ol>
 <li>Set up Rosetta on the macOS</li>
-<li>Install Homebrew for intel processors with <code>arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"</code></li>
+<li>Install Homebrew for Intel processors with <code>arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"</code></li>
 <li>Install <code>libtool</code> for x86_64 with <code>/usr/local/bin/brew install libtool</code></li>
 </ol>
 <h2 id="notes">Notes</h2>
 <ul>
-<li>You may have to explicitly specify <code>JAVA_HOME</code>, for example, <code>JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=False</code>.</li>
-<li>The automatic transmission model requires parameters defined in an example by Mathworks. To load it, you probably need to set up the example by Mathworks and the path beforehand.<ul>
-<li>The example by Mathworks can be opened with <code>openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')</code></li>
+<li>You may have to explicitly specify <code>JAVA_HOME</code>, for example, <code>JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=false</code>.</li>
+<li>The automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand.<ul>
+<li>The example by MathWorks can be opened with <code>openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')</code></li>
 <li>See <code>./src/test/resources/MATLAB/initAT.m</code> for an example to set the path.</li>
 </ul>
 </li>

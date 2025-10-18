@@ -511,23 +511,23 @@
 <h1 id="tutorial">Tutorial</h1>
 <h2 id="introduction">Introduction</h2>
 <p>FalCAuN is a toolkit for testing black-box systems like CPSs (cyber-physical systems) based on automata learning and model checking.
-Given a list of specifications as STL(Signal Temporal Logic) formulas,
+Given a list of specifications as STL (Signal Temporal Logic) formulas,
 FalCAuN tests whether the given system satisfies the specifications by finding an input signal that causes the corresponding output signal to violate the specifications.
 This process is called falsification.</p>
 <p>The main feature of FalCAuN is the combination of black-box checking and optimization-based falsification.
 BBC (black-box checking) [Meinke18], [Peled+99] is a testing method that constructs a Mealy machine via automata learning from a black-box system, then uses this machine for model checking the specifications.
-The main benefit of black-box checking is that the system model is unnecessary, and the system can be black-box.
-In contrast, the standard model checking requires the system model, which is usually challenging.</p>
+The main benefit of black-box checking is that the system model is unnecessary, so the system can remain a black box.
+In contrast, standard model checking requires the system model, which is usually challenging to obtain.</p>
 <p>Optimization-based falsification [Kapinski+16] is a testing method to find a counterexample violating a specification by minimizing the satisfaction degree of the specification. The minimization is done by black-box optimization, such as a genetic algorithm and simulated annealing. FalCAuN uses the robust semantics of STL as the degree.</p>
 <!-- ![](bbc-workflow.png) -->
 
 <h2 id="tutorial-automatic-transmission-benchmark">Tutorial: Automatic Transmission benchmark</h2>
-<p>Here, we demonstrate the usage of FalCauN with an example called automatic transmission benchmark [Hoxha+14] as a tutorial.
-We provide the same code in <code>example/kotlin/ATS1-step-5.ipynb</code>, which can be run using Jupyter with Kotlin kernel.
+<p>Here, we demonstrate the usage of FalCAuN with an example called the automatic transmission benchmark [Hoxha+14] as a tutorial.
+We provide the same code in <code>example/kotlin/ATS1-step-5.ipynb</code>, which can be run using Jupyter with the Kotlin kernel.
 Details are in <code>example/kotlin/README.md</code>.
 This example uses a Simulink model of an automatic transmission system. It is located in <code>example/kotlin/Autotrans_shift.mdl</code>.
 <img alt="" src="../ats.png" /></p>
-<p>First, include FalCAuN and write <code>initScript</code> Matlab executes.
+<p>First, include FalCAuN and write the <code>initScript</code> that MATLAB executes.
 <div class="language-kotlin highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">import</span><span class="w"> </span><span class="nn">net.maswag.falcaun.*</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">// Initializing script for MATLAB</span>
@@ -689,16 +689,16 @@ a counterexample violating the specification is shown as follows.
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>cex abstract input: ba ba ba ba ba
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>cex abstract output: aaaa aaad aaae aaaf aaag
 </span></code></pre></div></p>
-<p>The following input and output to the target system shows this output above.
+<p>The following input and output traces for the target system reproduce the output shown above.
 <img alt="" src="../timeline.png" /></p>
-<p>Intuitively the formula <code>[] ( output(3) &lt; 120.000000 )</code> means that
+<p>Intuitively, the formula <code>[] ( output(3) &lt; 120.000000 )</code> means that
 the velocity does not exceed <code>120</code>, and
 FalCAuN falsified this specification by finding a counterexample.
-This counterexample shows when <code>throttle</code> input keeps the max value <code>100</code>, full throttle, the velocity exceeds <code>120</code> in <code>20</code> ticks.</p>
-<p>The Mealy machine constructed by an automata learning algorithm is shown below.
-This graph highlighting the violating path is described by the above <code>abstract input</code> and <code>abstract output</code>.
+This counterexample shows that when the <code>throttle</code> input stays at the maximum value <code>100</code> (full throttle), the velocity exceeds <code>120</code> in <code>20</code> ticks.</p>
+<p>The Mealy machine constructed by the automata learning algorithm is shown below.
+The highlighted path corresponds to the <code>abstract input</code> and <code>abstract output</code> shown above.
 <img alt="" src="../learned-mealy-machine.png" /></p>
-<p>Finally, don't forget to terminate the Matlab engine.
+<p>Finally, don't forget to terminate the MATLAB engine.
 <div class="language-kotlin highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">sul</span><span class="p">.</span><span class="na">close</span><span class="p">()</span>
 </span></code></pre></div></p>
 <h2 id="references">References</h2>
