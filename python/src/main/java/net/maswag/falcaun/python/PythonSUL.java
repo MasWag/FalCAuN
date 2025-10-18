@@ -11,6 +11,9 @@ import java.io.Closeable;
 
 /**
  * The System Under Learning implemented by a Python model.
+ * 
+ * @param <I> Type of the input at each step
+ * @param <O> Type of the output at each step
  */
 public class PythonSUL<I, O> implements SUL<I, O>, Closeable {
     protected final PythonModel<I, O> model;

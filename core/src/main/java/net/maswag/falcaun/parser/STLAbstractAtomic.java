@@ -32,11 +32,11 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
     protected Set<String> allAPs;
 
     /**
-     * <p>Constructor for STLAtomic.</p>
+     * <p>Constructor for STLAbstractAtomic.</p>
      *
-     * @param sigIndex   a int.
-     * @param op         a {@link STLAbstractAtomic.Operation} object.
-     * @param comparator a double.
+     * @param sigIndex   An index of signals
+     * @param op         The comparison operator {@link STLAbstractAtomic.Operation}
+     * @param comparator The value to compare against
      */
     public STLAbstractAtomic(int sigIndex, Operation op, double comparator) {
         this.sigIndex = sigIndex;

@@ -6,6 +6,12 @@ import net.maswag.falcaun.AdaptiveSTLUpdater;
 import net.maswag.falcaun.NumericSULMapper;
 import net.maswag.falcaun.NumericSULVerifier;
 
+/**
+ * Verifies Simulink models with specified properties.
+ *
+ * @see net.maswag.falcaun.simulink.SimulinkSUL
+ * @see net.maswag.falcaun.NumericSULVerifier
+ */
 public class SimulinkSULVerifier extends NumericSULVerifier {
     /**
      * <p>Constructor for SimulinkVerifier.</p>

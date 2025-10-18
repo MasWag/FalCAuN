@@ -13,7 +13,9 @@ import java.util.Map;
 @Deprecated
 public class InputMapperReader extends AbstractMapperReader {
     /**
-     * Parses input mapper data from a file.
+     * Parses the input mapping from a file and returns a list of mappings.
+     * Each {@code Map} contains characters as keys and their corresponding concrete values as values.
+     * They are constructed by {@link #make(List)}.
      *
      * @param filename The name of the file to read.
      * @return A list of maps from characters to double values.
@@ -27,9 +29,9 @@ public class InputMapperReader extends AbstractMapperReader {
     }
 
     /**
-     * Creates a list of maps from characters to double values from a list of lists of double values.
+     * Creates a list of maps from characters to double values from a list of ascending lists of double values.
      *
-     * @param data The list of lists of double values to convert.
+     * @param data The list of ascending lists of double values to convert.
      * @return A list of maps from characters to double values.
      * @deprecated Use {@link InputMapper#make(List)} instead.
      */

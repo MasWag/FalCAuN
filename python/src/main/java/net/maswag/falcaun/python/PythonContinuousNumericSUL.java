@@ -96,6 +96,17 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         this.model.post();
     }
 
+    /**
+     * Try to convert a raw {@link ArrayList} returned by Jep to 2D list {@code List<List<Double>>}
+     * and construct a {@link ValueWithTime} object.
+     *
+     * @param ary The raw list returned by Jep.
+     *            It is a 2D list where the first column is the timestamp and the
+     *            rest columns are the output values.
+     * @return A {@link ValueWithTime} object that contains the timestamps and the output
+     *         values.
+     * @throws IllegalStateException if the shape of the array is unexpected.
+     */
     private ValueWithTime<List<Double>> constructValueWithTime(@SuppressWarnings("rawtypes") ArrayList<?> ary) {
         // Convert the raw list to a typed list with runtime type checking
         List<List<Double>> data = ary.stream().map(e1 -> {
