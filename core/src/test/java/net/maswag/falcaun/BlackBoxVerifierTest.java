@@ -9,10 +9,13 @@ import net.automatalib.alphabet.ArrayAlphabet;
 import net.automatalib.automaton.transducer.CompactMealy;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import net.automatalib.word.WordBuilder;
-import net.maswag.falcaun.TemporalGlobally.STLGlobally;
-import net.maswag.falcaun.TemporalImply.STLImply;
-import net.maswag.falcaun.TemporalLogic.STLCost;
-import net.maswag.falcaun.TemporalNext.STLNext;
+import net.maswag.falcaun.parser.STLAbstractAtomic;
+import net.maswag.falcaun.parser.STLOutputAtomic;
+import net.maswag.falcaun.parser.TemporalGlobally.STLGlobally;
+import net.maswag.falcaun.parser.TemporalImply.STLImply;
+import net.maswag.falcaun.parser.TemporalLogic.STLCost;
+import net.maswag.falcaun.parser.TemporalNext.STLNext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -11,6 +11,7 @@ import java.util.Set;
 import de.learnlib.sul.SULMapper;
 import lombok.Getter;
 import net.automatalib.alphabet.Alphabet;
+import net.maswag.falcaun.parser.TemporalLogic;
 import owl.automaton.Automaton;
 import owl.ltl.LabelledFormula;
 import owl.ltl.parser.LtlParser;

@@ -9,8 +9,8 @@ import net.maswag.falcaun.EQSearchProblem
 import net.maswag.falcaun.EQSteadyStateGeneticAlgorithm
 import net.maswag.falcaun.NumericSULVerifier
 import net.maswag.falcaun.OutputMapperReader
-import net.maswag.falcaun.STLFactory
-import net.maswag.falcaun.TemporalLogic
+import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.parser.TemporalLogic
 
 /**
  * Adjust logger levels to reduce verbose output.

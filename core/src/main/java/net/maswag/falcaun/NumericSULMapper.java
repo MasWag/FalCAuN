@@ -86,7 +86,7 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
      * @param abstractInputs The list of abstract input words to map.
      * @return The list of concrete words corresponding to the abstract input words.
      */
-    List<Word<List<Double>>> mapInputs(List<Word<String>> abstractInputs) {
+    public List<Word<List<Double>>> mapInputs(List<Word<String>> abstractInputs) {
         // Delegate to SignalAdapter
         return signalAdapter.mapInputs(abstractInputs);
     }
@@ -122,7 +122,7 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
      *
      * @return The abstract alphabet.
      */
-    Alphabet<String> constructAbstractAlphabet() {
+    public Alphabet<String> constructAbstractAlphabet() {
         // Delegate to SignalAdapter
         return signalAdapter.constructAbstractAlphabet();
     }
@@ -132,7 +132,7 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
      *
      * @return The concrete alphabet.
      */
-    Alphabet<List<Double>> constructConcreteAlphabet() {
+    public Alphabet<List<Double>> constructConcreteAlphabet() {
         // Delegate to SignalAdapter
         return signalAdapter.constructConcreteAlphabet();
     }

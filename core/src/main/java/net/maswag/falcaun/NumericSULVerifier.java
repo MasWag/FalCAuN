@@ -6,6 +6,7 @@ import de.learnlib.oracle.PropertyOracle.MealyPropertyOracle;
 import de.learnlib.mapper.MappedSUL;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.parser.TemporalLogic;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.GrowingMapAlphabet;
+import net.maswag.falcaun.parser.LTLFactory;
+import net.maswag.falcaun.parser.LTLFormulaHelper;
+import net.maswag.falcaun.parser.TemporalLogic;
 
 /**
  * Output Mapper for NumericSUL baed on Specification-Guided Abstraction.

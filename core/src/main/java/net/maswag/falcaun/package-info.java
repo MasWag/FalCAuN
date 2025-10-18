@@ -7,7 +7,7 @@
  * <p>FalCAuN implements various temporal logics, signal mappers, and equivalence oracles
  * to enable effective falsification of complex systems.</p>
  *
- * @see net.maswag.falcaun.AbstractTemporalLogic
+ * @see net.maswag.falcaun.parser.AbstractTemporalLogic
  * @see net.maswag.falcaun.SignalMapper
  * @see net.maswag.falcaun.ContinuousNumericSUL
  */

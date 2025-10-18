@@ -10,6 +10,8 @@
 //@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.ExtendedSignalMapper
+
 // Reduce verbose logs via common helper
 surpressesLog()
 

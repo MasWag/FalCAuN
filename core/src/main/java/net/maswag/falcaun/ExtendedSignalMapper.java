@@ -1,9 +1,11 @@
 package net.maswag.falcaun;
 
 import lombok.RequiredArgsConstructor;
-import net.maswag.falcaun.ExtendedSignalMapperLexer;
-import net.maswag.falcaun.ExtendedSignalMapperParser;
-import net.maswag.falcaun.ExtendedSignalMapperVisitor;
+import net.maswag.falcaun.parser.ExtendedSignalMapperLexer;
+import net.maswag.falcaun.parser.ExtendedSignalMapperParser;
+import net.maswag.falcaun.parser.ExtendedSignalMapperVisitor;
+import net.maswag.falcaun.parser.ExtendedSignalMapperVisitorImpl;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 
 /**
  * Class to construct pseudo signals from concrete signals
@@ -115,7 +118,7 @@ public class ExtendedSignalMapper implements SignalMapper {
         CharStream stream = CharStreams.fromString(line);
         ExtendedSignalMapperLexer lexer = new ExtendedSignalMapperLexer(stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        ExtendedSignalMapperParser parser = new net.maswag.falcaun.ExtendedSignalMapperParser(tokens);
+        ExtendedSignalMapperParser parser = new ExtendedSignalMapperParser(tokens);
         ParseTree tree = parser.expr();
         return visitor.visit(tree);
     }

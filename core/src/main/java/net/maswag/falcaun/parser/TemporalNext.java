@@ -1,0 +1,140 @@
+package net.maswag.falcaun.parser;
+
+import lombok.Getter;
+import net.maswag.falcaun.IOSignal;
+
+import java.util.List;
+import java.util.Set;
+
+import net.maswag.falcaun.LTLAPs;
+import net.maswag.falcaun.LTLFormulaBase;
+
+/**
+ * <p>STLNext class.</p>
+ *
+ * @param <I> Type of the input at each step
+ * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ */
+public class TemporalNext<I> extends AbstractTemporalLogic<I> {
+    @Getter
+    private final TemporalLogic<I> subFml;
+    private final boolean nullPositive;
+
+    TemporalNext(TemporalLogic<I> subFml, boolean nullPositive) {
+        this.subFml = subFml;
+        this.nullPositive = nullPositive;
+        this.nonTemporal = false;
+        this.iOType = subFml.getIOType();
+        this.initialized = subFml.isInitialized();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Double apply(IOSignal<I> signal) {
+        if (signal.size() <= 1) {
+            return this.nullPositive ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+        }
+        return this.subFml.apply(signal.suffix(signal.size() - 1));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RoSI getRoSI(IOSignal<I> signal) {
+        if (signal.size() <= 1) {
+            return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        }
+        return this.subFml.getRoSI(signal.suffix(signal.size() - 1));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void constructSatisfyingAtomicPropositions() {
+        super.constructSatisfyingAtomicPropositions();
+        this.satisfyingAtomicPropositions = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toAbstractString() {
+        return String.format("X ( %s )", subFml.toAbstractString());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<String> getAllAPs() {
+        return subFml.getAllAPs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return String.format("X ( %s )", subFml.toString());
+    }
+
+    @Override
+    public String toOwlString() {
+        return String.format("X ( %s )", subFml.toOwlString());
+    }
+
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate) {
+        return new TemporalNext<>(subFml.toNnf(negate), nullPositive);
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm() {
+        return new TemporalNext<>(subFml.toDisjunctiveForm(), nullPositive);
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions() {
+        return subFml.getAllConjunctions();
+    }
+
+    public static class STLNext extends TemporalNext<List<Double>> implements STLCost {
+        public STLNext(STLCost subFml, boolean nullPositive) {
+            super(subFml, nullPositive);
+        }
+    }
+
+    static class LTLNext extends TemporalNext<String> implements LTLFormula {
+        private final LTLFormulaBase formulaBase = new LTLFormulaBase();
+
+        LTLNext(LTLFormula subFml, boolean nullPositive) {
+            super(subFml, nullPositive);
+        }
+
+        @Override
+        public void setAPs(LTLAPs aps) {
+            formulaBase.setAPsWithPropagation(aps, () -> {
+                if (getSubFml() instanceof LTLFormula) {
+                    ((LTLFormula) getSubFml()).setAPs(aps);
+                }
+            });
+        }
+
+        @Override
+        public LTLAPs getAPs() {
+            return formulaBase.getAps();
+        }
+
+        @Override
+        public void collectAtomicPropositions(LTLAPs aps) {
+            if (getSubFml() instanceof LTLFormula) {
+                ((LTLFormula) getSubFml()).collectAtomicPropositions(aps);
+            }
+        }
+    }
+}
