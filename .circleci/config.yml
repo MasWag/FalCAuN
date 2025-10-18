@@ -16,26 +16,66 @@ jobs:
       - run:
           name: Install OpenJDK 17
           command: |
-            sudo apt-get update && sudo apt-get install openjdk-17-jdk maven -y
+            sudo apt-get update && sudo apt-get install openjdk-17-jdk maven unzip -y
             sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
             sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+      - run:
+          name: Install Owl
+          command: |
+            wget https://github.com/owl-toolkit/owl/releases/download/release-21.0/owl-linux-amd64-21.0.zip
+            unzip owl-linux-amd64-21.0.zip -d owl
+            mvn install:install-file -N \
+              -Dfile=./owl/owl-linux-musl-amd64-21.0/jar/owl-21.0.jar \
+              -DgroupId=de.tum.in \
+              -DartifactId=owl \
+              -Dversion=21.0 \
+              -Dpackaging=jar \
+              -DgeneratePom=true
       - run:
           name: Install Python and JEP
           command: |
             sudo apt-get update && sudo apt-get install -y python3 python3-pip python3-dev
-            pip3 install --upgrade setuptools wheel
-            pip3 install --no-cache-dir --no-build-isolation jep==4.2.1
+            pip3 install --break-system-packages --upgrade setuptools wheel
+            pip3 install --break-system-packages --no-cache-dir --no-build-isolation jep==4.2.1
             pip3 show jep
-            jep_path=$(python3 -c 'import site, os; print(os.path.join(site.getsitepackages()[0], "jep"))')
+            jep_path=$(python3 - <<'PY'
+import importlib.util
+import os
+spec = importlib.util.find_spec("jep")
+if spec and spec.origin:
+    path = os.path.dirname(spec.origin)
+    print(path)
+else:
+    raise SystemExit("Unable to determine jep installation path.")
+PY
+)
             echo "export LD_LIBRARY_PATH=${jep_path}:$LD_LIBRARY_PATH" >> $BASH_ENV
+            echo "export JEP_JAVA_LIBRARY_PATH=${jep_path}" >> $BASH_ENV
       - matlab/install:
           release: R2024a
           products: Simulink
       - restore_cache:
           key: FalCAuN-{{ checksum "pom.xml" }}
-      - run: MATLAB_HOME=/tmp/matlab_root mvn clean
-      - run: MATLAB_HOME=/tmp/matlab_root mvn install -DskipTests=True
-      - run: MATLAB_HOME=/tmp/matlab_root mvn test -Dtest='!%regex[.*((Simulink((SULVerifier)|(SUL|Model)))|(MembershipOracle))Test.*]' -DskipTests=False
+      - run:
+          name: Prepare Maven dependencies
+          command: mvn dependency:go-offline --projects core
+          environment:
+            MATLAB_HOME: /tmp/matlab_root
+      - run:
+          name: Build the core project
+          command: mvn install --also-make --projects core -DskipTests=True
+          environment:
+            MATLAB_HOME: /tmp/matlab_root
+      - run:
+          name: Test the core project
+          command: mvn test -DskipTests=False --projects core
+          environment:
+            MATLAB_HOME: /tmp/matlab_root
+      - run:
+          name: Test the python project
+          command: mvn test --projects python
+          environment:
+            MATLAB_HOME: /tmp/matlab_root
       - store_artifacts:
           path: target
       - save_cache:
