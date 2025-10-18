@@ -13,6 +13,7 @@ The requirements for the core and examples modules of FalCAuN are as follows.
 - LTSMin 3.1.0
     - This is not officially released yet.
     - You can download it from [HERE](https://github.com/Meijuh/ltsmin/releases/tag/v3.1.0).
+- Owl 21.0: https://owl.model.in.tum.de/
 
 The matlab module also requires the following.
 
@@ -37,7 +38,7 @@ You need to install the requirements above. For example, on Ubuntu, you can inst
     brew install maven openjdk@17
     ```
 
-You have to manually install LTSMin 3.1.0 and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 with the following commands.
+You have to manually install LTSMin 3.1.0, Owl 21.0, and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 and Owl 21.0 with the following commands after installing Maven.
 
 ```sh
 wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0-linux.tgz -O ltsmin-v3.1.0-linux.tgz
@@ -45,6 +46,10 @@ tar xvf ltsmin-v3.1.0-linux.tgz
 sudo cp -r ./v3.1.0/share /usr/local/share
 sudo cp -r ./v3.1.0/include /usr/local/include
 sudo install ./v3.1.0/bin/* /usr/local/bin
+```
+
+```sh
+./utils/install_owl.sh
 ```
 
 We provide a script to check if some of the requirements are installed. You can run the script by the following command. Since this script also checks the dependencies of the matlab module, you can ignore the error messages related to the matlab module.
