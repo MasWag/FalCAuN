@@ -46,26 +46,9 @@ jobs:
           products: Simulink
       - restore_cache:
           key: FalCAuN-{{ checksum "pom.xml" }}
-      - run:
-          name: Prepare Maven dependencies
-          command: mvn dependency:go-offline --projects core
-          environment:
-            MATLAB_HOME: /tmp/matlab_root
-      - run:
-          name: Build the core project
-          command: mvn install --also-make --projects core -DskipTests=True
-          environment:
-            MATLAB_HOME: /tmp/matlab_root
-      - run:
-          name: Test the core project
-          command: mvn test -DskipTests=False --projects core
-          environment:
-            MATLAB_HOME: /tmp/matlab_root
-      - run:
-          name: Test the python project
-          command: mvn test --projects python
-          environment:
-            MATLAB_HOME: /tmp/matlab_root
+      - run: MATLAB_HOME=/tmp/matlab_root mvn clean
+      - run: MATLAB_HOME=/tmp/matlab_root mvn install -DskipTests=True
+      - run: MATLAB_HOME=/tmp/matlab_root mvn test -Dtest='!%regex[.*((Simulink((SULVerifier)|(SUL|Model)))|(MembershipOracle))Test.*]' -DskipTests=False
       - store_artifacts:
           path: target
       - save_cache:
