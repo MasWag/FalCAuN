@@ -54,15 +54,7 @@ sudo install ./v3.1.0/bin/* /usr/local/bin
 ```
 
 ```sh
-wget https://github.com/owl-toolkit/owl/releases/download/release-21.0/owl-linux-amd64-21.0.zip
-unzip owl-linux-amd64-21.0.zip -d owl
-mvn install:install-file -N \
-  -Dfile=./owl/jar/owl-21.0.jar \
-  -DgroupId=de.tum.in \
-  -DartifactId=owl \
-  -Dversion=21.0 \
-  -Dpackaging=jar \
-  -DgeneratePom=true
+./utils/install_owl.sh
 ```
 
 We provide a script to check if some of the requirements are installed. You can run the script by the following command. Since this script also checks the dependencies of the matlab module, you can ignore the error messages related to the matlab module.
