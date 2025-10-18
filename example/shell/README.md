@@ -1,4 +1,4 @@
-This directory contains the example input/output mappers and STL. The examples in this directory uses the obsolete CLI interface of FalCAuN.
+This directory contains the example input/output mappers and STL. The examples in this directory use the obsolete CLI interface of FalCAuN.
 
 Files
 =====
@@ -17,7 +17,7 @@ Autotrans
 - `AT_M4.omap.tsv`: output mapper for Autotrans M4 benchmark
 - `AT_M4.stl`: STL specifications for Autotrans M4 benchmark
 - `AT_S1.omap.tsv`: output mapper for Autotrans S1 benchmark
-- `AT_S1.stl`: STL specifications for Autotrans S1 Autotrans
+- `AT_S1.stl`: STL specifications for Autotrans S1 benchmark
 - `AT_S2.omap.tsv`: output mapper for Autotrans S2 benchmark
 - `AT_S2.stl`: STL specifications for Autotrans S2 benchmark
 - `AT_S4.omap.tsv`: output mapper for Autotrans S4 benchmark
@@ -34,7 +34,7 @@ Abstractfuelcontrol
 Benchmarks
 ==========
 
-The Autotrans is an automatic transmission model in [HAF14]. 
+Autotrans is an automatic transmission model in [HAF14]. 
 
 S1
 --

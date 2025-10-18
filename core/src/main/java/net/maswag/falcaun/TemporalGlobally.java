@@ -81,12 +81,36 @@ public class TemporalGlobally<I> extends TemporalOp<I> {
         return "[] ( " + subFml.toString() + " )";
     }
 
+    @Override
+    public String toOwlString() {
+        return String.format("G ( %s )", subFml.toOwlString());
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String toAbstractString() {
         return "[] ( " + subFml.toAbstractString() + " )";
+    }
+
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        if (negate){
+            return new TemporalEventually<>(subFml.toNnf(negate));
+        } else {
+            return new TemporalGlobally<>(subFml.toNnf(negate));
+        }
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        return new TemporalGlobally<>(subFml.toDisjunctiveForm());
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        return subFml.getAllConjunctions();
     }
 
     static class STLGlobally extends TemporalGlobally<List<Double>> implements STLCost {

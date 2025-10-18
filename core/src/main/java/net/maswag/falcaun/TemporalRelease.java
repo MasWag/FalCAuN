@@ -1,10 +1,11 @@
 package net.maswag.falcaun;
 
-import lombok.Getter;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import lombok.Getter;
 
 /**
  * <p>TemporalRelease class.</p>
@@ -62,6 +63,11 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
         return this.left + " R " + this.right;
     }
 
+    @Override
+    public String toOwlString() {
+        return "( " + this.left.toOwlString() + " ) R ( " + this.right.toOwlString() + " )";
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -88,6 +94,28 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
     @Override
     public String toAbstractString() {
         return "( " + this.left.toAbstractString() + " ) R ( " + this.right.toAbstractString() + " )";
+    }
+
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        if (negate){
+            return new TemporalUntil<>(left.toNnf(negate), right.toNnf(negate));
+        } else {
+            return new TemporalRelease<>(left.toNnf(negate), right.toNnf(negate));
+        }
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        return new TemporalRelease<>(left.toDisjunctiveForm(), right.toDisjunctiveForm());
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        List<TemporalLogic<I>> result =  new ArrayList<>();
+        result.addAll(left.getAllConjunctions());
+        result.addAll(right.getAllConjunctions());
+        return result;
     }
 
     static class STLRelease extends TemporalRelease<List<Double>> implements STLCost {

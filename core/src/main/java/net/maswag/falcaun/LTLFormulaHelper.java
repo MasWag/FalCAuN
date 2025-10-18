@@ -81,9 +81,9 @@ public class LTLFormulaHelper {
         } else if (formula instanceof TemporalNext<?> next) {
             handleUnaryOperator(next.getSubFml(), aps);
         } else if (formula instanceof TemporalImply<?> imply) {
-            handleSelfRecursive(imply, aps);
+            handleBinaryOperator(imply.getSubFml1(), imply.getSubFml2(), aps);
         } else if (formula instanceof TemporalSub<?> sub) {
-            handleSelfRecursive(sub, aps);
+            handleUnaryOperator(sub.getSubFml(), aps);
         }
     }
     
@@ -118,10 +118,4 @@ public class LTLFormulaHelper {
         }
     }
     
-    /**
-     * Handles formulas that need to be recursively processed as themselves.
-     */
-    private static void handleSelfRecursive(Object formula, LTLAPs aps) {
-        collectAtomicPropositionsRecursive(formula, aps);
-    }
 }

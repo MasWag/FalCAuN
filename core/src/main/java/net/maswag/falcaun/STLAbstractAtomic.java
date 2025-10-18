@@ -1,17 +1,22 @@
 package net.maswag.falcaun;
 
-import com.google.common.collect.Sets;
-import net.automatalib.word.Word;
-
-import java.util.*;
+import static java.lang.Math.abs;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.abs;
+import javax.annotation.Nonnull;
 
-import net.maswag.falcaun.annotation.Sorted;
 import org.apache.commons.math3.util.Pair;
 
-import javax.annotation.Nonnull;
+import com.google.common.collect.Sets;
+
+import net.automatalib.word.Word;
+import net.maswag.falcaun.annotation.Sorted;
 
 /**
  * <p>STLAtomic class.</p>
@@ -144,6 +149,19 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
                         s -> String.format("( %s == \"" + s + "\" )", getSignalName()))
                 .collect(Collectors.joining(" || "));
     }
+
+    @Override
+    public String toOwlString() {
+        constructSatisfyingAtomicPropositions();
+
+        if (!this.satisfyingAtomicPropositions.isEmpty()){
+            return this.satisfyingAtomicPropositions.stream().map(
+                    s -> String.format("(" + s + ")", getSignalName()))
+                    .collect(Collectors.joining(" || "));
+        } else {
+            return "false";
+        }
+    }    
 
     /**
      * Constructs a set of characters representing atomic propositions

@@ -61,7 +61,7 @@ RUN source ~/.sdkman/bin/sdkman-init.sh \
     && pip install --no-cache-dir --no-build-isolation jep==4.2.1 \
     && pip show jep
 
-# Install FalCauN
+# Install FalCAuN
 ENV MATLAB_HOME="/opt/matlab/${MATLAB_RELEASE}"
 RUN git clone https://github.com/MasWag/FalCAuN.git /home/matlab/FalCAuN
 WORKDIR /home/matlab/FalCAuN

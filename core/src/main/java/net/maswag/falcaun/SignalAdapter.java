@@ -1,14 +1,20 @@
 package net.maswag.falcaun;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import de.learnlib.sul.SULMapper;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.GrowingMapAlphabet;
 import net.automatalib.word.Word;
 
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * I/O Mapper between abstract/concrete signals using InputMapper and OutputMapper.
@@ -22,7 +28,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SignalAdapter implements SULMapper<String, String, List<Double>, IOSignalPiece<List<Double>>> {
     private final Map<String, List<Double>> inputMappings;
+    @Getter
     private final List<Character> largestOutputs;
+    @Getter
     private final List<List<Character>> abstractOutputs;
     private final List<List<Double>> concreteOutputs;
 
@@ -35,7 +43,7 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
     public SignalAdapter(InputMapper inputMapper, OutputMapper outputMapper) {
         // Create input mappings
         Map<String, List<Double>> tmpMapper = new HashMap<>();
-        
+
         for (Map<Character, Double> map : inputMapper) {
             if (tmpMapper.isEmpty()) {
                 // When this is the first iteration, we just copy the inputMapper of the first dimension
@@ -57,10 +65,10 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
         }
         this.inputMappings = tmpMapper;
         this.largestOutputs = outputMapper.getLargest();
-        
+
         abstractOutputs = new ArrayList<>();
         concreteOutputs = new ArrayList<>();
-        
+
         for (Map<Character, Double> entry : outputMapper.getOutputMapper()) {
             ArrayList<Character> cList = new ArrayList<>();
             ArrayList<Double> dList = new ArrayList<>();
@@ -103,16 +111,16 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
         if (concreteOutputs.isEmpty()) {
             return "";
         }
-        
+
         List<Double> concreteOutput = this.mapConcrete(concreteIO);
         StringBuilder result = new StringBuilder(concreteOutputs.size());
 
         if (concreteOutput.size() != this.concreteOutputs.size()) {
             throw new IllegalArgumentException(
-                "Concrete output size does not match expected size: " + concreteOutput.size() + " != " + concreteOutputs.size()
+                    "Concrete output size does not match expected size: " + concreteOutput.size() + " != " + concreteOutputs.size()
             );
         }
-        
+
         // Process each dimension of the output
         for (int i = 0; i < concreteOutput.size(); i++) {
             double cOuti = concreteOutput.get(i);
@@ -160,7 +168,7 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
     public List<Double> mapConcrete(IOSignalPiece<List<Double>> concreteIO) {
         if (concreteIO == null || concreteIO.getOutputSignal() == null) {
             throw new IllegalArgumentException(
-                "Concrete IO signal piece or its output signal cannot be null."
+                    "Concrete IO signal piece or its output signal cannot be null."
             );
         }
 

@@ -1,11 +1,11 @@
 package net.maswag.falcaun;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
@@ -56,6 +56,19 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
     }
 
     @Override
+    public String toOwlString() {
+        if (subFml instanceof TemporalEventually) {
+            if (to == 0) { return ((TemporalEventually<I>)subFml).getSubFml().toOwlString(); }
+            else if (from == 0) { return "(" + ((TemporalEventually<I>)subFml).getSubFml().toOwlString() + ") | (" +  new TemporalNext<>(new TemporalSub<>(subFml, from, to - 1), true).toOwlString() + ")"; }
+            else { return new TemporalNext<>(new TemporalSub<>(subFml, from - 1, to - 1), true).toOwlString(); }
+        } else {
+            if (to == 0) { return ((TemporalGlobally<I>)subFml).getSubFml().toOwlString(); }
+            else if (from == 0) { return "(" + ((TemporalGlobally<I>)subFml).getSubFml().toOwlString() + ") & (" +   new TemporalNext<>(new TemporalSub<>(subFml, from, to - 1), true).toOwlString() + ")"; }
+            else { return new TemporalNext<>(new TemporalSub<>(subFml, from - 1, to - 1), true).toOwlString();}
+        }
+    }
+
+    @Override
     public void constructSatisfyingAtomicPropositions() {
         super.constructSatisfyingAtomicPropositions();
         this.satisfyingAtomicPropositions = null;
@@ -76,6 +89,23 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
         }
 
         return String.join(op, subFmls);
+    }
+
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        return new TemporalSub<>((TemporalOp<I>)subFml.toNnf(negate), from, to);
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        return new TemporalSub<>((TemporalOp<I>)subFml.toDisjunctiveForm(), from, to);
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        List<TemporalLogic<I>> result = new ArrayList<>();
+        result.addAll(subFml.getAllConjunctions());
+        return result;
     }
 
     static class STLSub extends TemporalSub<List<Double>> implements STLCost {

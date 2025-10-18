@@ -1,7 +1,7 @@
 package net.maswag.falcaun;
 
-import java.util.Objects;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -55,12 +55,36 @@ public class TemporalEventually<I> extends TemporalOp<I> {
         return String.format("<> ( %s )", subFml.toAbstractString());
     }
 
+    @Override
+    public String toOwlString() {
+        return String.format("F ( %s )", subFml.toOwlString());
+    }
+
     /**
      * <p>getSubFml.</p>
      *
      * @return a {@link TemporalLogic<I>} object.
      */
     public TemporalLogic<I> getSubFml() { return this.subFml; }
+
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        if (negate){
+            return new TemporalGlobally<>(subFml.toNnf(negate));
+        } else {
+            return new TemporalEventually<>(subFml.toNnf(negate));
+        }
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        return new TemporalEventually<>(subFml.toDisjunctiveForm());
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        return subFml.getAllConjunctions();
+    }
 
     static class STLEventually extends TemporalEventually<List<Double>> implements STLCost {
         STLEventually(STLCost subFml) {

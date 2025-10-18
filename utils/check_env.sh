@@ -120,9 +120,9 @@ fi
 
 log "Check if the AT example is installed"
 if [ -d "$HOME/Documents/MATLAB/Examples/$MATLAB_version/simulink_automotive/ModelingAnAutomaticTransmissionControllerExample/" ] ; then
-    log_ok "The AT example by Mathworks is detected"
+    log_ok "The AT example by MathWorks is detected"
 else
-    log_warn "The AT example by Mathworks is not detected"
+    log_warn "The AT example by MathWorks is not detected"
     log_warn "To use the AT example, please run the following command on MATLAB: openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')"
     exit 1
 fi

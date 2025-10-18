@@ -1,6 +1,12 @@
 package net.maswag.falcaun;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * <p>STLAtomic class.</p>
@@ -116,5 +122,24 @@ public class STLInputAtomic extends STLAbstractAtomic {
     @Override
     protected String getSignalName() {
         return "input";
+    }
+
+    @Override
+    public STLCost toNnf(boolean negate){
+        if (negate){
+            return new TemporalNot.STLNot(this);
+        } else {
+            return this;
+        }
+    }
+
+    @Override
+    public STLCost toDisjunctiveForm(){
+        return this;
+    }
+
+    @Override
+    public List<TemporalLogic<List<Double>>> getAllConjunctions(){
+        return new ArrayList<>();
     }
 }

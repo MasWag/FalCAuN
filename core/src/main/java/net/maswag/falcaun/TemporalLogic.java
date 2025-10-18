@@ -1,11 +1,12 @@
 package net.maswag.falcaun;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * <p>Interface of a TemporalLogic formula.</p>
@@ -29,6 +30,8 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
     default String toLTLString() {
         return this.toAbstractString();
     }
+
+    String toOwlString();
 
     /**
      * Evaluate the formula on the given signal and returns the RoSI, i.e., the range of the possible robustness values after concatenating a suffix.
@@ -106,6 +109,12 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
      */
     @Nullable
     Collection<String> getSatisfyingAtomicPropositions();
+
+    TemporalLogic<I> toNnf(boolean neg);
+
+    TemporalLogic<I> toDisjunctiveForm();
+
+    List<TemporalLogic<I>> getAllConjunctions();
 
     interface STLCost extends TemporalLogic<List<Double>> {}
 

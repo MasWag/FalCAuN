@@ -75,6 +75,26 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
         return String.format("!( %s )", subFml.toString());
     }
 
+    @Override
+    public String toOwlString(){
+        return String.format("!( %s )", subFml.toOwlString());
+    }
+    
+    @Override
+    public TemporalLogic<I> toNnf(boolean negate){
+        return subFml.toNnf(!negate);
+    }
+
+    @Override
+    public TemporalLogic<I> toDisjunctiveForm(){
+        return new TemporalNot<>(subFml.toDisjunctiveForm());
+    }
+
+    @Override
+    public List<TemporalLogic<I>> getAllConjunctions(){
+        return subFml.getAllConjunctions();
+    }
+
     static class STLNot extends TemporalNot<List<Double>> implements STLCost {
         STLNot(STLCost subFml) {
             super(subFml);

@@ -71,7 +71,7 @@ Both input and output mappers are specified by TSV files.
 
 ### Input mapper
 
-Input mapper specifies the possible input values of each signal (e.g., break and throttle). Each signal can take a different number of inputs i.e., N0 and N1 can be different.
+Input mapper specifies the possible input values of each signal (e.g., brake and throttle). Each signal can take a different number of inputs i.e., N0 and N1 can be different.
 
 ```
 <value 1 of signal(0)>	<value 2 of signal(0)>	...	<value N0 of signal(0)>
