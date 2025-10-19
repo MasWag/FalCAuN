@@ -11,13 +11,17 @@ import net.maswag.falcaun.TimeMeasure;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * A PythonModel class wraps a model implemented by python.
- * The model is expected to have methods pre(), post(), step(I inputSignal) -> O, and close().
- * If the model has an exec(List<I> inputSignals) -> List<O> method,
+ * The model is expected to have methods {@code pre()}, {@code post()}, {@code step(I inputSignal) -> O}, and {@code close()}.
+ * If the model has an {@code exec(List<I> inputSignals) -> List<O>} method,
  * NumericSUL can be used to execute a batch of input signals for optimization.
  * This class uses Jep library to interact with Python.
+ * 
+ * @param <I> Type of the input at each step
+ * @param <O> Type of the output at each step
  */
 public class PythonModel<I, O> {
     /**
@@ -26,7 +30,8 @@ public class PythonModel<I, O> {
     private ThreadLocal<Boolean> initialized = ThreadLocal.withInitial(() -> false);
 
     /**
-     * `interpreter` use ThreadLocal because SharedInterpreter cannot be used by the other thread.
+     * A {@link jep.SharedInterpreter} variable to hold the Python interpreter instance.
+     * {@code interpreter} uses ThreadLocal because {@link jep.SharedInterpreter} cannot be used by another thread.
      */
     private ThreadLocal<SharedInterpreter> interpreter = ThreadLocal.withInitial(() -> {
         try {
@@ -35,10 +40,26 @@ public class PythonModel<I, O> {
             throw new RuntimeException(e);
         }
     });
+
+    /**
+     * The class object of the output signal produced by the step method.
+     */
     private final Class<O> outputClass;
+
+    /**
+     * The filename of the Python script that implements the SUL model.
+     */
     private final String initScript;
 
+
+    /**
+     * Objects representing callable Python methods.
+     */
     private PyCallable pyPre, pyPost, pyStep, pyClose;
+
+    /**
+     * It is bound if the Python model has an {@code exec} method.
+     */
     private Optional<PyCallable> pyExec = Optional.empty();
 
     @Getter
@@ -57,7 +78,7 @@ public class PythonModel<I, O> {
 
     /**
      * Constructs a Python interpreter with the given initialization script as a Python model.
-     * The script should define a class SUL with methods pre(), post(), step(I inputSignal) -> O, and close().
+     * The script should define a class {@code SUL} with methods {@code pre()}, {@code post()}, {@code step(I inputSignal) -> O}, and {@code close()}.
      * 
      * @param initScript The Python script to initialize the model.
      * @param outputClass The class object of the output signal produced by the step method.
@@ -71,9 +92,10 @@ public class PythonModel<I, O> {
 
     /**
      * It simply runs the initialization script and sets up the Python callable methods.
-     * Calling them is equivalent to executing `sul = SUL()` and `sul.method()` on the Python side.
-     * 
-     * Note that the code under `if __name__ == "__main__":` is executed
+     * Calling a callable method like {@literal pyPre.call()} is equivalent to executing
+     * {@literal sul = SUL()} and {@literal sul.pre()} on the Python side.
+     *
+     * Note that the code under the {@literal if __name__ == "__main__":} branch in Python is also executed.
      */
     public void initialize() {
         if (!this.initialized.get()) {
@@ -98,17 +120,27 @@ public class PythonModel<I, O> {
         this.initialized.set(true);
     }
 
+    /**
+     * Call the {@code pre} method of the Python SUL model.
+     * If the model has not been initialized in this thread yet, it initializes first.
+     */
     public void pre() {
         initialize();
         this.pyPre.call();
     }
 
+    /**
+     * Call the {@code post} method of the Python SUL model.
+     */
     public void post() {
         this.pyPost.call();
     }
 
     /**
-     * For the given outputClass, it tries to convert the output object by python to O type by Jep.
+     * Call the {@code step} method of the Python SUL model.
+     * For the given {@code outputClass}, it converts the output object produced by Python to type {@code O} using Jep.
+     *
+     * @throws JepException if an error occurs while calling the Python step method.
      */
     public O step(I inputSignal) throws JepException {
         simulationTime.start();
@@ -117,17 +149,29 @@ public class PythonModel<I, O> {
         return ret;
     }
 
+    /**
+     * Call the {@code close} method of the Python SUL model.
+     */
     public void close() {
         this.pyClose.call();
         this.interpreter.get().close();
     }
 
+    /**
+     * Returns true if the Python SUL model has {@code exec} method.
+     */
     public boolean hasExec() {
         return this.pyExec.isPresent();
     }
 
+    /**
+     * Call the {@code exec} method of the Python SUL model.
+     * 
+     * @throws NoSuchElementException if the Python SUL model does not have {@code exec} method.
+     * @throws JepException if an error occurs while calling the Python step method.
+     */
     @SuppressWarnings("rawtypes")
-    public ArrayList exec(List<I> inputSignals) {
+    public ArrayList exec(List<I> inputSignals) throws NoSuchElementException, JepException {
         simulationTime.start();
         var ret = this.pyExec.orElseThrow().callAs(ArrayList.class, inputSignals);
         simulationTime.stop();

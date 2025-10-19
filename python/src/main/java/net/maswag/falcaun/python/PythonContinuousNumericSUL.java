@@ -31,7 +31,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     protected final Double signalStep;
 
     /**
-     * Use rawtypes because classobject does not support generic type
+     * Use raw types because Class objects do not support generic type parameters.
      */
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
@@ -96,6 +96,17 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
         this.model.post();
     }
 
+    /**
+     * Try to convert a raw {@link ArrayList} returned by Jep to 2D list {@code List<List<Double>>}
+     * and construct a {@link ValueWithTime} object.
+     *
+     * @param ary The raw list returned by Jep.
+     *            It is a 2D list where the first column is the timestamp and the
+     *            rest columns are the output values.
+     * @return A {@link ValueWithTime} object that contains the timestamps and the output
+     *         values.
+     * @throws IllegalStateException if the shape of the array is unexpected.
+     */
     private ValueWithTime<List<Double>> constructValueWithTime(@SuppressWarnings("rawtypes") ArrayList<?> ary) {
         // Convert the raw list to a typed list with runtime type checking
         List<List<Double>> data = ary.stream().map(e1 -> {
@@ -122,9 +133,9 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     }
 
     /**
-     * Make one step on the SUL in python.
-     * step function in python must return a 2D numpy array
-     * which first column is the timestamp and the rest columns are the output values.
+     * Make one step on the SUL in Python.
+     * The step function in Python must return a 2D NumPy array
+     * whose first column is the timestamp and whose remaining columns are the output values.
      *
      * @param inputSignal The input signal to the SUL
      * @return output of SUL
@@ -154,7 +165,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     }
 
     /**
-     * Run all steps of the python model by feeding inputSignal
+     * Run all steps of the Python model by feeding {@code inputSignal}.
      *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.

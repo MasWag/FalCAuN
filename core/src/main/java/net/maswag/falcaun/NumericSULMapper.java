@@ -26,10 +26,13 @@ public class NumericSULMapper implements SULMapper<String, String, List<Double>,
     /**
      * <p>Constructor for NumericSULMapper.</p>
      *
-     * @param inputMapper    a {@link java.util.List} object.
-     * @param largestOutputs a {@link java.util.List} object.
-     * @param outputMapper   a {@link java.util.List} object.
-     * @param sigMap         a {@link java.util.List} object.
+     * @param inputMapper    A {@link java.util.List} of {@link java.util.Map}s
+     *                       from a concrete value to the corresponding abstract alphabet.
+     * @param largestOutputs A {@link java.util.List} of abstract alphabets representing
+     *                       a larger value for each output index.
+     * @param outputMapper   A {@link java.util.List} of {@link java.util.Map}s
+     *                       from an abstract alphabet to the corresponding concrete value.
+     * @param sigMap         A {@link SignalMapper} object that constructs additional values from concrete output values.
      */
     public NumericSULMapper(List<Map<Character, Double>> inputMapper,
                              List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,

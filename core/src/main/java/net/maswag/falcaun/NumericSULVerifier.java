@@ -229,10 +229,17 @@ public class NumericSULVerifier {
                 new GAEQOracle(oracle, length, maxTests, selectionKind, generationSize, crossoverProb, mutationProbability, ltlOracle));
     }
 
+    /**
+     * @return A list of input words that led to counterexamples found during the verification process.
+     */
     public List<Word<String>> getCexAbstractInput() {
         return verifier.getCexInput();
     }
 
+    /**
+     * @return A list of concrete input signals corresponding to the counterexamples found during the verification process.
+     *         Each signal is constructed from the abstract input words.
+     */
     public List<Signal> getCexConcreteInput() {
         List<Signal> result = new ArrayList<>();
         for (Word<String> abstractCex : this.getCexAbstractInput()) {
@@ -242,7 +249,10 @@ public class NumericSULVerifier {
         return result;
     }
 
-
+    /**
+     * @return a list of output words produced by the black-box system for the counterexamples
+     *         found during the verification process.
+     */
     public List<Word<String>> getCexOutput() {
         return verifier.getCexOutput();
     }
@@ -316,6 +326,9 @@ public class NumericSULVerifier {
         return evaluationCountables.getEvaluateCount();
     }
 
+    /**
+     * @return Signal Temporal Logic (STL) properties to be verified
+     */
     public AdaptiveSTLUpdater<List<Double>> getProperties() {
         return this.verifier.getProperties();
     }
@@ -341,6 +354,9 @@ public class NumericSULVerifier {
         this.rawSUL.close();
     }
 
+    /**
+     * @return the execution time for the simulations
+     */
     public double getSimulationTimeSecond() {
         return this.rawSUL.getSimulationTimeSecond();
     }

@@ -11,8 +11,25 @@ import java.util.Set;
 import net.maswag.falcaun.IOSignal;
 
 /**
- * <p>STLAtomic class.</p>
+ * This class represents an atomic formula in STL for input signals.
+ * 
+ * This class has the functions to construct the atomic propositions,
+ * a set of alphabets representing the input signal,
+ * from the atomic formula and its input mapper.
+ * 
+ * For example, let an atomic formula be {@literal input(0) > 1.0},
+ * the 0-th input mapper be {@literal {a: 1.0, b: 2.0, c: 3.0}}, and
+ * the set of alphabets of 1st input signal be {@literal {'x', 'y'}},
+ * then the atomic propositions are {@literal {"bx", "by", "cx", "cy"}}.
  *
+ * <p>
+ * When the 0-th input mapper is {@literal {a: 1.0, b: 2.0, c: 3.0}},
+ * <ul>
+ * <li> Given {@literal input(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
+ *  Note that {@literal <} ({@literal Operation.lt}) represents a less-than-or-equal-to operator.
+ * <li> Given {@literal input(0) == 1.5}, {@code getAllAPs()} raises a {@link RuntimeException}.
+ * </ul>
+ * 
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class STLInputAtomic extends STLAbstractAtomic {
@@ -21,11 +38,12 @@ public class STLInputAtomic extends STLAbstractAtomic {
     private List<Map<Character, Double>> inputMapper;
 
     /**
-     * <p>Constructor for STLAtomic.</p>
+     * <p>Constructor for STLInputAtomic.</p>
+     * Constructs an atomic proposition {@literal input(sigIndex) op comparator}.
      *
-     * @param sigIndex   a int.
-     * @param op         a {@link Operation} object.
-     * @param comparator a double.
+     * @param sigIndex   An index of input signals
+     * @param op         The comparison operator {@link Operation}
+     * @param comparator The value to compare against
      */
     public STLInputAtomic(int sigIndex, Operation op, double comparator) {
         super(sigIndex, op, comparator);
@@ -40,6 +58,9 @@ public class STLInputAtomic extends STLAbstractAtomic {
         return super.getAllAPs(abstractInputs.size());
     }
 
+    /**
+     * Constructs {@link #satisfyingAtomicPropositions} if not initialized.
+     */
     @Override
     public void constructSatisfyingAtomicPropositions() {
         super.constructSatisfyingAtomicPropositions();
@@ -108,6 +129,12 @@ public class STLInputAtomic extends STLAbstractAtomic {
         initialized = true;
     }
 
+    /**
+     * Gives the input mapper for the atomic formula.
+     * It is required to construct the atomic propositions.
+     * 
+     * @param inputMapper The input mapper to set
+     */
     void setInputMapper(List<Map<Character, Double>> inputMapper) {
         this.inputMapper = inputMapper;
         setInputMaps();

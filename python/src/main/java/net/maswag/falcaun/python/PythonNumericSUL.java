@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 public class PythonNumericSUL implements NumericSUL, Closeable {
     /**
-     * Use rawtypes because classobject does not support generic type
+     * Use raw types because Class objects do not support generic type parameters.
      */
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
@@ -99,7 +99,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     }
 
     /**
-     * Run all steps of the python model by feeding inputSignal
+     * Run all steps of the Python model by feeding {@code inputSignal}.
      *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
