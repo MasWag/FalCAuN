@@ -13,7 +13,7 @@ import java.util.List;
 public class Signal {
     /**
      * The time step of signals.
-     * When calling {@link add(List)} or {@link addAll(Collection)},
+     * When calling {@link #add(List)} or {@link #addAll(Collection)},
      * {@code timestamps} are added as {@code duration() + timeStep}.
      */
     protected double timeStep;
