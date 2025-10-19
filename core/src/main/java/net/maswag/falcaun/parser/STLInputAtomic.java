@@ -19,7 +19,7 @@ import net.maswag.falcaun.IOSignal;
  * 
  * For example, let an atomic formula be {@literal input(0) > 1.0},
  * the 0-th input mapper be {@literal {a: 1.0, b: 2.0, c: 3.0}}, and
- * the set of alphabets of 1-th input signal be {@literal {'x', 'y'}},
+ * the set of alphabets of 1st input signal be {@literal {'x', 'y'}},
  * then the atomic propositions are {@literal {"bx", "by", "cx", "cy"}}.
  *
  * <p>
