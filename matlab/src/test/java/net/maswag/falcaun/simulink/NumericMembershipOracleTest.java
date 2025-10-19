@@ -16,12 +16,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NumericMembershipOracleTest {
+    private static final Path MATLAB_RESOURCES = Paths.get("matlab", "src", "test", "resources", "MATLAB");
     private final String PWD = System.getenv("PWD");
     private final String initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAFC;";
     /*
@@ -42,6 +45,7 @@ class NumericMembershipOracleTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        SimulinkModel.clearSimulinkBuildArtifacts(MATLAB_RESOURCES);
         // [] (velocity < 30)
         properties = new ArrayList<>(Collections.singletonList("[] (output == \"a00\")"));
 
