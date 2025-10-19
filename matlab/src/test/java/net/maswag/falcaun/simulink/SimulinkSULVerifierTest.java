@@ -9,10 +9,12 @@ import net.maswag.falcaun.IOSignalPiece;
 import net.maswag.falcaun.NumericSULMapper;
 import net.maswag.falcaun.SimpleSignalMapper;
 import net.maswag.falcaun.StaticSTLList;
-import net.maswag.falcaun.StopDisprovedEQOracle;
 import net.maswag.falcaun.parser.STLFactory;
 import net.maswag.falcaun.parser.TemporalLogic;
+import net.maswag.falcaun.StopDisprovedEQOracle;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimulinkSULVerifierTest {
+    private static final Path MATLAB_RESOURCES = Paths.get("matlab", "src", "test", "resources", "MATLAB");
     private final String PWD = System.getenv("PWD");
     private String initScript;
     /*
@@ -37,11 +40,13 @@ class SimulinkSULVerifierTest {
     private AdaptiveSTLUpdater<List<Double>> properties;
     private NumericSULMapper mapper;
     private final List<Function<IOSignalPiece<List<Double>>, Double>> sigMap = Collections.emptyList();
-    private final AdaptiveSTLUpdater<List<Double>> propertyZHA19_AFC1 = new StopDisprovedEQOracle.StaticLTLList<>(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
+    private final AdaptiveSTLUpdater<List<Double>> propertyZHA19_AFC1 =
+            new StopDisprovedEQOracle.StaticLTLList<>(Collections.singletonList("X [] (output == \"a00l\" || output == \"a01l\" || output == \"a01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\" || output == \"b00l\" || output == \"b01l\" || output == \"b01h\"|| output == \"c00l\" || output == \"c01l\" || output == \"c01h\")"));
     STLFactory factory = new STLFactory();
 
     @BeforeEach
     void setUp() {
+        SimulinkModel.clearSimulinkBuildArtifacts(MATLAB_RESOURCES);
         initScript = "cd " + PWD + "/src/test/resources/MATLAB; initAFC;";
         signalStep = 10.0;
         // Construct the mapper

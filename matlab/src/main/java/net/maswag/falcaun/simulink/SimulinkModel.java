@@ -14,7 +14,15 @@ import net.maswag.falcaun.ValueWithTime;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -35,6 +43,8 @@ public class SimulinkModel {
     @Getter
     private double simulinkSimulationStep;
     private final MatlabEngine matlab;
+    private final Path cacheDir;
+    private final Path codegenDir;
     private final List<String> paramNames;
     /**
      * The current time of the simulation
@@ -72,9 +82,26 @@ public class SimulinkModel {
             matlab = MatlabEngine.connectMatlab();
         }
 
+        Path cacheDirTmp;
+        Path codegenDirTmp;
+        try {
+            cacheDirTmp = Files.createTempDirectory("falcaun-sl-cache");
+            codegenDirTmp = Files.createTempDirectory("falcaun-sl-codegen");
+            matlab.putVariable("falcaunCacheDir", cacheDirTmp.toString());
+            matlab.putVariable("falcaunCodegenDir", codegenDirTmp.toString());
+            matlab.eval("Simulink.fileGenControl('set', 'CacheFolder', falcaunCacheDir, 'CodeGenFolder', falcaunCodegenDir);");
+            matlab.eval("clear falcaunCacheDir falcaunCodegenDir;");
+        } catch (IOException e) {
+            throw new ExecutionException("Failed to prepare Simulink file generation folders", e);
+        }
+
+        cacheDir = cacheDirTmp;
+        codegenDir = codegenDirTmp;
+
         matlab.eval("clear;");
         matlab.eval("warning('off', 'Simulink:LoadSave:EncodingMismatch')");
         matlab.putVariable("signalStep", signalStep);
+        String resourceDir = extractResourceDirectory(initScript);
         try {
             matlab.eval(initScript);
         } catch (Exception e) {
@@ -82,6 +109,16 @@ public class SimulinkModel {
             log.error("Init Script: {}", initScript);
             throw e;
         }
+
+        if (resourceDir != null) {
+            matlab.putVariable("falcaunModelDir", resourceDir);
+            matlab.eval("addpath(falcaunModelDir);");
+            matlab.eval("clear falcaunModelDir;");
+        }
+
+        matlab.putVariable("falcaunWorkingDir", codegenDir.toString());
+        matlab.eval("cd(falcaunWorkingDir);");
+        matlab.eval("clear falcaunWorkingDir;");
         // Initialize the current state
         this.reset();
     }
@@ -374,6 +411,111 @@ public class SimulinkModel {
      */
     public void close() throws EngineException {
         matlab.close();
+        deleteDirectorySilently(cacheDir);
+        deleteDirectorySilently(codegenDir);
+    }
+
+    public static void clearSimulinkBuildArtifacts(Path baseDirectory) {
+        if (baseDirectory == null || !Files.exists(baseDirectory)) {
+            return;
+        }
+        List<Path> targets = new ArrayList<>();
+        try (Stream<Path> walk = Files.walk(baseDirectory)) {
+            walk.forEach(path -> {
+                Path fileName = path.getFileName();
+                if (fileName == null) {
+                    return;
+                }
+                String name = fileName.toString();
+                if (Files.isDirectory(path) && "slprj".equals(name)) {
+                    targets.add(path);
+                } else if (Files.isRegularFile(path) && isSimulinkArtifact(name)) {
+                    targets.add(path);
+                }
+            });
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to inspect Simulink artifacts under " + baseDirectory, e);
+        }
+
+        for (Path target : targets) {
+            if (Files.isDirectory(target)) {
+                deleteDirectorySilently(target);
+            } else {
+                try {
+                    Files.deleteIfExists(target);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Failed to delete Simulink artifact " + target, e);
+                }
+            }
+        }
+    }
+
+    private static boolean isSimulinkArtifact(String name) {
+        return name.endsWith(".slxc")
+                || name.contains("_acc.mex")
+                || name.endsWith(".mexmaca64")
+                || name.endsWith(".mexglnxa64")
+                || name.endsWith(".mexw64");
+    }
+
+    private static void deleteDirectorySilently(Path dir) {
+        if (dir == null || !Files.exists(dir)) {
+            return;
+        }
+        try {
+            Files.walk(dir)
+                    .sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException e) {
+                            // ignore cleanup errors
+                        }
+                    });
+        } catch (IOException ignored) {
+            // ignore cleanup errors
+        }
+    }
+
+    private static String extractResourceDirectory(String initScript) {
+        if (initScript == null) {
+            return null;
+        }
+        int cdIdx = initScript.indexOf("cd");
+        if (cdIdx < 0) {
+            return null;
+        }
+        int len = initScript.length();
+        int start = cdIdx + 2;
+        while (start < len && Character.isWhitespace(initScript.charAt(start))) {
+            start++;
+        }
+        if (start >= len) {
+            return null;
+        }
+        char quote = 0;
+        char ch = initScript.charAt(start);
+        if (ch == '\'' || ch == '"') {
+            quote = ch;
+            start++;
+        }
+        int end = start;
+        while (end < len) {
+            char current = initScript.charAt(end);
+            if (quote != 0) {
+                if (current == quote) {
+                    break;
+                }
+            } else if (current == ';') {
+                break;
+            }
+            end++;
+        }
+        if (end <= start) {
+            return null;
+        }
+        String dir = initScript.substring(start, end).trim();
+        return dir.isEmpty() ? null : dir;
     }
 
     public double getSimulationTimeSecond() {

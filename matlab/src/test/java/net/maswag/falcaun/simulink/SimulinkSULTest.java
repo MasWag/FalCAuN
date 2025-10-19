@@ -7,6 +7,8 @@ import net.maswag.falcaun.simulink.SimulinkSUL;
 import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,9 +17,11 @@ import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimulinkSULTest {
+    private static final Path MATLAB_RESOURCES = Paths.get("matlab", "src", "test", "resources", "MATLAB");
     private SimulinkSUL sul;
 
     void setUp(String initScript, List<String> paramNames, double signalStep) throws Exception {
+        SimulinkModel.clearSimulinkBuildArtifacts(MATLAB_RESOURCES);
         this.sul = new SimulinkSUL(initScript, paramNames, signalStep, 0.0025);
     }
 

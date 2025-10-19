@@ -7,12 +7,15 @@ import net.maswag.falcaun.simulink.SimulinkModel;
 
 import org.junit.jupiter.api.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
 class SimulinkModelTest {
+    private static final Path MATLAB_RESOURCES = Paths.get("matlab", "src", "test", "resources", "MATLAB");
     private SimulinkModel mdl;
     private final String PWD = System.getenv("PWD");
     private final Double signalStep = 2.0;
@@ -28,6 +31,7 @@ class SimulinkModelTest {
 
         @BeforeEach
         void setUp() throws ExecutionException, InterruptedException {
+            SimulinkModel.clearSimulinkBuildArtifacts(MATLAB_RESOURCES);
             mdl = new SimulinkModel(initScript,
                     Arrays.asList("Pedal Angle", "Engine Speed"),
                     signalStep, 0.0025);
@@ -111,6 +115,7 @@ class SimulinkModelTest {
 
         @BeforeEach
         void setUp() throws ExecutionException, InterruptedException {
+            SimulinkModel.clearSimulinkBuildArtifacts(MATLAB_RESOURCES);
             mdl = new SimulinkModel(initScript,
                     List.of("Input"),
                     signalStep, 0.0025);

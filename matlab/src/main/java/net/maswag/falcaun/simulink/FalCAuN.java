@@ -9,6 +9,7 @@ import net.automatalib.word.Word;
 import net.maswag.falcaun.AdaptiveSTLList;
 import net.maswag.falcaun.AdaptiveSTLUpdater;
 import net.maswag.falcaun.ArgParser;
+import net.maswag.falcaun.ArgParser.EquivType;
 import net.maswag.falcaun.EQSearchProblem;
 import net.maswag.falcaun.EQSteadyStateGeneticAlgorithm;
 import net.maswag.falcaun.GAEQOracle;
@@ -18,7 +19,6 @@ import net.maswag.falcaun.OutputMapperReader;
 import net.maswag.falcaun.Signal;
 import net.maswag.falcaun.StaticSTLList;
 import net.maswag.falcaun.TimeMeasure;
-import net.maswag.falcaun.ArgParser.EquivType;
 import net.maswag.falcaun.parser.STLFactory;
 import net.maswag.falcaun.parser.TemporalLogic;
 
@@ -44,19 +44,22 @@ public class FalCAuN {
     private static boolean resetWord = false;
 
     private static void printEquivSetting(ArgParser argParser, List<TemporalLogic.STLCost> stl) {
-        final HashMap<ArgParser.EquivType, String> equivName = new HashMap<>();
-        equivName.put(ArgParser.EquivType.SA, "Simulated Annealing");
-        equivName.put(ArgParser.EquivType.RANDOM, "Random Test");
-        equivName.put(ArgParser.EquivType.HC, "Hill Climbing");
-        equivName.put(ArgParser.EquivType.GA, "Genetic Algorithm");
+        final EnumMap<EquivType, String> equivName = new EnumMap<>(EquivType.class);
+        equivName.put(EquivType.SA, "Simulated Annealing");
+        equivName.put(EquivType.RANDOM, "Random Test");
+        equivName.put(EquivType.HC, "Hill Climbing");
+        equivName.put(EquivType.GA, "Genetic Algorithm");
 
-        System.out.println(equivName.get(argParser.getEquiv()) + " is used");
+        EquivType equiv = argParser.getEquiv();
+        String readableName = equivName.containsKey(equiv) ? equivName.get(equiv) : equiv.name();
+
+        System.out.println(readableName + " is used");
 
         System.out.println("STL size: " + stl.size());
         System.out.println("Length: " + argParser.getLength());
         System.out.println("maxTest: " + argParser.getMaxTest());
 
-        switch (argParser.getEquiv()) {
+        switch (equiv) {
             case SA:
                 System.out.println("alpha:" + argParser.getAlpha());
             case HC:
@@ -72,6 +75,10 @@ public class FalCAuN {
                 break;
             case WP:
                 System.out.println("Maximum depth:" + argParser.getMaxDepth());
+                break;
+            case PURE_RANDOM:
+            case RANDOM:
+            default:
                 break;
         }
     }
@@ -166,7 +173,8 @@ public class FalCAuN {
                 log.debug("Timeout is not set");
             }
         }
-        switch (argParser.getEquiv()) {
+        EquivType equivMain = argParser.getEquiv();
+        switch (equivMain) {
             case HC:
                 verifier.addHillClimbingEQOracleAll(argParser.getLength(), new Random(), argParser.getMaxTest(), generationSize, childrenSize, resetWord);
                 break;
@@ -218,6 +226,8 @@ public class FalCAuN {
                     }
                 }
                 return;
+            default:
+                throw new IllegalStateException("Unsupported equivalence oracle: " + equivMain);
         }
         if (argParser.isVerbose()) {
             printEquivSetting(argParser, stl);
