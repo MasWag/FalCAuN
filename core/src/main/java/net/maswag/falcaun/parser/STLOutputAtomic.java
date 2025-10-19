@@ -28,13 +28,13 @@ import net.maswag.falcaun.OutputMapper;
  * <p>
  * When the 0-th output mapper is {@literal {a: 1.0, b: 2.0, c: 3.0}} and largest is {@literal {'d'}},
  * the comparator in ranges of {@literal (-inf, 1.0], (1.0, 2.0], (2.0, 3.0]} is mapped to {@literal 'a', 'b', 'c'} for each and
- * this in range of (3.0, +inf) is mapped to {@literal 'd'}.
+ * those in the range {@literal (3.0, +inf)} are mapped to {@literal 'd'}.
  * 
  * <ul>
  * <li> Given {@literal output(0) > 2.0}, the satisfying 0-th alphabets are {@literal {'c', 'd'}}.
  * <li> Given {@literal output(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
  *  Note that {@literal <} ({@literal Operation.lt}) represents a less-than-or-equal-to operator.
- * <li> Given {@literal output(0) == 4.0}, {@code getAllAPs()} raises an {@link RuntimeException}.
+ * <li> Given {@literal output(0) == 4.0}, {@code getAllAPs()} raises a {@link RuntimeException}.
  * </ul>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}

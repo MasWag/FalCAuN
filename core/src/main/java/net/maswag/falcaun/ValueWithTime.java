@@ -26,7 +26,7 @@ public class ValueWithTime<T> {
     protected final List<T> values;
 
     /**
-     * Initialization with empty lists
+     * Initializes with empty lists.
      */
     public ValueWithTime() {
         this.timestamps = Collections.emptyList();
@@ -34,7 +34,7 @@ public class ValueWithTime<T> {
     }
 
     /**
-     * Initialization with given timestamps and values.
+     * Initializes with the given timestamps and values.
      *
      * i-th timestamp corresponds to i-th value.
      * So the sizes of timestamps and values must be equal.
@@ -45,7 +45,7 @@ public class ValueWithTime<T> {
      */
     public ValueWithTime(List<Double> timestamps, List<T> values) {
         if (timestamps.size() != values.size()) {
-            throw new IllegalArgumentException("The size of timestamp and values must be the same");
+            throw new IllegalArgumentException("The sizes of timestamps and values must be the same");
         }
         // Throws an exception if any of the value is null
         if (values.stream().anyMatch(Objects::isNull)) {

@@ -31,7 +31,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     protected final Double signalStep;
 
     /**
-     * Use rawtypes because classobject does not support generic type
+     * Use raw types because Class objects do not support generic type parameters.
      */
     @SuppressWarnings("rawtypes")
     protected final PythonModel<List<Double>, ArrayList> model;
@@ -133,9 +133,9 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     }
 
     /**
-     * Make one step on the SUL in python.
-     * step function in python must return a 2D numpy array
-     * which first column is the timestamp and the rest columns are the output values.
+     * Make one step on the SUL in Python.
+     * The step function in Python must return a 2D NumPy array
+     * whose first column is the timestamp and whose remaining columns are the output values.
      *
      * @param inputSignal The input signal to the SUL
      * @return output of SUL
@@ -165,7 +165,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     }
 
     /**
-     * Run all steps of the python model by feeding inputSignal
+     * Run all steps of the Python model by feeding {@code inputSignal}.
      *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.

@@ -31,7 +31,7 @@ public class PythonModel<I, O> {
 
     /**
      * A {@link jep.SharedInterpreter} variable to hold the Python interpreter instance.
-     * {@code interpreter} use ThreadLocal because {@link jep.SharedInterpreter} cannot be used by the other thread.
+     * {@code interpreter} uses ThreadLocal because {@link jep.SharedInterpreter} cannot be used by another thread.
      */
     private ThreadLocal<SharedInterpreter> interpreter = ThreadLocal.withInitial(() -> {
         try {
@@ -47,7 +47,7 @@ public class PythonModel<I, O> {
     private final Class<O> outputClass;
 
     /**
-     * The filename of python script that implements SUL model.
+     * The filename of the Python script that implements the SUL model.
      */
     private final String initScript;
 
@@ -58,7 +58,7 @@ public class PythonModel<I, O> {
     private PyCallable pyPre, pyPost, pyStep, pyClose;
 
     /**
-     * It is binded if the python model has {@code exec} method.
+     * It is bound if the Python model has an {@code exec} method.
      */
     private Optional<PyCallable> pyExec = Optional.empty();
 
@@ -95,7 +95,7 @@ public class PythonModel<I, O> {
      * Calling a callable method like {@literal pyPre.call()} is equivalent to executing
      * {@literal sul = SUL()} and {@literal sul.pre()} on the Python side.
      *
-     * Note that the code under {@literal if __name__ == "__main__":} branch in python is also executed
+     * Note that the code under the {@literal if __name__ == "__main__":} branch in Python is also executed.
      */
     public void initialize() {
         if (!this.initialized.get()) {
@@ -138,8 +138,8 @@ public class PythonModel<I, O> {
 
     /**
      * Call the {@code step} method of the Python SUL model.
-     * For the given outputClass, it tries to convert the output object by python to {@code O} type by Jep.
-     * 
+     * For the given {@code outputClass}, it converts the output object produced by Python to type {@code O} using Jep.
+     *
      * @throws JepException if an error occurs while calling the Python step method.
      */
     public O step(I inputSignal) throws JepException {

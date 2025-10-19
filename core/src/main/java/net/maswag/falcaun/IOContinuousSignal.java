@@ -49,10 +49,9 @@ public class IOContinuousSignal<I> extends AbstractIOSignal<I> {
     }
 
     /**
-     * Constructs a stream of signals {@link ExtendedIOSignalPiece}
-     * that holds an input signal, an output signal, and continuous output signals
-     * from the previous input exclusive to this input inclusive.
-     * 
+     * Constructs a stream of {@link ExtendedIOSignalPiece} instances that hold an input signal,
+     * an output signal, and the continuous output segment from after the previous input up to and including this input.
+     *
      * @return                          a stream of {@link ExtendedIOSignalPiece}
      * @throws IllegalArgumentException if the number of steps in {@code continuousOutputSignal} (determined by {@code signalStep})
      *                                  is less than the length of {@code inputSignal}

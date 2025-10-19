@@ -27,7 +27,7 @@ import net.maswag.falcaun.IOSignal;
  * <ul>
  * <li> Given {@literal input(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
  *  Note that {@literal <} ({@literal Operation.lt}) represents a less-than-or-equal-to operator.
- * <li> Given {@literal input(0) == 1.5}, {@code getAllAPs()} raises an {@link RuntimeException}.
+ * <li> Given {@literal input(0) == 1.5}, {@code getAllAPs()} raises a {@link RuntimeException}.
  * </ul>
  * 
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
