@@ -21,8 +21,8 @@ import net.maswag.falcaun.OutputMapper;
  * For example, let an atomic formula be {@literal output(0) > 1.0},
  * the 0-th output mapper be {@literal {a: 1.0, b: 2.0, c: 3.0}},
  * the 0-th largest be {@literal 'd'},
- * the set of alphabets of 1-th output signal be {@literal {'x', 'y'}},
- * and the 1-th largest be {@literal 'z'},
+ * the set of alphabets of 1st output signal be {@literal {'x', 'y'}},
+ * and the 1st largest be {@literal 'z'},
  * then the atomic propositions are {@literal {"bx", "by", "bz", "cx", "cy", "cz", "dx", "dy", "dz"}}.
  *
  * <p>
