@@ -16,7 +16,8 @@
 
 (import '(java.util Random))
 (import '(net.maswag.falcaun
-          InputMapperReader
+          InputMapperReader))
+(import '(net.maswag.falcaun.python
           PythonNumericSUL))
 
 (load-file "common.clj")
@@ -73,5 +74,3 @@
    (make-default-input-mapper [0.0 50.0]))
   ([meal-sizes]
    (InputMapperReader/make [meal-sizes])))
-
-

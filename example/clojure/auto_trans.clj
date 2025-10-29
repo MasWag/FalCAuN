@@ -1,4 +1,4 @@
-(import '(net.maswag.falcaun
+(import '(net.maswag.falcaun.simulink
           SimulinkSUL))
 ;; Clojure definitions for AutoTrans
 
