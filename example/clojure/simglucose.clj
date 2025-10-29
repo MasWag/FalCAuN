@@ -24,7 +24,7 @@
 ;; Python initialization script implementing SUL
 (def init-script 
   "Path to the Python initialization script for simglucose."
-  "./simglucose_example.py")
+  "./simglucose_bb.py")
 
 ;; Step size (seconds) per high-level step sent to Python SUL
 (def signal-step 
@@ -73,6 +73,5 @@
    (make-default-input-mapper [0.0 50.0]))
   ([meal-sizes]
    (InputMapperReader/make [meal-sizes])))
-
 
 

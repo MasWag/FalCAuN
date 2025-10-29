@@ -29,7 +29,7 @@
 ;; Reduce verbose logs
 (suppress-logs)
 
-;; Define input and output mappers (match simglucose_example.py return shape)
+;; Define input and output mappers (match simglucose_bb.py return shape)
 (def input-mapper (make-default-input-mapper))
 
 ;; Output: [last_bg, sum_insulin, min_bg, max_bg, min_delta_bg, max_delta_bg]
