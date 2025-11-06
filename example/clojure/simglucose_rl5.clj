@@ -56,8 +56,8 @@
       (format "G(%s > %s || F_[0, %d] %s > %s)" bg tenth-bg (minutes-to-steps 120) max-bg tenth-bg)
       ;; BG should not stay above 90th-percentile threshold for more than 120 minutes
       (format "G(%s < %s || F_[0, %d] %s < %s)" bg ninetieth-bg (minutes-to-steps 120) min-bg ninetieth-bg)
-      ;; BG should not stay above 90th-percentile threshold for more than 150 minutes after an insulin injection
-      (format "G(%s < %s || %s < 0.5 || F_[0, %d] %s < %s)" bg ninetieth-bg insulin (minutes-to-steps 150) min-bg ninetieth-bg)]
+      ;; BG should not stay above 90th-percentile threshold for more than 90 minutes after an insulin injection
+      (format "G(%s < %s || %s < 0.5 || F_[0, %d] %s < %s)" bg ninetieth-bg insulin (minutes-to-steps 90) min-bg ninetieth-bg)]
      input-mapper
      output-mapper-reader)))
 
