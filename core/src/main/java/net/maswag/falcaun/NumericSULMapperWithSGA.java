@@ -1,5 +1,6 @@
 package net.maswag.falcaun;
 
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,13 @@ public class NumericSULMapperWithSGA extends NumericSULMapper {
         List<TemporalLogic.LTLFormula> ltlFormulas = convertToLtlFormulas(formulaList);
         this.sgaMapper = new SGAMapper(ltlFormulas, discretizedSigmaAlphabet, abstractGammaAlphabet, partial);
         this.postOutputMapper = sgaMapper.getOutputMapper();
+    }
+
+    @Deprecated
+    public NumericSULMapperWithSGA(List<Map<Character, Double>> inputMapper,
+                                   OutputMapperReader outputMapperReader,
+                                   SignalMapper sigMap, List<TemporalLogic.STLCost> formulaList, boolean partial) {
+        this(inputMapper, outputMapperReader.getLargest(), outputMapperReader.getOutputMapper(), sigMap, formulaList, partial);
     }
 
     @Override
