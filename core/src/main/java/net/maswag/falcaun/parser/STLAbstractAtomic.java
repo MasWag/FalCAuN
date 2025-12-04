@@ -158,7 +158,8 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
             constructSatisfyingAtomicPropositions();
         }
         return this.satisfyingAtomicPropositions.stream().map(
-                        s -> String.format("( %s == \"" + mapper.get(s) + "\" )", getSignalName()))
+                        s -> {  String ap = getSignalName() == "input" ? s : mapper.get(s);
+                                return String.format("( %s == \"" + ap  + "\" )", getSignalName());})
                 .collect(Collectors.joining(" || "));
     }
     
