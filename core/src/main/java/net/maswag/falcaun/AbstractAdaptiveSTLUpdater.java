@@ -331,12 +331,12 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
     @Override
     public String toString() {
         // Map the list of STL properties to a list of strings and join them with a comma.
-        return "[" + this.getSTLProperties().stream().map(prop -> mapper.isPresent() ? prop.toAbstractLTLString(mapper.get()): prop.toString()).collect(Collectors.joining(", ")) + "]";
+        return "[" + this.getSTLProperties().stream().map(TemporalLogic::toString).collect(Collectors.joining(", ")) + "]";
     }
 
     @Override
     public List<String> getLTLProperties() {
-        return getSTLProperties().stream().map(prop -> mapper.isPresent() ? prop.toAbstractLTLString(mapper.get()): prop.toString()).collect(Collectors.toList());
+        return getSTLProperties().stream().map(prop -> mapper.isPresent() ? prop.toAbstractLTLString(mapper.get()): prop.toLTLString()).collect(Collectors.toList());
     }
 
     public void setMapper(Map<String, String> mapper){
