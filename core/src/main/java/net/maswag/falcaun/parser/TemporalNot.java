@@ -2,6 +2,7 @@ package net.maswag.falcaun.parser;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -77,6 +78,11 @@ public class TemporalNot<I> extends AbstractTemporalLogic<I> {
     @Override
     public String toString() {
         return String.format("!( %s )", subFml.toString());
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        return String.format("!( %s )", subFml.toAbstractLTLString(mapper));
     }
 
     @Override

@@ -2,11 +2,13 @@ package net.maswag.falcaun.parser;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import net.maswag.falcaun.IOSignal;
 import net.maswag.falcaun.LTLAPs;
 
@@ -32,6 +34,8 @@ public interface TemporalLogic<I> extends Function<IOSignal<I>, Double> {
     default String toLTLString() {
         return this.toAbstractString();
     }
+
+    String toAbstractLTLString(Map<String, String> mapper);
 
     String toOwlString();
 

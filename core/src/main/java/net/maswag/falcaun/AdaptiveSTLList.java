@@ -1,5 +1,13 @@
 package net.maswag.falcaun;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+
 import lombok.extern.slf4j.Slf4j;
 import net.maswag.falcaun.parser.TemporalAnd;
 import net.maswag.falcaun.parser.TemporalEventually;
@@ -10,9 +18,6 @@ import net.maswag.falcaun.parser.TemporalOp;
 import net.maswag.falcaun.parser.TemporalOr;
 import net.maswag.falcaun.parser.TemporalSub;
 import net.maswag.falcaun.parser.TemporalUntil;
-
-import java.util.*;
-import java.util.function.Function;
 
 /**
  * Adaptive updater of STL/LTL formulas

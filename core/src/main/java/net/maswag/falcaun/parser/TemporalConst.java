@@ -3,6 +3,7 @@ package net.maswag.falcaun.parser;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.maswag.falcaun.IOSignal;
@@ -26,6 +27,11 @@ public class TemporalConst<I> extends AbstractTemporalLogic<I>{
     @Override
     public String toString(){
         return toAbstractString();
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        return toLTLString();
     }
 
     @Override
@@ -62,14 +68,15 @@ public class TemporalConst<I> extends AbstractTemporalLogic<I>{
         }
     }
 
+    @Override
     public TemporalLogic<I> toDisjunctiveForm(){
         return this;
     }
 
+    @Override
     public List<TemporalLogic<I>> getAllConjunctions(){
         return new ArrayList<>();
     }
-
     static class STLConst extends TemporalConst<List<Double>> implements STLCost {
         STLConst(boolean b) {
             super(b);
