@@ -291,4 +291,51 @@ class STLAtomicTest {
             assertEquals(expected, satisfyingString.contains(asString));
         }
     }
+
+    @Test
+    void toAbstractLTLStringOutput() {
+        STLOutputAtomic formula = new STLOutputAtomic(0, STLOutputAtomic.Operation.ne, 2.0);
+        List<Map<Character, Double>> abstractOutputs = new ArrayList<>();
+        List<Character> largest = List.of('d', 'c', 'b');
+        abstractOutputs.add(Map.of('a', 1.0, 'b', 2.0, 'c', 3.0));
+        abstractOutputs.add(Map.of('a', 1.0, 'b', 2.0));
+        abstractOutputs.add(Map.of('a', 1.0));
+        formula.setAtomic(abstractOutputs, largest);
+        Set<String> satisfyingAPList = Set.of("aaa", "aab", "aba", "abb", "aca", "acb", "caa", "cab", "cba", "cbb", "cca", "ccb", "daa", "dab", "dba", "dbb", "dca", "dcb");
+        Map<String, String> mapper1 =
+            Map.of("aaa", "aaa",
+                   "aab", "aaa",
+                   "aba", "aba",
+                   "abb", "aba",
+                   "aca", "aaa",
+                   "acb", "acb",
+                   "caa", "caa",
+                   "cab", "aaa",
+                   "cba", "cba"); 
+        Map<String, String> mapper2 =
+            Map.of("cbb", "cbb",
+                   "cca", "cbb",
+                   "ccb", "aaa",
+                   "daa", "daa",
+                   "dab", "dab",
+                   "dba", "daa",
+                   "dbb", "dbb",
+                   "dca", "aba",
+                   "dcb", "cba");
+        Map<String, String> mapper = new HashMap<>();
+        mapper.putAll(mapper1);
+        mapper.putAll(mapper2);
+        Set<String> expected = satisfyingAPList.stream().map(ap -> mapper.get(ap)).collect(Collectors.toSet());
+
+        // We do an ad hoc parsing of the abstract string to get the atomic propositions
+        Set<String> actual = Arrays.stream(formula.toAbstractLTLString(mapper)
+                .split("\"")).filter(s -> s.length() == 3).collect(Collectors.toSet());
+
+        assertEquals(expected, actual);
+
+        // The abstract string should start with "( output =="
+        assertTrue(formula.toAbstractString().startsWith("( output =="));
+        // The abstract string must not contain "input"
+        assertFalse(formula.toAbstractString().contains("input"));
+    }
 }

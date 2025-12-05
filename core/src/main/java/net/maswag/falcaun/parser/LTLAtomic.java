@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -105,6 +106,14 @@ public class LTLAtomic extends AbstractTemporalLogic<String> implements Temporal
     @Override
     public String toString() {
         return this.toAbstractString();
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        List<String> result = new ArrayList<>();
+        inputString.ifPresent(s -> result.add("input == \"" + s + "\" "));
+        outputString.ifPresent(s -> result.add("output == \"" + mapper.get(s) + "\" "));
+        return String.join(" && ", result);
     }
 
     @Override

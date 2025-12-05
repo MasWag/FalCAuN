@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import net.maswag.falcaun.IOSignal;
-
-import java.util.stream.Collectors;
-
 import net.maswag.falcaun.LTLAPs;
 import net.maswag.falcaun.LTLFormulaBase;
 
@@ -56,12 +56,6 @@ public class TemporalOr<I> extends AbstractTemporalLogic<I> {
         return subFmls.stream().map(TemporalLogic<I>::toString).collect(Collectors.joining(" || "));
     }
 
-    @Override
-    public String toOwlString() {
-        return this.subFmls.stream().map(TemporalLogic<I>::toOwlString).map(
-                s -> "( " + s + " )").collect(Collectors.joining(" | "));
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -98,6 +92,22 @@ public class TemporalOr<I> extends AbstractTemporalLogic<I> {
             return this.subFmls.stream().map(TemporalLogic::toAbstractString).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" || "));
         }
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        if (nonTemporal && this.iOType != IOType.BOTH) {
+            return makeAbstractStringWithAtomicStrings(Optional.of(mapper));
+        } else {
+            return this.subFmls.stream().map(fml -> fml.toAbstractLTLString(mapper)).map(
+                    s -> "( " + s + " )").collect(Collectors.joining(" || "));
+        }
+    }
+
+    @Override
+    public String toOwlString() {
+        return this.subFmls.stream().map(TemporalLogic<I>::toOwlString).map(
+                s -> "( " + s + " )").collect(Collectors.joining(" | "));
     }
 
     @Override

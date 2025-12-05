@@ -55,7 +55,7 @@ public class NumericSULMapperWithSGA extends NumericSULMapper {
     private List<TemporalLogic.LTLFormula> convertToLtlFormulas(List<TemporalLogic.STLCost> stlFormulas) {
         LTLFactory factory = new LTLFactory();
         return stlFormulas.stream()
-                .map(formula -> LTLFormulaHelper.prepareFormula(factory.parse(formula.toLTLString())))
+                .map(formula -> LTLFormulaHelper.prepareFormula(factory.parse(formula.toLTLString().replaceAll("\"", ""))))
                 .collect(Collectors.toList());
     }
 
@@ -77,5 +77,9 @@ public class NumericSULMapperWithSGA extends NumericSULMapper {
             result = tmpList;
         }
         return result;
+    }
+
+    public Map<String, String> getOutputMapper(){
+        return this.postOutputMapper;
     }
 }

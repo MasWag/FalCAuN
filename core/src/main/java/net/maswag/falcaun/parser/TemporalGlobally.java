@@ -1,9 +1,9 @@
 package net.maswag.falcaun.parser;
 
-import lombok.Getter;
-
 import java.util.List;
+import java.util.Map;
 
+import lombok.Getter;
 import net.maswag.falcaun.IOSignal;
 import net.maswag.falcaun.LTLAPs;
 import net.maswag.falcaun.LTLFormulaBase;
@@ -83,17 +83,22 @@ public class TemporalGlobally<I> extends TemporalOp<I> {
         return "[] ( " + subFml.toString() + " )";
     }
 
-    @Override
-    public String toOwlString() {
-        return String.format("G ( %s )", subFml.toOwlString());
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public String toAbstractString() {
         return "[] ( " + subFml.toAbstractString() + " )";
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        return "[] ( " + subFml.toAbstractLTLString(mapper) + " )";
+    }
+
+    @Override
+    public String toOwlString() {
+        return String.format("G ( %s )", subFml.toOwlString());
     }
 
     @Override

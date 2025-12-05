@@ -1,11 +1,11 @@
 package net.maswag.falcaun.parser;
 
-import lombok.Getter;
-import net.maswag.falcaun.IOSignal;
-
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import lombok.Getter;
+import net.maswag.falcaun.IOSignal;
 import net.maswag.falcaun.LTLAPs;
 import net.maswag.falcaun.LTLFormulaBase;
 
@@ -81,6 +81,11 @@ public class TemporalNext<I> extends AbstractTemporalLogic<I> {
     @Override
     public String toString() {
         return String.format("X ( %s )", subFml.toString());
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        return String.format("X ( %s )", subFml.toAbstractLTLString(mapper));
     }
 
     @Override

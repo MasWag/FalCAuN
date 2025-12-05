@@ -16,7 +16,9 @@ import net.maswag.falcaun.parser.TemporalUntil.LTLUntil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -178,5 +180,56 @@ class LTLParserTest {
         // After the fix, the negations are resolved to their satisfying APs
         // The expected output should match what TemporalNotTest shows
         assertEquals("[] ( ( output == p ) || ( output == q ) )", actual);
+    }
+
+    @Test
+    void toAbstracyLTLStringTest() {
+        List<String> inputs = Arrays.asList(
+                "input == p ",
+                "output == p ",
+                "( input == p  ) || ( output == p  )",
+                "( output == p ) || ( output == r  )",
+                "( input == a  ) -> ( output == p  )",
+                "( input == a  ) && ( ( output == p ) || ( output == q ))",
+                "X ( ( input == a ) && ( output == p ) )",
+                "[] ( output == p  )",
+                "<> ( ( input == p ) && ( output == p )  )",
+                // " []_[0, 2] ( output == p  )",
+                //" <>_[1, 3] ( input == a  )",
+                "( input == a  ) U ( output == p  )", // Until
+                "( input == a  ) R ( output == p  )" // Release
+        );
+        Map<String, String> mapper = new HashMap<>();
+        mapper.put("a", "");
+        mapper.put("p", "q");
+        mapper.put("q", "q");
+        mapper.put("r", "r");
+        List<String> expectedList = Arrays.asList(
+                "input == p ",
+                "output == q ",
+                "( input == p ) || ( output == q )",
+                "( output == q ) || ( output == r )",
+                "( input == a ) -> ( output == q )",
+                "( input == a ) && ( output == q )",
+                "X ( ( input == a ) && ( output == q ) )",
+                "[] ( output == q )",
+                "<> ( ( input == p ) && ( output == q )  )",
+                // " []_[0, 2] ( output == p  )",
+                //" <>_[1, 3] ( input == a  )",
+                "( input == a ) U ( output == q )", // Until
+                "( input == a ) R ( output == q )" // Release
+        );
+
+        assert inputs.size() == expectedList.size();
+
+        for (int i = 0; i < inputs.size(); i++) {
+            LTLFormula inputFormula = factory.parse(inputs.get(i));
+            // inputFormula.mapWithSGA(mapper);
+            // System.out.println("debug:" + inputFormula.toAbstractString());
+            LTLFormula expectedFormula = factory.parse(expectedList.get(i));
+            System.out.println("debug:" + inputFormula.toAbstractLTLString(mapper).replaceAll("\"", ""));
+            LTLFormula resultFormula = factory.parse(inputFormula.toAbstractLTLString(mapper).replaceAll("\"", ""));
+            assertEquals(expectedFormula, resultFormula);
+        }
     }
 }

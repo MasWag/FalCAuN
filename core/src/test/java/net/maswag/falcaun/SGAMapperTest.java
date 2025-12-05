@@ -115,7 +115,6 @@ class SGAMapperTest {
                 new IOSignalPiece<List<Double>>(null, Arrays.asList(20.0, 20.0, 5.))
         );
         for (int i = 0; i < formulas.size(); i++) {
-            System.out.println(i);
             STLCost formula = factory.parse(formulas.get(i), inputMapper, outputMapper, largest);
             NumericSULMapperWithSGA mapper = new NumericSULMapperWithSGA(inputMapper, largest, outputMapper, sigMap, Arrays.asList(formula), false);
             List<String> expected = expectedList.get(i);

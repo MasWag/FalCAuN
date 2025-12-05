@@ -3,6 +3,9 @@ package net.maswag.falcaun.parser;
 import lombok.Getter;
 import net.maswag.falcaun.parser.TemporalLogic.IOType;
 
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,6 +73,10 @@ public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {
      * @throws IllegalStateException If the formula is not initialized when this method is called.
      */
     protected String makeAbstractStringWithAtomicStrings() {
+        return makeAbstractStringWithAtomicStrings(Optional.empty());
+    }
+
+    protected String makeAbstractStringWithAtomicStrings(Optional<Map<String, String>> mapper) {
         if (!this.isInitialized()) {
             throw new IllegalStateException("The formula is not initialized but the abstract string is requested.");
         }
@@ -80,8 +87,13 @@ public abstract class AbstractTemporalLogic<I> implements TemporalLogic<I> {
             return this.satisfyingAtomicPropositions.stream().map(
                     s -> "( input == \"" + s + "\" )").collect(Collectors.joining(" || "));
         else {
-            return this.satisfyingAtomicPropositions.stream().map(
-                    s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
+            Set<String> mappedSatisfyingAtomicPropositions;
+            if (mapper.isPresent()){
+                mappedSatisfyingAtomicPropositions = satisfyingAtomicPropositions.stream().map(ap -> mapper.get().get(ap)).collect(Collectors.toCollection(LinkedHashSet::new));
+            } else {
+                mappedSatisfyingAtomicPropositions = satisfyingAtomicPropositions;
+            }
+            return mappedSatisfyingAtomicPropositions.stream().map(s -> "( output == \"" + s + "\" )").collect(Collectors.joining(" || "));
         }
     }
 

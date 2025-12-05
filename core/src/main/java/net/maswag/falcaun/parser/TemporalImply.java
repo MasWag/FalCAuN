@@ -3,7 +3,9 @@ package net.maswag.falcaun.parser;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.Getter;
@@ -84,6 +86,15 @@ public class TemporalImply<I> extends AbstractTemporalLogic<I> {
     @Override
     public String toString() {
         return String.format("( %s ) -> ( %s )", subFml1.toString(), subFml2.toString());
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        if (nonTemporal && iOType != IOType.BOTH) {
+            return makeAbstractStringWithAtomicStrings(Optional.of(mapper));
+        } else {
+            return String.format("( %s ) -> ( %s )", subFml1.toAbstractLTLString(mapper), subFml2.toAbstractLTLString(mapper));
+        }
     }
 
     @Override
