@@ -159,7 +159,7 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         }
         if (this instanceof STLInputAtomic) {
             return this.satisfyingAtomicPropositions.stream().map(
-                s ->"( input == \"" + s  + "\" )")
+                s -> "( input == \"" + s  + "\" )")
                 .collect(Collectors.joining(" || "));
         } else {
             Set<String> mappedSatisfyingAtomicPropositions = satisfyingAtomicPropositions.stream().map(ap -> mapper.get(ap)).collect(Collectors.toCollection(LinkedHashSet::new));
