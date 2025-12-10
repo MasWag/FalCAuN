@@ -336,7 +336,7 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
 
     @Override
     public List<String> getLTLProperties() {
-        return getSTLProperties().stream().map(prop -> mapper.isPresent() ? prop.toAbstractLTLString(mapper.get()): prop.toLTLString()).collect(Collectors.toList());
+        return getSTLProperties().stream().map(prop -> mapper.isPresent() ? prop.toAbstractLTLString(mapper.get()) : prop.toLTLString()).collect(Collectors.toList());
     }
 
     public void setMapper(Map<String, String> mapper){
