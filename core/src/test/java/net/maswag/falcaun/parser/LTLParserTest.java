@@ -183,7 +183,7 @@ class LTLParserTest {
     }
 
     @Test
-    void toAbstracyLTLStringTest() {
+    void toAbstractLTLStringTest() {
         List<String> inputs = Arrays.asList(
                 "input == p ",
                 "output == p ",
