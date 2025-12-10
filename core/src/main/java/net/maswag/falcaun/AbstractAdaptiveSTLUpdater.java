@@ -75,9 +75,6 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
      */
     private final List<PropertyOracle.MealyPropertyOracle<String, String, String>> propertyOracles = new ArrayList<>();
     /**
-     * Flag indicating whether the property oracles have been initialized.
-     */
-    /**
      * Flag indicating whether the property oracles have been initialized and are ready for use.
      */
     boolean initialized = false;
@@ -90,7 +87,7 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
 
     /**
      * Constructs an instance of {@link AbstractAdaptiveSTLUpdater}.
-     *
+     * <p>
      * Initializes the model checker used to verify properties against a Mealy machine.
      */
     public AbstractAdaptiveSTLUpdater() {
@@ -191,12 +188,6 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
 
     /**
      * Initializes the property oracles if they have not been initialized yet.
-     * <p>
-     * This method is called to set up the inclusion and emptiness oracles, which are necessary for verifying properties.
-     * The initialization is delayed until after the membership oracle has been set to ensure proper configuration.
-     */
-    /**
-     * Initializes the property oracles if they have not been initialized yet.
      *
      * <p>This method is called to set up the inclusion and emptiness oracles, which are necessary for verifying properties.
      * The initialization is delayed until after the membership oracle has been set to ensure proper configuration.</p>
@@ -228,23 +219,6 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
         return !reportedFormulas.contains(stlFormula);
     }
 
-    /**
-     * Attempts to disprove the current list of STL formulas against the given Mealy machine.
-     * <p>
-     * This method checks each STL formula in the list and tries to find a counterexample that disproves it.
-     * It returns:
-     * <ul>
-     *     <li>A counterexample for the first newly falsified STL formula, if one exists.</li>
-     *     <li>A counterexample for the first falsified STL formula, if no new falsifications are found.</li>
-     *     <li>null, if no counterexamples are found.</li>
-     * </ul>
-     * If any formulas are truly disproved, it calls {@link #notifyFalsifiedProperty(List)} with their indices.
-     *
-     * @param hypothesis The Mealy machine to be verified.
-     * @param inputs     The alphabet of the Mealy machine's input symbols.
-     * @return A query representing a counterexample if one is found; otherwise, null.
-     * @see de.learnlib.oracle.equivalence.CExFirstOracle
-     */
     /**
      * Attempts to disprove the current list of STL formulas against the given Mealy machine.
      *
@@ -311,14 +285,6 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
 
     /**
      * Notifies that the STL properties at the specified indices are falsified by the currently learned model.
-     * <p>
-     * This method is called when one or more STL properties have been disproved. It allows for generating new adaptive formulas based on these falsifications.
-     * Note: The original formulas should not be removed; instead, they can be adapted or extended.
-     *
-     * @param falsifiedIndices A list of indices corresponding to the falsified STL properties.
-     */
-    /**
-     * Notifies that the STL properties at the specified indices are falsified by the currently learned model.
      *
      * <p>This method is called when one or more STL properties have been disproved. It allows for generating new adaptive formulas based on these falsifications.
      * Note: The original formulas should not be removed; instead, they can be adapted or extended.</p>
@@ -334,9 +300,18 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
         return "[" + this.getSTLProperties().stream().map(TemporalLogic::toString).collect(Collectors.joining(", ")) + "]";
     }
 
+    /**
+     * Converts the given Temporal Logic property to its Linear Temporal Logic (LTL) string representation.
+     * <p>
+     * Overrides the default implementation to utilize an optional mapping for abstracting the LTL string.
+     */
     @Override
-    public List<String> getLTLProperties() {
-        return getSTLProperties().stream().map(prop -> mapper.isPresent() ? prop.toAbstractLTLString(mapper.get()) : prop.toLTLString()).collect(Collectors.toList());
+    public String toLTLString(TemporalLogic<I> prop) {
+        if (mapper.isPresent()) {
+            return prop.toAbstractLTLString(mapper.get());
+        } else {
+            return prop.toLTLString();
+        }
     }
 
     public void setMapper(Map<String, String> mapper){
