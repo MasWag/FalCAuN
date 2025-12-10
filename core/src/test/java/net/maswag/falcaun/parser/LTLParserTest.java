@@ -227,7 +227,6 @@ class LTLParserTest {
             // inputFormula.mapWithSGA(mapper);
             // System.out.println("debug:" + inputFormula.toAbstractString());
             LTLFormula expectedFormula = factory.parse(expectedList.get(i));
-            System.out.println("debug:" + inputFormula.toAbstractLTLString(mapper).replaceAll("\"", ""));
             LTLFormula resultFormula = factory.parse(inputFormula.toAbstractLTLString(mapper).replaceAll("\"", ""));
             assertEquals(expectedFormula, resultFormula);
         }
