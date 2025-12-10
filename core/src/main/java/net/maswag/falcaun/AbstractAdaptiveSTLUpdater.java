@@ -86,6 +86,8 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
      */
     private final List<TemporalLogic<I>> reportedFormulas = new ArrayList<>();
 
+    private Optional<Map<String, String>> mapper = Optional.empty();
+
     /**
      * Constructs an instance of {@link AbstractAdaptiveSTLUpdater}.
      *
@@ -148,9 +150,10 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
         }
         this.STLProperties.add(stl);
         if (initialized && Objects.nonNull(inclusionOracle) && Objects.nonNull(emptinessOracle)) {
+            String ltlString = mapper.isPresent() ? stl.toAbstractLTLString(mapper.get()) : stl.toLTLString();
             propertyOracles.add(
                     new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
-                            new MealyFinitePropertyOracle<>(stl.toLTLString(), inclusionOracle, emptinessOracle, modelChecker)));
+                            new MealyFinitePropertyOracle<>(ltlString, inclusionOracle, emptinessOracle, modelChecker)));
         }
     }
 
@@ -204,11 +207,13 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
             throw new NullPointerException();
         }
         if (!initialized) {
-            STLProperties.forEach(stl ->
+            STLProperties.forEach(stl -> {
+                    String ltlString = mapper.isPresent() ? stl.toAbstractLTLString(mapper.get()) : stl.toLTLString();
                     propertyOracles.add(
                             new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
-                                    new MealyFinitePropertyOracle<>(stl.toLTLString(),
-                                            inclusionOracle, emptinessOracle, modelChecker))));
+                                    new MealyFinitePropertyOracle<>(ltlString,
+                                            inclusionOracle, emptinessOracle, modelChecker)));
+                    });
             initialized = true;
         }
     }
@@ -327,5 +332,14 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
     public String toString() {
         // Map the list of STL properties to a list of strings and join them with a comma.
         return "[" + this.getSTLProperties().stream().map(TemporalLogic::toString).collect(Collectors.joining(", ")) + "]";
+    }
+
+    @Override
+    public List<String> getLTLProperties() {
+        return getSTLProperties().stream().map(prop -> mapper.isPresent() ? prop.toAbstractLTLString(mapper.get()) : prop.toLTLString()).collect(Collectors.toList());
+    }
+
+    public void setMapper(Map<String, String> mapper){
+        this.mapper = Optional.of(mapper);
     }
 }

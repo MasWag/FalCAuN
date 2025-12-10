@@ -6,6 +6,7 @@ import lombok.Getter;
 import net.maswag.falcaun.IOSignal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -68,11 +69,6 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
         return this.left + " R " + this.right;
     }
 
-    @Override
-    public String toOwlString() {
-        return "( " + this.left.toOwlString() + " ) R ( " + this.right.toOwlString() + " )";
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -99,6 +95,16 @@ public class TemporalRelease<I> extends AbstractTemporalLogic<I> {
     @Override
     public String toAbstractString() {
         return "( " + this.left.toAbstractString() + " ) R ( " + this.right.toAbstractString() + " )";
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        return "( " + this.left.toAbstractLTLString(mapper) + " ) R ( " + this.right.toAbstractLTLString(mapper) + " )";
+    }
+
+    @Override
+    public String toOwlString() {
+        return "( " + this.left.toOwlString() + " ) R ( " + this.right.toOwlString() + " )";
     }
 
     @Override

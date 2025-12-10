@@ -1,13 +1,12 @@
 package net.maswag.falcaun.parser;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import net.maswag.falcaun.IOSignal;
 import net.maswag.falcaun.LTLAPs;
 import net.maswag.falcaun.LTLFormulaBase;
-
-
-import java.util.List;
 
 
 /**
@@ -59,6 +58,11 @@ public class TemporalEventually<I> extends TemporalOp<I> {
     @Override
     public String toAbstractString() {
         return String.format("<> ( %s )", subFml.toAbstractString());
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        return String.format("<> ( %s )", subFml.toAbstractLTLString(mapper));
     }
 
     @Override
