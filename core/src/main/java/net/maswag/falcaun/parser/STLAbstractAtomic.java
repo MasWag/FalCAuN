@@ -168,7 +168,6 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
                 .collect(Collectors.joining(" || "));
         }
     }
-    
     @Override
     public String toOwlString() {
         constructSatisfyingAtomicPropositions();
