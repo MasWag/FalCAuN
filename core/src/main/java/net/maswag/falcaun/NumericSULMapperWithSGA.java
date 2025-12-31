@@ -25,7 +25,7 @@ public class NumericSULMapperWithSGA extends PostComposedSignalDiscretizer {
         Alphabet<String> discretizedSigmaAlphabet = baseMapper.constructAbstractAlphabet();
         Alphabet<String> abstractGammaAlphabet = new GrowingMapAlphabet<>(abstractOutputWords);
 
-        List<TemporalLogic.LTLFormula> ltlFormulas = LTLFormulaHelper.convertToLtlFormulas(formulaList);
+        List<TemporalLogic.LTLFormula> ltlFormulas = LTLFormulaHelper.convertToLTLFormulas(formulaList);
         SGAMapper sgaMapper = new SGAMapper(ltlFormulas, discretizedSigmaAlphabet, abstractGammaAlphabet, partial);
         this.postOutputMapper = sgaMapper.getOutputMapper();
         super.setDiscretizer(baseMapper);
