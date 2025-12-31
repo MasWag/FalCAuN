@@ -47,9 +47,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
 
     @Override
     public List<Double> mapInput(String s) {
-        if (discretizer == null) {
-            throw new IllegalStateException("Discretizer must be set before calling mapInput. Call setDiscretizer() first.");
-        }
+        ensureDiscretizerSet();
         // Delegate to discretizer
         return discretizer.mapInput(s);
     }
@@ -59,12 +57,8 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public String mapOutput(IOSignalPiece<List<Double>> concreteIO) {
-        if (discretizer == null) {
-            throw new IllegalStateException("Discretizer must be set before calling mapOutput. Call setDiscretizer() first.");
-        }
-        if (postMapper == null) {
-            throw new IllegalStateException("PostMapper must be set before calling mapOutput. Call setPostMapper() first.");
-        }
+        ensureDiscretizerSet();
+        ensurePostMapperSet();
         // First, map to abstract output using discretizer
         String abstractOutput = discretizer.mapOutput(concreteIO);
         // Then, apply postMapper to the abstract output
@@ -76,9 +70,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public Alphabet<String> constructAbstractAlphabet() {
-        if (discretizer == null) {
-            throw new IllegalStateException("Discretizer must be set before calling constructAbstractAlphabet. Call setDiscretizer() first.");
-        }
+        ensureDiscretizerSet();
         // Delegate to discretizer
         return discretizer.constructAbstractAlphabet();
     }
@@ -88,9 +80,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public Alphabet<List<Double>> constructConcreteAlphabet() {
-        if (discretizer == null) {
-            throw new IllegalStateException("Discretizer must be set before calling constructConcreteAlphabet. Call setDiscretizer() first.");
-        }
+        ensureDiscretizerSet();
         // Delegate to discretizer
         return discretizer.constructConcreteAlphabet();
     }
@@ -101,6 +91,26 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
 
     protected void setPostMapper(SULMapper<String, String, String, String> postMapper) {
         this.postMapper = postMapper;
+    }
+
+    /**
+     * Validates that the discretizer has been set.
+     * @throws IllegalStateException if the discretizer is null
+     */
+    private void ensureDiscretizerSet() {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer must be set before use. Call setDiscretizer() first.");
+        }
+    }
+
+    /**
+     * Validates that the postMapper has been set.
+     * @throws IllegalStateException if the postMapper is null
+     */
+    private void ensurePostMapperSet() {
+        if (postMapper == null) {
+            throw new IllegalStateException("PostMapper must be set before use. Call setPostMapper() first.");
+        }
     }
 
     public static List<String> constructAbstractAPs(List<List<Character>> abstractOutputs, List<Character> largestOutputs) {
