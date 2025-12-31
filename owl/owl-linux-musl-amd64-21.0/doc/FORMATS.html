@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>FORMATS</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+</head>
+<body>
+<h1 id="input-and-output-formats">Input and Output Formats</h1>
+<p><code>Owl</code> understands several text-based input and output formats, summarized in the following table:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Format</th>
+<th style="text-align: center;">In</th>
+<th style="text-align: center;">Out</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><a href="#LTL">LTL</a> (+ <a href="#rLTL">rLTL</a>)</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="#HOA">HOA</a></td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">X</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><a href="#pgsolver">PGSolver</a></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">X</td>
+</tr>
+</tbody>
+</table>
+<p>A more detailed description and links to relevant papers are provided below.</p>
+<h2 id="-linear-temporal-logic-ltl"><a name="LTL" /> Linear Temporal Logic (LTL)</h2>
+<p>The grammar for LTL aims to support <em>Spot-style</em> LTL. For further details on temporal logic, e.g., semantics, see <a href="https://spot.lrde.epita.fr/tl.pdf">here</a>.</p>
+<p>The following constructs are supported:</p>
+<h3 id="propositional-operators">Propositional Operators</h3>
+<ul>
+<li>True: <code>tt</code>, <code>true</code>, <code>1</code></li>
+<li>False: <code>ff</code>, <code>false</code>, <code>0</code></li>
+<li>Atom: <code>[a-zA-Z_][a-zA-Z_0-9]*</code> or quoted <code>"[^"]+"</code></li>
+<li>Negation: <code>!</code>, <code>NOT</code></li>
+<li>Implication: <code>-&gt;</code>, <code>=&gt;</code>, <code>IMP</code></li>
+<li>Bi-implication: <code>&lt;-&gt;</code>, <code>&lt;=&gt;</code>, <code>BIIMP</code></li>
+<li>Exclusive Disjunction: <code>^</code>, <code>XOR</code></li>
+<li>Conjunction: <code>&amp;&amp;</code>, <code>&amp;</code>, <code>AND</code></li>
+<li>Disjunction: <code>||</code>, <code>|</code>, <code>OR</code></li>
+<li>Parenthesis: <code>(</code>, <code>)</code></li>
+</ul>
+<h3 id="temporal-operators">Temporal Operators</h3>
+<ul>
+<li>Finally: <code>F</code></li>
+<li>Globally: <code>G</code></li>
+<li>Next: <code>X</code></li>
+<li>(Strong) Until: <code>U</code></li>
+<li>Weak Until: <code>W</code></li>
+<li>(Weak) Release: <code>R</code></li>
+<li>Strong Release: <code>M</code></li>
+</ul>
+<h3 id="precedence-rules">Precedence Rules</h3>
+<p>The parser uses the following precedence:</p>
+<p><code>OR</code> &lt; <code>AND</code> &lt; Binary Expressions &lt; Unary Expressions &lt; Literals, Constants, Parentheses</p>
+<p>For chained binary expressions (without parentheses), the rightmost binary operator takes precedence. For example, <code>a -&gt; b U c</code> is parsed as <code>a -&gt; (b U c)</code>.</p>
+<h3 id="-robust-ltl-rltl"><a name="rLTL" /> Robust LTL (rLTL)</h3>
+<p><code>Owl</code> also supports parsing <a href="https://arxiv.org/abs/1510.08970"><em>robust LTL</em></a>, immediately translating it to LTL, given particular truth values.</p>
+<h2 id="-hanoi-omega-automaton-format-hoa"><a name="HOA" /> Hanoi Omega-Automaton Format (HOA)</h2>
+<p><code>Owl</code> supports most of the <a href="http://adl.github.io/hoaf/">HOA format</a>, using <a href="http://automata.tools/hoa/jhoafparser/">jhoafparser</a> as back-end.</p>
+<p>Caveats:</p>
+<ul>
+<li>Alternation is not supported</li>
+<li>Internally, acceptance is encoded as transition acceptance, hence parsing and serializing an automaton with state acceptance may blow up the state space.</li>
+</ul>
+<h2 id="-temporal-logic-synthesis-format-tlsf"><a name="TLSF" /> Temporal Logic Synthesis Format (TLSF)</h2>
+<p>Use <a href="https://github.com/reactive-systems/syfco">syfco</a> to transform TLSF to LTL. For example: <code>syfco FILE -f ltlxba -m fully</code>.</p>
+<h2 id="-pgsolver-format"><a name="pgsolver" /> PGSolver Format</h2>
+<p>Serialization of parity games into the format used by <a href="https://github.com/tcsprojects/pgsolver">PGSolver</a> and other parity game solvers like <a href="https://arxiv.org/abs/1801.03859">Oink</a> is also supported. See Sec. 3.5 <a href="https://github.com/tcsprojects/pgsolver/blob/master/doc/pgsolver.pdf">here</a> for a description of the format.</p>
+</body>
+</html>

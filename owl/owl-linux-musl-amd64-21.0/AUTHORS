@@ -1,0 +1,26 @@
+# Maintainers
+
+* Salomon Sickert
+* Tobias Meggendorfer
+
+# Contributors
+
+* Klara Meyer         (Zielonka-trees and synthesis-related implementations)
+* Guillermo A. Perez  (AIGER-circuits and synthesis-related implementations)
+* Max Prokop          (LTL on finite traces)
+* Christopher Ziegler (Rabinizer 4)
+* Anton Pirogov       (nbadet, nbasim)
+* León Bohn           (nbadet, nbasim)
+* Remco Abraham       (Symbolic automata and Otus)
+
+# Acknowledgements
+
+The code from these projects does not exist anymore in the current release of
+Owl, but was helpful in the development Owl.
+
+* Andreas Gaiser       (Rabinizer 1)
+* Jan Kretinsky        (Rabinizer 1-3)
+* Zuzana Komarkova     (Rabinizer 3)
+* Ruslan Ledesma-Garza (Rabinizer 2)
+* Matthias Franze      (fgx2dpa prototype)
+* Florian Barta        (nba2dpa prototype)
