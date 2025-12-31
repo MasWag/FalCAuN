@@ -17,17 +17,17 @@ import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
 
 /**
  * Verifies a Numeric System Under Learning (NumericSUL) against specified properties using various equivalence oracles and model checking techniques.
- *
+ * <p>
  * This class provides a framework for verifying the behavior of a numeric system under learning by comparing it against a set of Signal Temporal Logic (STL) properties.
  * It uses learning algorithms, equivalence oracles, and model checkers to identify any discrepancies between the expected and actual behaviors.
- *
+ * </p>
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
 public class NumericSULVerifier {
     protected SUL<List<Double>, IOSignalPiece<List<Double>>> simulink;
     protected final NumericSUL rawSUL;
-    private final NumericSULMapper mapper;
+    private final SignalDiscretizer signalDiscretizer;
     private final BlackBoxVerifier<List<Double>> verifier;
     private final NumericMembershipOracle memOracle;
     private final List<NumericMembershipOracleCost> memOracleCosts = new ArrayList<>();
@@ -40,22 +40,22 @@ public class NumericSULVerifier {
      * @param rawSUL     The system under test.
      * @param signalStep The signal step in the simulation
      * @param properties The LTL properties to be verified
-     * @param mapper     The I/O mapper between abstract/concrete Simulink models.
+     * @param signalDiscretizer     The I/O mapper between abstract/concrete Simulink models.
      */
-    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, NumericSULMapper mapper) {
+    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, SignalDiscretizer signalDiscretizer) {
         log.debug("Initialize numeric SUL verifier with signalStep: {}, properties: {}", signalStep, properties);
         this.rawSUL = rawSUL;
         this.signalStep = signalStep;
-        this.mapper = mapper;
-        Alphabet<List<Double>> concreteInputAlphabet = mapper.constructConcreteAlphabet();
-        Alphabet<String> abstractInputAlphabet = mapper.constructAbstractAlphabet();
+        this.signalDiscretizer = signalDiscretizer;
+        Alphabet<List<Double>> concreteInputAlphabet = signalDiscretizer.constructConcreteAlphabet();
+        Alphabet<String> abstractInputAlphabet = signalDiscretizer.constructAbstractAlphabet();
 
         this.simulink = createTreeCache(concreteInputAlphabet, rawSUL);
 
-        SUL<String, String> mappedSimulink = new MappedSUL<>(mapper, simulink);
+        SUL<String, String> mappedSimulink = new MappedSUL<>(signalDiscretizer, simulink);
         mappedSimulink = createTreeCache(abstractInputAlphabet, mappedSimulink);
         // create a regular membership oracle
-        this.memOracle = new NumericMembershipOracle(rawSUL, this.mapper);
+        this.memOracle = new NumericMembershipOracle(rawSUL, this.signalDiscretizer);
         properties.setMemOracle(memOracle);
         verifier = new BlackBoxVerifier<>(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
     }
@@ -72,7 +72,7 @@ public class NumericSULVerifier {
                                      ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
         // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
         NumericMembershipOracleCost oracle =
-                new NumericMembershipOracleCost(this.rawSUL, this.mapper, costFunc);
+                new NumericMembershipOracleCost(this.rawSUL, this.signalDiscretizer, costFunc);
         oracle.setCache(this.memOracle.getCache());
         memOracleCosts.add(oracle);
         EvaluationCountable.MealyEquivalenceOracle<String, String> eqOracle = constructor.apply(oracle);
@@ -244,7 +244,7 @@ public class NumericSULVerifier {
         List<Signal> result = new ArrayList<>();
         for (Word<String> abstractCex : this.getCexAbstractInput()) {
             result.add(new Signal(this.signalStep));
-            result.get(result.size() - 1).addAll(this.mapper.mapInput(abstractCex));
+            result.get(result.size() - 1).addAll(this.signalDiscretizer.mapInput(abstractCex));
         }
         return result;
     }

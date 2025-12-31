@@ -2,6 +2,9 @@ package net.maswag.falcaun.parser;
 
 import net.maswag.falcaun.LTLAPs;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Helper class for LTL formula operations.
  */
@@ -119,5 +122,11 @@ public class LTLFormulaHelper {
             collectAtomicPropositionsRecursive(subFml, aps);
         }
     }
-    
+
+    public static List<TemporalLogic.LTLFormula> convertToLtlFormulas(List<TemporalLogic.STLCost> stlFormulas) {
+        LTLFactory factory = new LTLFactory();
+        return stlFormulas.stream()
+                .map(formula -> LTLFormulaHelper.prepareFormula(factory.parse(formula.toLTLString().replaceAll("\"", ""))))
+                .collect(Collectors.toList());
+    }
 }
