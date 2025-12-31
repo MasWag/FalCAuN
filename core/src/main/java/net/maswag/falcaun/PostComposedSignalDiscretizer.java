@@ -24,7 +24,9 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      * Default constructor for PostComposedSignalDiscretizer.
      * <p>
      * This constructor initializes the discretizer and postMapper to null.
-     * When using this constructor, ensure to set the discretizer and postMapper before use.
+     * When using this constructor, you MUST call both {@link #setDiscretizer(ComponentWiseSignalDiscretizer)}
+     * and {@link #setPostMapper(SULMapper)} before invoking any other methods. Failure to do so will
+     * result in an {@link IllegalStateException} being thrown.
      * </p>
      */
     protected PostComposedSignalDiscretizer() {
@@ -47,6 +49,9 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
 
     @Override
     public List<Double> mapInput(String s) {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer is not initialized. Call setDiscretizer() before using this method.");
+        }
         // Delegate to discretizer
         return discretizer.mapInput(s);
     }
@@ -56,6 +61,12 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public String mapOutput(IOSignalPiece<List<Double>> concreteIO) {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer is not initialized. Call setDiscretizer() before using this method.");
+        }
+        if (postMapper == null) {
+            throw new IllegalStateException("PostMapper is not initialized. Call setPostMapper() before using this method.");
+        }
         // First, map to abstract output using discretizer
         String abstractOutput = discretizer.mapOutput(concreteIO);
         // Then, apply postMapper to the abstract output
@@ -67,6 +78,9 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public Alphabet<String> constructAbstractAlphabet() {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer is not initialized. Call setDiscretizer() before using this method.");
+        }
         // Delegate to discretizer
         return discretizer.constructAbstractAlphabet();
     }
@@ -76,6 +90,9 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public Alphabet<List<Double>> constructConcreteAlphabet() {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer is not initialized. Call setDiscretizer() before using this method.");
+        }
         // Delegate to discretizer
         return discretizer.constructConcreteAlphabet();
     }
