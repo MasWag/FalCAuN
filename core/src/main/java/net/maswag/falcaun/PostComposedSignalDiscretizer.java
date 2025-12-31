@@ -97,7 +97,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
             if (result.isEmpty()){
                 tmpList = abstractOutputi.stream().map(String::valueOf).collect(Collectors.toList());
             } else {
-                for (String s: result){
+                for (String s: result) {
                     for ( Character c: abstractOutputi){
                         tmpList.add(s + c);
                     }
