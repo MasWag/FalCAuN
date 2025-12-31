@@ -180,6 +180,10 @@ target/
 # Mac
 .DS_Store
 
+# Owl library (downloaded during CI)
+owl/
+owl-linux-amd64-*.zip
+
 # LaTeX
 *.aux
 
