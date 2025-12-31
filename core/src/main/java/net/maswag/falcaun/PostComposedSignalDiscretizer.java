@@ -89,6 +89,24 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
     }
 
     public static List<String> constructAbstractAPs(List<List<Character>> abstractOutputs, List<Character> largestOutputs) {
+        // Input validation
+        if (abstractOutputs == null) {
+            throw new IllegalArgumentException("abstractOutputs cannot be null");
+        }
+        if (largestOutputs == null) {
+            throw new IllegalArgumentException("largestOutputs cannot be null");
+        }
+        if (abstractOutputs.isEmpty()) {
+            throw new IllegalArgumentException("abstractOutputs cannot be empty");
+        }
+        if (largestOutputs.isEmpty()) {
+            throw new IllegalArgumentException("largestOutputs cannot be empty");
+        }
+        if (abstractOutputs.size() != largestOutputs.size()) {
+            throw new IllegalArgumentException(
+                String.format("Size mismatch: abstractOutputs.size()=%d, largestOutputs.size()=%d",
+                    abstractOutputs.size(), largestOutputs.size()));
+        }
         List<String> result = new ArrayList<>();
         for (int i = 0; i < abstractOutputs.size(); i++) {
             List<Character> abstractOutputi = new ArrayList<>(abstractOutputs.get(i));

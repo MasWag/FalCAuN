@@ -36,7 +36,8 @@ public class PreComposedSignalDiscretizer implements ComponentWiseSignalDiscreti
         // Delegate to discretizer
         List<Double> concreteInput = discretizer.mapInput(s);
         // Ensure that preMapper does not change input values
-        if (preMapper.mapInput(concreteInput) != concreteInput) {
+        List<Double> mappedInput = preMapper.mapInput(concreteInput);
+        if (concreteInput == null ? mappedInput != null : !concreteInput.equals(mappedInput)) {
             throw new IllegalStateException("PreMapper changed input values, which is not allowed.");
         }
         return concreteInput;
