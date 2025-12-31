@@ -47,6 +47,9 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
 
     @Override
     public List<Double> mapInput(String s) {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer must be set before calling mapInput. Call setDiscretizer() first.");
+        }
         // Delegate to discretizer
         return discretizer.mapInput(s);
     }
@@ -56,6 +59,12 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public String mapOutput(IOSignalPiece<List<Double>> concreteIO) {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer must be set before calling mapOutput. Call setDiscretizer() first.");
+        }
+        if (postMapper == null) {
+            throw new IllegalStateException("PostMapper must be set before calling mapOutput. Call setPostMapper() first.");
+        }
         // First, map to abstract output using discretizer
         String abstractOutput = discretizer.mapOutput(concreteIO);
         // Then, apply postMapper to the abstract output
@@ -67,6 +76,9 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public Alphabet<String> constructAbstractAlphabet() {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer must be set before calling constructAbstractAlphabet. Call setDiscretizer() first.");
+        }
         // Delegate to discretizer
         return discretizer.constructAbstractAlphabet();
     }
@@ -76,6 +88,9 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public Alphabet<List<Double>> constructConcreteAlphabet() {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer must be set before calling constructConcreteAlphabet. Call setDiscretizer() first.");
+        }
         // Delegate to discretizer
         return discretizer.constructConcreteAlphabet();
     }
