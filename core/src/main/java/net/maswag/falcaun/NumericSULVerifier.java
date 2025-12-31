@@ -17,10 +17,8 @@ import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
 
 /**
  * Verifies a Numeric System Under Learning (NumericSUL) against specified properties using various equivalence oracles and model checking techniques.
- * <p>
- * This class provides a framework for verifying the behavior of a numeric system under learning by comparing it against a set of Signal Temporal Logic (STL) properties.
- * It uses learning algorithms, equivalence oracles, and model checkers to identify any discrepancies between the expected and actual behaviors.
- * </p>
+ * <p>This class provides a framework for verifying the behavior of a numeric system under learning by comparing it against a set of Signal Temporal Logic (STL) properties.
+ * It uses learning algorithms, equivalence oracles, and model checkers to identify any discrepancies between the expected and actual behaviors.</p>
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
