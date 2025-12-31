@@ -123,7 +123,7 @@ public class LTLFormulaHelper {
         }
     }
 
-    public static List<TemporalLogic.LTLFormula> convertToLtlFormulas(List<TemporalLogic.STLCost> stlFormulas) {
+    public static List<TemporalLogic.LTLFormula> convertToLTLFormulas(List<TemporalLogic.STLCost> stlFormulas) {
         LTLFactory factory = new LTLFactory();
         return stlFormulas.stream()
                 .map(formula -> LTLFormulaHelper.prepareFormula(factory.parse(formula.toLTLString().replaceAll("\"", ""))))
