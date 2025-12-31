@@ -123,15 +123,15 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
                     abstractOutputs.size(), largestOutputs.size()));
         }
         List<String> result = new ArrayList<>();
-        for (int i = 0; i < abstractOutputs.size(); i++){
+        for (int i = 0; i < abstractOutputs.size(); i++) {
             List<Character> abstractOutputi = new ArrayList<>(abstractOutputs.get(i));
             abstractOutputi.add(largestOutputs.get(i));
             List<String> tmpList = new ArrayList<>();
-            if (result.isEmpty()){
+            if (result.isEmpty()) {
                 tmpList = abstractOutputi.stream().map(String::valueOf).collect(Collectors.toList());
             } else {
                 for (String s: result) {
-                    for (Character c : abstractOutputi) {
+                    for (Character c: abstractOutputi) {
                         tmpList.add(s + c);
                     }
                 }
