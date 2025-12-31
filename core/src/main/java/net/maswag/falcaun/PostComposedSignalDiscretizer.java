@@ -107,7 +107,6 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
                 String.format("Size mismatch: abstractOutputs.size()=%d, largestOutputs.size()=%d",
                     abstractOutputs.size(), largestOutputs.size()));
         }
-        
         List<String> result = new ArrayList<>();
         for (int i = 0; i < abstractOutputs.size(); i++){
             List<Character> abstractOutputi = new ArrayList<>(abstractOutputs.get(i));
