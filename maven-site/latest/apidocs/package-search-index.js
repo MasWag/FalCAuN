@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"net.maswag.falcaun"},{"l":"net.maswag.falcaun.annotation"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"net.maswag.falcaun"},{"l":"net.maswag.falcaun.annotation"},{"l":"net.maswag.falcaun.parser"}];updateSearchResults();
