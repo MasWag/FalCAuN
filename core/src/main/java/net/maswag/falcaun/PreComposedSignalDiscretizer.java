@@ -1,6 +1,7 @@
 package net.maswag.falcaun;
 
 import de.learnlib.sul.SULMapper;
+import lombok.NonNull;
 import net.automatalib.alphabet.Alphabet;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public class PreComposedSignalDiscretizer implements ComponentWiseSignalDiscreti
      * @param preMapper   The SULMapper to pre-compose with the discretizer.
      */
     public PreComposedSignalDiscretizer(
-            ComponentWiseSignalDiscretizer discretizer,
-            SULMapper<List<Double>, IOSignalPiece<List<Double>>, List<Double>, IOSignalPiece<List<Double>>> preMapper) {
+            @NonNull ComponentWiseSignalDiscretizer discretizer,
+            @NonNull SULMapper<List<Double>, IOSignalPiece<List<Double>>, List<Double>, IOSignalPiece<List<Double>>> preMapper) {
         this.discretizer = discretizer;
         this.preMapper = preMapper;
     }
