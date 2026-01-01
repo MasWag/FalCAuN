@@ -47,7 +47,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
 
     @Override
     public List<Double> mapInput(String s) {
-        ensureInitialized();
+        ensureDiscretizerInitialized();
         // Delegate to discretizer
         return discretizer.mapInput(s);
     }
@@ -69,7 +69,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public Alphabet<String> constructAbstractAlphabet() {
-        ensureInitialized();
+        ensureDiscretizerInitialized();
         // Delegate to discretizer
         return discretizer.constructAbstractAlphabet();
     }
@@ -79,9 +79,20 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      */
     @Override
     public Alphabet<List<Double>> constructConcreteAlphabet() {
-        ensureInitialized();
+        ensureDiscretizerInitialized();
         // Delegate to discretizer
         return discretizer.constructConcreteAlphabet();
+    }
+
+    /**
+     * Ensures that the discretizer is initialized.
+     * 
+     * @throws IllegalStateException if discretizer is null
+     */
+    private void ensureDiscretizerInitialized() {
+        if (discretizer == null) {
+            throw new IllegalStateException("Discretizer has not been initialized. Call setDiscretizer() before using this method.");
+        }
     }
 
     /**
@@ -90,9 +101,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      * @throws IllegalStateException if discretizer or postMapper is null
      */
     private void ensureInitialized() {
-        if (discretizer == null) {
-            throw new IllegalStateException("Discretizer has not been initialized. Call setDiscretizer() before using this method.");
-        }
+        ensureDiscretizerInitialized();
         if (postMapper == null) {
             throw new IllegalStateException("PostMapper has not been initialized. Call setPostMapper() before using this method.");
         }
