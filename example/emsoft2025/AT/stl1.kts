@@ -67,10 +67,10 @@ if (args[0] == "original"){
         NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
 } else if (args[0] == "abstract"){
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, false)
-    properties.setMapper((mapper as NumericSULMapperWithSGA).getOutputMapper())
+    properties.setMapper((mapper as NumericSULMapperWithSGA).getPostOutputMapper().get())
 } else if (args[0] == "partial") {
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, true)
-    properties.setMapper((mapper as NumericSULMapperWithSGA).getOutputMapper())
+    properties.setMapper((mapper as NumericSULMapperWithSGA).getPostOutputMapper().get())
 }
 
 // Constants for the GA-based equivalence testing
