@@ -3,9 +3,7 @@ package net.maswag.falcaun;
 import de.learnlib.sul.SULMapper;
 import net.automatalib.alphabet.Alphabet;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * SignalDiscretizer post-composed with an SULMapper
@@ -101,43 +99,5 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
 
     protected void setPostMapper(SULMapper<String, String, String, String> postMapper) {
         this.postMapper = postMapper;
-    }
-
-    public static List<String> constructAbstractAPs(List<List<Character>> abstractOutputs, List<Character> largestOutputs) {
-        // Input validation
-        if (abstractOutputs == null) {
-            throw new IllegalArgumentException("abstractOutputs cannot be null");
-        }
-        if (largestOutputs == null) {
-            throw new IllegalArgumentException("largestOutputs cannot be null");
-        }
-        if (abstractOutputs.isEmpty()) {
-            throw new IllegalArgumentException("abstractOutputs cannot be empty");
-        }
-        if (largestOutputs.isEmpty()) {
-            throw new IllegalArgumentException("largestOutputs cannot be empty");
-        }
-        if (abstractOutputs.size() != largestOutputs.size()) {
-            throw new IllegalArgumentException(
-                String.format("Size mismatch: abstractOutputs.size()=%d, largestOutputs.size()=%d",
-                    abstractOutputs.size(), largestOutputs.size()));
-        }
-        List<String> result = new ArrayList<>();
-        for (int i = 0; i < abstractOutputs.size(); i++) {
-            List<Character> abstractOutputi = new ArrayList<>(abstractOutputs.get(i));
-            abstractOutputi.add(largestOutputs.get(i));
-            List<String> tmpList = new ArrayList<>();
-            if (result.isEmpty()) {
-                tmpList = abstractOutputi.stream().map(String::valueOf).collect(Collectors.toList());
-            } else {
-                for (String s: result) {
-                    for (Character c: abstractOutputi) {
-                        tmpList.add(s + c);
-                    }
-                }
-            }
-            result = tmpList;
-        }
-        return result;
     }
 }

@@ -20,7 +20,7 @@ public class NumericSULMapperWithSGA extends PostComposedSignalDiscretizer {
                                 List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,
                                 SignalMapper sigMap, List<TemporalLogic.STLCost> formulaList, boolean partial){
         NumericSULMapper baseMapper = new NumericSULMapper(inputMapper, largestOutputs, outputMapper, sigMap);
-        List<String> abstractOutputWords = PostComposedSignalDiscretizer.constructAbstractAPs(baseMapper.getAbstractOutputs(), baseMapper.getLargestOutputs());
+        List<String> abstractOutputWords = AtomicPropositionUtil.constructAbstractAPs(baseMapper.getAbstractOutputs(), baseMapper.getLargestOutputs());
         // SGAMapper expects the discretized sigma alphabet and the abstract gamma alphabet
         Alphabet<String> discretizedSigmaAlphabet = baseMapper.constructAbstractAlphabet();
         Alphabet<String> abstractGammaAlphabet = new GrowingMapAlphabet<>(abstractOutputWords);
