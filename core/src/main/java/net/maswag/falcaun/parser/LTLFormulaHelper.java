@@ -124,10 +124,7 @@ public class LTLFormulaHelper {
     }
 
     /**
-     * Converts a list of STL formulas to LTL formulas.
-     * <p>
-     * This method takes each STL (Signal Temporal Logic) formula, converts it to an LTL string representation,
-     * parses it as an LTL formula, and prepares it with its atomic propositions.
+     * Converts a list of STL formulas to prepared LTL formulas.
      *
      * @param stlFormulas The list of STL formulas to convert
      * @return A list of prepared LTL formulas with atomic propositions set
