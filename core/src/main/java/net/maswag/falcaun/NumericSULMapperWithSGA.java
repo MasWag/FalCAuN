@@ -32,6 +32,12 @@ public class NumericSULMapperWithSGA extends PostComposedSignalDiscretizer {
         super.setPostMapper(sgaMapper);
     }
 
+    public NumericSULMapperWithSGA(List<Map<Character, Double>> inputMapper,
+                                   OutputMapper outputMapper,
+                                   SignalMapper sigMap, List<TemporalLogic.STLCost> formulaList, boolean partial) {
+        this(inputMapper, outputMapper.getLargest(), outputMapper.getOutputMapper(), sigMap, formulaList, partial);
+    }
+
     @Deprecated
     public NumericSULMapperWithSGA(List<Map<Character, Double>> inputMapper,
                                    OutputMapperReader outputMapperReader,
