@@ -17,7 +17,25 @@ import java.util.List;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public class PostComposedSignalDiscretizer implements SignalDiscretizer {
+    /**
+     * The discretizer component of this post-composed signal discretizer.
+     * <p>
+     * Note: These fields are not final to support the protected constructor pattern
+     * used by subclasses like {@link NumericSULMapperWithSGA}, which need to perform
+     * custom initialization before setting these fields via {@link #setDiscretizer(ComponentWiseSignalDiscretizer)}
+     * and {@link #setPostMapper(SULMapper)}. For users of the public constructor, these
+     * fields are effectively immutable as they are set once during construction and
+     * validated as non-null.
+     * </p>
+     */
     private ComponentWiseSignalDiscretizer discretizer;
+    
+    /**
+     * The post-mapper component that is applied to abstract outputs from the discretizer.
+     * <p>
+     * See {@link #discretizer} for why this field is not final.
+     * </p>
+     */
     private SULMapper<String, String, String, String> postMapper;
 
     /**
