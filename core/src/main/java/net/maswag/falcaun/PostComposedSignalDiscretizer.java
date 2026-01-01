@@ -74,6 +74,15 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      * {@inheritDoc}
      */
     @Override
+    public List<Double> mapConcrete(IOSignalPiece<List<Double>> concreteIO) {
+        // Delegate to discretizer
+        return discretizer.mapConcrete(concreteIO);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Alphabet<String> constructAbstractAlphabet() {
         ensureDiscretizerInitialized();
         // Delegate to discretizer

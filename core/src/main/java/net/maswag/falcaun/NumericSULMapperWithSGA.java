@@ -48,8 +48,7 @@ public class NumericSULMapperWithSGA extends PostComposedSignalDiscretizer {
 
     @Override
     public String mapOutput(IOSignalPiece<List<Double>> concreteIO) {
-        String mappedOutput = super.mapOutput(concreteIO);
-        return postOutputMapper.get(mappedOutput);
+        return super.mapOutput(concreteIO);
     }
 
     public String mapAbstractOutput(String s) {

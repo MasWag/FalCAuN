@@ -97,13 +97,13 @@ public class SignalAdapter implements ComponentWiseSignalDiscretizer {
         }
 
         List<Double> concreteOutput = this.mapConcrete(concreteIO);
-        StringBuilder result = new StringBuilder(concreteOutputs.size());
 
         if (concreteOutput.size() != this.concreteOutputs.size()) {
             throw new IllegalArgumentException(
                     "Concrete output size does not match expected size: " + concreteOutput.size() + " != " + concreteOutputs.size()
             );
         }
+        StringBuilder result = new StringBuilder(concreteOutputs.size());
 
         // Process each dimension of the output
         for (int i = 0; i < concreteOutput.size(); i++) {
