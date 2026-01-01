@@ -86,7 +86,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
 
     /**
      * Ensures that the discretizer is initialized.
-     * 
+     *
      * @throws IllegalStateException if discretizer is null
      */
     private void ensureDiscretizerInitialized() {
@@ -97,7 +97,7 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
 
     /**
      * Ensures that both discretizer and postMapper are initialized.
-     * 
+     *
      * @throws IllegalStateException if discretizer or postMapper is null
      */
     private void ensureInitialized() {
