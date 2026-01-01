@@ -9,7 +9,9 @@ import java.util.List;
  * SignalDiscretizer pre-composed with an SULMapper
  *
  * <p>This class allows for the composition of a SignalDiscretizer with another SULMapper.
- * We assume that the SULMapper does not change the input values, i.e., it acts as an identity function.
+ * We assume that the SULMapper does not change the input values (i.e., it acts as an identity function on inputs),
+ * a property that is enforced in {@link #mapInput(String)}. The {@code preMapper} may, however, derive additional
+ * signals in the outputs, which are then discretized by the underlying {@link ComponentWiseSignalDiscretizer}.
  * </p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
