@@ -2,6 +2,7 @@ package net.maswag.falcaun;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.GrowingMapAlphabet;
@@ -55,7 +56,8 @@ public class NumericSULMapperWithSGA extends PostComposedSignalDiscretizer {
         return postOutputMapper.get(s);
     }
 
-    public Map<String, String> getOutputMapper(){
-        return this.postOutputMapper;
+    @Override
+    public Optional<Map<String, String>> getPostOutputMapper() {
+        return Optional.of(postOutputMapper);
     }
 }

@@ -6,6 +6,8 @@ import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface SignalDiscretizer extends SULMapper<String, String, List<Double>, IOSignalPiece<List<Double>>> {
@@ -63,6 +65,15 @@ public interface SignalDiscretizer extends SULMapper<String, String, List<Double
         }
 
         return concreteIO.getOutputSignal();
+    }
+
+    /**
+     * Provides an optional mapping to transform abstract output strings.
+     *
+     * @return An {@link Optional} containing the post-output mapper if available, otherwise {@link Optional#empty()}.
+     */
+    default Optional<Map<String, String>> getPostOutputMapper() {
+        return Optional.empty();
     }
 
     /**
