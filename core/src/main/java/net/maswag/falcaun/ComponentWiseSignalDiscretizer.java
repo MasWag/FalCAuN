@@ -9,7 +9,7 @@ public interface ComponentWiseSignalDiscretizer extends SignalDiscretizer {
     List<Character> getLargestOutputs();
 
     /**
-     * @return The list of possible concrete output values for each component
+     * @return The list of possible abstract output characters for each component
      */
     List<List<Character>> getAbstractOutputs();
 }
