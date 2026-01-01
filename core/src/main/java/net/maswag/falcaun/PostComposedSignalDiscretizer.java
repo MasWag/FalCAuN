@@ -122,8 +122,12 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      * </p>
      *
      * @param discretizer The ComponentWiseSignalDiscretizer to use for mapping.
+     * @throws IllegalArgumentException if discretizer is null
      */
     protected void setDiscretizer(ComponentWiseSignalDiscretizer discretizer) {
+        if (discretizer == null) {
+            throw new IllegalArgumentException("Discretizer cannot be null");
+        }
         this.discretizer = discretizer;
     }
 
@@ -136,8 +140,12 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
      * </p>
      *
      * @param postMapper The SULMapper to post-compose with the discretizer.
+     * @throws IllegalArgumentException if postMapper is null
      */
     protected void setPostMapper(SULMapper<String, String, String, String> postMapper) {
+        if (postMapper == null) {
+            throw new IllegalArgumentException("PostMapper cannot be null");
+        }
         this.postMapper = postMapper;
     }
 }
