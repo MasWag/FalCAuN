@@ -29,10 +29,8 @@ public class NumericSULMapper extends PreComposedSignalDiscretizer{
     public NumericSULMapper(List<Map<Character, Double>> inputMapper,
                              List<Character> largestOutputs, List<Map<Character, Double>> outputMapper,
                              SignalMapper sigMap) {
-        super(new SignalAdapter(InputMapper.fromMappings(inputMapper), new OutputMapper(outputMapper, largestOutputs)),
-              new SignalDeriver(sigMap));
+        super(new SignalAdapter(InputMapper.fromMappings(inputMapper), new OutputMapper(outputMapper, largestOutputs)), new SignalDeriver(sigMap));
     }
-
     /**
      * <p>Constructor for NumericSULMapper.</p>
      *
