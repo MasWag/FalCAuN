@@ -21,10 +21,16 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
     private SULMapper<String, String, String, String> postMapper;
 
     /**
-     * Default constructor for PostComposedSignalDiscretizer.
+     * Protected default constructor for PostComposedSignalDiscretizer.
      * <p>
-     * This constructor initializes the discretizer and postMapper to null.
-     * When using this constructor, ensure to set the discretizer and postMapper before use.
+     * This constructor initializes the discretizer and postMapper to {@code null}.
+     * It is intended for use by subclasses (such as {@link NumericSULMapperWithSGA})
+     * that need to perform custom initialization before setting these fields.
+     * Subclasses must call {@link #setDiscretizer(ComponentWiseSignalDiscretizer)} and
+     * {@link #setPostMapper(SULMapper)} to initialize the fields before using any methods
+     * that depend on them. External users should use
+     * {@link #PostComposedSignalDiscretizer(ComponentWiseSignalDiscretizer, SULMapper)}
+     * instead.
      * </p>
      */
     protected PostComposedSignalDiscretizer() {
@@ -95,10 +101,30 @@ public class PostComposedSignalDiscretizer implements SignalDiscretizer {
         return discretizer.constructConcreteAlphabet();
     }
 
+    /**
+     * Sets the discretizer for this PostComposedSignalDiscretizer.
+     * <p>
+     * This method is protected and intended for use by subclasses that use the
+     * protected default constructor. Subclasses must call this method to initialize
+     * the discretizer before using any methods that depend on it.
+     * </p>
+     *
+     * @param discretizer The ComponentWiseSignalDiscretizer to use for mapping.
+     */
     protected void setDiscretizer(ComponentWiseSignalDiscretizer discretizer) {
         this.discretizer = discretizer;
     }
 
+    /**
+     * Sets the postMapper for this PostComposedSignalDiscretizer.
+     * <p>
+     * This method is protected and intended for use by subclasses that use the
+     * protected default constructor. Subclasses must call this method to initialize
+     * the postMapper before using any methods that depend on it.
+     * </p>
+     *
+     * @param postMapper The SULMapper to post-compose with the discretizer.
+     */
     protected void setPostMapper(SULMapper<String, String, String, String> postMapper) {
         this.postMapper = postMapper;
     }
