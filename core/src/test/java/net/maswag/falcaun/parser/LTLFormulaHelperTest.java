@@ -86,7 +86,9 @@ class LTLFormulaHelperTest {
         
         // Verify the string representation doesn't contain quotes
         String ltlString = ltlFormula.toString();
+        String expected = new LTLFactory().parse(stlFormula.toLTLString().replace("\"", "")).toString();
         assertNotNull(ltlString);
+        assertEquals(expected, ltlString);
     }
 
     @Test
@@ -190,11 +192,17 @@ class LTLFormulaHelperTest {
 
         assertNotNull(ltlFormulas);
         assertEquals(3, ltlFormulas.size());
+
+        LTLFactory ltlFactory = new LTLFactory();
+        List<String> expectedOrder = stlFormulas.stream()
+                .map(stl -> ltlFactory.parse(stl.toLTLString().replace("\"", "")).toString())
+                .toList();
         
-        // Verify order is preserved by checking that all formulas are initialized
         for (int i = 0; i < ltlFormulas.size(); i++) {
-            assertNotNull(ltlFormulas.get(i));
-            assertTrue(ltlFormulas.get(i).isInitialized(), 
+            LTLFormula ltlFormula = ltlFormulas.get(i);
+            assertNotNull(ltlFormula);
+            assertEquals(expectedOrder.get(i), ltlFormula.toString());
+            assertTrue(ltlFormula.isInitialized(),
                     "Formula at index " + i + " should be initialized");
         }
     }
