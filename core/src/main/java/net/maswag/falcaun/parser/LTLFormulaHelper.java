@@ -128,8 +128,12 @@ public class LTLFormulaHelper {
      *
      * @param stlFormulas The list of STL formulas to convert
      * @return A list of prepared LTL formulas with atomic propositions set
+     * @throws IllegalArgumentException if stlFormulas is null
      */
     public static List<TemporalLogic.LTLFormula> convertToLTLFormulas(List<TemporalLogic.STLCost> stlFormulas) {
+        if (stlFormulas == null) {
+            throw new IllegalArgumentException("stlFormulas cannot be null");
+        }
         LTLFactory factory = new LTLFactory();
         return stlFormulas.stream()
                 .map(formula -> LTLFormulaHelper.prepareFormula(factory.parse(formula.toLTLString().replaceAll("\"", ""))))

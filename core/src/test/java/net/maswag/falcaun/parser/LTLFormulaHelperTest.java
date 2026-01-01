@@ -206,4 +206,15 @@ class LTLFormulaHelperTest {
                     "Formula at index " + i + " should be initialized");
         }
     }
+
+    @Test
+    void testConvertToLTLFormulasWithNullInput() {
+        // Test that null input throws IllegalArgumentException
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> LTLFormulaHelper.convertToLTLFormulas(null)
+        );
+        
+        assertEquals("stlFormulas cannot be null", exception.getMessage());
+    }
 }
