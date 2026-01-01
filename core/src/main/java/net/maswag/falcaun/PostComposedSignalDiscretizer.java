@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * SignalDiscretizer post-composed with an SULMapper
+ * SignalDiscretizer post-composed with an SULMapper.
  *
- * <p>This class allows for the composition of a SignalDiscretizer with another SULMapper.
- * We assume that the SULMapper does not change the input values, i.e., it acts as an identity function.
- * </p>
+ * <p>This class allows for the composition of a {@link SignalDiscretizer} with another
+ * {@link SULMapper}. The {@code discretizer} handles the mapping between concrete signals
+ * and abstract input/output strings. The {@code postMapper} is applied only to the abstract
+ * output strings produced by the discretizer; it does not affect how concrete inputs are
+ * mapped to abstract inputs.</p>
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
