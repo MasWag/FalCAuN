@@ -5,15 +5,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import de.learnlib.sul.SULMapper;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.GrowingMapAlphabet;
-import net.automatalib.word.Word;
 
 
 /**
@@ -26,7 +22,7 @@ import net.automatalib.word.Word;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class SignalAdapter implements SULMapper<String, String, List<Double>, IOSignalPiece<List<Double>>> {
+public class SignalAdapter implements ComponentWiseSignalDiscretizer {
     private final Map<String, List<Double>> inputMappings;
     @Getter
     private final List<Character> largestOutputs;
@@ -88,23 +84,11 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
         }
     }
 
-    /**
-     * Maps an abstract input string to a concrete list of double values.
-     *
-     * @param s The abstract input string to map.
-     * @return The concrete list of double values corresponding to the input string.
-     */
     @Override
     public List<Double> mapInput(String s) {
         return (s == null) ? null : inputMappings.get(s);
     }
 
-    /**
-     * Maps a concrete IOSignalPiece to an abstract output string.
-     *
-     * @param concreteIO The concrete IOSignalPiece to map.
-     * @return The abstract output string corresponding to the concrete output.
-     */
     @Override
     public String mapOutput(IOSignalPiece<List<Double>> concreteIO) {
         // Handle empty output mapper case
@@ -113,13 +97,13 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
         }
 
         List<Double> concreteOutput = this.mapConcrete(concreteIO);
-        StringBuilder result = new StringBuilder(concreteOutputs.size());
 
         if (concreteOutput.size() != this.concreteOutputs.size()) {
             throw new IllegalArgumentException(
                     "Concrete output size does not match expected size: " + concreteOutput.size() + " != " + concreteOutputs.size()
             );
         }
+        StringBuilder result = new StringBuilder(concreteOutputs.size());
 
         // Process each dimension of the output
         for (int i = 0; i < concreteOutput.size(); i++) {
@@ -137,59 +121,13 @@ public class SignalAdapter implements SULMapper<String, String, List<Double>, IO
         return result.toString();
     }
 
-    /**
-     * Maps an abstract input word to a concrete word.
-     *
-     * @param abstractInput The abstract input word to map.
-     * @return The concrete word corresponding to the abstract input word.
-     */
-    public Word<List<Double>> mapInput(@NonNull Word<String> abstractInput) {
-        return Word.fromList(abstractInput.stream().map(this::mapInput).collect(Collectors.toList()));
-    }
-
-    /**
-     * Maps a list of abstract input words to a list of concrete words.
-     *
-     * @param abstractInputs The list of abstract input words to map.
-     * @return The list of concrete words corresponding to the abstract input words.
-     */
-    List<Word<List<Double>>> mapInputs(List<Word<String>> abstractInputs) {
-        return abstractInputs.stream().map(
-                word -> (word == null) ? null : Word.fromList(word.stream().map(this::mapInput).collect(Collectors.toList()))
-        ).collect(Collectors.toList());
-    }
-
-    /**
-     * Maps a concrete IOSignalPiece to a list of concrete output values.
-     *
-     * @param concreteIO The concrete IOSignalPiece to map.
-     * @return The list of concrete output values.
-     */
-    public List<Double> mapConcrete(IOSignalPiece<List<Double>> concreteIO) {
-        if (concreteIO == null || concreteIO.getOutputSignal() == null) {
-            throw new IllegalArgumentException(
-                    "Concrete IO signal piece or its output signal cannot be null."
-            );
-        }
-
-        return concreteIO.getOutputSignal();
-    }
-
-    /**
-     * Constructs an abstract alphabet from the input mappings.
-     *
-     * @return The abstract alphabet.
-     */
-    Alphabet<String> constructAbstractAlphabet() {
+    @Override
+    public Alphabet<String> constructAbstractAlphabet() {
         return new GrowingMapAlphabet<>(this.inputMappings.keySet());
     }
 
-    /**
-     * Constructs a concrete alphabet from the input mappings.
-     *
-     * @return The concrete alphabet.
-     */
-    Alphabet<List<Double>> constructConcreteAlphabet() {
+    @Override
+    public Alphabet<List<Double>> constructConcreteAlphabet() {
         return new GrowingMapAlphabet<>(this.inputMappings.values());
     }
 }

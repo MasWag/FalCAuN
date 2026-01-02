@@ -277,7 +277,7 @@ public class BlackBoxVerifier<I> {
         cexOutput = new ArrayList<>();
         boolean isVerified = true;
         for (TemporalLogic<I> stlProperty : properties.getSTLProperties()) {
-            String ltlProperty = stlProperty.toLTLString();
+            String ltlProperty = properties.toLTLString(stlProperty);
 
             final MealyMachine<?, String, ?, String> cexMealyCandidate =
                     modelChecker.findCounterExample(learnedMealy, this.inputAlphabet, ltlProperty);

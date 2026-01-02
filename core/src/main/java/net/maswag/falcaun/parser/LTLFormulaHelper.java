@@ -2,6 +2,9 @@ package net.maswag.falcaun.parser;
 
 import net.maswag.falcaun.LTLAPs;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Helper class for LTL formula operations.
  */
@@ -119,5 +122,21 @@ public class LTLFormulaHelper {
             collectAtomicPropositionsRecursive(subFml, aps);
         }
     }
-    
+
+    /**
+     * Converts a list of STL formulas to prepared LTL formulas.
+     *
+     * @param stlFormulas The list of STL formulas to convert
+     * @return A list of prepared LTL formulas with atomic propositions set
+     * @throws IllegalArgumentException if stlFormulas is null
+     */
+    public static List<TemporalLogic.LTLFormula> convertToLTLFormulas(List<TemporalLogic.STLCost> stlFormulas) {
+        if (stlFormulas == null) {
+            throw new IllegalArgumentException("stlFormulas cannot be null");
+        }
+        LTLFactory factory = new LTLFactory();
+        return stlFormulas.stream()
+                .map(formula -> LTLFormulaHelper.prepareFormula(factory.parse(formula.toLTLString().replaceAll("\"", ""))))
+                .collect(Collectors.toList());
+    }
 }

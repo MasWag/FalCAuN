@@ -9,7 +9,8 @@
 
 (import '(net.maswag.falcaun
           AdaptiveSTLList
-          BlackBoxVerifier
+          BlackBoxVerifier))
+(import '(net.maswag.falcaun.parser
           LTLFactory))
 
 ;; Define the target Mealy machine

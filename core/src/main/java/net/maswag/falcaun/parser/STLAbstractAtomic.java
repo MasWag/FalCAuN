@@ -1,10 +1,10 @@
 package net.maswag.falcaun.parser;
 
 import static java.lang.Math.abs;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,13 +12,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import net.maswag.falcaun.annotation.Sorted;
-
 import org.apache.commons.math3.util.Pair;
 
 import com.google.common.collect.Sets;
 
 import net.automatalib.word.Word;
+import net.maswag.falcaun.annotation.Sorted;
 
 /**
  * <p>STLAtomic class.</p>
@@ -153,6 +152,22 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
                 .collect(Collectors.joining(" || "));
     }
 
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        if (this.satisfyingAtomicPropositions == null) {
+            constructSatisfyingAtomicPropositions();
+        }
+        if (this instanceof STLInputAtomic) {
+            return this.satisfyingAtomicPropositions.stream().map(
+                s -> "( input == \"" + s  + "\" )")
+                .collect(Collectors.joining(" || "));
+        } else {
+            Set<String> mappedSatisfyingAtomicPropositions = satisfyingAtomicPropositions.stream().map(ap -> mapper.get(ap)).collect(Collectors.toCollection(LinkedHashSet::new));
+            return mappedSatisfyingAtomicPropositions.stream().map(
+                s -> "( output == \"" + s  + "\" )")
+                .collect(Collectors.joining(" || "));
+        }
+    }
     @Override
     public String toOwlString() {
         constructSatisfyingAtomicPropositions();
