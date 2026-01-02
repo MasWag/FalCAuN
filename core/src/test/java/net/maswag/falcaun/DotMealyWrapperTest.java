@@ -30,7 +30,7 @@ import net.automatalib.util.automaton.builder.MealyBuilder;
  */
 class DotMealyWrapperTest{
     @Test
-    void dot1(){
+    void dot1() throws Exception {
         Alphabet<String> expectedSigma = Alphabets.fromList(Arrays.asList("a", "b", "c"));
         Alphabet<String> expectedGamma = Alphabets.fromList(Arrays.asList("x", "y", "z"));
         Set<String> expectedEdges =
@@ -51,7 +51,7 @@ class DotMealyWrapperTest{
         assertEquals(expectedEdges, actualEdges);
     }
 
-    void dot2(){
+    void dot2() throws Exception {
         Alphabet<String> expectedSigma = Alphabets.fromList(Arrays.asList("0", "1", "2", "3"));
         Alphabet<String> expectedGamma = Alphabets.fromList(Arrays.asList("0", "1", "2", "3"));
         Set<String> expectedEdges = new HashSet<>(
@@ -78,7 +78,7 @@ class DotMealyWrapperTest{
     }
 
     @Test
-    void toMealy1(){
+    void toMealy1() throws Exception {
         Alphabet<String> sigma = Alphabets.fromList(Arrays.asList("a", "b", "c"));
         MealyBuilder<Integer,String, CompactTransition<String>, String, CompactMealy<String, String>> mealyBuilder
             = AutomatonBuilders.newMealy(sigma);
@@ -120,7 +120,7 @@ class DotMealyWrapperTest{
     }
 
     @Test
-    void toMealy2() {
+    void toMealy2() throws Exception {
         Alphabet<String> sigma = Alphabets.fromList(Arrays.asList("0", "1", "2", "3"));
         MealyBuilder<Integer,String, CompactTransition<String>, String, CompactMealy<String, String>> mealyBuilder
             = AutomatonBuilders.newMealy(sigma);

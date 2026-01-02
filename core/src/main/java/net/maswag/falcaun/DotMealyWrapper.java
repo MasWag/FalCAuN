@@ -42,7 +42,7 @@ public class DotMealyWrapper{
     @Getter
     Alphabet<String> gamma;
 
-    public DotMealyWrapper(String fileName) {
+    public DotMealyWrapper(String fileName) throws IOException {
         this.fileName = fileName;
         edges = new HashSet<>();
         readInputSymbols();
@@ -50,7 +50,7 @@ public class DotMealyWrapper{
         readFromDot();
     }
 
-    public void readInputSymbols() {
+    public void readInputSymbols() throws IOException {
         try {
             File file = new File(fileName + ".inputs");
             Reader fileReader;
@@ -70,10 +70,11 @@ public class DotMealyWrapper{
             sigma = Alphabets.fromList(inputSymbols);
         } catch (IOException e) {
             log.error("Failed to read input symbols from {}", fileName, e);
+            throw e;
         }
     }
 
-    public void readOutputSymbols() {
+    public void readOutputSymbols() throws IOException {
         try {
             File file = new File(fileName + ".outputs");
             Reader fileReader;
@@ -93,20 +94,14 @@ public class DotMealyWrapper{
             gamma = Alphabets.fromList(inputSymbols);
         } catch (IOException e) {
             log.error("Failed to read output symbols from {}", fileName, e);
+            throw e;
         }
     }
 
-    public void readFromDot() {
+    public void readFromDot() throws IOException {
         File file = new File(fileName + ".dot");
-        Reader fileReader;
-        try {
-            fileReader = new FileReader(file);
-        } catch (FileNotFoundException e) {
-            log.error("Unable to read DOT file {}", file, e);
-            return;
-        }
         Pattern edgePattern = Pattern.compile("\\s*\"?([^\" ]+)\"?\\s*->\\s*\"?([^\" ]+)\"?\\s*(?:\\[label=\"([^\"]*)\"\\])?");
-        try (BufferedReader reader = new BufferedReader(fileReader)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 Matcher matcher = edgePattern.matcher(line);
@@ -124,7 +119,8 @@ public class DotMealyWrapper{
                 edges.add(edge);
             }
         } catch (IOException e) {
-            log.error("Failed to parse DOT file {}", file, e);
+            log.error("Failed to read or parse DOT file {}", file, e);
+            throw e;
         }
     }
 
