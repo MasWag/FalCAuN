@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,8 +19,6 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedPseudograph;
-import org.jgrapht.nio.EdgeProvider;
-import org.jgrapht.nio.VertexProvider;
 import org.jgrapht.nio.dot.DOTImporter;
 import org.jgrapht.util.SupplierUtil;
 
@@ -109,14 +110,7 @@ public class DotMealyWrapper{
             log.error("Unable to read DOT file {}", file, e);
             return;
         }
-        VertexProvider<String> vertexProvider = (label, attributes) -> label;
-        EdgeProvider<String, LabeledEdge> edgeProvider = (from, to, label, attributes) -> {
-            LabeledEdge edge = new LabeledEdge();
-            edge.setAttrs(attributes);
-            return edge;
-        };
-
-        DOTImporter<String, LabeledEdge> importer = new DOTImporter<>(vertexProvider, edgeProvider);
+        DOTImporter<String, LabeledEdge> importer = buildDotImporterWithFallback();
 
         importer.importGraph(graph, fileReader);
     }
@@ -181,5 +175,49 @@ public class DotMealyWrapper{
 
         assert mealyBuilderWithEdge != null;
         return mealyBuilderWithEdge.withInitial(initialEdge.get(0).getTarget()).create();
+    }
+
+    /**
+     * Build a DOT importer that works across jgrapht-io versions by preferring the
+     * new provider-based constructor when available and falling back to the older
+     * setter-based API otherwise.
+     */
+    @SuppressWarnings("unchecked")
+    private DOTImporter<String, LabeledEdge> buildDotImporterWithFallback() {
+        try {
+            Class<?> vertexProviderClass = Class.forName("org.jgrapht.nio.VertexProvider");
+            Class<?> edgeProviderClass = Class.forName("org.jgrapht.nio.EdgeProvider");
+            Constructor<DOTImporter> ctor =
+                DOTImporter.class.getConstructor(vertexProviderClass, edgeProviderClass);
+
+            Object vertexProvider = Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class<?>[]{vertexProviderClass},
+                (proxy, method, args) -> args != null && args.length > 0 ? args[0] : null);
+            Object edgeProvider = Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class<?>[]{edgeProviderClass},
+                (proxy, method, args) -> {
+                    LabeledEdge edge = new LabeledEdge();
+                    if (args != null && args.length >= 4 && args[3] instanceof Map) {
+                        edge.setAttrs((Map<String, org.jgrapht.nio.Attribute>) args[3]);
+                    }
+                    return edge;
+                });
+
+            return (DOTImporter<String, LabeledEdge>) ctor.newInstance(vertexProvider, edgeProvider);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            // Old API path
+            DOTImporter<String, LabeledEdge> importer = new DOTImporter<>();
+            importer.setVertexFactory(label -> label);
+            importer.setEdgeWithAttributesFactory(m -> {
+                LabeledEdge edge = new LabeledEdge();
+                edge.setAttrs(m);
+                return edge;
+            });
+            return importer;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Failed to instantiate DOTImporter", e);
+        }
     }
 }
