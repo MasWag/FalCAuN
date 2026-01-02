@@ -100,15 +100,8 @@ public class DotMealyWrapper{
 
     public void readFromDot() throws IOException {
         File file = new File(fileName + ".dot");
-        Reader fileReader;
-        try {
-            fileReader = new FileReader(file);
-        } catch (FileNotFoundException e) {
-            log.error("Unable to read DOT file {}", file, e);
-            throw e;
-        }
         Pattern edgePattern = Pattern.compile("\\s*\"?([^\" ]+)\"?\\s*->\\s*\"?([^\" ]+)\"?\\s*(?:\\[label=\"([^\"]*)\"\\])?");
-        try (BufferedReader reader = new BufferedReader(fileReader)) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 Matcher matcher = edgePattern.matcher(line);
@@ -126,7 +119,7 @@ public class DotMealyWrapper{
                 edges.add(edge);
             }
         } catch (IOException e) {
-            log.error("Failed to parse DOT file {}", file, e);
+            log.error("Failed to read or parse DOT file {}", file, e);
             throw e;
         }
     }
