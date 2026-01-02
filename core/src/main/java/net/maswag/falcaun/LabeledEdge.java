@@ -1,36 +1,30 @@
 package net.maswag.falcaun;
 
-import org.jgrapht.graph.*;
-import org.jgrapht.nio.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import java.util.*;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.nio.Attribute;
 
 public class LabeledEdge extends DefaultEdge {
-    private Map<String, Set<Attribute>> attrs;
+    private final Map<String, Attribute> attrs;
 
     public LabeledEdge() {
         attrs = new HashMap<>();
     }
 
     public void setAttrs(Map<String, Attribute> map) {
-        for (String key : map.keySet()){
-            Attribute attr = map.get(key);
-            if (attrs.containsKey(key)) {
-                attrs.get(key).add(attr);
-            } else {
-                Set<Attribute> attrSet = new HashSet<>();
-                attrSet.add(attr);
-                attrs.put(key, attrSet);
-            }
-        }
-        return;
+        attrs.clear();
+        attrs.putAll(map);
     }
 
-    public String getAttr() {
-        return attrs.get("label").toString();
+    public Optional<String> getAttr() {
+        Attribute label = attrs.get("label");
+        return label == null ? Optional.empty() : Optional.of(label.getValue());
     }
 
-    public boolean isAtrrNull() {
+    public boolean isAttrNull() {
         return attrs.isEmpty();
     }
 
@@ -47,6 +41,7 @@ public class LabeledEdge extends DefaultEdge {
     @Override
     public String toString()
     {
-        return "(" + getSource() + " : " + getTarget() + ")" + attrs.get("label");
+        String label = getAttr().orElse("");
+        return "(" + getSource() + " : " + getTarget() + ")" + label;
     }
 }

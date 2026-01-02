@@ -16,6 +16,8 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedPseudograph;
+import org.jgrapht.nio.EdgeProvider;
+import org.jgrapht.nio.VertexProvider;
 import org.jgrapht.nio.dot.DOTImporter;
 import org.jgrapht.util.SupplierUtil;
 
@@ -107,13 +109,14 @@ public class DotMealyWrapper{
             log.error("Unable to read DOT file {}", file, e);
             return;
         }
-        DOTImporter<String, LabeledEdge> importer = new DOTImporter<>();
-        importer.setVertexFactory(label -> label);
-        importer.setEdgeWithAttributesFactory(m -> {
+        VertexProvider<String> vertexProvider = (label, attributes) -> label;
+        EdgeProvider<String, LabeledEdge> edgeProvider = (from, to, label, attributes) -> {
             LabeledEdge edge = new LabeledEdge();
-            edge.setAttrs(m);
+            edge.setAttrs(attributes);
             return edge;
-        });
+        };
+
+        DOTImporter<String, LabeledEdge> importer = new DOTImporter<>(vertexProvider, edgeProvider);
 
         importer.importGraph(graph, fileReader);
     }
@@ -131,7 +134,7 @@ public class DotMealyWrapper{
         List<LabeledEdge> initialEdge = new ArrayList<>();  // edges without label
         Set<LabeledEdge> otherEdges = new HashSet<>();        // edges with label
         edgeSet.forEach(s -> {
-            if (s.isAtrrNull()) { initialEdge.add(s); }
+            if (s.isAttrNull()) { initialEdge.add(s); }
             else { otherEdges.add(s); }
         });
         assert (initialEdge.size() == 1);
@@ -140,12 +143,18 @@ public class DotMealyWrapper{
         Set<String> inputs = new HashSet<>();
         MealyBuilder<Integer,String, CompactTransition<String>, String, CompactMealy<String, String>>.MealyBuilder__4 mealyBuilderWithEdge = null;
         for (LabeledEdge edge: otherEdges) {
-            String attribute = edge.getAttr();
-            //System.out.println(attribute);
-            String[] splited = attribute.split("/");
-            String input = splited[0].substring(1).replace("_", "");
+            String attribute = edge.getAttr().orElse("");
+            if (attribute.isEmpty()) {
+                continue;
+            }
+            String[] splited = attribute.replace("\"", "").split("/", 2);
+            if (splited.length < 2) {
+                log.warn("Unexpected edge label format: {}", attribute);
+                continue;
+            }
+            String input = splited[0].replace("_", "");
             inputs.add(input);
-            String output = splited[1].substring(0, splited[1].length()-1).replace("_", "");
+            String output = splited[1].replace("_", "");
             if (mapper.containsKey(output)) {
                 output = mapper.get(output);
                 outputs.add(mapper.get(output));
