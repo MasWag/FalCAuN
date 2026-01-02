@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.AttributeType;
 
 public class LabeledEdge extends DefaultEdge {
     private final Map<String, Attribute> attrs;
@@ -41,7 +42,25 @@ public class LabeledEdge extends DefaultEdge {
     @Override
     public String toString()
     {
-        String label = getAttr().orElse("");
-        return "(" + getSource() + " : " + getTarget() + ")" + label;
+        return getAttr()
+            .map(value -> "(" + getSource() + " : " + getTarget() + ")" + "[" + value + "]")
+            .orElse("(" + getSource() + " : " + getTarget() + ")" + "null");
+    }
+
+    /**
+     * Convenience factory for string attributes.
+     */
+    public static Attribute stringAttribute(String value) {
+        return new Attribute() {
+            @Override
+            public String getValue() {
+                return value;
+            }
+
+            @Override
+            public AttributeType getType() {
+                return AttributeType.STRING;
+            }
+        };
     }
 }
