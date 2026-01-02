@@ -1,13 +1,17 @@
 package net.maswag.falcaun;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
@@ -26,7 +30,7 @@ import net.automatalib.util.automaton.builder.MealyBuilder;
  */
 class DotMealyWrapperTest{
     @Test
-    void dot1(){
+    void dot1() throws Exception {
         Alphabet<String> expectedSigma = Alphabets.fromList(Arrays.asList("a", "b", "c"));
         Alphabet<String> expectedGamma = Alphabets.fromList(Arrays.asList("x", "y", "z"));
         Set<String> expectedEdges =
@@ -34,7 +38,7 @@ class DotMealyWrapperTest{
 
         String path = new File(".").getAbsoluteFile().getParent() + "/src/test/java/net/maswag/falcaun/dotTestFiles/dotTest1";
         DotMealyWrapper wrapper = new DotMealyWrapper(path);
-        Set<LabeledEdge> edgeSet = wrapper.graph.edgeSet();
+        Set<LabeledEdge> edgeSet = wrapper.getEdges();
         Alphabet<String> actualSigma = wrapper.sigma;
         Alphabet<String> actualGamma = wrapper.gamma;
         Set<String> actualEdges = new HashSet<>();
@@ -47,7 +51,7 @@ class DotMealyWrapperTest{
         assertEquals(expectedEdges, actualEdges);
     }
 
-    void dot2(){
+    void dot2() throws Exception {
         Alphabet<String> expectedSigma = Alphabets.fromList(Arrays.asList("0", "1", "2", "3"));
         Alphabet<String> expectedGamma = Alphabets.fromList(Arrays.asList("0", "1", "2", "3"));
         Set<String> expectedEdges = new HashSet<>(
@@ -60,7 +64,7 @@ class DotMealyWrapperTest{
 
         String path = new File(".").getAbsoluteFile().getParent() + "/src/test/java/net/maswag/falcaun/dotTestFiles/dotTest2";
         DotMealyWrapper wrapper = new DotMealyWrapper(path);
-        Set<LabeledEdge> edgeSet = wrapper.graph.edgeSet();
+        Set<LabeledEdge> edgeSet = wrapper.getEdges();
         Alphabet<String> actualSigma = wrapper.sigma;
         Alphabet<String> actualGamma = wrapper.gamma;
         Set<String> actualEdges = new HashSet<>();
@@ -74,7 +78,7 @@ class DotMealyWrapperTest{
     }
 
     @Test
-    void toMealy1(){
+    void toMealy1() throws Exception {
         Alphabet<String> sigma = Alphabets.fromList(Arrays.asList("a", "b", "c"));
         MealyBuilder<Integer,String, CompactTransition<String>, String, CompactMealy<String, String>> mealyBuilder
             = AutomatonBuilders.newMealy(sigma);
@@ -116,7 +120,7 @@ class DotMealyWrapperTest{
     }
 
     @Test
-    void toMealy2() {
+    void toMealy2() throws Exception {
         Alphabet<String> sigma = Alphabets.fromList(Arrays.asList("0", "1", "2", "3"));
         MealyBuilder<Integer,String, CompactTransition<String>, String, CompactMealy<String, String>> mealyBuilder
             = AutomatonBuilders.newMealy(sigma);
@@ -165,6 +169,34 @@ class DotMealyWrapperTest{
                     }
                 }
             }
+        }
+    }
+
+    @Test
+    void parsesWhiteBoxMealyDotFiles() throws Exception {
+        String baseDir = new File("..").getAbsoluteFile().getCanonicalPath() + "/example/emsoft2025/WhiteBoxMealy/dotfiles/";
+        List<String> names = Arrays.asList("m106", "m131", "m135", "m217");
+
+        Pattern edgeLine = Pattern.compile("->");
+
+        for (String name : names) {
+            String prefix = baseDir + name;
+            DotMealyWrapper wrapper = new DotMealyWrapper(prefix);
+
+            long expectedEdges = 0;
+            try (BufferedReader reader = new BufferedReader(new FileReader(prefix + ".dot"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (edgeLine.matcher(line).find()) {
+                        expectedEdges++;
+                    }
+                }
+            }
+
+            Set<LabeledEdge> parsed = wrapper.getEdges();
+            assertEquals(expectedEdges, parsed.size(), "edge count mismatch for " + name);
+            long unlabeled = parsed.stream().filter(LabeledEdge::isAttrNull).count();
+            assertEquals(1, unlabeled, "should contain exactly one start edge for " + name);
         }
     }
 }
