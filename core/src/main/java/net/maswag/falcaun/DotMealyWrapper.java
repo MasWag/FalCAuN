@@ -17,10 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DirectedPseudograph;
-import org.jgrapht.util.SupplierUtil;
-
 import lombok.Getter;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.Alphabets;
@@ -40,7 +36,7 @@ import net.automatalib.util.automaton.builder.MealyBuilder;
 @Slf4j
 public class DotMealyWrapper{
     String fileName;
-    Graph<String, LabeledEdge> graph;
+    Set<LabeledEdge> edges;
     @Getter
     Alphabet<String> sigma;
     @Getter
@@ -48,7 +44,7 @@ public class DotMealyWrapper{
 
     public DotMealyWrapper(String fileName) {
         this.fileName = fileName;
-        graph = new DirectedPseudograph<>(SupplierUtil.createStringSupplier(), SupplierUtil.createSupplier(LabeledEdge.class), false);
+        edges = new HashSet<>();
         readInputSymbols();
         readOutputSymbols();
         readFromDot();
@@ -121,15 +117,11 @@ public class DotMealyWrapper{
                 String target = matcher.group(2);
                 String label = matcher.group(3);
 
-                graph.addVertex(source);
-                graph.addVertex(target);
-                LabeledEdge edge = graph.addEdge(source, target);
-                if (edge == null) {
-                    continue;
-                }
+                LabeledEdge edge = new LabeledEdge(source, target);
                 if (label != null) {
-                    edge.setAttrs(Collections.singletonMap("label", LabeledEdge.stringAttribute(label)));
+                    edge.setLabel(label);
                 }
+                edges.add(edge);
             }
         } catch (IOException e) {
             log.error("Failed to parse DOT file {}", file, e);
@@ -144,11 +136,9 @@ public class DotMealyWrapper{
         MealyBuilder<Integer,String, CompactTransition<String>, String, CompactMealy<String, String>> mealyBuilder
             = AutomatonBuilders.newMealy(sigma);
         
-        Set<LabeledEdge> edgeSet = graph.edgeSet();
-
         List<LabeledEdge> initialEdge = new ArrayList<>();  // edges without label
         Set<LabeledEdge> otherEdges = new HashSet<>();        // edges with label
-        edgeSet.forEach(s -> {
+        edges.forEach(s -> {
             if (s.isAttrNull()) { initialEdge.add(s); }
             else { otherEdges.add(s); }
         });
@@ -196,5 +186,9 @@ public class DotMealyWrapper{
 
         assert mealyBuilderWithEdge != null;
         return mealyBuilderWithEdge.withInitial(initialEdge.get(0).getTarget()).create();
+    }
+
+    public Set<LabeledEdge> getEdges() {
+        return Collections.unmodifiableSet(edges);
     }
 }

@@ -1,42 +1,36 @@
 package net.maswag.falcaun;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.nio.Attribute;
-import org.jgrapht.nio.AttributeType;
+public class LabeledEdge {
+    private final String source;
+    private final String target;
+    private String label;
 
-public class LabeledEdge extends DefaultEdge {
-    private final Map<String, Attribute> attrs;
-
-    public LabeledEdge() {
-        attrs = new HashMap<>();
+    public LabeledEdge(String source, String target) {
+        this.source = source;
+        this.target = target;
     }
 
-    public void setAttrs(Map<String, Attribute> map) {
-        attrs.clear();
-        attrs.putAll(map);
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Optional<String> getAttr() {
-        Attribute label = attrs.get("label");
-        return label == null ? Optional.empty() : Optional.of(label.getValue());
+        return Optional.ofNullable(label);
     }
 
     public boolean isAttrNull() {
-        return attrs.isEmpty();
+        return label == null;
     }
 
-    @Override
     public String getSource() {
-        return super.getSource().toString();
+        return source;
     }
 
-    @Override
     public String getTarget() {
-        return super.getTarget().toString();
+        return target;
     }
 
     @Override
@@ -47,20 +41,18 @@ public class LabeledEdge extends DefaultEdge {
             .orElse("(" + getSource() + " : " + getTarget() + ")" + "null");
     }
 
-    /**
-     * Convenience factory for string attributes.
-     */
-    public static Attribute stringAttribute(String value) {
-        return new Attribute() {
-            @Override
-            public String getValue() {
-                return value;
-            }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+        if (!(o instanceof LabeledEdge)) { return false; }
+        LabeledEdge that = (LabeledEdge) o;
+        return Objects.equals(source, that.source)
+            && Objects.equals(target, that.target)
+            && Objects.equals(label, that.label);
+    }
 
-            @Override
-            public AttributeType getType() {
-                return AttributeType.STRING;
-            }
-        };
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, target, label);
     }
 }
