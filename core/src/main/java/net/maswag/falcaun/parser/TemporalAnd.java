@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import net.maswag.falcaun.IOSignal;
 import net.maswag.falcaun.LTLAPs;
 import net.maswag.falcaun.LTLFormulaBase;
-
-import java.util.stream.Collectors;
 
 /**
  * <p>The class representing the AND operator of temporal logic.</p>
@@ -95,6 +96,16 @@ public class TemporalAnd<I> extends AbstractTemporalLogic<I> {
             return makeAbstractStringWithAtomicStrings();
         } else {
             return this.subFormulas.stream().map(TemporalLogic::toAbstractString).map(
+                    s -> "( " + s + " )").collect(Collectors.joining(" && "));
+        }
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        if (nonTemporal && this.iOType != IOType.BOTH) {
+            return makeAbstractStringWithAtomicStrings(Optional.of(mapper));
+        } else {
+            return this.subFormulas.stream().map(fml -> fml.toAbstractLTLString(mapper)).map(
                     s -> "( " + s + " )").collect(Collectors.joining(" && "));
         }
     }

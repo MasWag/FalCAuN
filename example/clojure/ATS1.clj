@@ -28,7 +28,8 @@
           InputMapperReader
           NumericSULMapper
           NumericSULVerifier
-          OutputMapperReader
+          OutputMapperReader))
+(import '(net.maswag.falcaun.simulink
           SimulinkSUL))
 
 (load-file "common.clj")

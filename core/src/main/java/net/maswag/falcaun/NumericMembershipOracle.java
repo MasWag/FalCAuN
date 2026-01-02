@@ -21,7 +21,7 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
     private static final Logger LOGGER = LoggerFactory.getLogger(NumericMembershipOracle.class);
 
     protected final NumericSUL sul;
-    protected final NumericSULMapper mapper;
+    protected final SignalDiscretizer mapper;
     IncrementalMealyTreeBuilder<String, String> cache;
 
     IncrementalMealyTreeBuilder<String, String> getCache() {
@@ -32,7 +32,7 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
         this.cache = cache;
     }
 
-    public NumericMembershipOracle(NumericSUL sul, NumericSULMapper mapper) {
+    public NumericMembershipOracle(NumericSUL sul, SignalDiscretizer mapper) {
         this.sul = sul;
         this.mapper = mapper;
         this.cache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());

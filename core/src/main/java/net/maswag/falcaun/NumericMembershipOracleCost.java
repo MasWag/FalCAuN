@@ -28,7 +28,7 @@ class NumericMembershipOracleCost extends NumericMembershipOracle implements Eva
     @Getter
     private int evaluateCount = 0;
 
-    NumericMembershipOracleCost(NumericSUL sul, NumericSULMapper mapper, Function<IOSignal<List<Double>>, Double> costFunc) {
+    NumericMembershipOracleCost(NumericSUL sul, SignalDiscretizer mapper, Function<IOSignal<List<Double>>, Double> costFunc) {
         super(sul, mapper);
         this.costFunc = costFunc;
         this.costCache = new IncrementalMealyTreeBuilder<>(mapper.constructAbstractAlphabet());

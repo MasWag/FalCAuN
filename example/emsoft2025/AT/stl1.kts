@@ -12,6 +12,8 @@ import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.simulink.SimulinkSUL
 import org.slf4j.LoggerFactory
 import kotlin.streams.toList
 
@@ -65,8 +67,10 @@ if (args[0] == "original"){
         NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
 } else if (args[0] == "abstract"){
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, false)
+    properties.setMapper((mapper as NumericSULMapperWithSGA).getPostOutputMapper().get())
 } else if (args[0] == "partial") {
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, true)
+    properties.setMapper((mapper as NumericSULMapperWithSGA).getPostOutputMapper().get())
 }
 
 // Constants for the GA-based equivalence testing

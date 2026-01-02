@@ -27,8 +27,10 @@
           InputMapperReader
           NumericSULMapper
           NumericSULVerifier
-          OutputMapperReader
-          SimulinkSUL
+          OutputMapperReader))
+(import '(net.maswag.falcaun.simulink
+          SimulinkSUL))
+(import '(net.maswag.falcaun.parser
           STLFactory))
 
 (load-file "common.clj")
@@ -101,4 +103,3 @@
 ;; Show the results
 (print-results verifier result)
 (print-stats verifier)
-

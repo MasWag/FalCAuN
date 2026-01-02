@@ -1,12 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; NAME
-;;   simglucose3.clj
+;;   simglucose_rl1.clj
 ;; DESCRIPTION
-;;   Verify STL properties on the simglucose Python environment (case 3)
+;;   Verify STL properties on the PPO-controlled simglucose Python environment via FalCAuN
 ;; AUTHOR
 ;;   Masaki Waga
 ;; HISTORY
-;;   2025/08/10: Initial Clojure port
+;;   2025/10/29: PPO-based variant added
 ;; COPYRIGHT
 ;;   Copyright (c) 2025 Masaki Waga
 ;;   Released under the MIT license
@@ -15,13 +15,12 @@
 ;; USAGE
 ;;   JEP_JAVA_LIBRARY_PATH="/path/to/site-packages/jep" \
 ;;   PYTHONEXECUTABLE="/path/to/python3.10" \
-;;   lein exec -p simglucose3.clj
+;;   lein exec -p simglucose_rl1.clj
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import '(java.util Random))
 (import '(net.maswag.falcaun
-          AdaptiveSTLList))
-(import '(net.maswag.falcaun.parser
+          AdaptiveSTLList
           STLFactory))
 
 (load-file "common.clj")
@@ -30,30 +29,30 @@
 ;; Reduce verbose logs
 (suppress-logs)
 
-;; Define input and output mappers
+;; Define input and output mappers (match simglucose_rl.py return shape)
 (def input-mapper (make-default-input-mapper))
 
-;; Output mapping: [bgValues, insulinValues, bgValues, ignore, ignore, ignore]
+;; Output: [last_bg, sum_insulin, min_bg, max_bg, min_delta_bg, max_delta_bg]
 (def output-mapper-reader
-  (let [ignore-values   [nil]
-        bg-values       [55.0 180.0 240.0]
-        insulin-values  [0.5]]
-    (OutputMapperReader. [bg-values insulin-values bg-values ignore-values ignore-values ignore-values])))
+  (let [bg-values       [90.0 nil]
+        ignore-values   [nil]
+        delta-bg-values [-5.0 3.0 nil]]
+    (OutputMapperReader. [ignore-values ignore-values ignore-values bg-values delta-bg-values delta-bg-values])))
 
 (def mapper (make-mapper input-mapper output-mapper-reader))
-(def alpha 6)
+
+;; Alias min-dbg and max-dbg for this specific case
+(def min-dbg min-delta-bg)
+(def max-dbg max-delta-bg)
 
 ;; Define STL properties
 (def stl-list
   (parse-stl-list
-   [;; BG does not go below 55
-    (format "[] (%s > 55.0)" min-bg)
-    ;; Does not exceed the upper 10% for more than 30 minutes
-    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s > 180.0 -> X (%s < 180.0))" bg min-bg)
-    ;; Does not exceed the upper 10% for more than 30 minutes after insulin administration
-    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s > 0.5 -> X (%s < 180.0))" insulin min-bg)
-    ;; Hyperglycemia does not last longer than 180 minutes
-    (format "(<> (input(0) == 50.0 && X (input(0) == 50.0))) R ! []_[0,%d] (%s > 240.0)" alpha min-bg)]
+   [;; If BG is not low, insulin administration accompanies the diet
+    ;; We use || instead of -> because specification strengthening does not support -> yet
+    (format "G(%s < 90.0 || %s != 50 || %s > 0.5)" max-bg meal-size insulin)
+    ;; The change in BG is between -5 and 3 with weak-release over two steps of input>0
+    (format "((input(0) > 0.0 && X (input(0) > 0.0))) R (%s > -5.0 && %s < 3.0)" min-dbg max-dbg)]
    input-mapper
    output-mapper-reader))
 
@@ -67,7 +66,7 @@
 (def timeout-minutes 40)
 
 ;; Build Python SUL and verifier
-(def sul (make-simglucose-sul))
+(def sul (make-simglucose-ppo-sul))
 (def verifier (make-verifier sul signal-step properties mapper default-signal-length
                             max-test population-size crossover-prob mutation-prob timeout-minutes))
 

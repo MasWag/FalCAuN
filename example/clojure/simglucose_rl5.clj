@@ -1,12 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; NAME
-;;   simglucose5.clj
+;;   simglucose_rl5.clj
 ;; DESCRIPTION
-;;   Verify STL properties on the simglucose Python environment (case 5)
+;;   Verify STL properties on the PPO-controlled simglucose Python environment (case 5)
 ;; AUTHOR
 ;;   Masaki Waga
 ;; HISTORY
-;;   2025/08/16: Initial implementation
+;;   2025/10/29: PPO-based variant added
 ;; COPYRIGHT
 ;;   Copyright (c) 2025 Masaki Waga
 ;;   Released under the MIT license
@@ -15,7 +15,7 @@
 ;; USAGE
 ;;   JEP_JAVA_LIBRARY_PATH="/path/to/site-packages/jep" \
 ;;   PYTHONEXECUTABLE="/path/to/python3.10" \
-;;   lein exec -p simglucose5.clj
+;;   lein exec -p simglucose_rl5.clj
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import '(java.util Random))
@@ -73,7 +73,7 @@
 (def timeout-minutes 40)
 
 ;; Build Python SUL and verifier
-(def sul (make-simglucose-sul))
+(def sul (make-simglucose-ppo-sul))
 (def verifier (make-verifier sul signal-step properties mapper signal-length
                             max-test population-size crossover-prob mutation-prob timeout-minutes))
 

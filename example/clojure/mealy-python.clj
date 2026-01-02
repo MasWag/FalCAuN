@@ -22,8 +22,10 @@
 (import '(de.learnlib.oracle.membership SULOracle))
 (import '(net.maswag.falcaun
           AdaptiveSTLList
-          BlackBoxVerifier
-          LTLFactory
+          BlackBoxVerifier))
+(import '(net.maswag.falcaun.parser
+          LTLFactory))
+(import '(net.maswag.falcaun.python
           PythonSUL))
 
 ;; Path to the Python SUL. We keep it local to the clojure dir.

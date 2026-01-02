@@ -8,6 +8,7 @@ import net.maswag.falcaun.LTLFormulaBase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -60,19 +61,6 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
     }
 
     @Override
-    public String toOwlString() {
-        if (subFml instanceof TemporalEventually) {
-            if (to == 0) { return ((TemporalEventually<I>)subFml).getSubFml().toOwlString(); }
-            else if (from == 0) { return "(" + ((TemporalEventually<I>)subFml).getSubFml().toOwlString() + ") | (" +  new TemporalNext<>(new TemporalSub<>(subFml, from, to - 1), true).toOwlString() + ")"; }
-            else { return new TemporalNext<>(new TemporalSub<>(subFml, from - 1, to - 1), true).toOwlString(); }
-        } else {
-            if (to == 0) { return ((TemporalGlobally<I>)subFml).getSubFml().toOwlString(); }
-            else if (from == 0) { return "(" + ((TemporalGlobally<I>)subFml).getSubFml().toOwlString() + ") & (" +   new TemporalNext<>(new TemporalSub<>(subFml, from, to - 1), true).toOwlString() + ")"; }
-            else { return new TemporalNext<>(new TemporalSub<>(subFml, from - 1, to - 1), true).toOwlString();}
-        }
-    }
-
-    @Override
     public void constructSatisfyingAtomicPropositions() {
         super.constructSatisfyingAtomicPropositions();
         this.satisfyingAtomicPropositions = null;
@@ -93,6 +81,36 @@ public class TemporalSub<I> extends AbstractTemporalLogic<I> {
         }
 
         return String.join(op, subFmls);
+    }
+
+    @Override
+    public String toAbstractLTLString(Map<String, String> mapper){
+        final String op = (subFml instanceof TemporalEventually) ? " || " : " && ";
+
+        ArrayList<String> subFmls = new ArrayList<>();
+        for (int i = this.from; i <= this.to; i++) {
+            String builder = "( " +
+                    "X (".repeat(Math.max(0, i)) +
+                    subFml.subFml.toAbstractLTLString(mapper) +
+                    " )".repeat(Math.max(0, i)) +
+                    " )";
+            subFmls.add(builder);
+        }
+
+        return String.join(op, subFmls);
+    }
+
+    @Override
+    public String toOwlString() {
+        if (subFml instanceof TemporalEventually) {
+            if (to == 0) { return ((TemporalEventually<I>)subFml).getSubFml().toOwlString(); }
+            else if (from == 0) { return "(" + ((TemporalEventually<I>)subFml).getSubFml().toOwlString() + ") | (" +  new TemporalNext<>(new TemporalSub<>(subFml, from, to - 1), true).toOwlString() + ")"; }
+            else { return new TemporalNext<>(new TemporalSub<>(subFml, from - 1, to - 1), true).toOwlString(); }
+        } else {
+            if (to == 0) { return ((TemporalGlobally<I>)subFml).getSubFml().toOwlString(); }
+            else if (from == 0) { return "(" + ((TemporalGlobally<I>)subFml).getSubFml().toOwlString() + ") & (" +   new TemporalNext<>(new TemporalSub<>(subFml, from, to - 1), true).toOwlString() + ")"; }
+            else { return new TemporalNext<>(new TemporalSub<>(subFml, from - 1, to - 1), true).toOwlString();}
+        }
     }
 
     @Override

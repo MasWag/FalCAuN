@@ -16,15 +16,20 @@
 
 (import '(java.util Random))
 (import '(net.maswag.falcaun
-          InputMapperReader
+          InputMapperReader))
+(import '(net.maswag.falcaun.python
           PythonNumericSUL))
 
 (load-file "common.clj")
 
-;; Python initialization script implementing SUL
-(def init-script 
-  "Path to the Python initialization script for simglucose."
-  "./simglucose_example.py")
+;; Python initialization scripts implementing SULs
+(def default-init-script
+  "Path to the default (basal-bolus) Python initialization script for simglucose."
+  "./simglucose_bb.py")
+
+(def ppo-init-script
+  "Path to the PPO-based Python initialization script for simglucose."
+  "./simglucose_rl.py")
 
 ;; Step size (seconds) per high-level step sent to Python SUL
 (def signal-step 
@@ -57,11 +62,26 @@
 
 (defn make-simglucose-sul
   "Create a Python-backed SUL for simglucose.
-   
+
+   Usage:
+   - (make-simglucose-sul) ; default basal-bolus controller
+   - (make-simglucose-sul some-script-path)
+   - (make-simglucose-sul :ppo) ; convenience keyword for PPO controller
+
    Returns a system-under-learning instance configured with the
-   init-script."
+   selected init-script."
+  ([] (make-simglucose-sul default-init-script))
+  ([selector]
+   (cond
+     (= selector :ppo) (PythonNumericSUL. ppo-init-script)
+     (string? selector) (PythonNumericSUL. selector)
+     :else
+     (throw (IllegalArgumentException. (str "Unsupported selector for make-simglucose-sul: " selector))))))
+
+(defn make-simglucose-ppo-sul
+  "Create a PPO-controller SUL using the PPO initialization script."
   []
-  (PythonNumericSUL. init-script))
+  (make-simglucose-sul :ppo))
 
 (defn make-default-input-mapper
   "Create the default input mapper for simglucose with meal size values.
@@ -73,6 +93,3 @@
    (make-default-input-mapper [0.0 50.0]))
   ([meal-sizes]
    (InputMapperReader/make [meal-sizes])))
-
-
-

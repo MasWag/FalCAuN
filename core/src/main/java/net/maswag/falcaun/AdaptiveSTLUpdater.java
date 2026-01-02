@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * This is primarily for strengthening of STL formulas presented in "Efficient Black-Box Checking via Model Checking with Strengthened Specifications" by Shijubo et al.
  * <p>
  * This interface defines methods to manage and query a set of STL formulas that can adapt over time based on new information or counterexamples.
- * 
+ * <p>
  * It extends both {@link InclusionOracle.MealyInclusionOracle} and {@link BlackBoxOracle.MealyBlackBoxOracle}.
  *
  * @param <I> The type of the input at each step.
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 public interface AdaptiveSTLUpdater<I> extends InclusionOracle.MealyInclusionOracle<String, String>, BlackBoxOracle.MealyBlackBoxOracle<String, String> {
     /**
      * Returns the current list of Signal Temporal Logic (STL) formulas.
-     *
+     * <p>
      * The returned list may be updated only after a call to {@link #findCounterExample}.
      *
      * @return A list of STL properties
@@ -42,7 +42,7 @@ public interface AdaptiveSTLUpdater<I> extends InclusionOracle.MealyInclusionOra
      * @return A list of LTL properties as strings
      */
     default List<String> getLTLProperties() {
-        return getSTLProperties().stream().map(TemporalLogic::toLTLString).collect(Collectors.toList());
+        return getSTLProperties().stream().map(this::toLTLString).collect(Collectors.toList());
     }
 
     /**
@@ -84,7 +84,7 @@ public interface AdaptiveSTLUpdater<I> extends InclusionOracle.MealyInclusionOra
 
     /**
      * Sets a new membership oracle.
-     *
+     * <p>
      * This method must be called before invoking {@link #list()} or {@link #stream()}.
      *
      * @param memOracle The new membership oracle to set.
@@ -105,4 +105,11 @@ public interface AdaptiveSTLUpdater<I> extends InclusionOracle.MealyInclusionOra
      * @return {@code true} if the formula has not been falsified, otherwise {@code false}.
      */
     boolean newlyFalsifiedFormula(TemporalLogic<I> stlFormula);
+
+    /**
+     * Converts a given Signal Temporal Logic (STL) formula to its Linear Temporal Logic (LTL) string representation.
+     */
+    default String toLTLString(TemporalLogic<I> prop) {
+        return prop.toLTLString();
+    }
 }
