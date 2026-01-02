@@ -92,7 +92,7 @@
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.8</version>
+                <version>4.9.3</version>
                 <executions>
                     <execution>
                         <id>antlr</id>
@@ -129,7 +129,7 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>4.8</version>
+            <version>4.9.3</version>
         </dependency>
 
         <dependency>
@@ -144,16 +144,5 @@
             <version>0.5.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-core</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-io</artifactId>
-            <version>1.5.1</version>
-        </dependency>
     </dependencies>
 </project>
