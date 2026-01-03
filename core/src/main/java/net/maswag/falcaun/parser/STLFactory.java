@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import net.maswag.falcaun.OutputMapper;
 import net.maswag.falcaun.parser.TemporalLogic.STLCost;
 import net.maswag.falcaun.parser.TemporalLogic;
 import net.maswag.falcaun.parser.STLLexer;
@@ -29,6 +30,20 @@ public class STLFactory {
                                        List<Character> largest) {
         STLVisitor<TemporalLogic.STLCost> visitor = new STLVisitorImpl(inputMapper, outputMapper, largest);
         return parseImpl(stlFormula, visitor);
+    }
+
+    /**
+     * <p>parse an STL formula using an output mapper object</p>
+     *
+     * @param stlFormula   a {@link java.lang.String} object.
+     * @param inputMapper  a {@link java.util.List} object.
+     * @param outputMapper a {@link net.maswag.falcaun.OutputMapper} object.
+     * @return a {@link TemporalLogic.STLCost} object.
+     */
+    public TemporalLogic.STLCost parse(String stlFormula,
+                                       List<Map<Character, Double>> inputMapper,
+                                       OutputMapper outputMapper) {
+        return this.parse(stlFormula, inputMapper, outputMapper.getOutputMapper(), outputMapper.getLargest());
     }
 
     /**
