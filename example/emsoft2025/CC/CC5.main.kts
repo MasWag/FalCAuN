@@ -26,6 +26,8 @@
 @file:Import("./Cars.kt") // Import the constants for Chasing Cars
 
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.simulink.SimulinkSUL
 import java.io.BufferedReader
 import java.io.StringReader
 import kotlin.streams.toList
@@ -36,9 +38,9 @@ val fullTimer = TimeMeasure()
 fullTimer.start()
 
 // The number of repetitions of the experiment
-var experimentSize = 1
-if (args.size > 0) {
-    experimentSize = args[1].toInt()
+val experimentSizeArg = args.getOrNull(1)?.toIntOrNull()
+val experimentSize = experimentSizeArg ?: 1
+if (experimentSizeArg != null) {
     logger.info("The experiment is executed for $experimentSize times")
 } else {
     logger.info("The number of repetitions of the experiment is not specified. We use the default repetition size $experimentSize")
@@ -78,13 +80,14 @@ val stlList =
 val signalLength = (100 / signalStep).toInt() + 1
 val properties = AdaptiveSTLList(stlList, signalLength)
 
-var mapper : NumericSULMapper? = null
-if (args[0] == "original"){
+val mapperMode = args.getOrNull(0) ?: "original"
+var mapper : SignalDiscretizer? = null
+if (mapperMode == "original"){
     mapper =
         NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
-} else if (args[0] == "abstract"){
+} else if (mapperMode == "abstract"){
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, false)
-} else if (args[0] == "partial") {
+} else if (mapperMode == "partial") {
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, true)
 }
 

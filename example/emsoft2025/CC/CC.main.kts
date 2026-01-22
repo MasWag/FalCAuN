@@ -26,6 +26,8 @@
 @file:Import("./Cars.kt") // Import the constants for Chasing Cars
 
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.simulink.SimulinkSUL
 import java.io.BufferedReader
 import java.io.StringReader
 import kotlin.streams.toList
@@ -35,7 +37,13 @@ val overallStart = System.currentTimeMillis()
 logger.info("This is the script to falsify the chasing car benchmark against the CC2 formula by FalCAuN")
 
 // The number of repetitions of the experiment
-var experimentSize = 1
+val experimentSizeArg = args.getOrNull(0)?.toIntOrNull()
+val experimentSize = experimentSizeArg ?: 1
+if (experimentSizeArg != null) {
+    logger.info("The experiment is executed for $experimentSize times")
+} else {
+    logger.info("The number of repetitions of the experiment is not specified. We use the default repetition size $experimentSize")
+}
 
 // Define the output mapper
 val ignoredValues = listOf(null)
@@ -45,7 +53,7 @@ outputMapperReader.parse()
 val mapperString = listOf("previous_max($y5 - $y4)", "previous_max($y4 - $y3)").joinToString("\n")
 val signalMapper: ExtendedSignalMapper = ExtendedSignalMapper.parse(BufferedReader(StringReader(mapperString)))
 assert(signalMapper.size() == 1)
-val mapper =
+val mapper : SignalDiscretizer =
     NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
 
 // Define the pseudo signal names
