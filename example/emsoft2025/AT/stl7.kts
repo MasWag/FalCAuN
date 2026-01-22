@@ -62,7 +62,7 @@ val properties = AdaptiveSTLList(stlList, signalLength)
 
 println(stlList[0].toAbstractString())
 
-var mapper : NumericSULMapper? = null
+var mapper : SignalDiscretizer? = null
 if (args[0] == "original"){
     mapper =
         NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
