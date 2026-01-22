@@ -18,6 +18,9 @@ import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.automatalib.util.automaton.builder.AutomatonBuilders
 import net.automatalib.visualization.Visualization
 import net.maswag.falcaun.*
+import net.maswag.falcaun.example.BouncingBallSUL
+import net.maswag.falcaun.GASelectionKind
+import net.maswag.falcaun.parser.STLFactory
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.io.BufferedReader
@@ -106,7 +109,7 @@ verifier.addCornerCaseEQOracle(signalLength, signalLength / 2)
 verifier.addGAEQOracleAll(
     signalLength,
     maxTest,
-    ArgParser.GASelectionKind.Tournament,
+    GASelectionKind.Tournament,
     populationSize,
     crossoverProb,
     mutationProb,
