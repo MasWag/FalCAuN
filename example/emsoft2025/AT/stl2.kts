@@ -43,7 +43,6 @@ val gearValues = listOf(null)
 val outputMapperReader = OutputMapperReader(listOf(velocityValues, accelerationValues, gearValues))
 outputMapperReader.parse()
 val signalMapper = ExtendedSignalMapper()
-val mapper = NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
 
 
 // Define the STL properties
