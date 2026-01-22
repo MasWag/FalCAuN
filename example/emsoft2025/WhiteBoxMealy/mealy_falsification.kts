@@ -19,6 +19,7 @@ import net.maswag.falcaun.parser.LTLFormulaHelper
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.io.*
+import kotlin.system.exitProcess
 
 // The following surprises the debug log
 var loggerUpdater = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
@@ -33,6 +34,11 @@ var loggerEQSearchProblem = LoggerFactory.getLogger(EQSearchProblem::class.java)
 loggerEQSearchProblem.level = Level.INFO
 var loggerSimulinkSteadyStateGeneticAlgorithm = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm::class.java) as Logger
 loggerSimulinkSteadyStateGeneticAlgorithm.level = Level.INFO
+
+if (args.size < 3) {
+    System.err.println("Usage: mealy_falsification.kts <original|partial|abstract> <mealy_index> <ltl_count>")
+    exitProcess(1)
+}
 
 val timeBeforeInit = System.currentTimeMillis()
 
