@@ -61,14 +61,15 @@ val stlList = listOf(
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
+val mapperMode = args.getOrNull(0) ?: "original"
 var mapper : SignalDiscretizer? = null
-if (args[0] == "original"){
+if (mapperMode == "original"){
     mapper =
         NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
-} else if (args[0] == "abstract"){
+} else if (mapperMode == "abstract"){
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, false)
     properties.setMapper((mapper as NumericSULMapperWithSGA).getPostOutputMapper().get())
-} else if (args[0] == "partial") {
+} else if (mapperMode == "partial") {
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, true)
     properties.setMapper((mapper as NumericSULMapperWithSGA).getPostOutputMapper().get())
 }
