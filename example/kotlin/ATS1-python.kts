@@ -1,8 +1,5 @@
 #!/usr/bin/env kscript
 
-var signalStep = 1.0
-val initScript = "./autotrans_matlab.py"
-
 // This script depends on FalCAuN-core and FalCAuN-python
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-python:1.0-SNAPSHOT")
 // And requires JEP library
@@ -14,9 +11,13 @@ import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.maswag.falcaun.*
+import net.maswag.falcaun.python.PythonContinuousNumericSUL
 import net.maswag.falcaun.parser.STLFactory
 import org.slf4j.LoggerFactory
 import kotlin.streams.toList
+
+var signalStep = 1.0
+val initScript = "./autotrans_matlab.py"
 
 // The following surprises the debug log
 var updaterLogger = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
@@ -81,7 +82,7 @@ PythonContinuousNumericSUL(initScript, signalStep).use { autoTransSUL ->
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
-        ArgParser.GASelectionKind.Tournament,
+        GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
         mutationProb
