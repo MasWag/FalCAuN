@@ -5,30 +5,18 @@
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
-import de.learnlib.acex.AcexAnalyzers;
-import de.learnlib.algorithm.ttt.mealy.TTTLearnerMealy;
+import de.learnlib.acex.AcexAnalyzers
+import de.learnlib.algorithm.ttt.mealy.TTTLearnerMealy
 import de.learnlib.driver.simulator.MealySimulatorSUL
-import de.learnlib.filter.cache.mealy.MealyCacheOracle
-import de.learnlib.filter.cache.mealy.MealyCaches
 import de.learnlib.oracle.membership.SULOracle
-import de.learnlib.oracle.equivalence.MealyRandomWordsEQOracle;
-import de.learnlib.filter.statistic.oracle.MealyCounterOracle;
-import de.learnlib.mapper.MappedSUL;
-import de.learnlib.query.DefaultQuery
-import de.learnlib.sul.SUL;
-import de.learnlib.util.Experiment;
-import net.automatalib.alphabet.Alphabets
-import net.automatalib.automaton.transducer.CompactMealy
+import de.learnlib.oracle.equivalence.MealySimulatorEQOracle
+import de.learnlib.filter.statistic.oracle.MealyCounterOracle
+import de.learnlib.sul.SUL
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
-import net.automatalib.util.automaton.builder.AutomatonBuilders
-import net.automatalib.util.automaton.equivalence.DeterministicEquivalenceTest
-import net.automatalib.util.automaton.minimizer.hopcroft.HopcroftMinimization
-import net.automatalib.visualization.Visualization
-import net.automatalib.word.Word
-
-
+import net.automatalib.util.automaton.minimizer.HopcroftMinimizer
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.LTLFactory
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.io.*
@@ -80,6 +68,7 @@ if (args[0] == "original") {
 
 // Define the SUL and oracle
 val target = wrapper.createMealy(mapper)
+val minimizedTarget = HopcroftMinimizer.minimizeMealy(target, sigma)
 
 var sul : SUL<String, String> = MealySimulatorSUL(target)
 
@@ -87,26 +76,23 @@ val memOracle = SULOracle(sul)
 val counterOracle = MealyCounterOracle(memOracle)
 
 val learner = TTTLearnerMealy<String, String>(sigma, counterOracle, AcexAnalyzers.LINEAR_FWD)
+val eqOracle = MealySimulatorEQOracle(target)
 
 val timeBeforeLearning = System.currentTimeMillis()
 
 var round = 1
 learner.startLearning()
 var hypothesisMealy = learner.getHypothesisModel()
-var cexInput = DeterministicEquivalenceTest.findSeparatingWord(target, hypothesisMealy, sigma)
+var cexQuery = eqOracle.findCounterExample(hypothesisMealy, sigma)
 
-while (cexInput != null) {
+while (cexQuery != null) {
     round++
-    val cexOutput = memOracle.answerQuery(cexInput)
-    val refinementQuery = DefaultQuery<String, Word<String>>(Word.epsilon(), cexInput, cexOutput)
-    learner.refineHypothesis(refinementQuery)
+    learner.refineHypothesis(cexQuery)
     hypothesisMealy = learner.getHypothesisModel()
-    cexInput = DeterministicEquivalenceTest.findSeparatingWord(target, hypothesisMealy, sigma)
+    cexQuery = eqOracle.findCounterExample(hypothesisMealy, sigma)
 }
 
 val timeAfterLearning = System.currentTimeMillis()
-
-val minimizedTarget = HopcroftMinimization.minimizeMealy(target, sigma)
 
 println("Actual # of states: ${minimizedTarget.size()}")
 println("# of states: ${hypothesisMealy.size()}")
