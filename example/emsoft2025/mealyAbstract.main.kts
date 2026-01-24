@@ -8,13 +8,14 @@ import ch.qos.logback.classic.Logger
 import de.learnlib.driver.simulator.MealySimulatorSUL
 import de.learnlib.oracle.membership.SULOracle
 import de.learnlib.mapper.MappedSUL
-import net.automatalib.alphabet.Alphabets
-import net.automatalib.automaton.transducer.CompactMealy
+import net.automatalib.alphabet.impl.Alphabets
+import net.automatalib.automaton.transducer.impl.CompactMealy
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.automatalib.util.automaton.builder.AutomatonBuilders
 import net.automatalib.visualization.Visualization
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.LTLFactory
 import org.slf4j.LoggerFactory
 import java.util.*
 

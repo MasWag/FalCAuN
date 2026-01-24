@@ -2,8 +2,8 @@
 
 (import '(de.learnlib.oracle.membership SULOracle))
 (import '(java.util Random))
-(import '(net.automatalib.alphabet Alphabets))
-(import '(net.automatalib.automaton.transducer CompactMealy))
+(import '(net.automatalib.alphabet.impl Alphabets))
+(import '(net.automatalib.automaton.transducer.impl CompactMealy))
 (import '(net.automatalib.util.automaton.builder AutomatonBuilders))
 (import '(net.automatalib.visualization Visualization))
 

@@ -12,16 +12,12 @@ import net.maswag.falcaun.TimeMeasure;
 import net.maswag.falcaun.ValueWithTime;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.concurrent.ExecutionException;
 
@@ -144,8 +140,8 @@ public class SimulinkModel {
      * @param inputSignal The input signal
      * @return The output signal with timestamps of the entire execution.
      */
-    @Nonnull
-    public ValueWithTime<List<Double>> step(@Nonnull List<Double> inputSignal) {
+    @NotNull
+    public ValueWithTime<List<Double>> step(@NotNull List<Double> inputSignal) {
         if (this.isInitial) {
             counter++;
         }

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.alphabet.GrowingMapAlphabet;
+import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.maswag.falcaun.parser.LTLFormulaHelper;
 import net.maswag.falcaun.parser.TemporalLogic;
 

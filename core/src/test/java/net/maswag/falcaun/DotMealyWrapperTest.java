@@ -17,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.alphabet.Alphabets;
-import net.automatalib.automaton.CompactTransition;
-import net.automatalib.automaton.transducer.CompactMealy;
+import net.automatalib.alphabet.impl.Alphabets;
+import net.automatalib.automaton.impl.CompactTransition;
+import net.automatalib.automaton.transducer.impl.CompactMealy;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import net.automatalib.util.automaton.builder.MealyBuilder;
 

@@ -56,7 +56,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.maswag.falcaun.FalCAuN</mainClass>
+	        	    <mainClass>net.maswag.falcaun.simulink.FalCAuN</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>

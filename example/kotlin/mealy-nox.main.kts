@@ -7,8 +7,8 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import de.learnlib.driver.simulator.MealySimulatorSUL
 import de.learnlib.oracle.membership.SULOracle
-import net.automatalib.alphabet.Alphabets
-import net.automatalib.automaton.transducer.CompactMealy
+import net.automatalib.alphabet.impl.Alphabets
+import net.automatalib.automaton.transducer.impl.CompactMealy
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.automatalib.util.automaton.builder.AutomatonBuilders

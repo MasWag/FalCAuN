@@ -9,7 +9,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.alphabet.GrowingMapAlphabet;
+import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 
 
 /**

@@ -12,6 +12,8 @@ import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.simulink.SimulinkSUL
 import org.slf4j.LoggerFactory
 import kotlin.streams.toList
 
@@ -61,13 +63,14 @@ val stlList = listOf(
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
-var mapper : NumericSULMapper? = null
-if (args[0] == "original"){
+val mapperMode = args.getOrNull(0) ?: "original"
+var mapper : SignalDiscretizer? = null
+if (mapperMode == "original"){
     mapper =
         NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
-} else if (args[0] == "abstract"){
+} else if (mapperMode == "abstract"){
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList,false)
-} else if (args[0] == "partial") {
+} else if (mapperMode == "partial") {
     mapper = NumericSULMapperWithSGA(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper, stlList, true)
 }
 
@@ -90,7 +93,7 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { au
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
-        ArgParser.GASelectionKind.Tournament,
+        GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
         mutationProb

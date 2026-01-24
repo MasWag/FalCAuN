@@ -7,14 +7,12 @@ import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.query.DefaultQuery;
 import lombok.Getter;
 import net.automatalib.automaton.transducer.MealyMachine;
-import net.automatalib.common.util.collection.CollectionsUtil;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -185,7 +183,6 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
      * @return A {@code DefaultQuery} representing a counterexample if found, or {@code null} if no counterexample is discovered within the specified constraints.
      */
     @Nullable
-    @ParametersAreNonnullByDefault
     @Override
     public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> inputs) {
         if (isDisproved()) {
@@ -198,7 +195,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
             return null;
         }
         int testSize = 0;
-        symbolList = CollectionsUtil.randomAccessList(inputs);
+        symbolList = new ArrayList<>(inputs);
 
         if (resetWord || currentSamples.isEmpty()) {
             resetSamples();

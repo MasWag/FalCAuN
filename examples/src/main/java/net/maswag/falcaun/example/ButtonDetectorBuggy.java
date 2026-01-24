@@ -7,8 +7,8 @@ import lombok.Getter;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ButtonDetectorBuggy
         implements SUL<ButtonDetector.RawInput, ButtonDetector.ButtonEvent>,
@@ -136,7 +136,7 @@ public class ButtonDetectorBuggy
         return event;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ObservableSUL<ButtonDetector.DetectorState, ButtonDetector.RawInput, ButtonDetector.ButtonEvent> fork() {
         throw new UnsupportedOperationException("ButtonDetectorBuggy does not support forking");

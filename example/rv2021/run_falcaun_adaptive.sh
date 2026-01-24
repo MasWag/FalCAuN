@@ -48,7 +48,6 @@ fi
 mkdir -p ./results
 
 ../../falcaun \
-     --adaptive-stl \
      --stl-file="./$spec.stl" \
      --input-mapper="./AT.imap.tsv" \
      --output-mapper="./$spec.omap.tsv" \

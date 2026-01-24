@@ -19,9 +19,9 @@ import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.alphabet.Alphabets;
-import net.automatalib.automaton.CompactTransition;
-import net.automatalib.automaton.transducer.CompactMealy;
+import net.automatalib.alphabet.impl.Alphabets;
+import net.automatalib.automaton.impl.CompactTransition;
+import net.automatalib.automaton.transducer.impl.CompactMealy;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import net.automatalib.util.automaton.builder.MealyBuilder;
 
@@ -142,7 +142,7 @@ public class DotMealyWrapper{
 
         Set<String> outputs = new HashSet<>();
         Set<String> inputs = new HashSet<>();
-        MealyBuilder<Integer,String, CompactTransition<String>, String, CompactMealy<String, String>>.MealyBuilder__4 mealyBuilderWithEdge = null;
+        MealyBuilder<Integer,String, CompactTransition<String>, String, CompactMealy<String, String>>.MealyBuilder6 mealyBuilderWithEdge = null;
         for (LabeledEdge edge: otherEdges) {
             String attribute = edge.getAttr().orElse("");
             if (attribute.isEmpty()) {

@@ -17,7 +17,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import '(java.util Random))
-(import '(net.automatalib.alphabet Alphabets))
+(import '(net.automatalib.alphabet.impl Alphabets))
 
 (import '(de.learnlib.oracle.membership SULOracle))
 (import '(net.maswag.falcaun

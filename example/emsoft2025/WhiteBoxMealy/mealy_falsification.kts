@@ -8,20 +8,19 @@
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import de.learnlib.driver.simulator.MealySimulatorSUL
-import de.learnlib.filter.statistic.oracle.MealyCounterOracle;
+import de.learnlib.filter.statistic.oracle.MealyCounterOracle
 import de.learnlib.oracle.membership.SULOracle
-import de.learnlib.mapper.MappedSUL
 import de.learnlib.sul.SUL
-import net.automatalib.alphabet.Alphabets
-import net.automatalib.automaton.transducer.CompactMealy
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
-import net.automatalib.util.automaton.builder.AutomatonBuilders
-import net.automatalib.visualization.Visualization
+import net.automatalib.util.automaton.minimizer.HopcroftMinimizer
 import net.maswag.falcaun.*
+import net.maswag.falcaun.parser.LTLFactory
+import net.maswag.falcaun.parser.LTLFormulaHelper
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.io.*
+import kotlin.system.exitProcess
 
 // The following surprises the debug log
 var loggerUpdater = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
@@ -36,6 +35,11 @@ var loggerEQSearchProblem = LoggerFactory.getLogger(EQSearchProblem::class.java)
 loggerEQSearchProblem.level = Level.INFO
 var loggerSimulinkSteadyStateGeneticAlgorithm = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm::class.java) as Logger
 loggerSimulinkSteadyStateGeneticAlgorithm.level = Level.INFO
+
+if (args.size < 3) {
+    System.err.println("Usage: mealy_falsification.kts <original|partial|abstract> <mealy_index> <ltl_count>")
+    exitProcess(1)
+}
 
 val timeBeforeInit = System.currentTimeMillis()
 
@@ -71,6 +75,7 @@ if (args[0] == "original") {
     mapper = SGAMapper(ltlList, sigma, gamma, false).outputMapper
 }
 val target = wrapper.createMealy(mapper)
+val minimizedTarget = HopcroftMinimizer.minimizeMealy(target, sigma)
 
 var sul : SUL<String, String> = MealySimulatorSUL(target)
 
@@ -82,7 +87,7 @@ properties.setMemOracle(counterOracle)
 val verifier = BlackBoxVerifier(counterOracle, sul, properties, sigma)
 // Timeout must be set before adding equivalence testing
 verifier.setTimeout(10 * 60) // 5 minutes
-val eqOracle = WhiteBoxEqOracle(target)
+val eqOracle = WhiteBoxEqOracle(minimizedTarget)
 verifier.addEqOracle(eqOracle)
 
 val timeBeforeFalsification = System.currentTimeMillis()
