@@ -5,6 +5,7 @@ import com.pholser.junit.quickcheck.generator.Size;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -75,5 +76,39 @@ public class SignalDeriverTest {
 
         // Verify that the output signal is unchanged
         assertEquals(output, result.getOutputSignal());
+    }
+
+    @Property
+    public void testParseSimple(@Size(min = 1, max = 10) List<Double> input, @Size(min = 2, max = 10) List<Double> output) {
+        SignalDeriver parsedDeriver = SignalDeriver.parseSimple(List.of("output(0) + output(1)"));
+        IOSignalPiece<List<Double>> result = parsedDeriver.mapOutput(new IOSignalPiece<>(input, output));
+
+        assertEquals(input, result.getInputSignal());
+        List<Double> derivedOutput = result.getOutputSignal();
+        assertEquals(output.size() + 1, derivedOutput.size());
+        for (int i = 0; i < output.size(); i++) {
+            assertEquals(output.get(i), derivedOutput.get(i));
+        }
+        assertEquals(output.get(0) + output.get(1), derivedOutput.get(output.size()));
+    }
+
+    @Property
+    public void testParseExtended(@Size(min = 1, max = 10) List<Double> input, @Size(min = 1, max = 10) List<Double> output) {
+        SignalDeriver parsedDeriver = SignalDeriver.parse(List.of("previous_max_output(0)"));
+
+        List<Double> smallerPrevious = new ArrayList<>(output);
+        smallerPrevious.set(0, smallerPrevious.get(0) - 1.0);
+        List<List<Double>> previousOutputs = List.of(smallerPrevious, output);
+
+        IOSignalPiece<List<Double>> result = parsedDeriver.mapOutput(
+                new ExtendedIOSignalPiece<>(input, output, previousOutputs));
+
+        assertEquals(input, result.getInputSignal());
+        List<Double> derivedOutput = result.getOutputSignal();
+        assertEquals(output.size() + 1, derivedOutput.size());
+        for (int i = 0; i < output.size(); i++) {
+            assertEquals(output.get(i), derivedOutput.get(i));
+        }
+        assertEquals(output.get(0), derivedOutput.get(output.size()));
     }
 }

@@ -22,6 +22,32 @@ public class SignalDeriver implements SULMapper<List<Double>, IOSignalPiece<List
     private final SignalMapper sigMap;
 
     /**
+     * Constructs a {@link SignalDeriver} from extended signal-mapper definitions.
+     * <p>
+     * The given definitions are parsed by {@link ExtendedSignalMapper#parse(List)}
+     * and the resulting mapper is used to create the returned deriver.
+     *
+     * @param mapperDefinitions signal-mapper definitions to parse with the extended parser
+     * @return a {@link SignalDeriver} configured with the parsed {@link ExtendedSignalMapper}
+     */
+    public static SignalDeriver parse(List<String> mapperDefinitions) {
+        return new SignalDeriver(ExtendedSignalMapper.parse(mapperDefinitions));
+    }
+
+    /**
+     * Constructs a {@link SignalDeriver} from simple signal-mapper definitions.
+     * <p>
+     * The given definitions are parsed by {@link SimpleSignalMapper#parse(List)}
+     * and the resulting mapper is used to create the returned deriver.
+     *
+     * @param mapperDefinitions signal-mapper definitions to parse with the simple parser
+     * @return a {@link SignalDeriver} configured with the parsed simple {@link SignalMapper}
+     */
+    public static SignalDeriver parseSimple(List<String> mapperDefinitions) {
+        return new SignalDeriver(SimpleSignalMapper.parse(mapperDefinitions));
+    }
+
+    /**
      * Constructor for SignalDeriver.
      *
      * @param sigMap The SignalMapper for deriving additional signals.
