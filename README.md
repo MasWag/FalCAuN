@@ -142,6 +142,10 @@ The following example does not require MATLAB/Simulink.
 
 - `./example/kotlin/mealy.main.kts`
   - This example is a simple example to test some properties of a Mealy machine, which is handled as black-box.
+- `./example/kotlin/button_detector.main.kts`
+  - This example checks LTL properties of a buggy button detector model from the `FalCAuN-examples` module.
+- `./example/kotlin/bouncing_ball.main.kts`
+  - This example checks an STL property of the bouncing ball benchmark from the `FalCAuN-examples` module.
 
 The following examples require MATLAB/Simulink.
 

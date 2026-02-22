@@ -1,138 +1,96 @@
 #!/usr/bin/env kscript
-
-// This script depends on FalCAuN-core and FalCAuN-examples
+// Define the dependent libraries
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT")
 @file:DependsOn("net.maswag.falcaun:FalCAuN-examples:1.0-SNAPSHOT")
-// We use kotlin-logging for logging
-@file:DependsOn("io.github.oshai:kotlin-logging-jvm:5.1.0")
 
-import ch.qos.logback.classic.Level
-import ch.qos.logback.classic.Logger
-import de.learnlib.driver.simulator.MealySimulatorSUL
+// Import the common utilities
+@file:Import("./Common.kt")
+
+// Import the libraries
 import de.learnlib.oracle.membership.SULOracle
-import io.github.oshai.kotlinlogging.KotlinLogging
-import net.automatalib.alphabet.impl.Alphabets
-import net.automatalib.automaton.transducer.impl.CompactMealy
-import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
-import net.automatalib.modelchecker.ltsmin.LTSminVersion
-import net.automatalib.util.automaton.builder.AutomatonBuilders
-import net.automatalib.visualization.Visualization
-import net.maswag.falcaun.*
-import net.maswag.falcaun.example.BouncingBallSUL
-import net.maswag.falcaun.GASelectionKind
-import net.maswag.falcaun.parser.STLFactory
-import org.slf4j.LoggerFactory
-import java.util.*
-import java.io.BufferedReader
-import java.io.StringReader
+import java.util.Random
 import kotlin.streams.toList
+import net.maswag.falcaun.*
+import net.maswag.falcaun.example.*
+import net.maswag.falcaun.parser.*
 
-// The following surprises the debug log
-var loggerUpdater = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
-loggerUpdater.level = Level.INFO
-var loggerUpdateList = LoggerFactory.getLogger(AdaptiveSTLList::class.java) as Logger
-loggerUpdateList.level = Level.INFO
-var loggerLTSminVersion = LoggerFactory.getLogger(LTSminVersion::class.java) as Logger
-loggerLTSminVersion.level = Level.INFO
-var loggerAbstractLTSmin = LoggerFactory.getLogger(AbstractLTSmin::class.java) as Logger
-loggerAbstractLTSmin.level = Level.INFO
-var loggerEQSearchProblem = LoggerFactory.getLogger(EQSearchProblem::class.java) as Logger
-loggerEQSearchProblem.level = Level.INFO
-var loggerSimulinkSteadyStateGeneticAlgorithm = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm::class.java) as Logger
-loggerSimulinkSteadyStateGeneticAlgorithm.level = Level.INFO
-
-// Declare the logger
-val logger = KotlinLogging.logger {}
-
-logger.info("This is the script to falsify the bouncing ball benchmark with FalCAuN")
+// Reduce verbose logs
+surpressesLog()
 
 // Define the input mapper
-var signalStep = 1.0
 val windValues = listOf(0.0, 2.5)
-val inputMapper = InputMapperReader.make(listOf(windValues))
-
-// Define the output signal names
-val position = "signal(0)"
-val velocity = "signal(1)"
+val inputMapper = InputMapper.make(listOf(windValues))
 
 // Define the output mapper
 val positionValues = listOf(45.0, null)
 val velocityValues = listOf(null)
-val outputMapperReader = OutputMapperReader(listOf(positionValues, velocityValues, positionValues))
-outputMapperReader.parse()
-val mapperString = listOf("previous_max_output(0)").joinToString("\n")
-val signalMapper: ExtendedSignalMapper = ExtendedSignalMapper.parse(BufferedReader(StringReader(mapperString)))
-assert(signalMapper.size() == 1)
-val mapper =
-    NumericSULMapper(inputMapper, outputMapperReader.largest, outputMapperReader.outputMapper, signalMapper)
+val outputMapper = OutputMapper(
+    listOf(positionValues, velocityValues, positionValues))
+val adapter = SignalAdapter(inputMapper, outputMapper)
 
-// Define the pseudo signal names
-val prevMaxPosition = "output(2)"
+val signalStep = BouncingBallSUL.DEFAULT_SIMULATION_STEP // = 1.0  
+
+// Define the signal deriver
+// output(0) represents the ball position.
+val deriverString = listOf("previous_max(output(0))")
+val deriver = SignalDeriver.parse(deriverString)
+val mapper = adapter.preCompose(deriver)
 
 // Define the STL properties
 val stlFactory = STLFactory()
-val stlList =
-    listOf(
-        "(ev_[0,${(10 / signalStep).toInt()}] alw $prevMaxPosition < 45)",
-    ).stream().map { stlString ->
-        stlFactory.parse(
-            stlString,
-            inputMapper,
-            outputMapperReader.outputMapper,
-            outputMapperReader.largest,
-        )
-    }.toList()
-// We need to add by one because the first sample is at time 0
-val signalLength = (20 / signalStep).toInt() + 1
+val stlFormula = stlFactory.parse(
+    // output(2) corresponds to previous_max(output(0))
+     "(F_[0,${(10 / signalStep).toInt()}] G output(2) < 45)",
+    inputMapper, outputMapper)
 
+// Add one because the first sample is at time 0
+val signalLength = (10 / signalStep).toInt() + 1
 
-// Define the SUL and oracle
-val sul = BouncingBallSUL()
-val oracle = SULOracle(sul)
+val properties = AdaptiveSTLList(listOf(stlFormula), signalLength)
 
-// Constants for the GA-based equivalence testing
-val maxTest = 50000
-val populationSize = 50
-val crossoverProb = 0.9
-val mutationProb = 0.01
+println("We try ${properties}")
 
-// Configure and run the verifier
-// val verifier = BlackBoxVerifier(oracle, sul, properties, sigma)
-val properties = AdaptiveSTLList(stlList, signalLength)
-// properties.setMemOracle(oracle)
-val verifier = NumericSULVerifier(sul, signalStep, properties, mapper)
-// Timeout must be set before adding equivalence testing
-verifier.setTimeout(5 * 60) // 5 minutes
-// We first try the corner cases
-verifier.addCornerCaseEQOracle(signalLength, signalLength / 2)
-// Then, search with GA
-verifier.addGAEQOracleAll(
-    signalLength,
-    maxTest,
-    GASelectionKind.Tournament,
-    populationSize,
-    crossoverProb,
-    mutationProb,
-)
+// Load the BouncingBall model from FalCAuN-examples.
+BouncingBallSUL().use { sul ->
+    val oracle = SULOracle(sul)
 
-// verifier.addRandomWordEQOracle(
-//     1, // The minimum length of the random word
-//     10, // The maximum length of the random word
-//     1000, // The maximum number of tests
-//     Random(),
-//     1,
-// )
-val result = verifier.run()
+    // Constants for the GA-based equivalence testing
+    val maxTest = 50000
+    val populationSize = 50
+    val crossoverProb = 0.9
+    val mutationProb = 0.01
 
-// Print the result
-if (result) {
-    println("All the properties are likely satisfied")
-} else {
-    println("Some properties are falsified")
-    for (i in 0 until verifier.cexProperty.size) {
-        println("${verifier.cexProperty[i]} is falsified by the following counterexample:")
-        println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-        println("cex output: ${verifier.cexOutput[i]}")
+    val verifier = NumericSULVerifier(sul, 1.0, properties, mapper)
+
+    // Timeout must be set before adding equivalence testing
+    verifier.setTimeout(5 * 60) // 5 minutes
+    // We first try the corner cases
+    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2)
+    // Then, search with GA
+    verifier.addGAEQOracleAll(
+        signalLength,
+        maxTest,
+        GASelectionKind.Tournament,
+        populationSize,
+        crossoverProb,
+        mutationProb)
+
+    val result = verifier.run()
+    if (result) {
+        println("All the properties are likely satisfied")
+    } else {
+        if (verifier.properties.size() == verifier.cexProperty.size) {
+            println("All the properties are falsified")
+        } else {
+            println("Some properties are falsified")
+        }
+        for (i in 0 until verifier.cexProperty.size) {
+            println("${verifier.cexProperty[i]} is falsified.")
+            println("cex concrete input: ${verifier.cexConcreteInput[i]}")
+            println("cex abstract input: ${verifier.cexAbstractInput[i]}")
+            println("cex output: ${verifier.cexOutput[i]}")
+        }
     }
+    // Disabled for CI/headless runs because visualization requires a GUI.
+    // verifier.visualizeLearnedMealy()
 }
-println("The number of simulations: ${verifier.simulinkCount}")

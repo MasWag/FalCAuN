@@ -8,11 +8,13 @@ Examples not requiring MATLAB/Simulink
 
 The following examples do not require MATLAB/Simulink.
 
-| Name    | Description                 | Links                                                                                                                                                                         |
-|---------|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Mealy   | A small Mealy machine       | [Kotlin](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/mealy-nox.main.kts) [Jupyter](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/Mealy.ipynb) |
-| Counter | A toy system with a counter | [Jupyter](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/counter.ipynb)                                                                                         |
-| Python SUL | A Mealy machine implemented in Python | [Python](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/mealy_python.py) |
+| Name            | Description                                                | Links                                                                                                                                                                             |
+|-----------------|------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Mealy           | A small Mealy machine                                      | [Kotlin](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/mealy-nox.main.kts) [Jupyter](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/Mealy.ipynb) |
+| Button Detector | A buggy button detector modeled as a Mealy machine         | [Kotlin](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/button_detector.main.kts)                                                                                 |
+| Bouncing Ball   | The bouncing ball benchmark checked against an STL formula | [Kotlin](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/bouncing_ball.main.kts)                                                                                   |
+| Counter         | A toy system with a counter                                | [Jupyter](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/counter.ipynb)                                                                                           |
+| Python SUL      | A Mealy machine implemented in Python                      | [Python](https://github.com/MasWag/FalCAuN/blob/master/example/kotlin/mealy_python.py)                                                                                         |
 
 Examples requiring MATLAB/Simulink
 ----------------------------------
