@@ -35,9 +35,9 @@
 import net.maswag.falcaun.*
 import net.maswag.falcaun.parser.STLFactory
 import net.maswag.falcaun.simulink.SimulinkSUL
-import kotlin.streams.toList
 import java.io.BufferedReader
 import java.io.StringReader
+import kotlin.streams.toList
 
 // Define the input and output mappers
 val throttleValues = listOf(0.0, 50.0, 100.0)
@@ -47,7 +47,7 @@ val velocityValues = listOf(50.0, null)
 val accelerationValues = listOf(3000.0, null)
 val ignoreValues = listOf(null)
 val gearValues = listOf(null)
-//val outputMapperReader = OutputMapperReader(listOf(velocityValues, accelerationValues, gearValues, velocityValues, accelerationValues))
+// val outputMapperReader = OutputMapperReader(listOf(velocityValues, accelerationValues, gearValues, velocityValues, accelerationValues))
 val outputMapperReader = OutputMapperReader(listOf(ignoreValues, ignoreValues, gearValues, velocityValues, accelerationValues))
 val mapperString = listOf("previous_max_output(0)", "previous_max_output(1)").joinToString("\n")
 val signalMapper: ExtendedSignalMapper = ExtendedSignalMapper.parse(BufferedReader(StringReader(mapperString)))
@@ -64,22 +64,23 @@ val prevMaxRotation = "output(4)"
 
 // Define the STL properties
 signalStep = 1.0
-//val stlGRotationLt3000 = "$rotation < 3000.0 && []_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation < 3000.0)"
+// val stlGRotationLt3000 = "$rotation < 3000.0 && []_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation < 3000.0)"
 val stlGRotationLt3000 = "[]_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation < 3000.0)"
 val stlNotGRotationLt3000 = "<>_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation > 3000.0)"
-//val STLGVelocityLt50 = "$velocity < 50.0 && []_[0,${(8 / signalStep).toInt()}] ($prevMaxVelocity < 50.0)"
+// val STLGVelocityLt50 = "$velocity < 50.0 && []_[0,${(8 / signalStep).toInt()}] ($prevMaxVelocity < 50.0)"
 val STLGVelocityLt50 = "[]_[0,${(8 / signalStep).toInt()}] ($prevMaxVelocity < 50.0)"
-val stlList = parseStlList(
-    listOf(
-        //"($stlGRotationLt3000) -> ($STLGVelocityLt35)",
-        // We use || instead of -> because specification strengthening does not support -> yet
-        // "(!($stlGRotationLt3000)) || ($STLGVelocityLt35)",
-        // Similarly, we use <>! instead of ![]
-        "($stlNotGRotationLt3000) || ($STLGVelocityLt50)",
-    ),
-    inputMapper,
-    outputMapperReader
-)
+val stlList =
+    parseStlList(
+        listOf(
+            // "($stlGRotationLt3000) -> ($STLGVelocityLt35)",
+            // We use || instead of -> because specification strengthening does not support -> yet
+            // "(!($stlGRotationLt3000)) || ($STLGVelocityLt35)",
+            // Similarly, we use <>! instead of ![]
+            "($stlNotGRotationLt3000) || ($STLGVelocityLt50)",
+        ),
+        inputMapper,
+        outputMapperReader,
+    )
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
@@ -104,7 +105,7 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { au
         GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
-        mutationProb
+        mutationProb,
     )
     val result = verifier.run()
 

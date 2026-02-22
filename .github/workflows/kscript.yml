@@ -60,6 +60,16 @@ jobs:
         with:
           candidate: kscript
 
+      - name: Install ktlint
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          wget -O "$HOME/.local/bin/ktlint" https://github.com/pinterest/ktlint/releases/download/1.8.0/ktlint
+          chmod +x "$HOME/.local/bin/ktlint"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Lint Kotlin scripts
+        run: ./example/kotlin/lint.sh
+
       - name: Run the examples
         run: |
           cd example/kotlin

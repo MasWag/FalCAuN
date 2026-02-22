@@ -22,6 +22,22 @@ mvn install
 
 After that, you can directly execute the example scripts, for example, `./ATS1.kts`.
 
+Lint and format
+---------------
+
+You can use `ktlint` to keep the Kotlin scripts and helpers in this directory consistent.
+
+```bash
+brew install ktlint
+```
+
+Then run:
+
+```bash
+./format.sh
+./lint.sh
+```
+
 Usage of Jupyter Notebook
 -------------------------
 

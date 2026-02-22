@@ -1,4 +1,3 @@
-import org.slf4j.LoggerFactory
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
@@ -11,6 +10,7 @@ import net.maswag.falcaun.NumericSULVerifier
 import net.maswag.falcaun.OutputMapperReader
 import net.maswag.falcaun.parser.STLFactory
 import net.maswag.falcaun.parser.TemporalLogic
+import org.slf4j.LoggerFactory
 
 /**
  * Adjust logger levels to reduce verbose output.
@@ -18,19 +18,19 @@ import net.maswag.falcaun.parser.TemporalLogic
  * Sets several FalCAuN/LTSmin-related loggers to `INFO` to suppress
  * debug/trace messages during runs of the examples.
  */
-fun surpressesLog(): Unit {
+fun surpressesLog() {
     var updaterLogger = LoggerFactory.getLogger(AbstractAdaptiveSTLUpdater::class.java) as Logger
     updaterLogger.level = Level.INFO
     var updateListLogger = LoggerFactory.getLogger(AdaptiveSTLList::class.java) as Logger
     updateListLogger.level = Level.INFO
-    var LTSminVersionLogger = LoggerFactory.getLogger(LTSminVersion::class.java) as Logger
-    LTSminVersionLogger.level = Level.INFO
-    var AbstractLTSminLogger = LoggerFactory.getLogger(AbstractLTSmin::class.java) as Logger
-    AbstractLTSminLogger.level = Level.INFO
-    var EQSearchProblemLogger = LoggerFactory.getLogger(EQSearchProblem::class.java) as Logger
-    EQSearchProblemLogger.level = Level.INFO
-    var SimulinkSteadyStateGeneticAlgorithmLogger = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm::class.java) as Logger
-    SimulinkSteadyStateGeneticAlgorithmLogger.level = Level.INFO    
+    var ltsminVersionLogger = LoggerFactory.getLogger(LTSminVersion::class.java) as Logger
+    ltsminVersionLogger.level = Level.INFO
+    var abstractLtsminLogger = LoggerFactory.getLogger(AbstractLTSmin::class.java) as Logger
+    abstractLtsminLogger.level = Level.INFO
+    var eqSearchProblemLogger = LoggerFactory.getLogger(EQSearchProblem::class.java) as Logger
+    eqSearchProblemLogger.level = Level.INFO
+    var simulinkSteadyStateGeneticAlgorithmLogger = LoggerFactory.getLogger(EQSteadyStateGeneticAlgorithm::class.java) as Logger
+    simulinkSteadyStateGeneticAlgorithmLogger.level = Level.INFO
 }
 
 /**
@@ -41,18 +41,24 @@ fun surpressesLog(): Unit {
  * @param outputMapperReader Provider for output mapping and signal bounds used by parsing.
  * @return Parsed list of `STLCost` instances corresponding to the input formulas.
  */
-fun parseStlList(stlList: List<String>, inputMapper: List<Map<Char, Double>>, outputMapperReader: OutputMapperReader) : List<TemporalLogic.STLCost> {
+fun parseStlList(
+    stlList: List<String>,
+    inputMapper: List<Map<Char, Double>>,
+    outputMapperReader: OutputMapperReader,
+): List<TemporalLogic.STLCost> {
     val stlFactory = STLFactory()
     val outputMapper = outputMapperReader.getOutputMapper()
     val largest = outputMapperReader.getLargest()
-    return stlList.stream().map {stlString ->
-        stlFactory.parse(
-            stlString,
-            inputMapper,
-            outputMapper,
-            largest
-        )
-    }.toList()
+    return stlList
+        .stream()
+        .map { stlString ->
+            stlFactory.parse(
+                stlString,
+                inputMapper,
+                outputMapper,
+                largest,
+            )
+        }.toList()
 }
 
 /**
@@ -64,7 +70,10 @@ fun parseStlList(stlList: List<String>, inputMapper: List<Map<Char, Double>>, ou
  * @param verifier The `NumericSULVerifier` that holds counterexample data.
  * @param result Overall verification outcome; true if all properties held.
  */
-fun printResults(verifier: NumericSULVerifier, result: Boolean): Unit {
+fun printResults(
+    verifier: NumericSULVerifier,
+    result: Boolean,
+) {
     if (result) {
         println("All the properties are likely satisfied")
     } else {
@@ -90,7 +99,7 @@ fun printResults(verifier: NumericSULVerifier, result: Boolean): Unit {
  *
  * @param verifier The `NumericSULVerifier` source of statistics.
  */
-fun printStats(verifier: NumericSULVerifier): Unit {
+fun printStats(verifier: NumericSULVerifier) {
     println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
     println("Number of simulations: ${verifier.simulinkCount}")
     println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")

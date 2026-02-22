@@ -54,16 +54,19 @@ val signalMapper = ExtendedSignalMapper()
 val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
 // Define the STL properties
-val stlList = parseStlList(listOf(
-                               "[] (signal(0) < 120)",
-                               "[] (signal(0) < 100)",
-                               "[] (signal(0) < 80)",
-                               "[] (signal(0) < 60)",
-                               "[] (signal(0) < 40)",
-                               "[] (signal(0) < 20)"
-                           ),
-                           inputMapper,
-                           outputMapperReader)
+val stlList =
+    parseStlList(
+        listOf(
+            "[] (signal(0) < 120)",
+            "[] (signal(0) < 100)",
+            "[] (signal(0) < 80)",
+            "[] (signal(0) < 60)",
+            "[] (signal(0) < 40)",
+            "[] (signal(0) < 20)",
+        ),
+        inputMapper,
+        outputMapperReader,
+    )
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
@@ -79,14 +82,14 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { au
     val verifier = NumericSULVerifier(autoTransSUL, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
     verifier.setTimeout(5 * 60) // 5 minutes
-    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
+    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2)
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
         GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
-        mutationProb
+        mutationProb,
     )
     val result = verifier.run()
 

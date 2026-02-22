@@ -7,12 +7,13 @@
 @file:Import("./Common.kt")
 
 // Import the libraries
+
 import de.learnlib.oracle.membership.SULOracle
-import java.util.Random
-import kotlin.streams.toList
 import net.maswag.falcaun.*
 import net.maswag.falcaun.example.*
 import net.maswag.falcaun.parser.*
+import java.util.Random
+import kotlin.streams.toList
 
 // Reduce verbose logs
 surpressesLog()
@@ -24,11 +25,11 @@ val inputMapper = InputMapper.make(listOf(windValues))
 // Define the output mapper
 val positionValues = listOf(45.0, null)
 val velocityValues = listOf(null)
-val outputMapper = OutputMapper(
-    listOf(positionValues, velocityValues, positionValues))
+val outputMapper =
+    OutputMapper(listOf(positionValues, velocityValues, positionValues))
 val adapter = SignalAdapter(inputMapper, outputMapper)
 
-val signalStep = BouncingBallSUL.DEFAULT_SIMULATION_STEP // = 1.0  
+val signalStep = BouncingBallSUL.DEFAULT_SIMULATION_STEP // = 1.0
 
 // Define the signal deriver
 // output(0) represents the ball position.
@@ -38,17 +39,20 @@ val mapper = adapter.preCompose(deriver)
 
 // Define the STL properties
 val stlFactory = STLFactory()
-val stlFormula = stlFactory.parse(
-    // output(2) corresponds to previous_max(output(0))
-     "(F_[0,${(10 / signalStep).toInt()}] G output(2) < 45)",
-    inputMapper, outputMapper)
+val stlFormula =
+    stlFactory.parse(
+        // output(2) corresponds to previous_max(output(0))
+        "(F_[0,${(10 / signalStep).toInt()}] G output(2) < 45)",
+        inputMapper,
+        outputMapper,
+    )
 
 // Add one because the first sample is at time 0
 val signalLength = (10 / signalStep).toInt() + 1
 
 val properties = AdaptiveSTLList(listOf(stlFormula), signalLength)
 
-println("We try ${properties}")
+println("We try $properties")
 
 // Load the BouncingBall model from FalCAuN-examples.
 BouncingBallSUL().use { sul ->
@@ -73,7 +77,8 @@ BouncingBallSUL().use { sul ->
         GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
-        mutationProb)
+        mutationProb,
+    )
 
     val result = verifier.run()
     if (result) {

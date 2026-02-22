@@ -26,17 +26,18 @@ val signalMapper = SimpleSignalMapper()
 val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 
 // Define the STL properties
-val stlList = parseStlList(
-    listOf(
-        "[]((signal(2) == 3) -> signal(0) > 20)",
-        "[]((signal(2) == 3) -> signal(0) > 22.5)",
-        "[]((signal(2) == 3) -> signal(0) > 25)",
-        "[]((signal(2) == 3) -> signal(0) > 27.5)",
-        "[]((signal(2) == 3) -> signal(0) > 30)"
-    ),
-    inputMapper,
-    outputMapperReader
-)
+val stlList =
+    parseStlList(
+        listOf(
+            "[]((signal(2) == 3) -> signal(0) > 20)",
+            "[]((signal(2) == 3) -> signal(0) > 22.5)",
+            "[]((signal(2) == 3) -> signal(0) > 25)",
+            "[]((signal(2) == 3) -> signal(0) > 27.5)",
+            "[]((signal(2) == 3) -> signal(0) > 30)",
+        ),
+        inputMapper,
+        outputMapperReader,
+    )
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
@@ -58,7 +59,7 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { au
         GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
-        mutationProb
+        mutationProb,
     )
     val result = verifier.run()
 

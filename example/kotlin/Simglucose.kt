@@ -7,6 +7,7 @@ import net.maswag.falcaun.python.PythonNumericSUL
  */
 val initScript = "./simglucose_example.py"
 var signalStep = 1.0
+
 // Each step corresponds to 30 minutes.
 val stepDuration = 30.0
 
@@ -23,4 +24,3 @@ val max_delta_bg = "output(5)"
  * Create a Python-backed SUL for simglucose.
  */
 fun makeSimglucoseSUL(): PythonNumericSUL = PythonNumericSUL(initScript)
-

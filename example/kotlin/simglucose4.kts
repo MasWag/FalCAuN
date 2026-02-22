@@ -7,7 +7,7 @@
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-python:1.0-SNAPSHOT")
 // And requires JEP library
 // Below is an example path to the JEP library when using pyenv and python 3.10.15
-//@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
+// @file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
 import net.maswag.falcaun.*
 
@@ -31,22 +31,23 @@ val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 //   system for diabetes management." 2018 IEEE/ACM Third International
 //   Conference on Internet-of-Things Design and Implementation
 //   (IoTDI). IEEE, 2018.
-val stlList = parseStlList(
-    listOf(
-        // BG must be in a good range
-        "G($min_bg > 70.0)",
-        "G($max_bg < 180.0)",
-        // BG must be below 180 if the meal is not given too much
-        "(G_[0,5] $mealSize == 50.0) R ($max_bg < 180.0)",
-        // The change in BG is between -5 and 3.
-        "G($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
-        // The change in BG is between -5 and 3 if the meal is not given too much
-        "(G_[0,5] $mealSize == 50.0) R ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
-    ),
-    inputMapper,
-    outputMapperReader
-)
-val signalLength = 48 //3*10 * 24 mins
+val stlList =
+    parseStlList(
+        listOf(
+            // BG must be in a good range
+            "G($min_bg > 70.0)",
+            "G($max_bg < 180.0)",
+            // BG must be below 180 if the meal is not given too much
+            "(G_[0,5] $mealSize == 50.0) R ($max_bg < 180.0)",
+            // The change in BG is between -5 and 3.
+            "G($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
+            // The change in BG is between -5 and 3 if the meal is not given too much
+            "(G_[0,5] $mealSize == 50.0) R ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
+        ),
+        inputMapper,
+        outputMapperReader,
+    )
+val signalLength = 48 // 3*10 * 24 mins
 val properties = AdaptiveSTLList(stlList, signalLength)
 
 // Constants for the GA-based equivalence testing
@@ -61,14 +62,14 @@ makeSimglucoseSUL().use { sul ->
     val verifier = NumericSULVerifier(sul, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
     verifier.setTimeout(5 * 60 * 8) // 40 minutes
-    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
+    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2)
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
         GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
-        mutationProb
+        mutationProb,
     )
     val result = verifier.run()
 

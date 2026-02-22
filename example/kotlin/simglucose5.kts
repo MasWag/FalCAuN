@@ -7,7 +7,7 @@
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-python:1.0-SNAPSHOT")
 // And requires JEP library
 // Below is an example path to the JEP library when using pyenv and python 3.10.15
-//@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
+// @file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
 import net.maswag.falcaun.*
 
@@ -35,18 +35,19 @@ val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 //   system for diabetes management." 2018 IEEE/ACM Third International
 //   Conference on Internet-of-Things Design and Implementation
 //   (IoTDI). IEEE, 2018.
-val stlList = parseStlList(
-    listOf(
-        // BG should not stay below 10th-percentile threshold for more than 120 minutes.
-        "G($bg > $tenthBg || F_[0, ${(120 / stepDuration).toInt()}] $max_bg > $tenthBg)",
-        // BG should not stay above 90th-percentile threshold for more than 120 minutes.
-        "G($bg < $ninetiethBg || F_[0, ${(120 / stepDuration).toInt()}] $min_bg < $ninetiethBg)",
-        // BG should not stay above 90th-percentile threshold for more than 150 minutes after an insuline injection.
-        "G($bg < $ninetiethBg || $insulin < 0.5 || F_[0, ${(150 / stepDuration).toInt()}] $min_bg < $ninetiethBg)",
-    ),
-    inputMapper,
-    outputMapperReader
-)
+val stlList =
+    parseStlList(
+        listOf(
+            // BG should not stay below 10th-percentile threshold for more than 120 minutes.
+            "G($bg > $tenthBg || F_[0, ${(120 / stepDuration).toInt()}] $max_bg > $tenthBg)",
+            // BG should not stay above 90th-percentile threshold for more than 120 minutes.
+            "G($bg < $ninetiethBg || F_[0, ${(120 / stepDuration).toInt()}] $min_bg < $ninetiethBg)",
+            // BG should not stay above 90th-percentile threshold for more than 150 minutes after an insuline injection.
+            "G($bg < $ninetiethBg || $insulin < 0.5 || F_[0, ${(150 / stepDuration).toInt()}] $min_bg < $ninetiethBg)",
+        ),
+        inputMapper,
+        outputMapperReader,
+    )
 val signalLength = 30 // 30 * 30 mins
 val properties = AdaptiveSTLList(stlList, signalLength)
 
@@ -62,14 +63,14 @@ makeSimglucoseSUL().use { sul ->
     val verifier = NumericSULVerifier(sul, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
     verifier.setTimeout(5 * 60 * 8) // 40 minutes
-    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
+    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2)
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
         GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
-        mutationProb
+        mutationProb,
     )
     val result = verifier.run()
 

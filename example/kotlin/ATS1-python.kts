@@ -4,15 +4,15 @@
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-python:1.0-SNAPSHOT")
 // And requires JEP library
 // Below is an example path to the JEP library when using pyenv and python 3.10.15
-//@file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
+// @file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.maswag.falcaun.*
-import net.maswag.falcaun.python.PythonContinuousNumericSUL
 import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.python.PythonContinuousNumericSUL
 import org.slf4j.LoggerFactory
 import kotlin.streams.toList
 
@@ -48,21 +48,22 @@ val mapper =
 
 // Define the STL properties
 val stlFactory = STLFactory()
-val stlList = listOf(
-    "[] (signal(0) < 120)",
-    "[] (signal(0) < 100)",
-    "[] (signal(0) < 80)",
-    "[] (signal(0) < 60)",
-    "[] (signal(0) < 40)",
-    "[] (signal(0) < 20)"
-).map { stlString ->
-    stlFactory.parse(
-        stlString,
-        inputMapper,
-        outputMapperReader.outputMapper,
-        outputMapperReader.largest
-    )
-}
+val stlList =
+    listOf(
+        "[] (signal(0) < 120)",
+        "[] (signal(0) < 100)",
+        "[] (signal(0) < 80)",
+        "[] (signal(0) < 60)",
+        "[] (signal(0) < 40)",
+        "[] (signal(0) < 20)",
+    ).map { stlString ->
+        stlFactory.parse(
+            stlString,
+            inputMapper,
+            outputMapperReader.outputMapper,
+            outputMapperReader.largest,
+        )
+    }
 val signalLength = 30
 val properties = AdaptiveSTLList(stlList, signalLength)
 
@@ -78,14 +79,14 @@ PythonContinuousNumericSUL(initScript, signalStep).use { autoTransSUL ->
     val verifier = NumericSULVerifier(autoTransSUL, signalStep, properties, mapper)
     // Timeout must be set before adding equivalence testing
     verifier.setTimeout(60 * 40) // 40 minutes
-    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2);
+    verifier.addCornerCaseEQOracle(signalLength, signalLength / 2)
     verifier.addGAEQOracleAll(
         signalLength,
         maxTest,
         GASelectionKind.Tournament,
         populationSize,
         crossoverProb,
-        mutationProb
+        mutationProb,
     )
     val result = verifier.run()
 
