@@ -1,5 +1,6 @@
 package net.maswag.falcaun.python;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class PythonContinuousNumericSULTest {
     static final String script = "./src/test/resources/test_continuous_numeric_sul.py";
     static final Double EPS = 1e-8;
+
+    @BeforeAll
+    static void assumeJepAvailable() {
+        JepTestSupport.assumePythonExecutableSet();
+    }
+
     @Test
     void stepTest() throws Exception {
         try (var sul = new PythonContinuousNumericSUL(script, 1.0)) {

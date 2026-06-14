@@ -117,6 +117,8 @@ Set `PYTHONEXECUTABLE` to the Python executable that has Jep installed. This is 
 export PYTHONEXECUTABLE="$PWD/venv/bin/python"
 ```
 
+The Python binding tests are skipped when `PYTHONEXECUTABLE` is not set.
+
 #### 3. Build and Install FalCAuN
 ```sh
 JAVA_HOME=/path/to/jdk17 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn clean install

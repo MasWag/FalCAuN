@@ -1,5 +1,6 @@
 package net.maswag.falcaun.python;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.maswag.falcaun.IOSignal;
@@ -21,6 +22,11 @@ class PythonNumericSULTest {
     // The second output is the sum modulo 100.0.
     static final String numericScript = "./src/test/resources/test_numeric_sul.py";
     static final String numericScriptWithExec = "./src/test/resources/test_numeric_sul_with_exec.py";
+
+    @BeforeAll
+    static void assumeJepAvailable() {
+        JepTestSupport.assumePythonExecutableSet();
+    }
 
     @Test
     void numericStepTest() throws Exception {
