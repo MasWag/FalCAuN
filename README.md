@@ -102,19 +102,30 @@ mvn install
 ### Installation of the python binding Module
 
 #### 1. Install the Requirements
-You need to install Jep manually. Follow the instructions on the [official site](https://github.com/ninia/jep)
+You need to install Jep in the Python environment that Maven should use. For example, create and activate a virtual environment and install Jep there.
+
+```shell
+python3 -m venv venv
+. venv/bin/activate
+pip install jep
+```
 
 #### 2. Set up the environment variable
-Add the installed path, which has the JEP native library including `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
+Set `PYTHONEXECUTABLE` to the Python executable that has Jep installed. This is required because Maven runs tests in forked JVMs, and Jep initializes Python from that executable.
+
 ```shell
-export LD_LIBRARY_PATH=<path/to/jep>:${LD_LIBRARY_PATH}
-# Example:
-# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep
+export PYTHONEXECUTABLE="$PWD/venv/bin/python"
 ```
 
 #### 3. Build and Install FalCAuN
 ```sh
-mvn install --also-make --projects python
+JAVA_HOME=/path/to/jdk17 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn clean install
+```
+
+To install only the Python binding module, run:
+
+```sh
+JAVA_HOME=/path/to/jdk17 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn install --also-make --projects python
 ```
 
 ### Installation of LTSMin 3.1.0 on macOS with ARM processors
