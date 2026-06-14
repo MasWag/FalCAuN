@@ -111,13 +111,13 @@ pip install jep
 ```
 
 #### 2. Set up the environment variable
-Set `PYTHONEXECUTABLE` to the Python executable that has Jep installed. This is required because Maven runs tests in forked JVMs, and Jep initializes Python from that executable.
+Set `PYTHONEXECUTABLE` to the absolute path of the Python executable that has Jep installed. This is required because Maven runs tests in forked JVMs, and Jep initializes Python from that executable. Do not use a relative path such as `./venv/bin/python`; use `$PWD/venv/bin/python` instead.
 
 ```shell
 export PYTHONEXECUTABLE="$PWD/venv/bin/python"
 ```
 
-The Python binding tests are skipped when `PYTHONEXECUTABLE` is not set.
+The Python binding tests are skipped when `PYTHONEXECUTABLE` is not set to an absolute executable path.
 
 #### 3. Build and Install FalCAuN
 ```sh
