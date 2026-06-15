@@ -67,7 +67,9 @@ jobs:
           JEP_JAVA_LIBRARY_PATH: ${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
 
       - name: Build and test python project with Maven
-        run: mvn verify --projects python --fail-at-end
+        run: |
+          PYTHONEXECUTABLE="$(python -c 'import sys; print(sys.executable)')" \
+            mvn verify --projects python --fail-at-end
         env:
           LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
           JEP_JAVA_LIBRARY_PATH: ${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
