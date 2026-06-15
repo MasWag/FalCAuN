@@ -58,23 +58,24 @@ jobs:
           pip install --no-cache-dir --no-build-isolation jep==4.2.1
           pip show jep
 
-      - name: Build the core project with Maven
+      - name: Build and test core project with Maven
         run: |
           mvn dependency:go-offline --projects core
-          mvn install --also-make --projects core -DskipTests=True
-
-      - name: Test the core project with Maven
-        run: mvn test -DskipTests=False --projects core
-
-      - name: Test the python project with Maven
-        run: mvn test --projects python
+          mvn verify --also-make --projects core --fail-at-end
         env:
-          # Path to the jep library `jep-4.2.1.jar`
           LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
           JEP_JAVA_LIBRARY_PATH: ${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
 
+      - name: Build and test python project with Maven
+        run: mvn verify --projects python --fail-at-end
+        env:
+          LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
+          JEP_JAVA_LIBRARY_PATH: ${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v6.0.0
+        uses: codecov/codecov-action@v7.0.0
         with:
+          files: core/target/site/jacoco/jacoco.xml,python/target/site/jacoco/jacoco.xml
+          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
