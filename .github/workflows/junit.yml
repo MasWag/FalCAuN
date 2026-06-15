@@ -61,7 +61,7 @@ jobs:
       - name: Build and test core project with Maven
         run: |
           mvn dependency:go-offline --projects core
-          mvn verify --also-make --projects core --fail-at-end
+          mvn install --also-make --projects core --fail-at-end
         env:
           LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
           JEP_JAVA_LIBRARY_PATH: ${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
