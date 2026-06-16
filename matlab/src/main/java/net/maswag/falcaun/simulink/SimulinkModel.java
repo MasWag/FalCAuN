@@ -41,6 +41,7 @@ public class SimulinkModel {
     private final MatlabEngine matlab;
     private final Path cacheDir;
     private final Path codegenDir;
+    private final Path workingDir;
     private final List<String> paramNames;
     /**
      * The current time of the simulation
@@ -80,9 +81,11 @@ public class SimulinkModel {
 
         Path cacheDirTmp;
         Path codegenDirTmp;
+        Path workingDirTmp;
         try {
             cacheDirTmp = Files.createTempDirectory("falcaun-sl-cache");
             codegenDirTmp = Files.createTempDirectory("falcaun-sl-codegen");
+            workingDirTmp = Files.createTempDirectory("falcaun-sl-work");
             matlab.putVariable("falcaunCacheDir", cacheDirTmp.toString());
             matlab.putVariable("falcaunCodegenDir", codegenDirTmp.toString());
             matlab.eval("Simulink.fileGenControl('set', 'CacheFolder', falcaunCacheDir, 'CodeGenFolder', falcaunCodegenDir);");
@@ -93,6 +96,7 @@ public class SimulinkModel {
 
         cacheDir = cacheDirTmp;
         codegenDir = codegenDirTmp;
+        workingDir = workingDirTmp;
 
         matlab.eval("clear;");
         matlab.eval("warning('off', 'Simulink:LoadSave:EncodingMismatch')");
@@ -112,7 +116,7 @@ public class SimulinkModel {
             matlab.eval("clear falcaunModelDir;");
         }
 
-        matlab.putVariable("falcaunWorkingDir", codegenDir.toString());
+        matlab.putVariable("falcaunWorkingDir", workingDir.toString());
         matlab.eval("cd(falcaunWorkingDir);");
         matlab.eval("clear falcaunWorkingDir;");
         // Initialize the current state
@@ -155,9 +159,12 @@ public class SimulinkModel {
         StringBuilder builder = new StringBuilder();
         try {
             // Make the input signal
-            makeDataSet(builder);
+            boolean loadInitialState = !isInitial;
+            makeDataSet(builder, getCurrentStepTimestamps(loadInitialState), getCurrentStepValues(loadInitialState));
 
             configureSimulink(builder);
+            builder.append("set_param(mdl,'FastRestart','off');");
+            builder.append("set_param(mdl,'SimulationMode','normal');");
             preventHugeTempFile(builder);
 
             // Execute the simulation
@@ -171,7 +178,7 @@ public class SimulinkModel {
             }
 
             // Run the simulation
-            runSimulation(builder, this.inputSignal.duration());
+            runSimulation(builder, getCurrentStepStartTime(loadInitialState), this.inputSignal.duration(), loadInitialState, true);
 
             simulationTime.start();
             matlab.eval(builder.toString());
@@ -203,11 +210,47 @@ public class SimulinkModel {
         return new ValueWithTime<>(timestamps, result);
     }
 
+    private List<Double> getCurrentStepTimestamps(boolean loadInitialState) {
+        return getCurrentStepTimestamps(inputSignal.getTimestamps(), loadInitialState);
+    }
+
+    static List<Double> getCurrentStepTimestamps(List<Double> timestamps, boolean loadInitialState) {
+        if (!loadInitialState || timestamps.size() < 2) {
+            return timestamps;
+        }
+        int last = timestamps.size() - 1;
+        return timestamps.subList(last - 1, last + 1);
+    }
+
+    private List<List<Double>> getCurrentStepValues(boolean loadInitialState) {
+        return getCurrentStepValues(inputSignal.getSignalValues(), loadInitialState);
+    }
+
+    static List<List<Double>> getCurrentStepValues(List<List<Double>> signalValues, boolean loadInitialState) {
+        if (!loadInitialState || signalValues.size() < 2) {
+            return signalValues;
+        }
+        int last = signalValues.size() - 1;
+        return signalValues.subList(last - 1, last + 1);
+    }
+
+    private double getCurrentStepStartTime(boolean loadInitialState) {
+        if (!loadInitialState || inputSignal.size() < 2) {
+            return 0.0;
+        }
+        return inputSignal.getTimestamps().get(inputSignal.size() - 2);
+    }
+
     private void makeDataSet(StringBuilder builder) throws ExecutionException, InterruptedException {
-        builder.append("timeVector = ").append(inputSignal.getTimestamps()).append(";");
+        makeDataSet(builder, inputSignal.getTimestamps(), inputSignal.getSignalValues());
+    }
+
+    private void makeDataSet(StringBuilder builder, List<Double> timestamps, List<List<Double>> signalValues) throws ExecutionException, InterruptedException {
+        builder.append("timeVector = ").append(timestamps).append(";");
         builder.append("ds = Simulink.SimulationData.Dataset;");
-        for (int i = 0; i < inputSignal.dimension(); i++) {
-            double[] tmp = inputSignal.dimensionGet(i).stream().mapToDouble(Double::doubleValue).toArray();
+        for (int i = 0; i < signalValues.get(0).size(); i++) {
+            final int index = i;
+            double[] tmp = signalValues.stream().mapToDouble(values -> values.get(index)).toArray();
             matlab.putVariable("tmp" + i, tmp);
             builder.append("input").append(i).append(" = timeseries(tmp").append(i).append(", timeVector);");
             if (this.interpolationMethod == InterpolationMethod.CONSTANT) {
@@ -268,12 +311,13 @@ public class SimulinkModel {
         builder.append("Simulink.sdi.clear;");
     }
 
-    private void runSimulation(StringBuilder builder, double stopTime) {
+    private void runSimulation(StringBuilder builder, double startTime, double stopTime, boolean loadInitialState, boolean saveFinalState) {
         // append the input signal
         builder.append("in = Simulink.SimulationInput(mdl);");
         builder.append("in = in.setExternalInput(ds);");
 
-        // Set the StopTime
+        // Set the StartTime and StopTime
+        builder.append("in = in.setModelParameter('StartTime', '").append(startTime).append("');");
         builder.append("in = in.setModelParameter('StopTime', '").append(stopTime).append("');");
         // Save the output to yout
         if (!this.useFastRestart) {
@@ -282,10 +326,25 @@ public class SimulinkModel {
             builder.append("in = in.setModelParameter('SaveTime', 'on');");
             builder.append("in = in.setModelParameter('TimeSaveName', 'tout');");
         }
-        builder.append("in = in.setModelParameter('LoadInitialState', 'off');");
+        if (loadInitialState) {
+            builder.append("in = in.setModelParameter('LoadInitialState', 'on');");
+            builder.append("in = in.setModelParameter('InitialState', 'myOperPoint');");
+        } else {
+            builder.append("in = in.setModelParameter('LoadInitialState', 'off');");
+        }
+        if (saveFinalState) {
+            builder.append("in = in.setModelParameter('SaveFinalState', 'on');");
+            builder.append("in = in.setModelParameter('FinalStateName', 'myOperPoint');");
+            builder.append("in = in.setModelParameter('SaveCompleteFinalSimState', 'on');");
+        } else {
+            builder.append("in = in.setModelParameter('SaveFinalState', 'off');");
+        }
 
         // Execute the simulation
         builder.append("simOut = sim(in);");
+        if (saveFinalState) {
+            builder.append("myOperPoint = simOut.get('myOperPoint');");
+        }
         // We handle the output as double.
         builder.append("y = double(simOut.get('yout'));");
         builder.append("t = double(simOut.get('tout'));");
@@ -370,7 +429,11 @@ public class SimulinkModel {
 
         preventHugeTempFile(builder);
 
-        runSimulation(builder, this.inputSignal.duration());
+        builder.append("set_param(mdl,'SaveFinalState','off');");
+        builder.append("set_param(mdl,'LoadInitialState','off');");
+
+        runSimulation(builder, 0.0, this.inputSignal.duration(), false, false);
+        builder.append("set_param(mdl,'FastRestart','off');");
 
         simulationTime.start();
         log.trace(builder.toString());
@@ -409,6 +472,7 @@ public class SimulinkModel {
         matlab.close();
         deleteDirectorySilently(cacheDir);
         deleteDirectorySilently(codegenDir);
+        deleteDirectorySilently(workingDir);
     }
 
     public static void clearSimulinkBuildArtifacts(Path baseDirectory) {
@@ -448,6 +512,7 @@ public class SimulinkModel {
 
     private static boolean isSimulinkArtifact(String name) {
         return name.endsWith(".slxc")
+                || name.endsWith(".autosave")
                 || name.contains("_acc.mex")
                 || name.endsWith(".mexmaca64")
                 || name.endsWith(".mexglnxa64")

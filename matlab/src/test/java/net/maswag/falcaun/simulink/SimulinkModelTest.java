@@ -6,7 +6,10 @@ import net.maswag.falcaun.ValueWithTime;
 import net.maswag.falcaun.simulink.SimulinkModel;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -22,7 +25,36 @@ class SimulinkModelTest {
 
     @AfterEach
     void tearDown() throws EngineException {
-        mdl.close();
+        if (mdl != null) {
+            mdl.close();
+            mdl = null;
+        }
+    }
+
+    @Test
+    void clearSimulinkBuildArtifactsRemovesAutosave(@TempDir Path tempDir) throws IOException {
+        Path autosave = tempDir.resolve("model.slx.autosave");
+        Files.writeString(autosave, "");
+
+        SimulinkModel.clearSimulinkBuildArtifacts(tempDir);
+
+        Assertions.assertFalse(Files.exists(autosave));
+    }
+
+    @Test
+    void currentStepDatasetUsesCurrentSegmentForSavedState() {
+        List<Double> timestamps = Arrays.asList(0.0, 2.0, 4.0);
+        List<List<Double>> values = Arrays.asList(
+                Arrays.asList(80.0, 900.0),
+                Arrays.asList(70.0, 950.0),
+                Arrays.asList(60.0, 1000.0));
+
+        Assertions.assertEquals(
+                Arrays.asList(2.0, 4.0),
+                SimulinkModel.getCurrentStepTimestamps(timestamps, true));
+        Assertions.assertEquals(
+                Arrays.asList(values.get(1), values.get(2)),
+                SimulinkModel.getCurrentStepValues(values, true));
     }
 
     @Nested
@@ -61,25 +93,32 @@ class SimulinkModelTest {
 
         @Test
         void step() {
+            final double eps = 1.0e-9;
             double lastTime = Double.NEGATIVE_INFINITY; // The dummy value for the first case
+            boolean sawNonZeroStart = false;
             // Give [80.0, 900.0] for 10 times
             List<Double> input = Arrays.asList(80.0, 900.0);
             for (int i = 0; i < 10; i++) {
                 ValueWithTime<List<Double>> result = mdl.step(input);
+                List<Double> timestamps = result.getTimestamps();
+                Assertions.assertFalse(timestamps.isEmpty());
+                double firstTime = timestamps.get(0);
+                double currentLastTime = timestamps.get(timestamps.size() - 1);
                 if (lastTime < 0.0) {
                     // The result only contains the information at time 0
-                    Assertions.assertEquals(1, result.getTimestamps().size());
-                    Assertions.assertEquals(0.0, result.getTimestamps().get(0));
+                    Assertions.assertEquals(1, timestamps.size());
+                    Assertions.assertEquals(0.0, firstTime, eps);
                 } else {
-                    // Test that the first time stamp is always 0
-                    Assertions.assertEquals(0.0, result.getTimestamps().get(0));
-                    // Test that the last time stamp is 2.0 larger than the latest last time stamp
-                    Assertions.assertEquals(result.getTimestamps().get(result.getTimestamps().size() - 1), lastTime + signalStep);
+                    // Each incremental result should continue from the previous step, not replay from zero.
+                    Assertions.assertTrue(firstTime >= lastTime - eps);
+                    Assertions.assertEquals(lastTime + signalStep, currentLastTime, eps);
+                    sawNonZeroStart |= firstTime > eps;
                 }
-                lastTime = result.getTimestamps().get(result.getTimestamps().size() - 1);
+                lastTime = currentLastTime;
             }
+            Assertions.assertTrue(sawNonZeroStart);
             // Since the total number of steps is 10, the last time stamp should be 18.0
-            Assertions.assertEquals(signalStep * 9, lastTime);
+            Assertions.assertEquals(signalStep * 9, lastTime, eps);
         }
 
         @Test

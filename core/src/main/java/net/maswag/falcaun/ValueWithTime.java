@@ -93,26 +93,24 @@ public class ValueWithTime<T> {
     @Nullable
     public T at(double time) {
         assert(timestamps.size() == values.size());
-        Double best = null;
-        double bestTime = 0;
+        if (timestamps.isEmpty()) {
+            return null;
+        }
+        int bestIndex = 0;
+        double bestDistance = Math.abs(timestamps.get(0) - time);
         for (int i = 0; i < timestamps.size(); i++) {
-            best = timestamps.get(i);
-            bestTime = Math.max(time, bestTime);
-            if (timestamps.get(i) == time) {
+            double timestamp = timestamps.get(i);
+            if (timestamp == time) {
                 return values.get(i);
             }
-            if (timestamps.get(i) > time) {
-                if (time - bestTime < timestamps.get(i) - time) {
-                    log.info("Failed to find the exact time. Using the value at the closest time: {}", best);
-                    return values.get(i - 1);
-                } else {
-                    log.info("Found the exact time. Using the value at the closest time: {}", this.timestamps.get(i));
-                    return values.get(i);
-                }
+            double distance = Math.abs(timestamp - time);
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                bestIndex = i;
             }
         }
-        log.info("Failed to find the exact time. Using the value at the closest time: {}", best);
-        return null;
+        log.info("Failed to find the exact time. Using the value at the closest time: {}", timestamps.get(bestIndex));
+        return values.get(bestIndex);
     }
 
     /**
