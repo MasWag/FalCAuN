@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+import java.util.function.LongSupplier;
 
 /**
  * Am equivalence oracle to add timeout in addition to the original oracle.
@@ -20,31 +22,37 @@ import java.util.Collection;
 public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalenceOracle<I, O> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeoutEQOracle.class);
 
-    private long timeout;
+    private final long timeout;
     private long startTime;
-    private MealyEquivalenceOracle<I, O> eqOracle;
+    private final MealyEquivalenceOracle<I, O> eqOracle;
+    private final LongSupplier nanoTime;
 
     /**
      * @param eqOracle the wrapped equivalence oracle
      * @param timeout  timeout in seconds.
      */
     TimeoutEQOracle(MealyEquivalenceOracle<I, O> eqOracle, long timeout) {
+        this(eqOracle, timeout, System::nanoTime);
+    }
+
+    TimeoutEQOracle(MealyEquivalenceOracle<I, O> eqOracle, long timeout, LongSupplier nanoTime) {
         this.eqOracle = eqOracle;
-        this.timeout = timeout * 1000000000;
+        this.timeout = TimeUnit.SECONDS.toNanos(timeout);
+        this.nanoTime = nanoTime;
     }
 
     /**
      * Start ticking the clock
      */
     void start() {
-        startTime = System.nanoTime();
+        startTime = nanoTime.getAsLong();
     }
 
     /** {@inheritDoc} */
     @Nullable
     @Override
     public DefaultQuery<I, Word<O>> findCounterExample(MealyMachine<?, I, ?, O> objects, Collection<? extends I> collection) {
-        if ((System.nanoTime() - startTime) > timeout) {
+        if ((nanoTime.getAsLong() - startTime) > timeout) {
             LOGGER.info("EQQuery finished because of timeout!!");
             return null;
         } else {
