@@ -140,9 +140,16 @@ public class SimulinkModel {
     }
 
     /**
-     * Execute the Simulink model for one step by feeding inputSignal
-     * @param inputSignal The input signal
-     * @return The output signal with timestamps of the entire execution.
+     * Advance the logical SUL state by one input symbol.
+     * <p>
+     * The Java-side input prefix is extended with {@code inputSignal}. The current low-level implementation then
+     * replays the whole accumulated prefix from the Simulink model's initial state, because this has been faster than
+     * loading and saving Simulink final states for the workloads covered by the tests. Thus this method is incremental
+     * from the caller's SUL perspective, but the raw trace returned by this method may contain the whole replayed prefix
+     * and start at time {@code 0.0}.
+     *
+     * @param inputSignal The next input symbol
+     * @return The output signal with timestamps of the replayed prefix.
      */
     @NotNull
     public ValueWithTime<List<Double>> step(@NotNull List<Double> inputSignal) {
@@ -159,26 +166,17 @@ public class SimulinkModel {
         StringBuilder builder = new StringBuilder();
         try {
             // Make the input signal
-            boolean loadInitialState = !isInitial;
-            makeDataSet(builder, getCurrentStepTimestamps(loadInitialState), getCurrentStepValues(loadInitialState));
+            makeDataSet(builder);
 
             configureSimulink(builder);
-            builder.append("set_param(mdl,'FastRestart','off');");
-            builder.append("set_param(mdl,'SimulationMode','normal');");
             preventHugeTempFile(builder);
 
-            // Execute the simulation
-            builder.append("set_param(mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on');");
-            if (isInitial) {
-                builder.append("set_param(mdl, 'LoadInitialState', 'off');");
-                isInitial = false;
-            } else {
-                builder.append("set_param(mdl, 'LoadInitialState', 'on');");
-                builder.append("set_param(mdl, 'InitialState', 'myOperPoint');");
-            }
+            builder.append("set_param(mdl,'SaveFinalState','off');");
+            builder.append("set_param(mdl,'LoadInitialState','off');");
+            isInitial = false;
 
             // Run the simulation
-            runSimulation(builder, getCurrentStepStartTime(loadInitialState), this.inputSignal.duration(), loadInitialState, true);
+            runSimulation(builder, 0.0, this.inputSignal.duration(), false, false);
 
             simulationTime.start();
             matlab.eval(builder.toString());
@@ -210,47 +208,11 @@ public class SimulinkModel {
         return new ValueWithTime<>(timestamps, result);
     }
 
-    private List<Double> getCurrentStepTimestamps(boolean loadInitialState) {
-        return getCurrentStepTimestamps(inputSignal.getTimestamps(), loadInitialState);
-    }
-
-    static List<Double> getCurrentStepTimestamps(List<Double> timestamps, boolean loadInitialState) {
-        if (!loadInitialState || timestamps.size() < 2) {
-            return timestamps;
-        }
-        int last = timestamps.size() - 1;
-        return timestamps.subList(last - 1, last + 1);
-    }
-
-    private List<List<Double>> getCurrentStepValues(boolean loadInitialState) {
-        return getCurrentStepValues(inputSignal.getSignalValues(), loadInitialState);
-    }
-
-    static List<List<Double>> getCurrentStepValues(List<List<Double>> signalValues, boolean loadInitialState) {
-        if (!loadInitialState || signalValues.size() < 2) {
-            return signalValues;
-        }
-        int last = signalValues.size() - 1;
-        return signalValues.subList(last - 1, last + 1);
-    }
-
-    private double getCurrentStepStartTime(boolean loadInitialState) {
-        if (!loadInitialState || inputSignal.size() < 2) {
-            return 0.0;
-        }
-        return inputSignal.getTimestamps().get(inputSignal.size() - 2);
-    }
-
     private void makeDataSet(StringBuilder builder) throws ExecutionException, InterruptedException {
-        makeDataSet(builder, inputSignal.getTimestamps(), inputSignal.getSignalValues());
-    }
-
-    private void makeDataSet(StringBuilder builder, List<Double> timestamps, List<List<Double>> signalValues) throws ExecutionException, InterruptedException {
-        builder.append("timeVector = ").append(timestamps).append(";");
+        builder.append("timeVector = ").append(inputSignal.getTimestamps()).append(";");
         builder.append("ds = Simulink.SimulationData.Dataset;");
-        for (int i = 0; i < signalValues.get(0).size(); i++) {
-            final int index = i;
-            double[] tmp = signalValues.stream().mapToDouble(values -> values.get(index)).toArray();
+        for (int i = 0; i < inputSignal.dimension(); i++) {
+            double[] tmp = inputSignal.dimensionGet(i).stream().mapToDouble(Double::doubleValue).toArray();
             matlab.putVariable("tmp" + i, tmp);
             builder.append("input").append(i).append(" = timeseries(tmp").append(i).append(", timeVector);");
             if (this.interpolationMethod == InterpolationMethod.CONSTANT) {
@@ -317,7 +279,9 @@ public class SimulinkModel {
         builder.append("in = in.setExternalInput(ds);");
 
         // Set the StartTime and StopTime
-        builder.append("in = in.setModelParameter('StartTime', '").append(startTime).append("');");
+        if (startTime != 0.0) {
+            builder.append("in = in.setModelParameter('StartTime', '").append(startTime).append("');");
+        }
         builder.append("in = in.setModelParameter('StopTime', '").append(stopTime).append("');");
         // Save the output to yout
         if (!this.useFastRestart) {
@@ -326,6 +290,8 @@ public class SimulinkModel {
             builder.append("in = in.setModelParameter('SaveTime', 'on');");
             builder.append("in = in.setModelParameter('TimeSaveName', 'tout');");
         }
+        // State loading/saving is supported here, but the default SUL step strategy disables both and replays the
+        // accumulated prefix because that is currently the faster behaviorally equivalent implementation.
         if (loadInitialState) {
             builder.append("in = in.setModelParameter('LoadInitialState', 'on');");
             builder.append("in = in.setModelParameter('InitialState', 'myOperPoint');");
@@ -336,8 +302,6 @@ public class SimulinkModel {
             builder.append("in = in.setModelParameter('SaveFinalState', 'on');");
             builder.append("in = in.setModelParameter('FinalStateName', 'myOperPoint');");
             builder.append("in = in.setModelParameter('SaveCompleteFinalSimState', 'on');");
-        } else {
-            builder.append("in = in.setModelParameter('SaveFinalState', 'off');");
         }
 
         // Execute the simulation
@@ -433,7 +397,6 @@ public class SimulinkModel {
         builder.append("set_param(mdl,'LoadInitialState','off');");
 
         runSimulation(builder, 0.0, this.inputSignal.duration(), false, false);
-        builder.append("set_param(mdl,'FastRestart','off');");
 
         simulationTime.start();
         log.trace(builder.toString());
@@ -469,6 +432,11 @@ public class SimulinkModel {
      * Close the MATLAB engine. This method must be called when the object is no longer used.
      */
     public void close() throws EngineException {
+        try {
+            matlab.eval("if exist('mdl','var'); set_param(mdl,'FastRestart','off'); end");
+        } catch (Exception e) {
+            log.debug("Failed to disable FastRestart during Simulink cleanup: {}", e.getMessage());
+        }
         matlab.close();
         deleteDirectorySilently(cacheDir);
         deleteDirectorySilently(codegenDir);
