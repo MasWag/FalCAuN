@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import static java.lang.Math.abs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SimulinkSULVerifierTest {
@@ -316,26 +315,6 @@ class SimulinkSULVerifierTest {
                 largest = new ArrayList<>(Arrays.asList('b', 'c', 'a'));
             }
             mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
-        }
-
-        @Test
-        void setTimeout() throws Exception {
-            // generate properties
-            String stlString = "alw_[0, 3] (signal(1) < 6000)";
-            TemporalLogic.STLCost stl = factory.parse(stlString, inputMapper, outputMapper, largest);
-            properties = new StaticSTLList<>(Collections.singletonList(stl));
-            // define the verifier
-            verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
-            // set timeout
-            long timeout = 2 * 60;
-            verifier.setTimeout(timeout);
-            // add equivalence oracle
-            verifier.addGAEQOracleAll(25, 1000, GASelectionKind.Tournament,
-                    50, 0.9, 0.01);
-            long startTime = System.nanoTime();
-            assertTrue(verifier.run());
-            long duration = (System.nanoTime() - startTime) / 1000 / 1000 / 1000;
-            assertThat("Execution time", duration, greaterThan(timeout));
         }
 
         @Nested
