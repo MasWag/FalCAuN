@@ -25,6 +25,12 @@ public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalence
     private final long timeout;
     private long startTime;
     private final MealyEquivalenceOracle<I, O> eqOracle;
+    /**
+     * Clock supplier for reading the current time.
+     * In production this is {@link System#nanoTime()}; for testing it may be a fake
+     * clock (e.g. returning synthetic nanosecond values) so that timeout behaviour
+     * can be verified without sleeping or wall-clock timing.
+     */
     private final LongSupplier nanoTime;
 
     /**
@@ -35,6 +41,15 @@ public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalence
         this(eqOracle, timeout, System::nanoTime);
     }
 
+    /**
+     * @param eqOracle the wrapped equivalence oracle
+     * @param timeout  timeout in seconds.
+     * @param nanoTime a {@link LongSupplier} that returns current time in nanoseconds.
+     *                 In production this is typically {@code System::nanoTime};
+     *                 for testing provide a fake clock that returns controllable values
+     *                 (e.g. {@code () -> fakeClockValue}) so timeout behaviour can be
+     *                 verified without sleeping or wall-clock timing.
+     */
     TimeoutEQOracle(MealyEquivalenceOracle<I, O> eqOracle, long timeout, LongSupplier nanoTime) {
         this.eqOracle = eqOracle;
         this.timeout = TimeUnit.SECONDS.toNanos(timeout);
