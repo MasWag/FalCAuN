@@ -13,6 +13,8 @@ import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -29,6 +31,7 @@ final class MatlabEngineManager {
 
     static final String ENGINE_NAME_PREFIX = "FalCAuN_";
     private static final String LOCK_SUBDIR = "falcaun-matlab-engine-locks";
+    private static final Map<String, MatlabEngine> REUSABLE_ENGINES = new ConcurrentHashMap<>();
 
     static final boolean REUSE_ENGINE = Boolean.parseBoolean(
         System.getProperty("falcaun.matlab.reuseEngine", "true")
@@ -50,7 +53,7 @@ final class MatlabEngineManager {
         // Check system property before doing anything
         if (!REUSE_ENGINE) {
             log.debug("Engine reuse disabled (falcaun.matlab.reuseEngine=false), starting fresh");
-            return startNewEngine();
+            return startNewEngine(false);
         }
 
         LockedMatlabEngine locked = tryReuseExisting();
@@ -58,7 +61,7 @@ final class MatlabEngineManager {
             return locked;
         }
 
-        return startNewEngine();
+        return startNewEngine(true);
     }
 
     // -----------------------------------------------------------------------
@@ -115,26 +118,35 @@ final class MatlabEngineManager {
                 log.debug("Session '{}' already locked by another process, skipping", name);
                 return null;
             }
-            log.debug("Acquired I-P lock for FalCAuN session: {}", name);
 
             // Lock acquired — try to connect
             MatlabEngine eng;
-            try {
-                eng = MatlabEngine.connectMatlab(name);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                channel.close();
-                log.debug("Interrupted while connecting to session '{}'", name);
-                return null;
+            LockedMatlabEngine.CloseAction closeAction;
+            MatlabEngine pooledEngine = REUSABLE_ENGINES.get(name);
+            if (pooledEngine != null) {
+                eng = pooledEngine;
+                closeAction = LockedMatlabEngine.CloseAction.KEEP_ALIVE;
+                log.debug("Reusing pooled FalCAuN session: {}", name);
+            } else {
+                try {
+                    eng = MatlabEngine.connectMatlab(name);
+                    closeAction = LockedMatlabEngine.CloseAction.DISCONNECT;
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.debug("Interrupted while connecting to session '{}'", name);
+                    releaseLockQuietly(lock, channel);
+                    return null;
+                }
             }
-            // Connection succeeded: keep the lock, return wrapper
-            return new LockedMatlabEngine(eng, channel, lock);
-        } catch (IOException e) {
+            // Engine handle is usable: keep the lock, return wrapper.
+            log.debug("Acquired usable locked FalCAuN session: {}", name);
+            return new LockedMatlabEngine(eng, channel, lock, closeAction);
+        } catch (IOException | OverlappingFileLockException e) {
             log.debug("Failed to acquire lock for session '{}': {}", name, e.getMessage());
-            closeQuietly(channel);
+            releaseLockQuietly(lock, channel);
             return null;
         } catch (EngineException e) {
-            log.debug("Failed to connect to session '{}': {}", name, e.getMessage());
+            log.debug("Locked FalCAuN session '{}' was not connectable: {}", name, e.getMessage());
             releaseLockQuietly(lock, channel);
             return null;
         }
@@ -144,9 +156,9 @@ final class MatlabEngineManager {
     // New-engine path
     // -----------------------------------------------------------------------
 
-    private static LockedMatlabEngine startNewEngine() throws EngineException {
+    private static LockedMatlabEngine startNewEngine(boolean reusable) throws EngineException {
         String name = generateUniqueName();
-        log.debug("Starting new MATLAB engine, name={}", name);
+        log.debug("Starting new MATLAB engine, name={}, reusable={}", name, reusable);
 
         MatlabEngine eng;
         try {
@@ -158,35 +170,73 @@ final class MatlabEngineManager {
             throw new EngineException("Interrupted while starting new MATLAB engine", e);
         }
 
-        // Give the engine a name and share it so it can be connected later
-        try {
-            // shareEngine('name') is a static method in the matlab.engine package.
-            // Variable name must be valid MATLAB variable.
-            eng.eval("falcaun_name = '" + name + "';");
-            eng.eval("matlab.engine.shareEngine(falcaun_name);");
-            eng.eval("clear falcaun_name;");
-        } catch (EngineException e) {
-            closeEngineQuietly(eng);
-            throw new EngineException("Failed to share newly started MATLAB engine: " + e.getMessage(), e);
-        } catch (ExecutionException e) {
-            closeEngineQuietly(eng);
-            throw new EngineException("Failed to share newly started MATLAB engine: " + e.getMessage(), e);
-        } catch (InterruptedException e) {
-            closeEngineQuietly(eng);
-            Thread.currentThread().interrupt();
-            throw new EngineException("Interrupted while sharing engine", e);
-        } catch (Exception e) {
-            closeEngineQuietly(eng);
-            throw new EngineException("Failed to share newly started MATLAB engine: " + e.getMessage(), e);
+        if (reusable) {
+            // Give the engine a name and share it so it can be connected later.
+            try {
+                // shareEngine('name') is a static method in the matlab.engine package.
+                // Variable name must be valid MATLAB variable.
+                eng.eval("falcaun_name = '" + name + "';");
+                eng.eval("matlab.engine.shareEngine(falcaun_name);");
+                eng.eval("clear falcaun_name;");
+            } catch (EngineException e) {
+                closeEngineQuietly(eng);
+                throw new EngineException("Failed to share newly started MATLAB engine: " + e.getMessage(), e);
+            } catch (ExecutionException e) {
+                closeEngineQuietly(eng);
+                throw new EngineException("Failed to share newly started MATLAB engine: " + e.getMessage(), e);
+            } catch (InterruptedException e) {
+                closeEngineQuietly(eng);
+                Thread.currentThread().interrupt();
+                throw new EngineException("Interrupted while sharing engine", e);
+            } catch (Exception e) {
+                closeEngineQuietly(eng);
+                throw new EngineException("Failed to share newly started MATLAB engine: " + e.getMessage(), e);
+            }
         }
 
-        // Acquire and hold the lock for the newly shared engine
-        LockedMatlabEngine locked = acquireOneSession(name);
+        // Acquire and hold the lock for the newly started engine. We already have
+        // the engine handle, so avoid reconnecting to a session we just started.
+        LockedMatlabEngine locked = lockStartedEngine(name, eng, reusable);
         if (locked == null) {
             closeEngineQuietly(eng);
             throw new EngineException("Could not acquire lock for newly started engine: " + name);
         }
         return locked;
+    }
+
+    private static LockedMatlabEngine lockStartedEngine(String name, MatlabEngine eng, boolean reusable) {
+        Path lockPath = lockFilePath(name);
+        FileChannel channel = null;
+        FileLock lock = null;
+        try {
+            Path lockDir = lockPath.getParent();
+            if (lockDir != null && !Files.exists(lockDir)) {
+                Files.createDirectories(lockDir);
+            }
+            channel = FileChannel.open(
+                lockPath,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.WRITE
+            );
+            lock = channel.tryLock();
+            if (lock == null) {
+                channel.close();
+                log.debug("Newly started session '{}' is already locked", name);
+                return null;
+            }
+            LockedMatlabEngine.CloseAction closeAction = reusable
+                    ? LockedMatlabEngine.CloseAction.KEEP_ALIVE
+                    : LockedMatlabEngine.CloseAction.TERMINATE;
+            if (reusable) {
+                REUSABLE_ENGINES.put(name, eng);
+            }
+            log.debug("Acquired I-P lock for newly started FalCAuN engine: {}, reusable={}", name, reusable);
+            return new LockedMatlabEngine(eng, channel, lock, closeAction);
+        } catch (IOException | OverlappingFileLockException e) {
+            log.debug("Failed to lock newly started session '{}': {}", name, e.getMessage());
+            releaseLockQuietly(lock, channel);
+            return null;
+        }
     }
 
     // -----------------------------------------------------------------------

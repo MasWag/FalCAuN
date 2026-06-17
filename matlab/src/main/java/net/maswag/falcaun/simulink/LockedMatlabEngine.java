@@ -11,17 +11,25 @@ import java.nio.channels.FileLock;
  * Wraps a {@link MatlabEngine} with an inter-process {@link FileLock}
  * to ensure safe, exclusive access to a shared MATLAB session.
  *
- * The lock is released before the engine is closed.
+ * The lock is released after the Java engine handle is released.
  */
 final class LockedMatlabEngine implements AutoCloseable {
+    enum CloseAction {
+        DISCONNECT,
+        KEEP_ALIVE,
+        TERMINATE
+    }
+
     private final MatlabEngine engine;
     private final FileChannel lockChannel;
     private final FileLock lock;
+    private final CloseAction closeAction;
 
-    LockedMatlabEngine(MatlabEngine engine, FileChannel lockChannel, FileLock lock) {
+    LockedMatlabEngine(MatlabEngine engine, FileChannel lockChannel, FileLock lock, CloseAction closeAction) {
         this.engine = engine;
         this.lockChannel = lockChannel;
         this.lock = lock;
+        this.closeAction = closeAction;
     }
 
     MatlabEngine engine() {
@@ -31,7 +39,11 @@ final class LockedMatlabEngine implements AutoCloseable {
     @Override
     public void close() throws EngineException {
         try {
-            engine.close();
+            if (closeAction == CloseAction.DISCONNECT) {
+                engine.disconnect();
+            } else if (closeAction == CloseAction.TERMINATE) {
+                engine.close();
+            }
         } finally {
             try {
                 if (lock != null && lock.isValid()) {

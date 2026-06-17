@@ -96,6 +96,7 @@ public class SimulinkModel {
         workingDir = workingDirTmp;
 
         matlab.eval("clear;");
+        cleanupMatlabSession();
         matlab.eval("warning('off', 'Simulink:LoadSave:EncodingMismatch')");
         matlab.putVariable("signalStep", signalStep);
         String resourceDir = extractResourceDirectory(initScript);
@@ -441,23 +442,38 @@ public class SimulinkModel {
      * Close the MATLAB engine. This method must be called when the object is no longer used.
      */
     public void close() throws EngineException {
+        cleanupMatlabSession();
+        resetMatlabWorkingDirectory();
         try {
-            matlab.eval("if exist('mdl','var'); set_param(mdl,'FastRestart','off'); end");
-        } catch (Exception e) {
-            log.debug("Failed to disable FastRestart during Simulink cleanup: {}", e.getMessage());
-        } finally {
             if (lockedEngine != null) {
-                try {
-                    lockedEngine.close();
-                } catch (EngineException e) {
-                    log.error("Failed to release locked MATLAB engine: {}", e.getMessage());
-                    throw e;
-                }
+                lockedEngine.close();
             }
+        } catch (EngineException e) {
+            log.error("Failed to release locked MATLAB engine: {}", e.getMessage());
+            throw e;
+        } finally {
+            deleteDirectorySilently(cacheDir);
+            deleteDirectorySilently(codegenDir);
+            deleteDirectorySilently(workingDir);
         }
-        deleteDirectorySilently(cacheDir);
-        deleteDirectorySilently(codegenDir);
-        deleteDirectorySilently(workingDir);
+    }
+
+    private void resetMatlabWorkingDirectory() {
+        try {
+            matlab.eval("try; cd(tempdir); catch; end;");
+        } catch (Exception e) {
+            log.debug("Failed to reset MATLAB working directory", e);
+        }
+    }
+
+    private void cleanupMatlabSession() {
+        try {
+            matlab.eval("try; if exist('mdl','var'); set_param(mdl,'FastRestart','off'); end; catch; end;");
+            matlab.eval("try; Simulink.sdi.clear; catch; end;");
+            matlab.eval("try; clear ds y t ySize simOut myOperPoint timeVector; catch; end;");
+        } catch (Exception e) {
+            log.debug("Failed to clean up MATLAB/Simulink session", e);
+        }
     }
 
     public static void clearSimulinkBuildArtifacts(Path baseDirectory) {
