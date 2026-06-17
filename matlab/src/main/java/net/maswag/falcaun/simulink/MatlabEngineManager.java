@@ -196,7 +196,7 @@ final class MatlabEngineManager {
 
         // Acquire and hold the lock for the newly started engine. We already have
         // the engine handle, so avoid reconnecting to a session we just started.
-        LockedMatlabEngine locked = lockStartedEngine(name, eng, reusable);
+        LockedMatlabEngine locked = lockAlreadyStartedEngine(name, eng, reusable);
         if (locked == null) {
             closeEngineQuietly(eng);
             throw new EngineException("Could not acquire lock for newly started engine: " + name);
@@ -204,7 +204,7 @@ final class MatlabEngineManager {
         return locked;
     }
 
-    private static LockedMatlabEngine lockStartedEngine(String name, MatlabEngine eng, boolean reusable) {
+    static LockedMatlabEngine lockAlreadyStartedEngine(String name, MatlabEngine eng, boolean reusable) {
         Path lockPath = lockFilePath(name);
         FileChannel channel = null;
         FileLock lock = null;
@@ -230,7 +230,7 @@ final class MatlabEngineManager {
             if (reusable) {
                 REUSABLE_ENGINES.put(name, eng);
             }
-            log.debug("Acquired I-P lock for newly started FalCAuN engine: {}, reusable={}", name, reusable);
+            log.debug("Acquired inter-process lock for newly started FalCAuN engine: {}, reusable={}", name, reusable);
             return new LockedMatlabEngine(eng, channel, lock, closeAction);
         } catch (IOException | OverlappingFileLockException e) {
             log.debug("Failed to lock newly started session '{}': {}", name, e.getMessage());

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.channels.FileChannel;
+import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -123,6 +124,32 @@ class MatlabEngineManagerTest {
         assertNotNull(lock);
         channel.close();
         assertTrue(Files.exists(engineLockFile));
+    }
+
+    @Test
+    void lockAlreadyStartedEngineHoldsLockWithoutConnecting() throws Exception {
+        String previousTmpDir = System.getProperty("java.io.tmpdir");
+        System.setProperty("java.io.tmpdir", tmpDir.toString());
+        String engineName = "FalCAuN_test_started_engine";
+        Path lockFile = MatlabEngineManager.lockFilePath(engineName);
+
+        try (LockedMatlabEngine locked = MatlabEngineManager.lockAlreadyStartedEngine(engineName, null, false)) {
+            assertNotNull(locked, "Started engine path should acquire a lock for the existing handle");
+            assertTrue(Files.exists(lockFile), "Started engine path should create its lock file");
+
+            try (FileChannel channel = FileChannel.open(lockFile, StandardOpenOption.WRITE)) {
+                assertThrows(OverlappingFileLockException.class, channel::tryLock,
+                    "Started engine lock should stay held until LockedMatlabEngine is closed");
+            }
+        } finally {
+            System.setProperty("java.io.tmpdir", previousTmpDir);
+        }
+
+        try (FileChannel channel = FileChannel.open(lockFile, StandardOpenOption.WRITE)) {
+            var reacquired = channel.tryLock();
+            assertNotNull(reacquired, "Started engine lock should be released on close");
+            reacquired.release();
+        }
     }
 
     @Test

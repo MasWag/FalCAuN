@@ -37,7 +37,7 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
 
     IntegerRandomMutation(double mutationProbability) {
         this.mutationProbability = mutationProbability;
-        this.random = new Random();
+        this.random = new Random(0);
     }
 
     /** {@inheritDoc} */
@@ -48,8 +48,10 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
 
         for (int i = 0; i < solution.getNumberOfVariables(); i++) {
             if (this.random.nextDouble() < mutationProbability) {
-                int positionToChange = this.random.nextInt(solution.getNumberOfVariables() - 1);
-                Integer newValue = random.nextInt(solution.getUpperBound(i) + 1) + solution.getLowerBound(i);
+                int positionToChange = this.random.nextInt(solution.getNumberOfVariables());
+                int lowerBound = solution.getLowerBound(positionToChange);
+                int upperBound = solution.getUpperBound(positionToChange);
+                Integer newValue = random.nextInt(upperBound - lowerBound + 1) + lowerBound;
                 solution.setVariableValue(positionToChange, newValue);
             }
         }

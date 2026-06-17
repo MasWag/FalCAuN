@@ -6,6 +6,7 @@ import org.uma.jmetal.solution.IntegerSolution;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Uniform crossover for integers
@@ -14,6 +15,7 @@ import java.util.Objects;
  */
 public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolution> {
     private double crossoverProbability;
+    private final Random random;
 
     public double getCrossoverProbability() {
         return crossoverProbability;
@@ -28,6 +30,7 @@ public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolutio
      */
     public IntegerUniformCrossover() {
         this.crossoverProbability = 0.5;
+        this.random = new Random(0);
     }
 
     /**
@@ -36,7 +39,18 @@ public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolutio
      * @param crossoverProbability a double.
      */
     public IntegerUniformCrossover(double crossoverProbability) {
+        this(crossoverProbability, new Random(0));
+    }
+
+    /**
+     * <p>Constructor for IntegerUniformCrossover.</p>
+     *
+     * @param crossoverProbability a double.
+     * @param random               a {@link java.util.Random} object.
+     */
+    public IntegerUniformCrossover(double crossoverProbability, Random random) {
         this.crossoverProbability = crossoverProbability;
+        this.random = random;
     }
 
     /** {@inheritDoc} */
@@ -49,7 +63,7 @@ public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolutio
         offspring.add((IntegerSolution) integerSolutions.get(0).copy());
         offspring.add((IntegerSolution) integerSolutions.get(1).copy());
         for (int i = 0; i < integerSolutions.get(0).getNumberOfVariables(); i++) {
-            if (Math.random() < crossoverProbability) {
+            if (random.nextDouble() < crossoverProbability) {
                 int tmp = offspring.get(0).getVariableValue(i);
                 offspring.get(0).setVariableValue(i, offspring.get(1).getVariableValue(i));
                 offspring.get(1).setVariableValue(i, tmp);

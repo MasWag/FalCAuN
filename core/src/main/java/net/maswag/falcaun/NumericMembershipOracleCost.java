@@ -69,8 +69,10 @@ class NumericMembershipOracleCost extends NumericMembershipOracle implements Eva
             try {
                 concreteSignal = sul.execute(concreteInput);
             } catch (Exception e) {
-                LOGGER.error(e.getMessage());
-                return null;
+                throw new IllegalStateException(
+                        "Failed to execute numeric SUL for abstract input " + abstractInput
+                                + " mapped to concrete input " + concreteInput,
+                        e);
             }
             assert concreteSignal.size() == concreteInput.size();
             List<Double> robustness = concreteSignal.prefixes(false).stream()

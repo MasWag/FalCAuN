@@ -163,30 +163,11 @@ public class SimulinkModel {
         // For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
         StringBuilder builder = new StringBuilder();
         try {
-            // Make the input signal
-            makeDataSet(builder);
-
-            configureSimulink(builder);
-            preventHugeTempFile(builder);
-
-            builder.append("set_param(mdl,'SaveFinalState','off');");
-            builder.append("set_param(mdl,'LoadInitialState','off');");
             isInitial = false;
 
-            // Run the simulation
-            runSimulation(builder, 0.0, this.inputSignal.duration(), false, false);
-
-            simulationTime.start();
-            matlab.eval(builder.toString());
-            simulationTime.stop();
-
-            // get the simulation result and make the result
-            double[][] y = this.getResult();
-            double[] t = this.getTimestamps();
-            if (Objects.isNull(y) || Objects.isNull(y[0]) || !hasValidTimestamps(t, this.inputSignal.duration())) {
-                throw new IllegalStateException("The simulation returned invalid output or timestamps");
-            }
-            assert(t.length == y.length);
+            SimulationTrace trace = runReplaySimulationWithRetry(builder, this.inputSignal.duration());
+            double[][] y = trace.y;
+            double[] t = trace.t;
 
             // convert double[][] to List<List<Double>>
             for (double[] outputStep: y) {
@@ -312,7 +293,7 @@ public class SimulinkModel {
         }
         // We handle the output as double.
         builder.append("y = double(simOut.get('yout'));");
-        builder.append("t = double(simOut.get('tout'));");
+        builder.append("t = reshape(double(simOut.get('tout')), 1, []);");
     }
 
     protected double[][] getResult() throws ExecutionException, InterruptedException {
@@ -366,20 +347,25 @@ public class SimulinkModel {
         return t;
     }
 
-    private boolean hasValidTimestamps(double[] timestamps, double expectedStopTime) {
+    private String validateTimestamps(double[] timestamps, double expectedStopTime) {
         if (timestamps == null || timestamps.length == 0) {
-            return false;
+            return "The simulation timestamps are null or empty";
         }
         double tolerance = Math.max(1.0e-8, simulinkSimulationStep * 10.0);
         double previous = Double.NEGATIVE_INFINITY;
         for (double timestamp : timestamps) {
             if (!Double.isFinite(timestamp) || timestamp < previous - tolerance) {
-                return false;
+                return "The simulation timestamps are non-finite or non-monotonic";
             }
             previous = timestamp;
         }
-        return Math.abs(timestamps[0]) <= tolerance
-                && Math.abs(timestamps[timestamps.length - 1] - expectedStopTime) <= tolerance;
+        if (Math.abs(timestamps[0]) > tolerance) {
+            return "The simulation does not start at time 0 within tolerance " + tolerance;
+        }
+        if (Math.abs(timestamps[timestamps.length - 1] - expectedStopTime) > tolerance) {
+            return "The simulation does not end at the expected stop time within tolerance " + tolerance;
+        }
+        return null;
     }
 
     /**
@@ -404,29 +390,9 @@ public class SimulinkModel {
         // For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
         StringBuilder builder = new StringBuilder();
 
-        makeDataSet(builder);
-
-        configureSimulink(builder);
-
-        preventHugeTempFile(builder);
-
-        builder.append("set_param(mdl,'SaveFinalState','off');");
-        builder.append("set_param(mdl,'LoadInitialState','off');");
-
-        runSimulation(builder, 0.0, this.inputSignal.duration(), false, false);
-
-        simulationTime.start();
-        log.trace(builder.toString());
-        matlab.eval(builder.toString());
-        simulationTime.stop();
-
-        // get the simulation result and make the result
-        double[][] y = this.getResult();
-        double[] t = this.getTimestamps();
-        if (Objects.isNull(y) || Objects.isNull(y[0]) || !hasValidTimestamps(t, this.inputSignal.duration())) {
-            throw new IllegalStateException("The simulation returned invalid output or timestamps");
-        }
-        assert(t.length == y.length);
+        SimulationTrace trace = runReplaySimulationWithRetry(builder, this.inputSignal.duration());
+        double[][] y = trace.y;
+        double[] t = trace.t;
 
         // convert double[][] to List<List<Double>>
         List<List<Double>> result = new ArrayList<>();
@@ -436,6 +402,102 @@ public class SimulinkModel {
 
         reset();
         return new ValueWithTime<>(Arrays.asList(ArrayUtils.toObject(t)), result);
+    }
+
+    private SimulationTrace runReplaySimulationWithRetry(StringBuilder builder, double expectedStopTime)
+            throws ExecutionException, InterruptedException {
+        buildReplaySimulationScript(builder, expectedStopTime);
+        try {
+            runMatlabScript(builder);
+            return getValidatedTrace(expectedStopTime);
+        } catch (IllegalStateException e) {
+            log.warn("Retrying Simulink replay without fast restart after invalid trace: {}", e.getMessage());
+            cleanupMatlabSession();
+            boolean previousUseFastRestart = this.useFastRestart;
+            this.useFastRestart = false;
+            StringBuilder retryBuilder = new StringBuilder();
+            try {
+                buildReplaySimulationScript(retryBuilder, expectedStopTime);
+                runMatlabScript(retryBuilder);
+                return getValidatedTrace(expectedStopTime);
+            } finally {
+                this.useFastRestart = previousUseFastRestart;
+            }
+        }
+    }
+
+    private void buildReplaySimulationScript(StringBuilder builder, double expectedStopTime)
+            throws ExecutionException, InterruptedException {
+        makeDataSet(builder);
+        configureSimulink(builder);
+        preventHugeTempFile(builder);
+        builder.append("set_param(mdl,'SaveFinalState','off');");
+        builder.append("set_param(mdl,'LoadInitialState','off');");
+        runSimulation(builder, 0.0, expectedStopTime, false, false);
+    }
+
+    private void runMatlabScript(StringBuilder builder) throws ExecutionException, InterruptedException {
+        simulationTime.start();
+        log.trace(builder.toString());
+        try {
+            matlab.eval(builder.toString());
+        } finally {
+            simulationTime.stop();
+        }
+    }
+
+    private SimulationTrace getValidatedTrace(double expectedStopTime) throws ExecutionException, InterruptedException {
+        double[][] y = this.getResult();
+        double[] t = this.getTimestamps();
+        String validationError = validateTrace(y, t, expectedStopTime);
+        if (validationError != null) {
+            throw new IllegalStateException(validationError);
+        }
+        return new SimulationTrace(y, t);
+    }
+
+    private String validateTrace(double[][] y, double[] timestamps, double expectedStopTime) {
+        if (y == null) {
+            return "The simulation output is null";
+        }
+        if (y.length == 0) {
+            return "The simulation output is empty";
+        }
+        if (y[0] == null) {
+            return "The first simulation output row is null";
+        }
+        if (timestamps == null) {
+            return "The simulation timestamps are null; output length=" + y.length;
+        }
+        if (timestamps.length == 0) {
+            return "The simulation timestamps are empty; output length=" + y.length;
+        }
+        if (y.length != timestamps.length) {
+            return "The simulation output/timestamp lengths differ: output length=" + y.length
+                    + ", timestamp length=" + timestamps.length
+                    + ", first timestamp=" + timestamps[0]
+                    + ", last timestamp=" + timestamps[timestamps.length - 1]
+                    + ", expected stop time=" + expectedStopTime;
+        }
+        String timestampError = validateTimestamps(timestamps, expectedStopTime);
+        if (timestampError != null) {
+            return timestampError + "; output length=" + y.length
+                    + ", timestamp length=" + timestamps.length
+                    + ", first timestamp=" + timestamps[0]
+                    + ", last timestamp=" + timestamps[timestamps.length - 1]
+                    + ", expected stop time=" + expectedStopTime;
+        }
+        return null;
+    }
+
+    private static final class SimulationTrace {
+        private final double[][] y;
+        private final double[] t;
+
+        private SimulationTrace(double[][] y, double[] t) {
+            this.y = y;
+            this.t = t;
+        }
     }
 
     /**

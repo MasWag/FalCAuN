@@ -56,9 +56,10 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
                 try {
                     concreteOutput = sul.execute(concreteInput);
                 } catch (Exception e) {
-                    LOGGER.error("An error occurred in SimulinkSUL::execute: {}", e.getMessage());
-                    e.printStackTrace();
-                    return;
+                    throw new IllegalStateException(
+                            "Failed to execute numeric SUL for abstract input " + abstractInput
+                                    + " mapped to concrete input " + concreteInput,
+                            e);
                 }
                 assert concreteOutput.size() == concreteInput.size();
                 abstractOutputBuilder.append(concreteOutput.stream().map(mapper::mapOutput).collect(Collectors.toList()));
@@ -76,4 +77,3 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
         cache.insert(abstractInput, abstractOutput);
     }
 }
-

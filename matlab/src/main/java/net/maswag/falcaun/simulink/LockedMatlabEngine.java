@@ -39,7 +39,9 @@ final class LockedMatlabEngine implements AutoCloseable {
     @Override
     public void close() throws EngineException {
         try {
-            if (closeAction == CloseAction.DISCONNECT) {
+            if (engine == null) {
+                return;
+            } else if (closeAction == CloseAction.DISCONNECT) {
                 engine.disconnect();
             } else if (closeAction == CloseAction.TERMINATE) {
                 engine.close();

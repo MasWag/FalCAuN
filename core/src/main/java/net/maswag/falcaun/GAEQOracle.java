@@ -16,12 +16,14 @@ import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.comparator.ObjectiveComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
+import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Equivalence query using genetic algorithm
@@ -36,12 +38,18 @@ public class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<Stri
     private final EQSearchProblem problem;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(GAEQOracle.class);
     private final PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
+    private final Random random;
 
     GAEQOracle(NumericMembershipOracleCost memOracle, int length, int maxEvaluations, GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+        this(memOracle, length, maxEvaluations, selectionKind, populationSize, crossoverProb, mutationProbability, ltlOracle, new Random(0));
+    }
+
+    GAEQOracle(NumericMembershipOracleCost memOracle, int length, int maxEvaluations, GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle, Random random) {
 
         this.problem = new EQSearchProblem(memOracle, length);
-        CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerUniformCrossover(crossoverProb);
-        MutationOperator<IntegerSolution> mutationOperator = new IntegerRandomMutation(mutationProbability);
+        this.random = random;
+        CrossoverOperator<IntegerSolution> crossoverOperator = new IntegerUniformCrossover(crossoverProb, random);
+        MutationOperator<IntegerSolution> mutationOperator = new IntegerRandomMutation(mutationProbability, random);
         Comparator<IntegerSolution> fitnessComparator = new ObjectiveComparator<>(0);
         this.ltlOracle = ltlOracle;
 
@@ -94,6 +102,7 @@ public class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<Stri
         }
         problem.setHypothesis(hypothesis);
         problem.setSymbolList(new ArrayList<>(symbolList));
+        JMetalRandom.getInstance().setSeed(random.nextLong());
         new AlgorithmRunner.Executor(algorithm).execute();
         if (problem.isStopped()) {
             LOGGER.info("Counter example is found!! {}", problem.getCexQuery());
