@@ -39,6 +39,7 @@ public class SimulinkModel {
     @Getter
     private double simulinkSimulationStep;
     private final MatlabEngine matlab;
+    private final LockedMatlabEngine lockedEngine;
     private final Path cacheDir;
     private final Path codegenDir;
     private final Path workingDir;
@@ -72,12 +73,8 @@ public class SimulinkModel {
         this.paramNames = paramNames;
         this.signalStep = signalStep;
         this.simulinkSimulationStep = simulinkSimulationStep;
-        String[] engines = MatlabEngine.findMatlab();
-        if (engines.length == 0) {
-            matlab = MatlabEngine.startMatlab();
-        } else {
-            matlab = MatlabEngine.connectMatlab();
-        }
+        this.lockedEngine = MatlabEngineManager.acquireEngine();
+        this.matlab = this.lockedEngine.engine();
 
         Path cacheDirTmp;
         Path codegenDirTmp;
@@ -448,8 +445,16 @@ public class SimulinkModel {
             matlab.eval("if exist('mdl','var'); set_param(mdl,'FastRestart','off'); end");
         } catch (Exception e) {
             log.debug("Failed to disable FastRestart during Simulink cleanup: {}", e.getMessage());
+        } finally {
+            if (lockedEngine != null) {
+                try {
+                    lockedEngine.close();
+                } catch (EngineException e) {
+                    log.error("Failed to release locked MATLAB engine: {}", e.getMessage());
+                    throw e;
+                }
+            }
         }
-        matlab.close();
         deleteDirectorySilently(cacheDir);
         deleteDirectorySilently(codegenDir);
         deleteDirectorySilently(workingDir);
