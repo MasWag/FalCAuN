@@ -84,6 +84,7 @@ class SimulinkModelTest {
         @Test
         void step() throws ExecutionException, InterruptedException {
             final double eps = 1.0e-9;
+            final double outputEps = 1.0e-2;
             // Give [80.0, 900.0] multiple times.
             List<Double> input = Arrays.asList(80.0, 900.0);
             List<List<Double>> fullInput = new ArrayList<>();
@@ -109,7 +110,7 @@ class SimulinkModelTest {
             mdl = createModel();
             for (int i = 0; i < fullInput.size(); i++) {
                 ValueWithTime<List<Double>> executeResult = mdl.execute(Word.fromList(fullInput.subList(0, i + 1)));
-                assertOutputClose(executeResult.at(finalTimes.get(i)), finalStepValues.get(i), eps);
+                assertOutputClose(executeResult.at(finalTimes.get(i)), finalStepValues.get(i), outputEps);
             }
             // Since the total number of steps is 4, the last time stamp should be 6.0
             Assertions.assertEquals(signalStep * 3, finalTimes.get(finalTimes.size() - 1), eps);

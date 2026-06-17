@@ -157,12 +157,12 @@ public class SimulinkModel {
             counter++;
         }
         assert isInitial || !inputSignal.isEmpty();
-        List<List<Double>> result = new ArrayList<>();
-        List<Double> timestamps;
         log.trace("Input: {}", inputSignal);
 
         this.inputSignal.add(inputSignal);
-         // For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
+        List<List<Double>> result = new ArrayList<>();
+        List<Double> timestamps;
+        // For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
         StringBuilder builder = new StringBuilder();
         try {
             // Make the input signal
@@ -185,6 +185,9 @@ public class SimulinkModel {
             // get the simulation result and make the result
             double[][] y = this.getResult();
             double[] t = this.getTimestamps();
+            if (Objects.isNull(y) || Objects.isNull(y[0]) || !hasValidTimestamps(t, this.inputSignal.duration())) {
+                throw new IllegalStateException("The simulation returned invalid output or timestamps");
+            }
             assert(t.length == y.length);
 
             // convert double[][] to List<List<Double>>
@@ -365,6 +368,22 @@ public class SimulinkModel {
         return t;
     }
 
+    private boolean hasValidTimestamps(double[] timestamps, double expectedStopTime) {
+        if (timestamps == null || timestamps.length == 0) {
+            return false;
+        }
+        double tolerance = Math.max(1.0e-8, simulinkSimulationStep * 10.0);
+        double previous = Double.NEGATIVE_INFINITY;
+        for (double timestamp : timestamps) {
+            if (!Double.isFinite(timestamp) || timestamp < previous - tolerance) {
+                return false;
+            }
+            previous = timestamp;
+        }
+        return Math.abs(timestamps[0]) <= tolerance
+                && Math.abs(timestamps[timestamps.length - 1] - expectedStopTime) <= tolerance;
+    }
+
     /**
      * Execute the Simulink model by feeding inputSignal
      * <p>
@@ -406,15 +425,8 @@ public class SimulinkModel {
         // get the simulation result and make the result
         double[][] y = this.getResult();
         double[] t = this.getTimestamps();
-        if (Objects.isNull(y) || Objects.isNull(y[0])) {
-            if (this.useFastRestart) {
-                this.useFastRestart = false;
-                log.info("disable fast restart");
-                return this.execute(inputSignal);
-            } else {
-                log.error("I do not know how to obtain non-null result");
-                return null;
-            }
+        if (Objects.isNull(y) || Objects.isNull(y[0]) || !hasValidTimestamps(t, this.inputSignal.duration())) {
+            throw new IllegalStateException("The simulation returned invalid output or timestamps");
         }
         assert(t.length == y.length);
 
