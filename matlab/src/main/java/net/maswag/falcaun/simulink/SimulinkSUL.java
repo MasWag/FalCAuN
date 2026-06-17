@@ -18,7 +18,15 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 /**
- * The System Under Learning implemented by a Simulink. We use the fixed step execution of Simulink to make sampling easier.
+ * The System Under Learning implemented by a Simulink model.
+ * <p>
+ * Calls to {@link #pre()} and {@link #post()} reset the Java-side logical SUL state. Calls to {@link #step(List)}
+ * advance that logical state by one input symbol and return the output piece for the latest time interval. The wrapped
+ * {@link SimulinkModel} may replay the accumulated input prefix from the Simulink initial state as a low-level
+ * optimization, so callers should depend on the returned interval and sampled values rather than on the raw trace start
+ * time inside the piece.
+ * <p>
+ * We use the fixed step execution of Simulink to make sampling easier.
  */
 @Slf4j
 public class SimulinkSUL implements ContinuousNumericSUL, Closeable {

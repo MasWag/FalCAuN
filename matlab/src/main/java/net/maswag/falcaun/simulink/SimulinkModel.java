@@ -41,6 +41,7 @@ public class SimulinkModel {
     private final MatlabEngine matlab;
     private final Path cacheDir;
     private final Path codegenDir;
+    private final Path workingDir;
     private final List<String> paramNames;
     /**
      * The current time of the simulation
@@ -80,9 +81,11 @@ public class SimulinkModel {
 
         Path cacheDirTmp;
         Path codegenDirTmp;
+        Path workingDirTmp;
         try {
             cacheDirTmp = Files.createTempDirectory("falcaun-sl-cache");
             codegenDirTmp = Files.createTempDirectory("falcaun-sl-codegen");
+            workingDirTmp = Files.createTempDirectory("falcaun-sl-work");
             matlab.putVariable("falcaunCacheDir", cacheDirTmp.toString());
             matlab.putVariable("falcaunCodegenDir", codegenDirTmp.toString());
             matlab.eval("Simulink.fileGenControl('set', 'CacheFolder', falcaunCacheDir, 'CodeGenFolder', falcaunCodegenDir);");
@@ -93,6 +96,7 @@ public class SimulinkModel {
 
         cacheDir = cacheDirTmp;
         codegenDir = codegenDirTmp;
+        workingDir = workingDirTmp;
 
         matlab.eval("clear;");
         matlab.eval("warning('off', 'Simulink:LoadSave:EncodingMismatch')");
@@ -112,7 +116,7 @@ public class SimulinkModel {
             matlab.eval("clear falcaunModelDir;");
         }
 
-        matlab.putVariable("falcaunWorkingDir", codegenDir.toString());
+        matlab.putVariable("falcaunWorkingDir", workingDir.toString());
         matlab.eval("cd(falcaunWorkingDir);");
         matlab.eval("clear falcaunWorkingDir;");
         // Initialize the current state
@@ -136,9 +140,16 @@ public class SimulinkModel {
     }
 
     /**
-     * Execute the Simulink model for one step by feeding inputSignal
-     * @param inputSignal The input signal
-     * @return The output signal with timestamps of the entire execution.
+     * Advance the logical SUL state by one input symbol.
+     * <p>
+     * The Java-side input prefix is extended with {@code inputSignal}. The current low-level implementation then
+     * replays the whole accumulated prefix from the Simulink model's initial state, because this has been faster than
+     * loading and saving Simulink final states for the workloads covered by the tests. Thus this method is incremental
+     * from the caller's SUL perspective, but the raw trace returned by this method may contain the whole replayed prefix
+     * and start at time {@code 0.0}.
+     *
+     * @param inputSignal The next input symbol
+     * @return The output signal with timestamps of the replayed prefix.
      */
     @NotNull
     public ValueWithTime<List<Double>> step(@NotNull List<Double> inputSignal) {
@@ -146,12 +157,12 @@ public class SimulinkModel {
             counter++;
         }
         assert isInitial || !inputSignal.isEmpty();
-        List<List<Double>> result = new ArrayList<>();
-        List<Double> timestamps;
         log.trace("Input: {}", inputSignal);
 
         this.inputSignal.add(inputSignal);
-         // For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
+        List<List<Double>> result = new ArrayList<>();
+        List<Double> timestamps;
+        // For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
         StringBuilder builder = new StringBuilder();
         try {
             // Make the input signal
@@ -160,18 +171,12 @@ public class SimulinkModel {
             configureSimulink(builder);
             preventHugeTempFile(builder);
 
-            // Execute the simulation
-            builder.append("set_param(mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on');");
-            if (isInitial) {
-                builder.append("set_param(mdl, 'LoadInitialState', 'off');");
-                isInitial = false;
-            } else {
-                builder.append("set_param(mdl, 'LoadInitialState', 'on');");
-                builder.append("set_param(mdl, 'InitialState', 'myOperPoint');");
-            }
+            builder.append("set_param(mdl,'SaveFinalState','off');");
+            builder.append("set_param(mdl,'LoadInitialState','off');");
+            isInitial = false;
 
             // Run the simulation
-            runSimulation(builder, this.inputSignal.duration());
+            runSimulation(builder, 0.0, this.inputSignal.duration(), false, false);
 
             simulationTime.start();
             matlab.eval(builder.toString());
@@ -180,6 +185,9 @@ public class SimulinkModel {
             // get the simulation result and make the result
             double[][] y = this.getResult();
             double[] t = this.getTimestamps();
+            if (Objects.isNull(y) || Objects.isNull(y[0]) || !hasValidTimestamps(t, this.inputSignal.duration())) {
+                throw new IllegalStateException("The simulation returned invalid output or timestamps");
+            }
             assert(t.length == y.length);
 
             // convert double[][] to List<List<Double>>
@@ -268,12 +276,15 @@ public class SimulinkModel {
         builder.append("Simulink.sdi.clear;");
     }
 
-    private void runSimulation(StringBuilder builder, double stopTime) {
+    private void runSimulation(StringBuilder builder, double startTime, double stopTime, boolean loadInitialState, boolean saveFinalState) {
         // append the input signal
         builder.append("in = Simulink.SimulationInput(mdl);");
         builder.append("in = in.setExternalInput(ds);");
 
-        // Set the StopTime
+        // Set the StartTime and StopTime
+        if (startTime != 0.0) {
+            builder.append("in = in.setModelParameter('StartTime', '").append(startTime).append("');");
+        }
         builder.append("in = in.setModelParameter('StopTime', '").append(stopTime).append("');");
         // Save the output to yout
         if (!this.useFastRestart) {
@@ -282,10 +293,25 @@ public class SimulinkModel {
             builder.append("in = in.setModelParameter('SaveTime', 'on');");
             builder.append("in = in.setModelParameter('TimeSaveName', 'tout');");
         }
-        builder.append("in = in.setModelParameter('LoadInitialState', 'off');");
+        // State loading/saving is supported here, but the default SUL step strategy disables both and replays the
+        // accumulated prefix because that is currently the faster behaviorally equivalent implementation.
+        if (loadInitialState) {
+            builder.append("in = in.setModelParameter('LoadInitialState', 'on');");
+            builder.append("in = in.setModelParameter('InitialState', 'myOperPoint');");
+        } else {
+            builder.append("in = in.setModelParameter('LoadInitialState', 'off');");
+        }
+        if (saveFinalState) {
+            builder.append("in = in.setModelParameter('SaveFinalState', 'on');");
+            builder.append("in = in.setModelParameter('FinalStateName', 'myOperPoint');");
+            builder.append("in = in.setModelParameter('SaveCompleteFinalSimState', 'on');");
+        }
 
         // Execute the simulation
         builder.append("simOut = sim(in);");
+        if (saveFinalState) {
+            builder.append("myOperPoint = simOut.get('myOperPoint');");
+        }
         // We handle the output as double.
         builder.append("y = double(simOut.get('yout'));");
         builder.append("t = double(simOut.get('tout'));");
@@ -342,6 +368,22 @@ public class SimulinkModel {
         return t;
     }
 
+    private boolean hasValidTimestamps(double[] timestamps, double expectedStopTime) {
+        if (timestamps == null || timestamps.length == 0) {
+            return false;
+        }
+        double tolerance = Math.max(1.0e-8, simulinkSimulationStep * 10.0);
+        double previous = Double.NEGATIVE_INFINITY;
+        for (double timestamp : timestamps) {
+            if (!Double.isFinite(timestamp) || timestamp < previous - tolerance) {
+                return false;
+            }
+            previous = timestamp;
+        }
+        return Math.abs(timestamps[0]) <= tolerance
+                && Math.abs(timestamps[timestamps.length - 1] - expectedStopTime) <= tolerance;
+    }
+
     /**
      * Execute the Simulink model by feeding inputSignal
      * <p>
@@ -370,7 +412,10 @@ public class SimulinkModel {
 
         preventHugeTempFile(builder);
 
-        runSimulation(builder, this.inputSignal.duration());
+        builder.append("set_param(mdl,'SaveFinalState','off');");
+        builder.append("set_param(mdl,'LoadInitialState','off');");
+
+        runSimulation(builder, 0.0, this.inputSignal.duration(), false, false);
 
         simulationTime.start();
         log.trace(builder.toString());
@@ -380,15 +425,8 @@ public class SimulinkModel {
         // get the simulation result and make the result
         double[][] y = this.getResult();
         double[] t = this.getTimestamps();
-        if (Objects.isNull(y) || Objects.isNull(y[0])) {
-            if (this.useFastRestart) {
-                this.useFastRestart = false;
-                log.info("disable fast restart");
-                return this.execute(inputSignal);
-            } else {
-                log.error("I do not know how to obtain non-null result");
-                return null;
-            }
+        if (Objects.isNull(y) || Objects.isNull(y[0]) || !hasValidTimestamps(t, this.inputSignal.duration())) {
+            throw new IllegalStateException("The simulation returned invalid output or timestamps");
         }
         assert(t.length == y.length);
 
@@ -406,9 +444,15 @@ public class SimulinkModel {
      * Close the MATLAB engine. This method must be called when the object is no longer used.
      */
     public void close() throws EngineException {
+        try {
+            matlab.eval("if exist('mdl','var'); set_param(mdl,'FastRestart','off'); end");
+        } catch (Exception e) {
+            log.debug("Failed to disable FastRestart during Simulink cleanup: {}", e.getMessage());
+        }
         matlab.close();
         deleteDirectorySilently(cacheDir);
         deleteDirectorySilently(codegenDir);
+        deleteDirectorySilently(workingDir);
     }
 
     public static void clearSimulinkBuildArtifacts(Path baseDirectory) {
@@ -448,6 +492,7 @@ public class SimulinkModel {
 
     private static boolean isSimulinkArtifact(String name) {
         return name.endsWith(".slxc")
+                || name.endsWith(".autosave")
                 || name.contains("_acc.mex")
                 || name.endsWith(".mexmaca64")
                 || name.endsWith(".mexglnxa64")

@@ -35,6 +35,20 @@ class ValueWithTimeTest {
     }
 
     @Test
+    void atBeforeFirstTimestamp() {
+        ValueWithTime<List<Double>> shifted = new ValueWithTime<>(
+                List.of(0.44764627922629796, 1.0),
+                List.of(List.of(1.0), List.of(2.0)));
+
+        assertEquals(1.0, Objects.requireNonNull(shifted.at(0.0)).get(0));
+    }
+
+    @Test
+    void atAfterLastTimestamp() {
+        assertEquals(5.0, Objects.requireNonNull(valueWithTime.at(5.0)).get(0));
+    }
+
+    @Test
     void range() {
         // Extract the values for 1.0 < t <= 3.0
         ValueWithTime<List<Double>> ranged = valueWithTime.range(1.0, 3.0);

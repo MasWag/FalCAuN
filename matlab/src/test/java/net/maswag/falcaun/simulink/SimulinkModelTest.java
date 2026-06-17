@@ -6,9 +6,13 @@ import net.maswag.falcaun.ValueWithTime;
 import net.maswag.falcaun.simulink.SimulinkModel;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -22,7 +26,20 @@ class SimulinkModelTest {
 
     @AfterEach
     void tearDown() throws EngineException {
-        mdl.close();
+        if (mdl != null) {
+            mdl.close();
+            mdl = null;
+        }
+    }
+
+    @Test
+    void clearSimulinkBuildArtifactsRemovesAutosave(@TempDir Path tempDir) throws IOException {
+        Path autosave = tempDir.resolve("model.slx.autosave");
+        Files.writeString(autosave, "");
+
+        SimulinkModel.clearSimulinkBuildArtifacts(tempDir);
+
+        Assertions.assertFalse(Files.exists(autosave));
     }
 
     @Nested
@@ -32,10 +49,15 @@ class SimulinkModelTest {
         @BeforeEach
         void setUp() throws ExecutionException, InterruptedException {
             SimulinkModel.clearSimulinkBuildArtifacts(MATLAB_RESOURCES);
-            mdl = new SimulinkModel(initScript,
+            mdl = createModel();
+        }
+
+        private SimulinkModel createModel() throws ExecutionException, InterruptedException {
+            SimulinkModel model = new SimulinkModel(initScript,
                     Arrays.asList("Pedal Angle", "Engine Speed"),
                     signalStep, 0.0025);
-            mdl.setSimulationStep(0.0001);
+            model.setSimulationStep(0.0001);
+            return model;
         }
 
         @Test
@@ -60,26 +82,38 @@ class SimulinkModelTest {
         }
 
         @Test
-        void step() {
-            double lastTime = Double.NEGATIVE_INFINITY; // The dummy value for the first case
-            // Give [80.0, 900.0] for 10 times
+        void step() throws ExecutionException, InterruptedException {
+            final double eps = 1.0e-9;
+            final double outputEps = 1.0e-2;
+            // Give [80.0, 900.0] multiple times.
             List<Double> input = Arrays.asList(80.0, 900.0);
-            for (int i = 0; i < 10; i++) {
+            List<List<Double>> fullInput = new ArrayList<>();
+            List<Double> finalTimes = new ArrayList<>();
+            List<List<Double>> finalStepValues = new ArrayList<>();
+            for (int i = 0; i < 4; i++) {
+                fullInput.add(input);
                 ValueWithTime<List<Double>> result = mdl.step(input);
-                if (lastTime < 0.0) {
-                    // The result only contains the information at time 0
-                    Assertions.assertEquals(1, result.getTimestamps().size());
-                    Assertions.assertEquals(0.0, result.getTimestamps().get(0));
-                } else {
-                    // Test that the first time stamp is always 0
-                    Assertions.assertEquals(0.0, result.getTimestamps().get(0));
-                    // Test that the last time stamp is 2.0 larger than the latest last time stamp
-                    Assertions.assertEquals(result.getTimestamps().get(result.getTimestamps().size() - 1), lastTime + signalStep);
+                List<Double> timestamps = result.getTimestamps();
+                Assertions.assertFalse(timestamps.isEmpty());
+                // The current fast low-level strategy replays the accumulated prefix from the initial state.
+                Assertions.assertEquals(0.0, timestamps.get(0), eps);
+                double currentLastTime = timestamps.get(timestamps.size() - 1);
+                if (i == 0) {
+                    Assertions.assertEquals(1, timestamps.size());
                 }
-                lastTime = result.getTimestamps().get(result.getTimestamps().size() - 1);
+                Assertions.assertEquals(signalStep * i, currentLastTime, eps);
+                finalTimes.add(currentLastTime);
+                finalStepValues.add(result.getValues().get(result.getValues().size() - 1));
             }
-            // Since the total number of steps is 10, the last time stamp should be 18.0
-            Assertions.assertEquals(signalStep * 9, lastTime);
+
+            mdl.close();
+            mdl = createModel();
+            for (int i = 0; i < fullInput.size(); i++) {
+                ValueWithTime<List<Double>> executeResult = mdl.execute(Word.fromList(fullInput.subList(0, i + 1)));
+                assertOutputClose(executeResult.at(finalTimes.get(i)), finalStepValues.get(i), outputEps);
+            }
+            // Since the total number of steps is 4, the last time stamp should be 6.0
+            Assertions.assertEquals(signalStep * 3, finalTimes.get(finalTimes.size() - 1), eps);
         }
 
         @Test
@@ -146,6 +180,13 @@ class SimulinkModelTest {
             ValueWithTime<List<Double>> resultLinear2 = mdl.execute(Word.fromList(input));
             mdl.reset();
             Assertions.assertEquals(resultLinear.getValues(), resultLinear2.getValues());
+        }
+    }
+
+    private static void assertOutputClose(List<Double> expected, List<Double> actual, double eps) {
+        Assertions.assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            Assertions.assertEquals(expected.get(i), actual.get(i), eps);
         }
     }
 }
