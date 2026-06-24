@@ -49,16 +49,16 @@ jobs:
       - name: Build and install the core and examples projects with Maven
         run: mvn install --also-make --projects core,examples
 
-      - name: Install Kotlin 1.9.X with SDKMAN
-        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
-        with:
-          candidate: kotlin
-          version: 1.9.24
+      - name: Install SDKMAN
+        run: curl -s "https://get.sdkman.io?rcupdate=false" | bash
 
-      - name: Install Kscript with SDKMAN
-        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
-        with:
-          candidate: kscript
+      - name: Install Kotlin 1.9.X and Kscript with SDKMAN
+        run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk install kotlin 1.9.24
+          sdk install kscript
+          echo "$HOME/.sdkman/candidates/kotlin/current/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.sdkman/candidates/kscript/current/bin" >> "$GITHUB_PATH"
 
       - name: Install ktlint
         run: |
