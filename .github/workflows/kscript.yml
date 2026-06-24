@@ -49,6 +49,9 @@ jobs:
       - name: Build and install the core and examples projects with Maven
         run: mvn install --also-make --projects core,examples
 
+      - name: Install SDKMAN
+        run: curl -s "https://get.sdkman.io?rcupdate=false" | bash
+
       - name: Install Kotlin 1.9.X and Kscript with SDKMAN
         run: |
           source "$HOME/.sdkman/bin/sdkman-init.sh"
