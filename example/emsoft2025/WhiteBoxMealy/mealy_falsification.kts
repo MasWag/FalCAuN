@@ -8,7 +8,9 @@
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import de.learnlib.driver.simulator.MealySimulatorSUL
+import de.learnlib.filter.statistic.oracle.CounterOracle
 import de.learnlib.filter.statistic.oracle.MealyCounterOracle
+import de.learnlib.statistic.Statistics
 import de.learnlib.oracle.membership.SULOracle
 import de.learnlib.sul.SUL
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
@@ -110,6 +112,6 @@ if (result) {
 
 println("# of ltl formulae: ${ltlList.size}")
 println("# of falsified ltl formulae: ${verifier.cexProperty.size}")
-println("# of MQ: ${counterOracle.getQueryCounter().getCount()}")
+println("# of MQ: ${Statistics.getService().getCount(CounterOracle.KEY_QUERY).orElse(0L)}")
 println("Time for initialize: ${timeBeforeFalsification - timeBeforeInit}")
 println("Time for falsification: ${timeAfterFalsification - timeBeforeFalsification}")

@@ -10,7 +10,9 @@ import de.learnlib.algorithm.ttt.mealy.TTTLearnerMealy
 import de.learnlib.driver.simulator.MealySimulatorSUL
 import de.learnlib.oracle.membership.SULOracle
 import de.learnlib.oracle.equivalence.MealySimulatorEQOracle
+import de.learnlib.filter.statistic.oracle.CounterOracle
 import de.learnlib.filter.statistic.oracle.MealyCounterOracle
+import de.learnlib.statistic.Statistics
 import de.learnlib.sul.SUL
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
@@ -102,8 +104,8 @@ val timeAfterLearning = System.currentTimeMillis()
 
 println("Actual # of states: ${minimizedTarget.size()}")
 println("# of states: ${hypothesisMealy.size()}")
-println("# of membership queries: ${counterOracle.getQueryCounter().getCount() - round}")
-println("# of symbols: ${counterOracle.getSymbolCounter().getCount()}")
+println("# of membership queries: ${Statistics.getService().getCount(CounterOracle.KEY_QUERY).orElse(0L) - round}")
+println("# of symbols: ${Statistics.getService().getCount(CounterOracle.KEY_SYMBOL).orElse(0L)}")
 println("# of equivalence queries(rounds): ${round}")
 println("Time for initialize: ${timeBeforeLearning - timeBeforeInit}")
 println("Time for learning: ${timeAfterLearning - timeBeforeLearning}")

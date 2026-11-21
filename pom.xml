@@ -98,7 +98,7 @@
                     <bottom><![CDATA[<p>Copyright &copy; {inceptionYear}-{currentYear}. All Rights Reserved.</p>]]></bottom>
                     <links>
                         <link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
-                        <link>https://learnlib.github.io/learnlib/maven-site/0.17.0/apidocs/</link>
+                        <link>https://learnlib.github.io/learnlib/maven-site/19.0.0/apidocs/</link>
                     </links>
                     <excludePackageNames>*.internal:*.impl</excludePackageNames>
                     <failOnError>false</failOnError>
