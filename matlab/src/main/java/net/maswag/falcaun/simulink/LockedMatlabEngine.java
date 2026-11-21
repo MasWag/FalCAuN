@@ -20,12 +20,15 @@ final class LockedMatlabEngine implements AutoCloseable {
         TERMINATE
     }
 
+    private final String name;
     private final MatlabEngine engine;
     private final FileChannel lockChannel;
     private final FileLock lock;
     private final CloseAction closeAction;
+    private boolean broken = false;
 
-    LockedMatlabEngine(MatlabEngine engine, FileChannel lockChannel, FileLock lock, CloseAction closeAction) {
+    LockedMatlabEngine(String name, MatlabEngine engine, FileChannel lockChannel, FileLock lock, CloseAction closeAction) {
+        this.name = name;
         this.engine = engine;
         this.lockChannel = lockChannel;
         this.lock = lock;
@@ -36,6 +39,14 @@ final class LockedMatlabEngine implements AutoCloseable {
         return engine;
     }
 
+    /**
+     * Mark the session as unusable, e.g., after MATLAB crashed while executing a command.
+     * A broken session started by this process is terminated on {@link #close()} instead of being kept for reuse.
+     */
+    void markBroken() {
+        broken = true;
+    }
+
     @Override
     public void close() throws EngineException {
         try {
@@ -43,8 +54,8 @@ final class LockedMatlabEngine implements AutoCloseable {
                 return;
             } else if (closeAction == CloseAction.DISCONNECT) {
                 engine.disconnect();
-            } else if (closeAction == CloseAction.TERMINATE) {
-                engine.close();
+            } else if (closeAction == CloseAction.TERMINATE || broken) {
+                MatlabEngineManager.terminateEngine(name, engine);
             }
         } finally {
             try {

@@ -32,6 +32,16 @@ final class MatlabEngineManager {
     static final String ENGINE_NAME_PREFIX = "FalCAuN_";
     private static final String LOCK_SUBDIR = "falcaun-matlab-engine-locks";
     private static final Map<String, MatlabEngine> REUSABLE_ENGINES = new ConcurrentHashMap<>();
+    /**
+     * Simulink cache and code generation folders of the engines started by this process.
+     * They stay on the MATLAB path for the engine's lifetime, so they are deleted only after the engine is terminated.
+     */
+    private static final Map<String, Path> FILE_GEN_DIRS = new ConcurrentHashMap<>();
+
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(MatlabEngineManager::terminateAllEngines,
+                "FalCAuN-MATLAB-engine-cleanup"));
+    }
 
     static final boolean REUSE_ENGINE = Boolean.parseBoolean(
         System.getProperty("falcaun.matlab.reuseEngine", "true")
@@ -82,17 +92,28 @@ final class MatlabEngineManager {
         }
 
         for (String name : engines) {
-            if (!name.startsWith(ENGINE_NAME_PREFIX)) {
-                log.debug("Skipping non-FalCAuN engine: {}", name);
-                continue;
-            }
-            LockedMatlabEngine locked = acquireOneSession(name);
-            if (locked != null) {
-                return locked;
+            if (isReusableCandidate(name)) {
+                LockedMatlabEngine locked = acquireOneSession(name);
+                if (locked != null) {
+                    return locked;
+                }
             }
         }
         log.debug("No FalCAuN-owned session that we can lock was found");
         return null;
+    }
+
+    private static boolean isReusableCandidate(String name) {
+        if (!name.startsWith(ENGINE_NAME_PREFIX)) {
+            log.debug("Skipping non-FalCAuN engine: {}", name);
+            return false;
+        }
+        if (!isOwnerAlive(name)) {
+            // The session file of a crashed engine can remain, and connecting to it aborts the JVM.
+            log.debug("Skipping FalCAuN engine whose owner process has exited: {}", name);
+            return false;
+        }
+        return true;
     }
 
     private static LockedMatlabEngine acquireOneSession(String name) {
@@ -140,7 +161,7 @@ final class MatlabEngineManager {
             }
             // Engine handle is usable: keep the lock, return wrapper.
             log.debug("Acquired usable locked FalCAuN session: {}", name);
-            return new LockedMatlabEngine(eng, channel, lock, closeAction);
+            return new LockedMatlabEngine(name, eng, channel, lock, closeAction);
         } catch (IOException | OverlappingFileLockException e) {
             log.debug("Failed to acquire lock for session '{}': {}", name, e.getMessage());
             releaseLockQuietly(lock, channel);
@@ -194,11 +215,21 @@ final class MatlabEngineManager {
             }
         }
 
+        try {
+            configureFileGeneration(name, eng);
+        } catch (Exception e) {
+            terminateEngineQuietly(name, eng);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw new EngineException("Failed to configure Simulink file generation folders: " + e.getMessage(), e);
+        }
+
         // Acquire and hold the lock for the newly started engine. We already have
         // the engine handle, so avoid reconnecting to a session we just started.
         LockedMatlabEngine locked = lockAlreadyStartedEngine(name, eng, reusable);
         if (locked == null) {
-            closeEngineQuietly(eng);
+            terminateEngineQuietly(name, eng);
             throw new EngineException("Could not acquire lock for newly started engine: " + name);
         }
         return locked;
@@ -231,11 +262,67 @@ final class MatlabEngineManager {
                 REUSABLE_ENGINES.put(name, eng);
             }
             log.debug("Acquired inter-process lock for newly started FalCAuN engine: {}, reusable={}", name, reusable);
-            return new LockedMatlabEngine(eng, channel, lock, closeAction);
+            return new LockedMatlabEngine(name, eng, channel, lock, closeAction);
         } catch (IOException | OverlappingFileLockException e) {
             log.debug("Failed to lock newly started session '{}': {}", name, e.getMessage());
             releaseLockQuietly(lock, channel);
             return null;
+        }
+    }
+
+    /**
+     * Use dedicated Simulink cache and code generation folders for the whole lifetime of the engine.
+     * <p>
+     * {@code Simulink.fileGenControl} adds these folders to the MATLAB path. Deleting a folder on the path of a
+     * running engine makes MATLAB drop it during the path refresh before the next command, and R2024b has crashed
+     * in that refresh. Thus, we never delete them while the engine is alive.
+     */
+    private static void configureFileGeneration(String name, MatlabEngine eng)
+            throws IOException, ExecutionException, InterruptedException {
+        Path dir = SimulinkModel.createPrivateTempDirectory("falcaun-sl-" + name);
+        FILE_GEN_DIRS.put(name, dir);
+        Path cacheDir = Files.createDirectory(dir.resolve("cache"));
+        Path codegenDir = Files.createDirectory(dir.resolve("codegen"));
+        eng.putVariable("falcaunCacheDir", cacheDir.toString());
+        eng.putVariable("falcaunCodegenDir", codegenDir.toString());
+        eng.eval("Simulink.fileGenControl('set', 'CacheFolder', falcaunCacheDir, 'CodeGenFolder', falcaunCodegenDir);");
+        eng.eval("clear falcaunCacheDir falcaunCodegenDir;");
+    }
+
+    /**
+     * Terminate an engine started by this process and delete its file generation folders.
+     */
+    static void terminateEngine(String name, MatlabEngine eng) throws EngineException {
+        if (name != null) {
+            REUSABLE_ENGINES.remove(name);
+        }
+        try {
+            if (eng != null) {
+                log.debug("Terminating MATLAB engine: {}", name);
+                eng.close();
+            }
+        } finally {
+            if (name != null) {
+                SimulinkModel.deleteDirectorySilently(FILE_GEN_DIRS.remove(name));
+            }
+        }
+    }
+
+    private static void terminateEngineQuietly(String name, MatlabEngine eng) {
+        try {
+            terminateEngine(name, eng);
+        } catch (EngineException ignored) {
+            // ignore close errors
+        }
+    }
+
+    private static void terminateAllEngines() {
+        for (Map.Entry<String, MatlabEngine> entry : REUSABLE_ENGINES.entrySet()) {
+            terminateEngineQuietly(entry.getKey(), entry.getValue());
+        }
+        // Folders of the engines that are not pooled, e.g., the ones still used by a SimulinkModel
+        for (String name : FILE_GEN_DIRS.keySet()) {
+            SimulinkModel.deleteDirectorySilently(FILE_GEN_DIRS.remove(name));
         }
     }
 
@@ -247,6 +334,29 @@ final class MatlabEngineManager {
         long pid = ProcessHandle.current().pid();
         String hex = String.format("%06x", ThreadLocalRandom.current().nextInt(0xFFFFFF));
         return ENGINE_NAME_PREFIX + pid + "_" + hex;
+    }
+
+    /**
+     * Whether the Java process that started the engine is still running.
+     * The engine is terminated together with that process, so a session of an exited owner is stale.
+     * Names whose owner cannot be determined are considered alive.
+     */
+    static boolean isOwnerAlive(String engineName) {
+        if (!engineName.startsWith(ENGINE_NAME_PREFIX)) {
+            return true;
+        }
+        String rest = engineName.substring(ENGINE_NAME_PREFIX.length());
+        int separator = rest.indexOf('_');
+        if (separator <= 0) {
+            return true;
+        }
+        long pid;
+        try {
+            pid = Long.parseLong(rest.substring(0, separator));
+        } catch (NumberFormatException e) {
+            return true;
+        }
+        return ProcessHandle.of(pid).map(ProcessHandle::isAlive).orElse(false);
     }
 
     static boolean isValidMatlabVarName(String name) {

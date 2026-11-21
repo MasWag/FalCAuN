@@ -228,6 +228,25 @@ class MatlabEngineManagerTest {
     }
 
     @Test
+    void ownerOfOwnEngineIsAlive() {
+        assertTrue(MatlabEngineManager.isOwnerAlive(MatlabEngineManager.generateUniqueName()));
+    }
+
+    @Test
+    void ownerOfStaleEngineIsNotAlive() throws Exception {
+        Process process = new ProcessBuilder(Path.of(System.getProperty("java.home"), "bin", "java").toString(), "-version").start();
+        process.waitFor();
+        long exitedPid = process.pid();
+        assertFalse(MatlabEngineManager.isOwnerAlive("FalCAuN_" + exitedPid + "_abcdef"));
+    }
+
+    @Test
+    void ownerOfUnknownNameIsAssumedAlive() {
+        assertTrue(MatlabEngineManager.isOwnerAlive("FalCAuN_test_started_engine"));
+        assertTrue(MatlabEngineManager.isOwnerAlive("MATLAB_12345"));
+    }
+
+    @Test
     void validNameAcceptsUnderscoresAndDigits() {
         assertTrue(MatlabEngineManager.isValidMatlabVarName("_"));
         assertTrue(MatlabEngineManager.isValidMatlabVarName("__"));
