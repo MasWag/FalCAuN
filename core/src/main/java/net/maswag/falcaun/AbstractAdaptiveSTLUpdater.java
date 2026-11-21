@@ -6,7 +6,7 @@ import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.oracle.emptiness.MealyBFEmptinessOracle;
 import de.learnlib.oracle.equivalence.MealyBFInclusionOracle;
-import de.learnlib.oracle.property.LoggingPropertyOracle;
+import de.learnlib.oracle.property.MealyLoggingPropertyOracle;
 import de.learnlib.oracle.property.MealyFinitePropertyOracle;
 import de.learnlib.query.DefaultQuery;
 import lombok.Getter;
@@ -149,7 +149,7 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
         if (initialized && Objects.nonNull(inclusionOracle) && Objects.nonNull(emptinessOracle)) {
             String ltlString = mapper.isPresent() ? stl.toAbstractLTLString(mapper.get()) : stl.toLTLString();
             propertyOracles.add(
-                    new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
+                    new MealyLoggingPropertyOracle<>(
                             new MealyFinitePropertyOracle<>(ltlString, inclusionOracle, emptinessOracle, modelChecker)));
         }
     }
@@ -201,7 +201,7 @@ public abstract class AbstractAdaptiveSTLUpdater<I> implements AdaptiveSTLUpdate
             STLProperties.forEach(stl -> {
                     String ltlString = mapper.isPresent() ? stl.toAbstractLTLString(mapper.get()) : stl.toLTLString();
                     propertyOracles.add(
-                            new LoggingPropertyOracle.MealyLoggingPropertyOracle<>(
+                            new MealyLoggingPropertyOracle<>(
                                     new MealyFinitePropertyOracle<>(ltlString,
                                             inclusionOracle, emptinessOracle, modelChecker)));
                     });

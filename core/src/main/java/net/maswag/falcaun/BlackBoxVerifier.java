@@ -8,7 +8,7 @@ import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.oracle.equivalence.*;
 import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
 import de.learnlib.sul.SUL;
-import de.learnlib.util.Experiment;
+import de.learnlib.util.MealyExperiment;
 import lombok.Getter;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.automaton.transducer.MealyMachine;
@@ -210,8 +210,8 @@ public class BlackBoxVerifier<I> {
             timeoutOracle.start();
         }
         // create an experiment
-        Experiment.MealyExperiment<String, String>
-                experiment = new Experiment.MealyExperiment<>(learner, eqOracle, this.inputAlphabet);
+        MealyExperiment<String, String>
+                experiment = new MealyExperiment<>(learner, eqOracle, this.inputAlphabet);
         this.learnedMealy = experiment.run();
 
         // run the experiment
