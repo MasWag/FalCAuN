@@ -92,22 +92,28 @@ final class MatlabEngineManager {
         }
 
         for (String name : engines) {
-            if (!name.startsWith(ENGINE_NAME_PREFIX)) {
-                log.debug("Skipping non-FalCAuN engine: {}", name);
-                continue;
-            }
-            if (!isOwnerAlive(name)) {
-                // The session file of a crashed engine can remain, and connecting to it aborts the JVM.
-                log.debug("Skipping FalCAuN engine whose owner process has exited: {}", name);
-                continue;
-            }
-            LockedMatlabEngine locked = acquireOneSession(name);
-            if (locked != null) {
-                return locked;
+            if (isReusableCandidate(name)) {
+                LockedMatlabEngine locked = acquireOneSession(name);
+                if (locked != null) {
+                    return locked;
+                }
             }
         }
         log.debug("No FalCAuN-owned session that we can lock was found");
         return null;
+    }
+
+    private static boolean isReusableCandidate(String name) {
+        if (!name.startsWith(ENGINE_NAME_PREFIX)) {
+            log.debug("Skipping non-FalCAuN engine: {}", name);
+            return false;
+        }
+        if (!isOwnerAlive(name)) {
+            // The session file of a crashed engine can remain, and connecting to it aborts the JVM.
+            log.debug("Skipping FalCAuN engine whose owner process has exited: {}", name);
+            return false;
+        }
+        return true;
     }
 
     private static LockedMatlabEngine acquireOneSession(String name) {
@@ -273,7 +279,7 @@ final class MatlabEngineManager {
      */
     private static void configureFileGeneration(String name, MatlabEngine eng)
             throws IOException, ExecutionException, InterruptedException {
-        Path dir = Files.createTempDirectory("falcaun-sl-" + name);
+        Path dir = SimulinkModel.createPrivateTempDirectory("falcaun-sl-" + name);
         FILE_GEN_DIRS.put(name, dir);
         Path cacheDir = Files.createDirectory(dir.resolve("cache"));
         Path codegenDir = Files.createDirectory(dir.resolve("codegen"));

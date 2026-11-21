@@ -15,9 +15,12 @@ import net.maswag.falcaun.ValueWithTime;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.concurrent.ExecutionException;
@@ -76,7 +79,7 @@ public class SimulinkModel {
         this.matlab = this.lockedEngine.engine();
         // The Simulink cache and code generation folders are configured per engine by MatlabEngineManager.
         try {
-            workingDir = Files.createTempDirectory("falcaun-sl-work");
+            workingDir = createPrivateTempDirectory("falcaun-sl-work");
         } catch (IOException e) {
             releaseEngineQuietly();
             throw new ExecutionException("Failed to prepare the working directory for Simulink", e);
@@ -607,6 +610,26 @@ public class SimulinkModel {
                 || name.endsWith(".mexmaca64")
                 || name.endsWith(".mexglnxa64")
                 || name.endsWith(".mexw64");
+    }
+
+    /**
+     * Create a temporary directory accessible only by the current user.
+     */
+    static Path createPrivateTempDirectory(String prefix) throws IOException {
+        if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
+            return Files.createTempDirectory(prefix,
+                    PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------")));
+        }
+        // On non-POSIX file systems (e.g., Windows), the default temporary directory is already per-user.
+        Path dir = Files.createTempDirectory(prefix); // NOSONAR: restricted below
+        File file = dir.toFile();
+        boolean restricted = file.setReadable(false, false) && file.setReadable(true, true)
+                && file.setWritable(false, false) && file.setWritable(true, true)
+                && file.setExecutable(false, false) && file.setExecutable(true, true);
+        if (!restricted) {
+            log.debug("Failed to restrict the permissions of {}", dir);
+        }
+        return dir;
     }
 
     static void deleteDirectorySilently(Path dir) {
