@@ -2,6 +2,7 @@ package net.maswag.falcaun.simulink;
 
 import com.mathworks.engine.EngineException;
 import com.mathworks.engine.MatlabEngine;
+import com.mathworks.engine.MatlabExecutionException;
 import de.learnlib.exception.SULException;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,8 +41,6 @@ public class SimulinkModel {
     private double simulinkSimulationStep;
     private final MatlabEngine matlab;
     private final LockedMatlabEngine lockedEngine;
-    private final Path cacheDir;
-    private final Path codegenDir;
     private final Path workingDir;
     private final List<String> paramNames;
     /**
@@ -75,26 +74,24 @@ public class SimulinkModel {
         this.simulinkSimulationStep = simulinkSimulationStep;
         this.lockedEngine = MatlabEngineManager.acquireEngine();
         this.matlab = this.lockedEngine.engine();
-
-        Path cacheDirTmp;
-        Path codegenDirTmp;
-        Path workingDirTmp;
+        // The Simulink cache and code generation folders are configured per engine by MatlabEngineManager.
         try {
-            cacheDirTmp = Files.createTempDirectory("falcaun-sl-cache");
-            codegenDirTmp = Files.createTempDirectory("falcaun-sl-codegen");
-            workingDirTmp = Files.createTempDirectory("falcaun-sl-work");
-            matlab.putVariable("falcaunCacheDir", cacheDirTmp.toString());
-            matlab.putVariable("falcaunCodegenDir", codegenDirTmp.toString());
-            matlab.eval("Simulink.fileGenControl('set', 'CacheFolder', falcaunCacheDir, 'CodeGenFolder', falcaunCodegenDir);");
-            matlab.eval("clear falcaunCacheDir falcaunCodegenDir;");
+            workingDir = Files.createTempDirectory("falcaun-sl-work");
         } catch (IOException e) {
-            throw new ExecutionException("Failed to prepare Simulink file generation folders", e);
+            releaseEngineQuietly();
+            throw new ExecutionException("Failed to prepare the working directory for Simulink", e);
         }
+        try {
+            initialize(initScript);
+        } catch (ExecutionException | InterruptedException | RuntimeException e) {
+            markEngineBrokenIfCrashed(e);
+            releaseEngineQuietly();
+            deleteDirectorySilently(workingDir);
+            throw e;
+        }
+    }
 
-        cacheDir = cacheDirTmp;
-        codegenDir = codegenDirTmp;
-        workingDir = workingDirTmp;
-
+    private void initialize(String initScript) throws ExecutionException, InterruptedException {
         matlab.eval("clear;");
         cleanupMatlabSession();
         matlab.eval("warning('off', 'Simulink:LoadSave:EncodingMismatch')");
@@ -119,6 +116,34 @@ public class SimulinkModel {
         matlab.eval("clear falcaunWorkingDir;");
         // Initialize the current state
         this.reset();
+    }
+
+    /**
+     * Mark the engine as broken if MATLAB aborted a command without an error message.
+     * <p>
+     * MATLAB errors raised by scripts or models always have a message. An empty message means that the command was
+     * aborted by MATLAB itself, e.g., after a segmentation violation (see {@code ~/matlab_crash_dump.*}), and the
+     * session must not be reused.
+     */
+    private void markEngineBrokenIfCrashed(Throwable e) {
+        for (Throwable cause = e; cause != null; cause = cause.getCause()) {
+            if (cause instanceof MatlabExecutionException) {
+                String message = cause.getMessage();
+                if (message == null || message.isBlank()) {
+                    log.warn("MATLAB aborted a command without an error message. The MATLAB session will not be reused.");
+                    lockedEngine.markBroken();
+                }
+                return;
+            }
+        }
+    }
+
+    private void releaseEngineQuietly() {
+        try {
+            lockedEngine.close();
+        } catch (EngineException e) {
+            log.error("Failed to release locked MATLAB engine: {}", e.getMessage());
+        }
     }
 
     /**
@@ -327,6 +352,7 @@ public class SimulinkModel {
             }
         } catch (Exception e) {
             log.error("There was an error when obtaining the result: {}", e.getMessage());
+            markEngineBrokenIfCrashed(e);
             throw e;
         }
         return y;
@@ -441,6 +467,9 @@ public class SimulinkModel {
         log.trace(builder.toString());
         try {
             matlab.eval(builder.toString());
+        } catch (ExecutionException | RuntimeException e) {
+            markEngineBrokenIfCrashed(e);
+            throw e;
         } finally {
             simulationTime.stop();
         }
@@ -514,8 +543,6 @@ public class SimulinkModel {
             log.error("Failed to release locked MATLAB engine: {}", e.getMessage());
             throw e;
         } finally {
-            deleteDirectorySilently(cacheDir);
-            deleteDirectorySilently(codegenDir);
             deleteDirectorySilently(workingDir);
         }
     }
@@ -582,7 +609,7 @@ public class SimulinkModel {
                 || name.endsWith(".mexw64");
     }
 
-    private static void deleteDirectorySilently(Path dir) {
+    static void deleteDirectorySilently(Path dir) {
         if (dir == null || !Files.exists(dir)) {
             return;
         }
