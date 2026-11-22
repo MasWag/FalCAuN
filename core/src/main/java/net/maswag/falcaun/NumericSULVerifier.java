@@ -27,7 +27,6 @@ public class NumericSULVerifier implements AutoCloseable {
     private final SignalDiscretizer signalDiscretizer;
     private final BlackBoxVerifier<List<Double>> verifier;
     private final NumericMembershipOracle memOracle;
-    private final List<NumericMembershipOracleCost> memOracleCosts = new ArrayList<>();
     private final EvaluationCountable.Sum evaluationCountables = new EvaluationCountable.Sum();
     private final double signalStep;
 
@@ -63,14 +62,14 @@ public class NumericSULVerifier implements AutoCloseable {
         return verifier.getCexProperty();
     }
 
+    /**
+     * Add an equivalence oracle guided by the robustness of the given cost function.
+     * The SUL executions and their caches are shared with the membership oracle.
+     */
     void addRobustnessEqOracle(Function<IOSignal<List<Double>>, Double> costFunc,
-                             Function<NumericMembershipOracleCost,
-                                     ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
-        // Define the cost function from a discrete input signal to a double using the SUL and the STL formula
-        NumericMembershipOracleCost oracle =
-                new NumericMembershipOracleCost(this.sul, this.signalDiscretizer, costFunc);
-        oracle.setCache(this.memOracle.getCache());
-        memOracleCosts.add(oracle);
+                               Function<RobustnessOracle,
+                                       ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
+        RobustnessOracle oracle = this.memOracle.registerCostFunction(costFunc);
         EvaluationCountable.MealyEquivalenceOracle<String, String> eqOracle = constructor.apply(oracle);
         evaluationCountables.add(eqOracle);
         this.verifier.addEqOracle(eqOracle);
@@ -259,12 +258,6 @@ public class NumericSULVerifier implements AutoCloseable {
      * @return Returns {@code true} if and only if no counterexample is found.
      */
     public boolean run() {
-        Set<NumericMembershipOracleCost> tmp = new HashSet<>(memOracleCosts);
-        for (NumericMembershipOracleCost memOracleCost : memOracleCosts) {
-            tmp.remove(memOracleCost);
-            memOracleCost.addNotifiedAll(tmp);
-        }
-
         return verifier.run();
     }
 

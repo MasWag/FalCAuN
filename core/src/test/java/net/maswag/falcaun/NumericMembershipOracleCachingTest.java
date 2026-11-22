@@ -37,33 +37,20 @@ class NumericMembershipOracleCachingTest {
      */
     private static final class Fixture {
         final NumericMembershipOracle memOracle;
-        private final NumericSUL sul;
-        private final SignalDiscretizer discretizer;
-        private final List<NumericMembershipOracleCost> costOracles = new ArrayList<>();
 
         Fixture(NumericSUL sul, SignalDiscretizer discretizer) {
-            this.sul = sul;
-            this.discretizer = discretizer;
             this.memOracle = new NumericMembershipOracle(sul, discretizer);
         }
 
-        NumericMembershipOracleCost register(Function<IOSignal<List<Double>>, Double> costFunc) {
-            NumericMembershipOracleCost oracle = new NumericMembershipOracleCost(sul, discretizer, costFunc);
-            oracle.setCache(memOracle.getCache());
-            // As in NumericSULVerifier::run, each cost oracle notifies all the other cost oracles.
-            for (NumericMembershipOracleCost other : costOracles) {
-                other.addNotified(oracle);
-                oracle.addNotified(other);
-            }
-            costOracles.add(oracle);
-            return oracle;
+        RobustnessOracle register(Function<IOSignal<List<Double>>, Double> costFunc) {
+            return memOracle.registerCostFunction(costFunc);
         }
 
-        double cost(NumericMembershipOracleCost oracle, Word<String> input) {
+        double cost(RobustnessOracle oracle, Word<String> input) {
             return oracle.processQueryWithCost(new DefaultQuery<>(input));
         }
 
-        int evaluateCount(NumericMembershipOracleCost oracle) {
+        int evaluateCount(RobustnessOracle oracle) {
             return oracle.getEvaluateCount();
         }
     }
@@ -114,7 +101,7 @@ class NumericMembershipOracleCachingTest {
 
         @Test
         void robustnessIsPrefixWise() {
-            NumericMembershipOracleCost oracle = fixture.register(below3);
+            RobustnessOracle oracle = fixture.register(below3);
             // The running sums are 1, 3.5, 3.5
             assertEquals(3.0 - 3.5, fixture.cost(oracle, word("b", "c", "a")), EPS);
             assertEquals(1, sul.getExecutionCount());
@@ -126,7 +113,7 @@ class NumericMembershipOracleCachingTest {
 
         @Test
         void costQueryAnswersTheAbstractOutput() {
-            NumericMembershipOracleCost oracle = fixture.register(below3);
+            RobustnessOracle oracle = fixture.register(below3);
             DefaultQuery<String, Word<String>> query = new DefaultQuery<>(word("b"), word("c", "a"));
             oracle.processQueryWithCost(query);
             assertEquals(word("b", "b"), query.getOutput());
@@ -137,8 +124,8 @@ class NumericMembershipOracleCachingTest {
 
         @Test
         void multipleCostFunctionsShareExecutions() {
-            NumericMembershipOracleCost oracle3 = fixture.register(below3);
-            NumericMembershipOracleCost oracle4 = fixture.register(below4);
+            RobustnessOracle oracle3 = fixture.register(below3);
+            RobustnessOracle oracle4 = fixture.register(below4);
             assertEquals(3.0 - 3.5, fixture.cost(oracle3, word("b", "c", "a")), EPS);
             assertEquals(1, sul.getExecutionCount());
             // The robustness for the other cost function is computed from the same execution
@@ -155,23 +142,25 @@ class NumericMembershipOracleCachingTest {
 
         @Test
         void costQueryAfterMembershipQuery() {
-            NumericMembershipOracleCost oracle = fixture.register(below3);
+            RobustnessOracle oracle = fixture.register(below3);
             fixture.memOracle.answerQuery(word("b", "c", "a"));
             assertEquals(1, sul.getExecutionCount());
-            // The abstract output is cached but the robustness is not
+            // The robustness for the registered cost functions is computed for every execution, including the
+            // executions for membership queries. (Before the consolidation of the caches, this required another
+            // execution because only the executions by the cost oracles computed the robustness.)
             assertEquals(3.0 - 3.5, fixture.cost(oracle, word("b", "c", "a")), EPS);
-            assertEquals(2, sul.getExecutionCount());
-            assertEquals(1, fixture.evaluateCount(oracle));
+            assertEquals(1, sul.getExecutionCount());
+            assertEquals(0, fixture.evaluateCount(oracle));
         }
 
         @Test
         void costFunctionRegisteredAfterEvaluation() {
-            NumericMembershipOracleCost oracle3 = fixture.register(below3);
+            RobustnessOracle oracle3 = fixture.register(below3);
             assertEquals(3.0 - 3.5, fixture.cost(oracle3, word("b", "c", "a")), EPS);
             assertEquals(1, sul.getExecutionCount());
             // The robustness for a cost function registered later is not available without an execution:
             // a cached abstract output is not sufficient to compute the robustness.
-            NumericMembershipOracleCost oracle4 = fixture.register(below4);
+            RobustnessOracle oracle4 = fixture.register(below4);
             assertEquals(4.0 - 3.5, fixture.cost(oracle4, word("b", "c", "a")), EPS);
             assertEquals(2, sul.getExecutionCount());
             assertEquals(1, fixture.evaluateCount(oracle4));
@@ -183,7 +172,7 @@ class NumericMembershipOracleCachingTest {
 
         @Test
         void infiniteRobustnessIsReevaluated() {
-            NumericMembershipOracleCost oracle = fixture.register(signal -> Double.POSITIVE_INFINITY);
+            RobustnessOracle oracle = fixture.register(signal -> Double.POSITIVE_INFINITY);
             assertEquals(Double.POSITIVE_INFINITY, fixture.cost(oracle, word("b", "c")));
             assertEquals(Double.POSITIVE_INFINITY, fixture.cost(oracle, word("b", "c")));
             assertEquals(2, sul.getExecutionCount());
@@ -236,8 +225,8 @@ class NumericMembershipOracleCachingTest {
             assertEquals(word("aa", "bb", "ba"), fixture.memOracle.answerQuery(input));
             assertEquals(1, sul.getExecutionCount());
 
-            NumericMembershipOracleCost derived = fixture.register(derivedBelow15);
-            NumericMembershipOracleCost sampled = fixture.register(outputBelow3);
+            RobustnessOracle derived = fixture.register(derivedBelow15);
+            RobustnessOracle sampled = fixture.register(outputBelow3);
             assertEquals(15.0 - 26.0, fixture.cost(derived, input), EPS);
             assertEquals(15.0 - 1.0, fixture.cost(derived, word("b")), EPS);
             assertEquals(3.0 - 3.5, fixture.cost(sampled, input), EPS);

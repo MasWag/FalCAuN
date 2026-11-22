@@ -21,7 +21,7 @@ public class SAEQOracle extends HillClimbingEQOracle {
     /**
      * <p>Constructor for SAEQOracle.</p>
      *
-     * @param memOracle a {@link NumericMembershipOracleCost} object.
+     * @param memOracle a {@link RobustnessOracle} object.
      * @param length a int.
      * @param random a {@link java.util.Random} object.
      * @param maxTests a int.
@@ -30,13 +30,13 @@ public class SAEQOracle extends HillClimbingEQOracle {
      * @param resetWord a boolean.
      * @param alpha a double.
      */
-    public SAEQOracle(NumericMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, double alpha) {
+    public SAEQOracle(RobustnessOracle memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, double alpha) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord);
         maxIteration = maxTests / (generationSize * childrenSize);
         this.alpha = alpha;
     }
 
-    SAEQOracle(NumericMembershipOracleCost memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, double alpha, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    SAEQOracle(RobustnessOracle memOracle, int length, Random random, int maxTests, int generationSize, int childrenSize, boolean resetWord, double alpha, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
         super(memOracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle);
         maxIteration = maxTests / (generationSize * childrenSize);
         this.alpha = alpha;
