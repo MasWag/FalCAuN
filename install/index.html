@@ -844,7 +844,7 @@
 <h2 id="requirements">Requirements</h2>
 <p>The requirements for the core and examples modules of FalCAuN are as follows.</p>
 <ul>
-<li>Java 17</li>
+<li>Java 21</li>
 <li>Maven</li>
 <li>LTSMin 3.1.0<ul>
 <li>This is not officially released yet.</li>
@@ -855,19 +855,21 @@
 </ul>
 <p>The matlab module also requires the following.</p>
 <ul>
-<li>MATLAB/Simulink<ul>
-<li>We tested with MATLAB R2024a, but any later version should be fine.</li>
+<li>MATLAB/Simulink R2024b or later<ul>
+<li>R2024b is the first release that supports Java 21, which FalCAuN uses.</li>
+<li>On Linux, we recommend R2026b or later. With R2024b and R2025b, repeated simulations with Fast Restart in accelerator mode, which FalCAuN uses, can corrupt the MATLAB heap, and MATLAB crashes or hangs within a few simulations. We reproduced this on Ubuntu 24.04 in plain MATLAB without FalCAuN. R2026b does not have this problem.</li>
+<li>If you use R2024b on Linux, use OpenJDK 21.0.2+13 or earlier, the newest version that R2024b supports on Linux. See <a href="https://www.mathworks.com/support/requirements/openjdk.html">Versions of OpenJDK Compatible with MATLAB by Release</a>.</li>
 </ul>
 </li>
 </ul>
 <h2 id="installation-of-the-core-module">Installation of the core Module</h2>
 <p>Here, we provide the instructions to install the core module of FalCAuN.</p>
 <h3 id="1-install-the-requirements">1. Install the Requirements</h3>
-<p>You need to install the requirements above. For example, on Ubuntu, you can install Java 17 and Maven by the following command.</p>
+<p>You need to install the requirements above. For example, on Ubuntu, you can install Java 21 and Maven by the following command.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Ubuntu</label><label for="__tabbed_1_2">macOS</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>maven<span class="w"> </span>openjdk-17-jdk-headless<span class="w"> </span>-y
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>maven<span class="w"> </span>openjdk-21-jdk-headless<span class="w"> </span>-y
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -907,7 +909,7 @@
 <p>We assume that the environment variable <code>MATLAB_HOME</code> shows where MATLAB is installed. An example is as follows.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MATLAB_HOME</span><span class="o">=</span>&lt;path/to/matlab/home&gt;
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1">## Example:</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># export MATLAB_HOME=/usr/local/MATLAB/R2024a/</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># export MATLAB_HOME=/usr/local/MATLAB/R2024b/</span>
 </span></code></pre></div>
 <h3 id="3-build-and-install-falcaun">3. Build and Install FalCAuN</h3>
 <p>You can build and install FalCAuN using Maven. You have to execute <code>mvn clean</code> to set up the Java API of MATLAB. An example to install the matlab module, as well as the others, is as follows.</p>
@@ -917,16 +919,22 @@
 <h2 id="installation-of-the-python-binding-module">Installation of the python binding Module</h2>
 <p>Here, we provide the instructions to install the python binding module.</p>
 <h3 id="1-install-the-requirements_2">1. Install the Requirements</h3>
-<p>You need to install Jep manually. Follow the instructions on the <a href="https://github.com/ninia/jep">official site</a></p>
-<h3 id="2-set-up-the-environment-variable_1">2. Set up the environment variable</h3>
-<p>Add the installed path, which has the JEP native library including <code>jep-VERSION.jar</code>, to the environment variable <code>LD_LIBRARY_PATH</code>.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>&lt;path/to/jep&gt;:<span class="si">${</span><span class="nv">LD_LIBRARY_PATH</span><span class="si">}</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1"># Example:</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep</span>
+<p>You need to install <a href="https://github.com/ninia/jep">Jep</a> in the Python environment that Maven should use. For example, create and activate a virtual environment and install Jep there.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>.<span class="w"> </span>venv/bin/activate
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>pip<span class="w"> </span>install<span class="w"> </span>jep
 </span></code></pre></div>
+<h3 id="2-set-up-the-environment-variable_1">2. Set up the environment variable</h3>
+<p>Set <code>PYTHONEXECUTABLE</code> to the absolute path of the Python executable that has Jep installed. This is required because Maven runs tests in forked JVMs, and Jep initializes Python from that executable. Do not use a relative path such as <code>./venv/bin/python</code>; use <code>$PWD/venv/bin/python</code> instead.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span>
+</span></code></pre></div>
+<p>The Python binding tests are skipped when <code>PYTHONEXECUTABLE</code> is not set to an absolute executable path.</p>
 <h3 id="3-build-and-install-falcaun_1">3. Build and Install FalCAuN</h3>
-<p>Build FalCAuN using Maven. You may need to set the environment variable <code>PYTHONEXECUTABLE</code> to the full path of the Python executable, for example: <code>export PYTHONEXECUTABLE="$PWD/.venv/bin/python3"</code>.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">JAVA_HOME</span><span class="o">=</span>/path/to/jdk21<span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span><span class="w"> </span>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python
+</span></code></pre></div>
+<p>If the tests fail with <code>UnsatisfiedLinkError: no jep in java.library.path</code>, pass the directory containing the native library of Jep to <code>java.library.path</code> explicitly. On Linux, you can instead add the directory to <code>LD_LIBRARY_PATH</code>. On macOS, this is necessary because <code>DYLD_LIBRARY_PATH</code> is removed when Maven starts.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nv">JEP_PATH</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>venv/bin/python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import sysconfig; print(sysconfig.get_paths()["purelib"])'</span><span class="k">)</span><span class="s2">/jep"</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nv">JAVA_HOME</span><span class="o">=</span>/path/to/jdk21<span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span><span class="w"> </span>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python<span class="w"> </span>-DargLine<span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$JEP_PATH</span><span class="s2">"</span>
 </span></code></pre></div>
 <h2 id="installation-of-ltsmin-310-on-macos-with-arm-processors">Installation of LTSMin 3.1.0 on macOS with ARM processors</h2>
 <p>FalCAuN works on macOS with ARM processors, but the setup of LTSMin is a bit tricky because it only supports x86_64. One can still run LTSMin using Rosetta and libtool for x86_64. You can also build and install LTSMin using Homebrew (for x86_64) by <code>brew install maswag/scientific/ltsmin-beta</code>.</p>
@@ -937,7 +945,7 @@
 </ol>
 <h2 id="notes">Notes</h2>
 <ul>
-<li>You may have to explicitly specify <code>JAVA_HOME</code>, for example, <code>JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=false</code>.</li>
+<li>You may have to explicitly specify <code>JAVA_HOME</code>, for example, <code>JAVA_HOME=$(/usr/libexec/java_home -v 21) mvn test -DskipTests=false</code>.</li>
 <li>The automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand.<ul>
 <li>The example by MathWorks can be opened with <code>openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')</code></li>
 <li>See <code>./src/test/resources/MATLAB/initAT.m</code> for an example to set the path.</li>
