@@ -110,15 +110,15 @@
   "Print summary statistics from a FalCAuN verifier run.
 
   - verifier: a verifier exposing `getSimulationTimeSecond`,
-    `getSimulinkCount`, and `getSimulinkCountForEqTest`.
+    `getSutExecutionCount`, and `getEqSutExecutionCount`.
 
   Prints execution time and the number of simulations performed."
   [verifier]
   (printf "Execution time for simulation: %g [sec]\n"
           (.getSimulationTimeSecond verifier))
-  (println "Number of simulations: " (.getSimulinkCount verifier))
+  (println "Number of simulations: " (.getSutExecutionCount verifier))
   (println "Number of simulations for equivalence testing: "
-           (.getSimulinkCountForEqTest verifier)))
+           (.getEqSutExecutionCount verifier)))
 
 (defn suppress-logs
   "Adjust logger levels to reduce verbose output.

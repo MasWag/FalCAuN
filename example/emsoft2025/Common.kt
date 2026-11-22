@@ -116,15 +116,15 @@ fun runExperiment(verifier: NumericSULVerifier, systemName: String = "", propert
     }
     logger.info("Total execution time: ${timer.getSecond()} [sec]")
     logger.info("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
-    logger.info("Number of simulations: ${verifier.simulinkCount}")
-    logger.info("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
+    logger.info("Number of simulations: ${verifier.sutExecutionCount}")
+    logger.info("Number of simulations for equivalence testing: ${verifier.eqSutExecutionCount}")
 
     return ExperimentSummary(
         systemName,
         propertyName,
-        verifier.simulinkCount,
+        verifier.sutExecutionCount,
         timer.getSecond(),
-        verifier.simulinkCountForEqTest,
+        verifier.eqSutExecutionCount,
         verifier.simulationTimeSecond,
         if (result) "no" else "yes",
         if (result) "" else "\"${verifier.cexConcreteInput[0]}\""

@@ -102,6 +102,6 @@ PythonContinuousNumericSUL(initScript, signalStep).use { autoTransSUL ->
         }
     }
     println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
-    println("Number of simulations: ${verifier.simulinkCount}")
-    println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
+    println("Number of simulations: ${verifier.sutExecutionCount}")
+    println("Number of simulations for equivalence testing: ${verifier.eqSutExecutionCount}")
 }

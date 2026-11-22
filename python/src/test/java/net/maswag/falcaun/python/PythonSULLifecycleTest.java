@@ -4,7 +4,6 @@ import net.automatalib.word.Word;
 import net.maswag.falcaun.NumericSUL;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -13,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,7 +65,6 @@ class PythonSULLifecycleTest {
         return result;
     }
 
-    @Disabled("Phase 2: execute() does not call post()")
     @ParameterizedTest
     @ValueSource(strings = {STEP_SCRIPT, EXEC_SCRIPT, CONTINUOUS_SCRIPT})
     void executeRunsOneSession(String script) throws Exception {
@@ -73,17 +72,16 @@ class PythonSULLifecycleTest {
             var result = sul.execute(input(1.0, 2.0, 3.0));
             assertEquals(input(1.0, 3.0, 6.0), result.getOutputSignal());
             assertEquals(expectedSession(script, 3), events());
-            assertEquals(1, sul.getCounter());
+            assertEquals(1, sul.getExecutionCount());
 
             Files.deleteIfExists(EVENT_LOG);
             assertEquals(input(1.0, 3.0, 6.0), sul.execute(input(1.0, 2.0, 3.0)).getOutputSignal());
             assertEquals(expectedSession(script, 3), events());
-            assertEquals(2, sul.getCounter());
+            assertEquals(2, sul.getExecutionCount());
         }
         assertEquals("close", events().get(events().size() - 1));
     }
 
-    @Disabled("Phase 2: execute() does not call post() when the execution fails")
     @ParameterizedTest
     @ValueSource(strings = {STEP_SCRIPT, EXEC_SCRIPT, CONTINUOUS_SCRIPT})
     void postIsCalledWhenExecutionFails(String script) throws Exception {
@@ -113,6 +111,32 @@ class PythonSULLifecycleTest {
             assertEquals(List.of(3.0), sul.step(List.of(2.0)).getOutputSignal());
             sul.post();
             assertEquals(List.of("pre", "step", "step", "post"), events());
+        }
+    }
+
+    /**
+     * Each thread has its own interpreter and Python objects. Using the SUL in another thread must not affect the
+     * Python objects used by the original thread.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {STEP_SCRIPT, EXEC_SCRIPT})
+    void executeOnAnotherThread(String script) throws Exception {
+        try (NumericSUL sul = create(script)) {
+            AtomicReference<Word<List<Double>>> output = new AtomicReference<>();
+            AtomicReference<Throwable> error = new AtomicReference<>();
+            Thread thread = new Thread(() -> {
+                try {
+                    output.set(sul.execute(input(1.0, 2.0)).getOutputSignal());
+                } catch (Throwable e) {
+                    error.set(e);
+                }
+            });
+            thread.start();
+            thread.join();
+            assertNull(error.get());
+            assertEquals(input(1.0, 3.0), output.get());
+            // The SUL still works in the original thread
+            assertEquals(input(1.0, 3.0), sul.execute(input(1.0, 2.0)).getOutputSignal());
         }
     }
 }

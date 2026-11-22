@@ -2,7 +2,6 @@ package net.maswag.falcaun;
 
 import net.automatalib.word.Word;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -35,7 +34,7 @@ class NumericSULLifecycleTest {
         assertEquals(List.of("pre", "step", "step", "step", "post"), sul.getEvents());
         assertEquals(input(1.0, 2.0, 0.0), result.getInputSignal());
         assertEquals(input(1.0, 3.0, 3.0), result.getOutputSignal());
-        assertEquals(1, sul.getCounter());
+        assertEquals(1, sul.getExecutionCount());
     }
 
     @Test
@@ -44,7 +43,7 @@ class NumericSULLifecycleTest {
         IOSignal<List<Double>> second = sul.execute(input(1.0, 2.0));
         assertEquals(first.getOutputSignal(), second.getOutputSignal());
         assertEquals(List.of("pre", "step", "step", "post", "pre", "step", "step", "post"), sul.getEvents());
-        assertEquals(2, sul.getCounter());
+        assertEquals(2, sul.getExecutionCount());
     }
 
     @Test
@@ -57,7 +56,6 @@ class NumericSULLifecycleTest {
         assertEquals(input(1.0, 3.0), sul.execute(input(1.0, 2.0)).getOutputSignal());
     }
 
-    @Disabled("Phase 2: execute() does not call post() when a step fails")
     @Test
     void postIsCalledWhenStepFails() {
         sul.setFailAtStep(1);

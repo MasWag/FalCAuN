@@ -70,7 +70,7 @@ class CountingNumericSUL implements NumericSUL {
     }
 
     @Override
-    public int getCounter() {
+    public int getExecutionCount() {
         return counter;
     }
 

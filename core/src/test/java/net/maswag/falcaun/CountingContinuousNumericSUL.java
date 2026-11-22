@@ -74,7 +74,7 @@ class CountingContinuousNumericSUL implements ContinuousNumericSUL {
     }
 
     @Override
-    public int getCounter() {
+    public int getExecutionCount() {
         return counter;
     }
 

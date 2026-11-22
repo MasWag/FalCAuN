@@ -102,9 +102,9 @@ class VerificationOutcomeTest {
 
         assertFalse(verifier.run());
         assertEquals(properties.subList(0, 2), verifier.getCexProperty());
-        System.out.println("SUL executions: " + verifier.getSimulinkCount()
-                + ", for equivalence testing: " + verifier.getSimulinkCountForEqTest());
-        assertEquals(73, verifier.getSimulinkCount());
-        assertEquals(48, verifier.getSimulinkCountForEqTest());
+        System.out.println("SUL executions: " + verifier.getSutExecutionCount()
+                + ", for equivalence testing: " + verifier.getEqSutExecutionCount());
+        assertEquals(73, verifier.getSutExecutionCount());
+        assertEquals(48, verifier.getEqSutExecutionCount());
     }
 }

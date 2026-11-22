@@ -22,9 +22,8 @@ import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class NumericSULVerifier {
-    protected SUL<List<Double>, IOSignalPiece<List<Double>>> simulink;
-    protected final NumericSUL rawSUL;
+public class NumericSULVerifier implements AutoCloseable {
+    protected final NumericSUL sul;
     private final SignalDiscretizer signalDiscretizer;
     private final BlackBoxVerifier<List<Double>> verifier;
     private final NumericMembershipOracle memOracle;
@@ -33,29 +32,28 @@ public class NumericSULVerifier {
     private final double signalStep;
 
     /**
-     * <p>Constructor for SimulinkVerifier.</p>
+     * <p>Constructor for NumericSULVerifier.</p>
      *
-     * @param rawSUL     The system under test.
+     * @param sul        The system under test.
      * @param signalStep The signal step in the simulation
      * @param properties The LTL properties to be verified
-     * @param signalDiscretizer     The I/O mapper between abstract/concrete Simulink models.
+     * @param signalDiscretizer     The I/O mapper between the abstract and concrete signals.
      */
-    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, SignalDiscretizer signalDiscretizer) {
+    public NumericSULVerifier(NumericSUL sul, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, SignalDiscretizer signalDiscretizer) {
         log.debug("Initialize numeric SUL verifier with signalStep: {}, properties: {}", signalStep, properties);
-        this.rawSUL = rawSUL;
+        this.sul = sul;
         this.signalStep = signalStep;
         this.signalDiscretizer = signalDiscretizer;
         Alphabet<List<Double>> concreteInputAlphabet = signalDiscretizer.constructConcreteAlphabet();
         Alphabet<String> abstractInputAlphabet = signalDiscretizer.constructAbstractAlphabet();
 
-        this.simulink = createTreeCache(concreteInputAlphabet, rawSUL);
-
-        SUL<String, String> mappedSimulink = new MappedSUL<>(signalDiscretizer, simulink);
-        mappedSimulink = createTreeCache(abstractInputAlphabet, mappedSimulink);
+        // The step-wise SUL with the LearnLib caches. It is used only by the equivalence oracles executing the SUL step by step.
+        SUL<List<Double>, IOSignalPiece<List<Double>>> cachedSUL = createTreeCache(concreteInputAlphabet, sul);
+        SUL<String, String> mappedSUL = createTreeCache(abstractInputAlphabet, new MappedSUL<>(signalDiscretizer, cachedSUL));
         // create a regular membership oracle
-        this.memOracle = new NumericMembershipOracle(rawSUL, this.signalDiscretizer);
+        this.memOracle = new NumericMembershipOracle(sul, this.signalDiscretizer);
         properties.setMemOracle(memOracle);
-        verifier = new BlackBoxVerifier<>(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
+        verifier = new BlackBoxVerifier<>(this.memOracle, mappedSUL, properties, abstractInputAlphabet);
     }
 
     /**
@@ -65,12 +63,12 @@ public class NumericSULVerifier {
         return verifier.getCexProperty();
     }
 
-    void addSimulinkEqOracle(Function<IOSignal<List<Double>>, Double> costFunc,
+    void addRobustnessEqOracle(Function<IOSignal<List<Double>>, Double> costFunc,
                              Function<NumericMembershipOracleCost,
                                      ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
-        // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
+        // Define the cost function from a discrete input signal to a double using the SUL and the STL formula
         NumericMembershipOracleCost oracle =
-                new NumericMembershipOracleCost(this.rawSUL, this.signalDiscretizer, costFunc);
+                new NumericMembershipOracleCost(this.sul, this.signalDiscretizer, costFunc);
         oracle.setCache(this.memOracle.getCache());
         memOracleCosts.add(oracle);
         EvaluationCountable.MealyEquivalenceOracle<String, String> eqOracle = constructor.apply(oracle);
@@ -124,7 +122,7 @@ public class NumericSULVerifier {
                                         int generationSize,
                                         int childrenSize,
                                         boolean resetWord) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
 
@@ -148,7 +146,7 @@ public class NumericSULVerifier {
                                         int childrenSize,
                                         boolean resetWord,
                                         MealyPropertyOracle<String, String, String> ltlOracle) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
 
@@ -187,7 +185,7 @@ public class NumericSULVerifier {
                               boolean resetWord,
                               double alpha,
                               MealyPropertyOracle<String, String, String> ltlOracle) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
     }
 
@@ -199,7 +197,7 @@ public class NumericSULVerifier {
                                  int childrenSize,
                                  int changeSize,
                                  boolean resetWord) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new MutateSelectEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
     }
 
@@ -223,7 +221,7 @@ public class NumericSULVerifier {
                        double crossoverProb,
                        double mutationProbability, // e.g., 1.0 / length
                        MealyPropertyOracle<String, String, String> ltlOracle) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new GAEQOracle(oracle, length, maxTests, selectionKind, generationSize, crossoverProb, mutationProbability, ltlOracle));
     }
 
@@ -258,7 +256,7 @@ public class NumericSULVerifier {
     /**
      * <p>run.</p>
      *
-     * @return Returns {@code true} if and only if the Simulink model is verified i.e., no counter example is found.
+     * @return Returns {@code true} if and only if no counterexample is found.
      */
     public boolean run() {
         Set<NumericMembershipOracleCost> tmp = new HashSet<>(memOracleCosts);
@@ -314,13 +312,16 @@ public class NumericSULVerifier {
     }
 
     /**
-     * @return the number of the Simulink executions
+     * @return the number of the executions of the SUL
      */
-    public int getSimulinkCount() {
-        return this.rawSUL.getCounter();
+    public int getSutExecutionCount() {
+        return this.sul.getExecutionCount();
     }
 
-    public int getSimulinkCountForEqTest() {
+    /**
+     * @return the number of the executions of the SUL triggered by the equivalence oracles
+     */
+    public int getEqSutExecutionCount() {
         return evaluationCountables.getEvaluateCount();
     }
 
@@ -346,16 +347,17 @@ public class NumericSULVerifier {
     }
 
     /**
-     * Close the MATLAB engine. This method must be called when the object is no longer used.
+     * Close the SUL, e.g., the MATLAB engine or the Python interpreter.
      */
+    @Override
     public void close() throws Exception {
-        this.rawSUL.close();
+        this.sul.close();
     }
 
     /**
      * @return the execution time for the simulations
      */
     public double getSimulationTimeSecond() {
-        return this.rawSUL.getSimulationTimeSecond();
+        return this.sul.getSimulationTimeSecond();
     }
 }

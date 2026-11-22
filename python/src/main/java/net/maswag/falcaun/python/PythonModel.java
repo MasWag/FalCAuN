@@ -8,10 +8,10 @@ import jep.python.PyObject;
 import lombok.Getter;
 import net.maswag.falcaun.TimeMeasure;
 
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * A PythonModel class wraps a model implemented by python.
@@ -19,27 +19,34 @@ import java.util.NoSuchElementException;
  * If the model has an {@code exec(List<I> inputSignals) -> List<O>} method,
  * NumericSUL can be used to execute a batch of input signals for optimization.
  * This class uses Jep library to interact with Python.
- * 
+ * <p>
+ * A {@link SharedInterpreter} can be used only by the thread that created it. Therefore, each thread using this
+ * model has its own binding, i.e., an interpreter, an instance of the Python class {@code SUL}, and the callable
+ * methods of the instance. The binding of a thread is created when the thread uses the model for the first time.
+ * {@link #close()} closes only the binding of the calling thread.
+ *
  * @param <I> Type of the input at each step
  * @param <O> Type of the output at each step
  */
 public class PythonModel<I, O> {
     /**
-     * A thread-local variable to check if the interpreter has been initialized.
+     * The per-thread binding of the Python model.
+     *
+     * @param interpreter the interpreter owned by the thread
+     * @param pre         the {@code pre} method of the Python SUL
+     * @param post        the {@code post} method of the Python SUL
+     * @param step        the {@code step} method of the Python SUL
+     * @param close       the {@code close} method of the Python SUL
+     * @param exec        the {@code exec} method of the Python SUL if it exists
      */
-    private ThreadLocal<Boolean> initialized = ThreadLocal.withInitial(() -> false);
+    private record Binding(SharedInterpreter interpreter, PyCallable pre, PyCallable post, PyCallable step,
+                           PyCallable close, Optional<PyCallable> exec) {
+    }
 
     /**
-     * A {@link jep.SharedInterpreter} variable to hold the Python interpreter instance.
-     * {@code interpreter} uses ThreadLocal because {@link jep.SharedInterpreter} cannot be used by another thread.
+     * The binding of each thread. It is created lazily by {@link #createBinding()}.
      */
-    private ThreadLocal<SharedInterpreter> interpreter = ThreadLocal.withInitial(() -> {
-        try {
-            return new SharedInterpreter();
-        } catch (JepException e) {
-            throw new RuntimeException(e);
-        }
-    });
+    private final ThreadLocal<Binding> binding = ThreadLocal.withInitial(this::createBinding);
 
     /**
      * The class object of the output signal produced by the step method.
@@ -50,17 +57,6 @@ public class PythonModel<I, O> {
      * The filename of the Python script that implements the SUL model.
      */
     private final String initScript;
-
-
-    /**
-     * Objects representing callable Python methods.
-     */
-    private PyCallable pyPre, pyPost, pyStep, pyClose;
-
-    /**
-     * It is bound if the Python model has an {@code exec} method.
-     */
-    private Optional<PyCallable> pyExec = Optional.empty();
 
     @Getter
     private final TimeMeasure simulationTime = new TimeMeasure();
@@ -73,13 +69,13 @@ public class PythonModel<I, O> {
         // for abstract_sul.py using kotlin examples
                                     .addIncludePaths("./");
         SharedInterpreter.setConfig(config);
-        
     }
 
     /**
      * Constructs a Python interpreter with the given initialization script as a Python model.
      * The script should define a class {@code SUL} with methods {@code pre()}, {@code post()}, {@code step(I inputSignal) -> O}, and {@code close()}.
-     * 
+     * The binding for the current thread is created eagerly so that errors in the script are reported here.
+     *
      * @param initScript The Python script to initialize the model.
      * @param outputClass The class object of the output signal produced by the step method.
      * @throws JepException If there is an error initializing the Python interpreter or running the script.
@@ -87,53 +83,55 @@ public class PythonModel<I, O> {
     public PythonModel(String initScript, Class<O> outputClass) throws JepException {
         this.outputClass = outputClass;
         this.initScript = initScript;
-        initialize();
+        this.binding.get();
     }
 
     /**
-     * It simply runs the initialization script and sets up the Python callable methods.
-     * Calling a callable method like {@literal pyPre.call()} is equivalent to executing
-     * {@literal sul = SUL()} and {@literal sul.pre()} on the Python side.
-     *
+     * Creates the binding for the current thread.
+     * It runs the initialization script, executes {@literal sul = SUL()}, and binds the methods of {@literal sul}.
+     * <p>
      * Note that the code under the {@literal if __name__ == "__main__":} branch in Python is also executed.
      */
-    public void initialize() {
-        if (!this.initialized.get()) {
-            var interp = this.interpreter.get();
+    private Binding createBinding() {
+        SharedInterpreter interp;
+        try {
+            interp = new SharedInterpreter();
+        } catch (JepException e) {
+            throw new IllegalStateException("Failed to create a Python interpreter", e);
+        }
+        try {
             interp.runScript(initScript);
             interp.eval("sul = SUL()");
 
             var pysul = interp.getValue("sul", PyObject.class);
-            this.pyPre = pysul.getAttr("pre", PyCallable.class);
-            this.pyPost = pysul.getAttr("post", PyCallable.class);
-            this.pyStep = pysul.getAttr("step", PyCallable.class);
-            this.pyClose = pysul.getAttr("close", PyCallable.class);
-
             Object hasExecObj = interp.getValue("hasattr(sul, 'exec')");
-            // If 'sul' has 'exec' method, bind it to pyExec
-            if (hasExecObj instanceof Boolean hasExec && hasExec) {
-                this.pyExec = Optional.of(pysul.getAttr("exec", PyCallable.class));
-            } else {
-                this.pyExec = Optional.empty();
-            }
+            Optional<PyCallable> exec = hasExecObj instanceof Boolean hasExec && hasExec
+                    ? Optional.of(pysul.getAttr("exec", PyCallable.class))
+                    : Optional.empty();
+            return new Binding(interp,
+                    pysul.getAttr("pre", PyCallable.class),
+                    pysul.getAttr("post", PyCallable.class),
+                    pysul.getAttr("step", PyCallable.class),
+                    pysul.getAttr("close", PyCallable.class),
+                    exec);
+        } catch (RuntimeException e) {
+            interp.close();
+            throw e;
         }
-        this.initialized.set(true);
     }
 
     /**
      * Call the {@code pre} method of the Python SUL model.
-     * If the model has not been initialized in this thread yet, it initializes first.
      */
     public void pre() {
-        initialize();
-        this.pyPre.call();
+        binding.get().pre().call();
     }
 
     /**
      * Call the {@code post} method of the Python SUL model.
      */
     public void post() {
-        this.pyPost.call();
+        binding.get().post().call();
     }
 
     /**
@@ -143,38 +141,50 @@ public class PythonModel<I, O> {
      * @throws JepException if an error occurs while calling the Python step method.
      */
     public O step(I inputSignal) throws JepException {
+        PyCallable step = binding.get().step();
         simulationTime.start();
-        var ret = this.pyStep.callAs(this.outputClass, inputSignal);
-        simulationTime.stop();
-        return ret;
+        try {
+            return step.callAs(this.outputClass, inputSignal);
+        } finally {
+            simulationTime.stop();
+        }
     }
 
     /**
-     * Call the {@code close} method of the Python SUL model.
+     * Call the {@code close} method of the Python SUL model and close the interpreter of the current thread.
+     * The bindings of the other threads are not closed because an interpreter can be closed only by its thread.
      */
     public void close() {
-        this.pyClose.call();
-        this.interpreter.get().close();
+        Binding current = binding.get();
+        try {
+            current.close().call();
+        } finally {
+            current.interpreter().close();
+            binding.remove();
+        }
     }
 
     /**
      * Returns true if the Python SUL model has {@code exec} method.
      */
     public boolean hasExec() {
-        return this.pyExec.isPresent();
+        return binding.get().exec().isPresent();
     }
 
     /**
      * Call the {@code exec} method of the Python SUL model.
-     * 
+     *
      * @throws NoSuchElementException if the Python SUL model does not have {@code exec} method.
      * @throws JepException if an error occurs while calling the Python step method.
      */
     @SuppressWarnings("rawtypes")
     public ArrayList exec(List<I> inputSignals) throws NoSuchElementException, JepException {
+        PyCallable exec = binding.get().exec().orElseThrow();
         simulationTime.start();
-        var ret = this.pyExec.orElseThrow().callAs(ArrayList.class, inputSignals);
-        simulationTime.stop();
-        return ret;
+        try {
+            return exec.callAs(ArrayList.class, inputSignals);
+        } finally {
+            simulationTime.stop();
+        }
     }
 }

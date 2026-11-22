@@ -240,9 +240,9 @@ public class FalCAuN {
         totalTime.stop();
         log.info("BBC finished");
         log.info("BBC Elapsed Time: " + totalTime.getSecond() + " [sec]");
-        log.info("Simulink Execution: " + verifier.getSimulinkCount() + " times");
+        log.info("Simulink Execution: " + verifier.getSutExecutionCount() + " times");
         log.info("Simulink Execution Time: " + verifier.getSimulationTimeSecond() + " [sec]");
-        log.info("Simulink Execution for Equivalence Testing: " + verifier.getSimulinkCountForEqTest() + " times");
+        log.info("Simulink Execution for Equivalence Testing: " + verifier.getEqSutExecutionCount() + " times");
 
         if (result) {
             log.info("All the given properties are verified");

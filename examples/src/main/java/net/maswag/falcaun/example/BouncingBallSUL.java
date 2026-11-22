@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 public class BouncingBallSUL implements ContinuousNumericSUL, ObservableSUL<BouncingBall.SimulationState, List<Double>, IOSignalPiece<List<Double>>> {
     private final BouncingBall model;
     @Getter
-    private int counter;
+    private int executionCount;
     @Getter
     private double simulationTimeSecond;
     private final double signalStep;
@@ -46,7 +46,7 @@ public class BouncingBallSUL implements ContinuousNumericSUL, ObservableSUL<Boun
      */
     public BouncingBallSUL(double initialPosition, double signalStep, double simulationStep) {
         this.model = new BouncingBall(initialPosition, simulationStep);
-        this.counter = 0;
+        this.executionCount = 0;
         this.simulationTimeSecond = 0.0;
         this.signalStep = signalStep;
         this.lastStepTime = 0.0;
@@ -64,7 +64,7 @@ public class BouncingBallSUL implements ContinuousNumericSUL, ObservableSUL<Boun
     public BouncingBallSUL(double initialPosition, double initialVelocity, double signalStep, double simulationStep,
                            double bounceCoefficient, double gravity) {
         this.model = new BouncingBall(initialPosition, initialVelocity, simulationStep, bounceCoefficient, gravity);
-        this.counter = 0;
+        this.executionCount = 0;
         this.simulationTimeSecond = 0.0;
         this.signalStep = signalStep;
         this.lastStepTime = 0.0;
@@ -94,8 +94,8 @@ public class BouncingBallSUL implements ContinuousNumericSUL, ObservableSUL<Boun
      */
     @Override
     public void post() {
-        // Increment counter after a complete simulation
-        counter++;
+        // Increment the execution count after a complete simulation
+        executionCount++;
     }
 
     /**
@@ -184,39 +184,43 @@ public class BouncingBallSUL implements ContinuousNumericSUL, ObservableSUL<Boun
         List<List<Double>> outputValues = new ArrayList<>();
         WordBuilder<List<Double>> outputBuilder = new WordBuilder<>();
 
-        // Process each input signal
-        for (int i = 0; i < inputSignal.size(); i++) {
-            List<Double> input = inputSignal.getSymbol(i);
-            double windStrength = input.get(0);
+        try {
+            // Process each input signal
+            for (int i = 0; i < inputSignal.size(); i++) {
+                List<Double> input = inputSignal.getSymbol(i);
+                double windStrength = input.get(0);
 
-            // Simulate for one signal step
-            double step = signalStep;
-            if (this.currentState == null) {
-                step = 0.0;
+                // Simulate for one signal step
+                double step = signalStep;
+                if (this.currentState == null) {
+                    step = 0.0;
+                }
+                List<BouncingBall.SimulationState> states = model.step(step, windStrength);
+
+                // Update current state to the last state in the simulation
+                if (!states.isEmpty()) {
+                    currentState = states.get(states.size() - 1);
+                }
+
+                // Extract the last state as the output for this step
+                BouncingBall.SimulationState lastState = states.get(states.size() - 1);
+                List<Double> output = new ArrayList<>();
+                output.add(lastState.position);
+                output.add(lastState.velocity);
+                outputBuilder.add(output);
+
+                // Add all intermediate states to the continuous signal
+                for (BouncingBall.SimulationState state : states) {
+                    timestamps.add(state.time);
+                    List<Double> stateOutput = new ArrayList<>();
+                    stateOutput.add(state.position);
+                    stateOutput.add(state.velocity);
+                    outputValues.add(stateOutput);
+                }
             }
-            List<BouncingBall.SimulationState> states = model.step(step, windStrength);
-
-            // Update current state to the last state in the simulation
-            if (!states.isEmpty()) {
-                currentState = states.get(states.size() - 1);
-            }
-
-            // Extract the last state as the output for this step
-            BouncingBall.SimulationState lastState = states.get(states.size() - 1);
-            List<Double> output = new ArrayList<>();
-            output.add(lastState.position);
-            output.add(lastState.velocity);
-            outputBuilder.add(output);
-
-            // Add all intermediate states to the continuous signal
-            for (BouncingBall.SimulationState state : states) {
-                timestamps.add(state.time);
-                List<Double> stateOutput = new ArrayList<>();
-                stateOutput.add(state.position);
-                stateOutput.add(state.velocity);
-                outputValues.add(stateOutput);
-            }
-
+        } finally {
+            // Finalize the session even if the execution fails
+            post();
         }
 
         // Create the ValueWithTime object for the continuous signal
@@ -224,10 +228,6 @@ public class BouncingBallSUL implements ContinuousNumericSUL, ObservableSUL<Boun
         // Update simulation time
         long endTime = System.nanoTime();
         simulationTimeSecond += (endTime - startTime) / 1e9;
-
-
-        // Reset the model after execution
-        post();
 
         return new IOContinuousSignal<>(inputSignal, outputBuilder.toWord(), valueWithTime, signalStep);
     }
@@ -261,7 +261,7 @@ public class BouncingBallSUL implements ContinuousNumericSUL, ObservableSUL<Boun
      */
     @Override
     public void clear() {
-        counter = 0;
+        executionCount = 0;
         simulationTimeSecond = 0.0;
     }
 
