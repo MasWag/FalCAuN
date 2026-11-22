@@ -61,7 +61,7 @@ RUN wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0
 
 # Install Python and Jep
 RUN source ~/.sdkman/bin/sdkman-init.sh \
-    && pip install --upgrade setuptools wheel \
+    && pip install --no-cache-dir --upgrade setuptools wheel \
     && pip install --no-cache-dir --no-build-isolation jep \
     && pip show jep
 
