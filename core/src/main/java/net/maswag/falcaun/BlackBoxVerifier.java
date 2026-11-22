@@ -1,8 +1,10 @@
 package net.maswag.falcaun;
 
 import de.learnlib.acex.AcexAnalyzers;
+import de.learnlib.exception.SULException;
 import de.learnlib.algorithm.LearningAlgorithm;
 import de.learnlib.algorithm.ttt.mealy.TTTLearnerMealy;
+import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.oracle.equivalence.*;
@@ -10,6 +12,7 @@ import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
 import de.learnlib.sul.SUL;
 import de.learnlib.util.MealyExperiment;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.modelchecker.ltsmin.monitor.LTSminMonitorIOBuilder;
@@ -18,6 +21,9 @@ import net.automatalib.serialization.dot.GraphDOT;
 import net.automatalib.serialization.etf.writer.Mealy2ETFWriterIO;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.VerificationResult.Counterexample;
+import net.maswag.falcaun.VerificationResult.Statistics;
+import net.maswag.falcaun.VerificationResult.TerminationReason;
 import net.maswag.falcaun.parser.TemporalLogic;
 
 import java.io.IOException;
@@ -36,7 +42,9 @@ import static net.automatalib.util.automaton.Automata.stateCover;
  * </p>
  * @param <I> The type of input symbols at each step.
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
+ * @see VerificationResult
  */
+@Slf4j
 public class BlackBoxVerifier<I> {
     private static final Function<String, String> EDGE_PARSER = s -> s;
     /**
@@ -52,10 +60,6 @@ public class BlackBoxVerifier<I> {
      * The learned Mealy machine that models the behavior of the black-box system based on test cases.
      */
     private MealyMachine<?, String, ?, String> learnedMealy;
-    /**
-     * A list of Mealy machines representing counterexamples found during the verification process.
-     */
-    private List<MealyMachine<?, String, ?, String>> cexMealy;
     /**
      * The alphabet of input symbols used in the verification process.
      */
@@ -73,21 +77,6 @@ public class BlackBoxVerifier<I> {
      */
     @Getter
     private final AdaptiveSTLUpdater<I> properties;
-    /**
-     * A list of input words that led to counterexamples found during the verification process.
-     */
-    @Getter
-    private List<Word<String>> cexInput;
-    /**
-     * A list of Signal Temporal Logic (STL) properties that were violated by the counterexamples found during the verification process.
-     */
-    @Getter
-    private List<TemporalLogic<I>> cexProperty;
-    /**
-     * A list of output words produced by the black-box system for the counterexamples found during the verification process.
-     */
-    @Getter
-    private List<Word<String>> cexOutput;
     /**
      * The model checker used to verify the learned Mealy machine against Signal Temporal Logic (STL) properties.
      */
@@ -203,29 +192,41 @@ public class BlackBoxVerifier<I> {
     }
 
     /**
-     * @return Returns {@code true} if and only if the given black-box system is verified i.e., no counter example is found.
+     * Run black-box checking.
+     * <p>
+     * The equivalence oracles are tried in the order of their addition until a counterexample is found, all the
+     * target specifications are falsified, or all the equivalence oracles are exhausted. Then, the counterexamples are
+     * extracted from the final learned Mealy machine and validated by the SUL. A failure of the SUL execution is
+     * reported as {@link TerminationReason#EXECUTION_FAILURE} instead of an exception.
+     *
+     * @return the result of black-box checking
      */
-    public boolean run() {
+    public VerificationResult<I> run() {
         for (TimeoutEQOracle<String, String> timeoutOracle : timeoutOracles) {
             timeoutOracle.start();
         }
-        // create an experiment
-        MealyExperiment<String, String>
-                experiment = new MealyExperiment<>(learner, eqOracle, this.inputAlphabet);
-        this.learnedMealy = experiment.run();
-
-        // run the experiment
-        return processMealy();
+        RoundCountingExperiment experiment = new RoundCountingExperiment(learner, eqOracle, this.inputAlphabet);
+        try {
+            this.learnedMealy = experiment.run();
+            return processMealy(experiment.rounds());
+        } catch (SULException e) {
+            log.error("Black-box checking is aborted because the execution of the SUL failed", e);
+            properties.reset();
+            int states = Objects.isNull(learnedMealy) ? 0 : learnedMealy.size();
+            return new VerificationResult<>(List.of(), properties.getSTLProperties(), TerminationReason.EXECUTION_FAILURE,
+                    new Statistics(experiment.rounds(), states), Optional.of(e));
+        }
     }
 
     /**
-     * Wirte the DOT of the found counter example.
+     * Wirte the DOT of the Mealy machine witnessing a counterexample.
      *
-     * @param a Write the DOT to {@code a}
+     * @param cex The counterexample
+     * @param a   Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    public void writeDOTCex(int index, Appendable a) throws IOException {
-        GraphDOT.write(cexMealy.get(index), this.inputAlphabet, a);
+    public void writeDOTCex(Counterexample<?> cex, Appendable a) throws IOException {
+        GraphDOT.write(cex.witness(), this.inputAlphabet, a);
     }
 
     /**
@@ -239,10 +240,10 @@ public class BlackBoxVerifier<I> {
     }
 
     /**
-     * Visualize the found counter example.
+     * Visualize the Mealy machine witnessing a counterexample.
      */
-    public void visualizeCex(int index) {
-        Visualization.visualize(cexMealy.get(index), this.inputAlphabet);
+    public void visualizeCex(Counterexample<?> cex) {
+        Visualization.visualize(cex.witness(), this.inputAlphabet);
     }
 
     /**
@@ -263,36 +264,64 @@ public class BlackBoxVerifier<I> {
     }
 
     /**
-     * Set the counter example input/output.
+     * Extract the counterexamples from the learned Mealy machine and validate them by the SUL.
      *
-     * @return Returns {@code true} if and only if the black-box system is verified i.e., no counter example is found for any system.
+     * @param rounds the number of the learning rounds
+     * @return the result of black-box checking
      */
-    private boolean processMealy() {
+    private VerificationResult<I> processMealy(int rounds) {
+        // The reason of the termination must be decided before resetting the properties
+        final TerminationReason reason;
+        if (properties.allDisproved()) {
+            reason = TerminationReason.ALL_TARGETS_FALSIFIED;
+        } else if (timeoutOracles.stream().anyMatch(TimeoutEQOracle::hasTimedOut)) {
+            reason = TerminationReason.TIMEOUT;
+        } else {
+            reason = TerminationReason.EQUIVALENCE_TESTING_EXHAUSTED;
+        }
         // Reset the list of properties to the initial one
         properties.reset();
 
-        cexMealy = new ArrayList<>();
-        cexProperty = new ArrayList<>();
-        cexInput = new ArrayList<>();
-        cexOutput = new ArrayList<>();
-        boolean isVerified = true;
+        List<Counterexample<I>> counterexamples = new ArrayList<>();
+        List<TemporalLogic<I>> unresolved = new ArrayList<>();
         for (TemporalLogic<I> stlProperty : properties.getSTLProperties()) {
             String ltlProperty = properties.toLTLString(stlProperty);
 
-            final MealyMachine<?, String, ?, String> cexMealyCandidate =
+            final MealyMachine<?, String, ?, String> witness =
                     modelChecker.findCounterExample(learnedMealy, this.inputAlphabet, ltlProperty);
-            if (!Objects.isNull(cexMealyCandidate)) {
-                // We found the counter example Mealy machine.
-                cexMealy.add(cexMealyCandidate);
-                cexProperty.add(stlProperty);
-                List<Word<String>> cexInputs = stateCover(cexMealyCandidate, this.inputAlphabet);
-                Word<String> currentInput = cexInputs.get(cexInputs.size() - 1);
-                cexInput.add(currentInput);
-                cexOutput.add(cexMealyCandidate.computeOutput(currentInput));
-                isVerified = false;
+            if (Objects.isNull(witness)) {
+                unresolved.add(stlProperty);
+                continue;
+            }
+            // We found the counter example Mealy machine.
+            List<Word<String>> cexInputs = stateCover(witness, this.inputAlphabet);
+            Word<String> input = cexInputs.get(cexInputs.size() - 1);
+            Counterexample<I> cex = new Counterexample<>(stlProperty, input, witness.computeOutput(input),
+                    memOracle.answerQuery(input), witness);
+            counterexamples.add(cex);
+            if (!cex.confirmed()) {
+                log.warn("The counterexample {} for {} is not confirmed by the SUL: the learned model outputs {} but the SUL outputs {}",
+                        input, stlProperty, cex.hypothesisOutput(), cex.sutOutput());
+                unresolved.add(stlProperty);
             }
         }
 
-        return isVerified;
+        return new VerificationResult<>(counterexamples, unresolved, reason,
+                new Statistics(rounds, learnedMealy.size()), Optional.empty());
+    }
+
+    /**
+     * A {@link MealyExperiment} exposing the number of the learning rounds.
+     */
+    private static final class RoundCountingExperiment extends MealyExperiment<String, String> {
+        RoundCountingExperiment(LearningAlgorithm.MealyLearner<String, String> learner,
+                                EquivalenceOracle.MealyEquivalenceOracle<String, String> eqOracle,
+                                Alphabet<String> inputs) {
+            super(learner, eqOracle, inputs);
+        }
+
+        int rounds() {
+            return getRound();
+        }
     }
 }

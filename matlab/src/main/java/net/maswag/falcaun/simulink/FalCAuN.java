@@ -19,6 +19,7 @@ import net.maswag.falcaun.OutputMapperReader;
 import net.maswag.falcaun.Signal;
 import net.maswag.falcaun.StaticSTLList;
 import net.maswag.falcaun.TimeMeasure;
+import net.maswag.falcaun.VerificationResult;
 import net.maswag.falcaun.parser.STLFactory;
 import net.maswag.falcaun.parser.TemporalLogic;
 
@@ -236,7 +237,7 @@ public class FalCAuN {
         log.info("BBC started");
         TimeMeasure totalTime = new TimeMeasure();
         totalTime.start();
-        boolean result = verifier.run();
+        VerificationResult<List<Double>> result = verifier.run();
         totalTime.stop();
         log.info("BBC finished");
         log.info("BBC Elapsed Time: " + totalTime.getSecond() + " [sec]");
@@ -244,14 +245,18 @@ public class FalCAuN {
         log.info("Simulink Execution Time: " + verifier.getSimulationTimeSecond() + " [sec]");
         log.info("Simulink Execution for Equivalence Testing: " + verifier.getEqSutExecutionCount() + " times");
 
-        if (result) {
-            log.info("All the given properties are verified");
+        log.info("BBC termination reason: " + result.reason());
+        List<VerificationResult.Counterexample<List<Double>>> counterexamples = result.confirmedCounterexamples();
+        if (counterexamples.isEmpty()) {
+            log.info("No counterexample is found");
         } else {
             log.info("The following properties are falsified");
-            for (int i = 0; i < verifier.getCexAbstractInput().size(); i++) {
-                if (Objects.nonNull(verifier.getCexAbstractInput().get(i))) {
-                    printResult(i, verifier.getCexProperty(), verifier.getCexConcreteInput(), verifier.getCexAbstractInput(), verifier.getCexOutput());
-                }
+            List<TemporalLogic<List<Double>>> cexProperties = counterexamples.stream().map(VerificationResult.Counterexample::property).toList();
+            List<Signal> cexConcreteInputs = counterexamples.stream().map(verifier::concreteInput).toList();
+            List<Word<String>> cexAbstractInputs = counterexamples.stream().map(VerificationResult.Counterexample::abstractInput).toList();
+            List<Word<String>> cexOutputs = counterexamples.stream().map(VerificationResult.Counterexample::sutOutput).toList();
+            for (int i = 0; i < counterexamples.size(); i++) {
+                printResult(i, cexProperties, cexConcreteInputs, cexAbstractInputs, cexOutputs);
             }
             log.info("Step time: " + argParser.getStepTime());
         }

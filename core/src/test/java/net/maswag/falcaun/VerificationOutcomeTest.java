@@ -56,12 +56,20 @@ class VerificationOutcomeTest {
         NumericSULVerifier verifier = verifier(properties);
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
 
-        assertFalse(verifier.run());
-        assertEquals(properties, verifier.getCexProperty());
+        VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(VerificationResult.TerminationReason.ALL_TARGETS_FALSIFIED, result.reason());
+        assertTrue(result.allTargetsFalsified());
+        assertEquals(properties, result.falsified());
+        assertTrue(result.unresolved().isEmpty());
         // The reported output is the output of the SUL
-        Word<String> cexInput = verifier.getCexAbstractInput().get(0);
-        assertEquals(simulate(cexInput), verifier.getCexOutput().get(0));
-        assertEquals(mapper.mapInput(cexInput).asList(), verifier.getCexConcreteInput().get(0).getSignalValues());
+        VerificationResult.Counterexample<List<Double>> cex = result.counterexamples().get(0);
+        assertTrue(cex.confirmed());
+        assertEquals(simulate(cex.abstractInput()), cex.sutOutput());
+        assertEquals(mapper.mapInput(cex.abstractInput()).asList(), verifier.concreteInput(cex).getSignalValues());
+        // The statistics of the SUL executions are reported
+        assertEquals(sul.getExecutionCount(), result.statistics().sutExecutions().orElseThrow());
+        assertEquals(verifier.getEqSutExecutionCount(), result.statistics().eqSutExecutions().orElseThrow());
+        assertTrue(result.statistics().simulationTimeSeconds().isPresent());
     }
 
     @Test
@@ -70,8 +78,12 @@ class VerificationOutcomeTest {
         NumericSULVerifier verifier = verifier(List.of(parse("[] (output(0) < 100.0)")));
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
 
-        assertTrue(verifier.run());
-        assertTrue(verifier.getCexProperty().isEmpty());
+        VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(VerificationResult.TerminationReason.EQUIVALENCE_TESTING_EXHAUSTED, result.reason());
+        // Exhausted equivalence testing does not prove the specification
+        assertEquals(verifier.getProperties().getSTLProperties(), result.unresolved());
+        assertTrue(result.counterexamples().isEmpty());
+        assertFalse(result.allTargetsFalsified());
     }
 
     @Test
@@ -82,8 +94,24 @@ class VerificationOutcomeTest {
         verifier.setTimeout(0);
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
 
-        assertTrue(verifier.run());
-        assertTrue(verifier.getCexProperty().isEmpty());
+        VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(VerificationResult.TerminationReason.TIMEOUT, result.reason());
+        assertEquals(properties, result.unresolved());
+        assertTrue(result.falsified().isEmpty());
+    }
+
+    @Test
+    void executionFailure() {
+        NumericSULVerifier verifier = verifier(List.of(parse("[] (output(0) < 3.0)")));
+        verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
+        sul.setFailAtStep(2);
+
+        VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(VerificationResult.TerminationReason.EXECUTION_FAILURE, result.reason());
+        assertTrue(result.failure().isPresent());
+        assertTrue(result.counterexamples().isEmpty());
+        // The session of the failed execution is finalized
+        assertEquals("post", sul.getEvents().get(sul.getEvents().size() - 1));
     }
 
     /**
@@ -100,8 +128,10 @@ class VerificationOutcomeTest {
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
         verifier.addHillClimbingEQOracleAll(LENGTH, new Random(0), 30, 5, 5, false);
 
-        assertFalse(verifier.run());
-        assertEquals(properties.subList(0, 2), verifier.getCexProperty());
+        VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(properties.subList(0, 2), result.falsified());
+        assertEquals(properties.subList(2, 3), result.unresolved());
+        assertEquals(VerificationResult.TerminationReason.EQUIVALENCE_TESTING_EXHAUSTED, result.reason());
         System.out.println("SUL executions: " + verifier.getSutExecutionCount()
                 + ", for equivalence testing: " + verifier.getEqSutExecutionCount());
         // Before the consolidation of the caches, the numbers were 73 and 48, respectively, with the same 69 distinct

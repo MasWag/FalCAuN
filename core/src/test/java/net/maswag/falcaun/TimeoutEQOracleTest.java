@@ -34,6 +34,7 @@ class TimeoutEQOracleTest {
         DefaultQuery<String, Word<String>> result = timeoutOracle.findCounterExample(null, null);
 
         verify(wrappedOracle).findCounterExample(isNull(), isNull());
+        assertFalse(timeoutOracle.hasTimedOut());
     }
 
     @Test
@@ -69,5 +70,10 @@ class TimeoutEQOracleTest {
 
         assertNull(result);
         verifyNoInteractions(wrappedOracle);
+        assertTrue(timeoutOracle.hasTimedOut());
+
+        // The flag is reset by start()
+        timeoutOracle.start();
+        assertFalse(timeoutOracle.hasTimedOut());
     }
 }

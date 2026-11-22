@@ -5,7 +5,6 @@ import de.learnlib.sul.SUL;
 import de.learnlib.oracle.PropertyOracle.MealyPropertyOracle;
 import de.learnlib.mapper.MappedSUL;
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.word.Word;
 import net.maswag.falcaun.parser.TemporalLogic;
 
 import java.io.IOException;
@@ -53,13 +52,6 @@ public class NumericSULVerifier implements AutoCloseable {
         this.memOracle = new NumericMembershipOracle(sul, this.signalDiscretizer);
         properties.setMemOracle(memOracle);
         verifier = new BlackBoxVerifier<>(this.memOracle, mappedSUL, properties, abstractInputAlphabet);
-    }
-
-    /**
-     * Returns the falsified STL formulas in the string representation.
-     */
-    public List<TemporalLogic<List<Double>>> getCexProperty() {
-        return verifier.getCexProperty();
     }
 
     /**
@@ -225,50 +217,42 @@ public class NumericSULVerifier implements AutoCloseable {
     }
 
     /**
-     * @return A list of input words that led to counterexamples found during the verification process.
+     * Returns the concrete input signal of a counterexample.
+     *
+     * @param cex a counterexample in the result of {@link #run()}
+     * @return the concrete input signal constructed from the abstract input of {@code cex}
      */
-    public List<Word<String>> getCexAbstractInput() {
-        return verifier.getCexInput();
-    }
-
-    /**
-     * @return A list of concrete input signals corresponding to the counterexamples found during the verification process.
-     *         Each signal is constructed from the abstract input words.
-     */
-    public List<Signal> getCexConcreteInput() {
-        List<Signal> result = new ArrayList<>();
-        for (Word<String> abstractCex : this.getCexAbstractInput()) {
-            result.add(new Signal(this.signalStep));
-            result.get(result.size() - 1).addAll(this.signalDiscretizer.mapInput(abstractCex));
-        }
+    public Signal concreteInput(VerificationResult.Counterexample<?> cex) {
+        Signal result = new Signal(this.signalStep);
+        result.addAll(this.signalDiscretizer.mapInput(cex.abstractInput()));
         return result;
     }
 
     /**
-     * @return a list of output words produced by the black-box system for the counterexamples
-     *         found during the verification process.
+     * Run black-box checking.
+     *
+     * @return the result of black-box checking including the statistics of the SUL executions
+     * @see BlackBoxVerifier#run()
      */
-    public List<Word<String>> getCexOutput() {
-        return verifier.getCexOutput();
+    public VerificationResult<List<Double>> run() {
+        VerificationResult<List<Double>> result = verifier.run();
+        return result.withStatistics(new VerificationResult.Statistics(
+                result.statistics().learningRounds(),
+                result.statistics().hypothesisStates(),
+                OptionalInt.of(getSutExecutionCount()),
+                OptionalInt.of(getEqSutExecutionCount()),
+                OptionalDouble.of(getSimulationTimeSecond())));
     }
 
     /**
-     * <p>run.</p>
+     * Wirte the DOT of the Mealy machine witnessing a counterexample.
      *
-     * @return Returns {@code true} if and only if no counterexample is found.
-     */
-    public boolean run() {
-        return verifier.run();
-    }
-
-    /**
-     * Wirte the DOT of the found counter example.
-     *
-     * @param a Write the DOT to {@code a}
+     * @param cex a counterexample in the result of {@link #run()}
+     * @param a   Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    public void writeDOTCex(int index, Appendable a) throws IOException {
-        verifier.writeDOTCex(index, a);
+    public void writeDOTCex(VerificationResult.Counterexample<?> cex, Appendable a) throws IOException {
+        verifier.writeDOTCex(cex, a);
     }
 
     /**
@@ -291,10 +275,12 @@ public class NumericSULVerifier implements AutoCloseable {
     }
 
     /**
-     * Visualize the found counter example.
+     * Visualize the Mealy machine witnessing a counterexample.
+     *
+     * @param cex a counterexample in the result of {@link #run()}
      */
-    public void visualizeCex(int index) {
-        this.verifier.visualizeCex(index);
+    public void visualizeCex(VerificationResult.Counterexample<?> cex) {
+        this.verifier.visualizeCex(cex);
     }
 
     /**

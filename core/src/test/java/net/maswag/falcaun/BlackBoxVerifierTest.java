@@ -8,6 +8,7 @@ import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.impl.ArrayAlphabet;
 import net.automatalib.automaton.transducer.impl.CompactMealy;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
+import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 import net.maswag.falcaun.parser.STLAbstractAtomic;
 import net.maswag.falcaun.parser.STLOutputAtomic;
@@ -22,13 +23,13 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 class BlackBoxVerifierTest {
     private final Alphabet<String> inputAlphabet = new ArrayAlphabet<>("a");
     StaticSTLList<List<Double>> stlList;
     private BlackBoxVerifier<List<Double>> verifier;
+    private List<STLCost> properties;
     private List<STLCost> falsifiedProperties;
     MembershipOracle.MealyMembershipOracle<String, String> memOracle;
     SUL<String, String> sul;
@@ -41,7 +42,7 @@ class BlackBoxVerifierTest {
         events.get(0).setAtomic(Collections.singletonList(Collections.singletonMap('a', 1.0)), Collections.singletonList('b'));
         events.get(1).setAtomic(Collections.singletonList(Collections.singletonMap('a', 1.0)), Collections.singletonList('b'));
 
-        List<STLCost> properties = Arrays.asList(
+        properties = Arrays.asList(
                 new STLNext(new STLNext(new STLNext(events.get(1), true), true), true),
                 events.get(0),
                 new STLGlobally(new STLImply(events.get(1), new STLNext(events.get(0), true))),
@@ -66,13 +67,20 @@ class BlackBoxVerifierTest {
 
     @Test
     void run() {
-        assertFalse(verifier.run());
+        VerificationResult<List<Double>> result = verifier.run();
+        assertFalse(result.allTargetsFalsified());
+        // No equivalence oracle is added, so equivalence testing is exhausted after model checking
+        assertEquals(VerificationResult.TerminationReason.EQUIVALENCE_TESTING_EXHAUSTED, result.reason());
+        assertTrue(result.failure().isEmpty());
+        assertEquals(2, result.statistics().hypothesisStates());
+        assertTrue(result.statistics().learningRounds() >= 1);
+        assertTrue(result.statistics().sutExecutions().isEmpty());
     }
 
     @Test
     void notifyFalsifiedProperty() {
         doCallRealMethod().when(stlList).notifyFalsifiedProperty(Arrays.asList(0, 1, 2, 3));
-        assertFalse(verifier.run());
+        verifier.run();
         verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(0));
         verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(1));
         verify(stlList, times(0)).notifyFalsifiedProperty(Collections.singletonList(2));
@@ -81,38 +89,86 @@ class BlackBoxVerifierTest {
     }
 
     @Test
-    void getCexProperty() {
-        assertFalse(verifier.run());
-        assertEquals(falsifiedProperties, verifier.getCexProperty());
+    void falsifiedAndUnresolved() {
+        VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(falsifiedProperties, result.falsified());
+        assertEquals(properties.subList(0, 3), result.unresolved());
     }
 
     @Test
-    void getCexInput() {
-        WordBuilder<String> expected = new WordBuilder<>();
-        expected.add("a");
-        expected.add("a");
-        expected.add("a");
+    void counterexample() {
+        VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(1, result.counterexamples().size());
+        VerificationResult.Counterexample<List<Double>> cex = result.counterexamples().get(0);
+        assertEquals(properties.get(3), cex.property());
+        assertEquals(Word.fromSymbols("a", "a", "a"), cex.abstractInput());
+        assertEquals(Word.fromSymbols("a", "b", "a"), cex.hypothesisOutput());
+        // The output is observed by executing the SUL
+        assertEquals(Word.fromSymbols("a", "b", "a"), cex.sutOutput());
+        assertTrue(cex.confirmed());
+        assertEquals(cex.hypothesisOutput(), cex.witness().computeOutput(cex.abstractInput()));
+    }
 
-        assertFalse(verifier.run());
-        System.out.println(verifier.getCexInput());
-        assertEquals(expected.toWord(), verifier.getCexInput().stream().filter(Objects::nonNull).findFirst().orElse(null));
+    /**
+     * A counterexample is not confirmed if the SUL behaves differently from the learned Mealy machine for the input.
+     */
+    @Test
+    void unconfirmedCounterexample() {
+        // After the learning, the SUL starts to output "b" after the first step, which differs from the learned model.
+        boolean[] switched = {false};
+        MembershipOracle.MealyMembershipOracle<String, String> switchingOracle = queries -> {
+            for (var query : queries) {
+                if (switched[0]) {
+                    WordBuilder<String> output = new WordBuilder<>();
+                    for (int i = 0; i < query.getInput().size(); i++) {
+                        output.add(i == 0 ? "a" : "b");
+                    }
+                    query.answer(output.toWord().suffix(query.getSuffix().size()));
+                } else {
+                    query.answer(memOracle.answerQuery(query.getPrefix(), query.getSuffix()));
+                }
+            }
+        };
+        // The properties are reset just before the counterexamples are validated, so we switch the SUL there.
+        StaticSTLList<List<Double>> list = new StaticSTLList<>(Collections.singletonList(properties.get(3))) {
+            @Override
+            public void reset() {
+                switched[0] = true;
+            }
+        };
+        list.setMemOracle(switchingOracle);
+        VerificationResult<List<Double>> result = new BlackBoxVerifier<>(switchingOracle, sul, list, inputAlphabet).run();
+        assertEquals(1, result.counterexamples().size());
+        VerificationResult.Counterexample<List<Double>> cex = result.counterexamples().get(0);
+        assertFalse(cex.confirmed());
+        assertEquals(Word.fromSymbols("a", "b", "a"), cex.hypothesisOutput());
+        assertEquals(Word.fromSymbols("a", "b", "b"), cex.sutOutput());
+        assertTrue(result.falsified().isEmpty());
+        assertTrue(result.confirmedCounterexamples().isEmpty());
+        assertEquals(List.of(properties.get(3)), result.unresolved());
+        assertFalse(result.allTargetsFalsified());
+        // The loop terminated because the property was falsified during the learning
+        assertEquals(VerificationResult.TerminationReason.ALL_TARGETS_FALSIFIED, result.reason());
     }
 
     @Test
-    void getCexOutput() {
-        WordBuilder<String> expected = new WordBuilder<>();
-        expected.add("a");
-        expected.add("b");
-        expected.add("a");
-
-        assertFalse(verifier.run());
-        System.out.println(verifier.getCexOutput());
-        assertEquals(expected.toWord(), verifier.getCexOutput().stream().filter(Objects::nonNull).findFirst().orElse(null));
+    void executionFailure() {
+        MembershipOracle.MealyMembershipOracle<String, String> failingOracle = queries -> {
+            throw new de.learnlib.exception.SULException(new IllegalStateException("failure"));
+        };
+        StaticSTLList<List<Double>> list = new StaticSTLList<>(properties);
+        list.setMemOracle(failingOracle);
+        VerificationResult<List<Double>> result = new BlackBoxVerifier<>(failingOracle, sul, list, inputAlphabet).run();
+        assertEquals(VerificationResult.TerminationReason.EXECUTION_FAILURE, result.reason());
+        assertTrue(result.failure().isPresent());
+        assertTrue(result.counterexamples().isEmpty());
+        assertEquals(properties, result.unresolved());
+        assertFalse(result.allTargetsFalsified());
     }
 
     @Test
     void writeETFLearnedMealy() {
-        assertFalse(verifier.run());
+        verifier.run();
         String expected = "begin state\n" +
                 "id:id\n" +
                 "end state\n" +
