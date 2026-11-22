@@ -15,9 +15,9 @@ import java.util.function.Function;
 /**
  * Answers membership queries together with the robustness value for a cost function.
  * <p>
- * The SUL is executed by the {@link NumericMembershipOracle} that created this oracle, which also fills the robustness
- * cache of this oracle for each execution. This oracle owns only the robustness cache for its cost function, which
- * maps an abstract input word to the robustness values of its prefixes.
+ * The SUL is executed by the {@link NumericMembershipOracle} that created this oracle. This oracle owns only the
+ * robustness cache for its cost function, which maps an abstract input word to the robustness values of its prefixes.
+ * The cache is filled by the executions requested by this oracle or by the oracles registered before it.
  *
  * @see NumericMembershipOracle#registerCostFunction(Function)
  */
@@ -57,7 +57,7 @@ class RobustnessOracle implements EvaluationCountable {
                 || robustness.toWord().lastSymbol().isInfinite()) {
             evaluateCount++;
             output.clear();
-            output.append(owner.execute(input));
+            output.append(owner.execute(input, this));
             robustness.clear();
             robustnessCache.lookup(input, robustness);
             if (robustness.toWord().lastSymbol().isInfinite()) {

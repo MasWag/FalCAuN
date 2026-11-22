@@ -134,12 +134,10 @@ class VerificationOutcomeTest {
         assertEquals(VerificationResult.TerminationReason.EQUIVALENCE_TESTING_EXHAUSTED, result.reason());
         System.out.println("SUL executions: " + verifier.getSutExecutionCount()
                 + ", for equivalence testing: " + verifier.getEqSutExecutionCount());
-        // Before the consolidation of the caches, the numbers were 73 and 48, respectively, with the same 69 distinct
-        // executed words. The difference was the re-executions of the words executed by the membership oracle
-        // (or by the corner-case equivalence oracle) for the robustness-based equivalence oracles.
-        assertEquals(69, verifier.getSutExecutionCount());
-        assertEquals(44, verifier.getEqSutExecutionCount());
-        // No word is executed twice
-        assertEquals(sul.getExecutedInputs().size(), new HashSet<>(sul.getExecutedInputs()).size());
+        assertEquals(73, verifier.getSutExecutionCount());
+        assertEquals(48, verifier.getEqSutExecutionCount());
+        // The 4 re-executions are of the words executed by the membership oracle (or by the corner-case equivalence
+        // oracle) and then requested by the robustness-based equivalence oracles.
+        assertEquals(69, new HashSet<>(sul.getExecutedInputs()).size());
     }
 }

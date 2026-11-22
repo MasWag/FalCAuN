@@ -134,10 +134,12 @@ class NumericMembershipOracleCachingTest {
             assertEquals(1, sul.getExecutionCount());
             assertEquals(1, fixture.evaluateCount(oracle3));
             assertEquals(0, fixture.evaluateCount(oracle4));
-            // A new word executed by the second oracle is also shared
+            // An execution by the second oracle does not compute the robustness for the first oracle, which was
+            // registered before it. This is the same as the previous implementation.
             assertEquals(4.0 - 5.0, fixture.cost(oracle4, word("c", "c")), EPS);
-            assertEquals(3.0 - 5.0, fixture.cost(oracle3, word("c", "c")), EPS);
             assertEquals(2, sul.getExecutionCount());
+            assertEquals(3.0 - 5.0, fixture.cost(oracle3, word("c", "c")), EPS);
+            assertEquals(3, sul.getExecutionCount());
         }
 
         @Test
@@ -145,12 +147,11 @@ class NumericMembershipOracleCachingTest {
             RobustnessOracle oracle = fixture.register(below3);
             fixture.memOracle.answerQuery(word("b", "c", "a"));
             assertEquals(1, sul.getExecutionCount());
-            // The robustness for the registered cost functions is computed for every execution, including the
-            // executions for membership queries. (Before the consolidation of the caches, this required another
-            // execution because only the executions by the cost oracles computed the robustness.)
+            // The executions for membership queries do not compute the robustness values, so the abstract output is
+            // cached but the robustness is not.
             assertEquals(3.0 - 3.5, fixture.cost(oracle, word("b", "c", "a")), EPS);
-            assertEquals(1, sul.getExecutionCount());
-            assertEquals(0, fixture.evaluateCount(oracle));
+            assertEquals(2, sul.getExecutionCount());
+            assertEquals(1, fixture.evaluateCount(oracle));
         }
 
         @Test

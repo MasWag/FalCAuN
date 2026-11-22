@@ -6,6 +6,7 @@ import de.learnlib.query.Query;
 import net.automatalib.incremental.mealy.tree.IncrementalMealyTreeBuilder;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,13 +26,14 @@ import java.util.function.Function;
  *     {@link RobustnessOracle} has a <em>robustness cache</em> mapping an abstract input word to the robustness
  *     values of its prefixes.</li>
  * </ul>
- * When the SUL is executed for an abstract input word, the abstract output and the prefix-wise robustness values
- * for all the registered cost functions are computed from the concrete trace, and then the concrete trace is
- * discarded. Thus, a cost function registered after the execution of a word requires another execution of the word:
- * an abstract output is not sufficient to compute the robustness.
+ * When the SUL is executed for a membership query, only the abstract output is computed and cached.
+ * When the SUL is executed for a {@link RobustnessOracle}, the prefix-wise robustness values are computed for that
+ * oracle and for the oracles registered after it, and cached. In both cases, the concrete trace is discarded after the
+ * computation. Thus, a robustness value that is not cached requires another execution of the word even if its
+ * abstract output is cached: an abstract output is not sufficient to compute the robustness.
  * <p>
- * The SUL is not executed for a word whose abstract output is cached, unless a robustness value is requested for it
- * and not cached.
+ * Computing the robustness values only for the requesting oracle and the later ones keeps the computation cost of the
+ * robustness values the same as the previous implementation sharing the observations among the cost oracles.
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
@@ -52,14 +54,15 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
     public void processQueries(Collection<? extends Query<String, Word<String>>> queries) {
         for (Query<String, Word<String>> q : queries) {
             WordBuilder<String> output = new WordBuilder<>(q.getInput().size());
-            Word<String> abstractOutput = lookup(q.getInput(), output) ? output.toWord() : execute(q.getInput());
+            Word<String> abstractOutput = lookup(q.getInput(), output) ? output.toWord() : execute(q.getInput(), null);
             q.answer(abstractOutput.suffix(q.getSuffix().length()));
         }
     }
 
     /**
      * Registers a cost function and returns the oracle computing its robustness values.
-     * The robustness values are computed for each execution of the SUL after the registration.
+     * The robustness values for {@code costFunc} are computed for the executions of the SUL requested by the returned
+     * oracle or by the oracles registered before it.
      *
      * @param costFunc the cost function, typically an STL formula
      * @return the oracle computing the robustness values for {@code costFunc}
@@ -81,13 +84,16 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
     }
 
     /**
-     * Executes the SUL for an abstract input word and updates the abstract-output cache and the robustness caches.
+     * Executes the SUL for an abstract input word and updates the abstract-output cache.
+     * If {@code requester} is not null, the robustness caches of {@code requester} and the oracles registered after it
+     * are also updated.
      *
      * @param abstractInput the abstract input word
+     * @param requester     the oracle requesting the execution, or null for a membership query
      * @return the abstract output word
      * @throws SULException if the execution of the SUL fails
      */
-    Word<String> execute(Word<String> abstractInput) {
+    Word<String> execute(Word<String> abstractInput, @Nullable RobustnessOracle requester) {
         final Word<List<Double>> concreteInput = discretizer.mapInput(abstractInput);
         final IOSignal<List<Double>> trace;
         try {
@@ -102,8 +108,10 @@ public class NumericMembershipOracle implements MembershipOracle.MealyMembership
 
         final Word<String> abstractOutput = Word.fromList(trace.stream().map(discretizer::mapOutput).toList());
         outputCache.insert(abstractInput, abstractOutput);
-        for (RobustnessOracle oracle : robustnessOracles) {
-            oracle.insert(abstractInput, prefixRobustness(trace, oracle.getCostFunc()));
+        if (requester != null) {
+            for (RobustnessOracle oracle : robustnessOracles.subList(robustnessOracles.indexOf(requester), robustnessOracles.size())) {
+                oracle.insert(abstractInput, prefixRobustness(trace, oracle.getCostFunc()));
+            }
         }
         return abstractOutput;
     }
