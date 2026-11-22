@@ -68,7 +68,7 @@ class VerificationOutcomeTest {
         assertEquals(mapper.mapInput(cex.abstractInput()).asList(), verifier.concreteInput(cex).getSignalValues());
         // The statistics of the SUL executions are reported
         assertEquals(sul.getExecutionCount(), result.statistics().sutExecutions().orElseThrow());
-        assertEquals(verifier.getEqSutExecutionCount(), result.statistics().eqSutExecutions().orElseThrow());
+        assertEquals(verifier.getEqEvaluationCount(), result.statistics().eqEvaluations().orElseThrow());
         assertTrue(result.statistics().simulationTimeSeconds().isPresent());
     }
 
@@ -133,9 +133,9 @@ class VerificationOutcomeTest {
         assertEquals(properties.subList(2, 3), result.unresolved());
         assertEquals(VerificationResult.TerminationReason.EQUIVALENCE_TESTING_EXHAUSTED, result.reason());
         System.out.println("SUL executions: " + verifier.getSutExecutionCount()
-                + ", for equivalence testing: " + verifier.getEqSutExecutionCount());
+                + ", for equivalence testing: " + verifier.getEqEvaluationCount());
         assertEquals(73, verifier.getSutExecutionCount());
-        assertEquals(48, verifier.getEqSutExecutionCount());
+        assertEquals(48, verifier.getEqEvaluationCount());
         // The 4 re-executions are of the words executed by the membership oracle (or by the corner-case equivalence
         // oracle) and then requested by the robustness-based equivalence oracles.
         assertEquals(69, new HashSet<>(sul.getExecutedInputs()).size());

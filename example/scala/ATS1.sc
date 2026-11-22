@@ -115,7 +115,7 @@ try {
 
   println(s"Execution time for simulation: ${verifier.getSimulationTimeSecond} [sec]")
   println(s"Number of simulations: ${verifier.getSutExecutionCount}")
-  println(s"Number of simulations for equivalence testing: ${verifier.getEqSutExecutionCount}")
+  println(s"Number of simulations for equivalence testing: ${verifier.getEqEvaluationCount}")
 } finally {
   try autoTransSUL.close() catch { case _: Throwable => () }
 }

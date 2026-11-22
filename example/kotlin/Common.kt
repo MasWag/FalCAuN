@@ -105,5 +105,5 @@ fun printResults(
 fun printStats(verifier: NumericSULVerifier) {
     println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
     println("Number of simulations: ${verifier.sutExecutionCount}")
-    println("Number of simulations for equivalence testing: ${verifier.eqSutExecutionCount}")
+    println("Number of simulations for equivalence testing: ${verifier.eqEvaluationCount}")
 }

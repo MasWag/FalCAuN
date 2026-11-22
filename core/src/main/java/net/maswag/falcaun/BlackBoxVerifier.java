@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.automaton.transducer.MealyMachine;
+import net.automatalib.automaton.transducer.impl.CompactMealy;
 import net.automatalib.modelchecker.ltsmin.monitor.LTSminMonitorIOBuilder;
 import net.automatalib.modelchecking.ModelChecker;
 import net.automatalib.serialization.dot.GraphDOT;
@@ -197,7 +198,8 @@ public class BlackBoxVerifier<I> {
      * The equivalence oracles are tried in the order of their addition until a counterexample is found, all the
      * target specifications are falsified, or all the equivalence oracles are exhausted. Then, the counterexamples are
      * extracted from the final learned Mealy machine and validated by the SUL. A failure of the SUL execution is
-     * reported as {@link TerminationReason#EXECUTION_FAILURE} instead of an exception.
+     * reported as {@link TerminationReason#EXECUTION_FAILURE} instead of an exception. If the failure happens while
+     * validating the counterexamples, the counterexamples validated before the failure are still reported.
      *
      * @return the result of black-box checking
      */
@@ -213,8 +215,8 @@ public class BlackBoxVerifier<I> {
             log.error("Black-box checking is aborted because the execution of the SUL failed", e);
             properties.reset();
             int states = Objects.isNull(learnedMealy) ? 0 : learnedMealy.size();
-            return new VerificationResult<>(List.of(), properties.getSTLProperties(), TerminationReason.EXECUTION_FAILURE,
-                    new Statistics(experiment.rounds(), states), Optional.of(e));
+            return new VerificationResult<>(List.of(), properties.getSTLProperties(), properties.size(),
+                    TerminationReason.EXECUTION_FAILURE, new Statistics(experiment.rounds(), states), Optional.of(e));
         }
     }
 
@@ -271,7 +273,7 @@ public class BlackBoxVerifier<I> {
      */
     private VerificationResult<I> processMealy(int rounds) {
         // The reason of the termination must be decided before resetting the properties
-        final TerminationReason reason;
+        TerminationReason reason;
         if (properties.allDisproved()) {
             reason = TerminationReason.ALL_TARGETS_FALSIFIED;
         } else if (timeoutOracles.stream().anyMatch(TimeoutEQOracle::hasTimedOut)) {
@@ -284,6 +286,7 @@ public class BlackBoxVerifier<I> {
 
         List<Counterexample<I>> counterexamples = new ArrayList<>();
         List<TemporalLogic<I>> unresolved = new ArrayList<>();
+        Optional<Throwable> failure = Optional.empty();
         for (TemporalLogic<I> stlProperty : properties.getSTLProperties()) {
             String ltlProperty = properties.toLTLString(stlProperty);
 
@@ -296,18 +299,55 @@ public class BlackBoxVerifier<I> {
             // We found the counter example Mealy machine.
             List<Word<String>> cexInputs = stateCover(witness, this.inputAlphabet);
             Word<String> input = cexInputs.get(cexInputs.size() - 1);
+            final Word<String> sutOutput;
+            try {
+                sutOutput = memOracle.answerQuery(input);
+            } catch (SULException e) {
+                // Keep the counterexamples validated so far and report the failure
+                log.error("The execution of the SUL failed while validating the counterexample {} for {}", input, stlProperty, e);
+                unresolved.add(stlProperty);
+                if (failure.isEmpty()) {
+                    failure = Optional.of(e);
+                    reason = TerminationReason.EXECUTION_FAILURE;
+                }
+                continue;
+            }
+            boolean confirmed = violates(ltlProperty, input, sutOutput);
             Counterexample<I> cex = new Counterexample<>(stlProperty, input, witness.computeOutput(input),
-                    memOracle.answerQuery(input), witness);
+                    sutOutput, confirmed, witness);
             counterexamples.add(cex);
-            if (!cex.confirmed()) {
+            if (!confirmed) {
                 log.warn("The counterexample {} for {} is not confirmed by the SUL: the learned model outputs {} but the SUL outputs {}",
                         input, stlProperty, cex.hypothesisOutput(), cex.sutOutput());
                 unresolved.add(stlProperty);
             }
         }
 
-        return new VerificationResult<>(counterexamples, unresolved, reason,
-                new Statistics(rounds, learnedMealy.size()), Optional.empty());
+        return new VerificationResult<>(counterexamples, unresolved, properties.size(), reason,
+                new Statistics(rounds, learnedMealy.size()), failure);
+    }
+
+    /**
+     * Checks if an observed trace violates an LTL formula.
+     * <p>
+     * We check the formula by the same model checker as the learned Mealy machine. The Mealy machine given to the model
+     * checker has only the observed trace, so the semantics is the same as the check of the learned Mealy machine
+     * restricted to this trace.
+     *
+     * @param ltlProperty the LTL formula
+     * @param input       the input word of the trace
+     * @param output      the output word of the trace
+     * @return {@code true} if and only if the trace violates {@code ltlProperty}
+     */
+    private boolean violates(String ltlProperty, Word<String> input, Word<String> output) {
+        CompactMealy<String, String> trace = new CompactMealy<>(this.inputAlphabet);
+        int state = trace.addInitialState();
+        for (int i = 0; i < input.size(); i++) {
+            int next = trace.addState();
+            trace.addTransition(state, input.getSymbol(i), next, output.getSymbol(i));
+            state = next;
+        }
+        return Objects.nonNull(modelChecker.findCounterExample(trace, this.inputAlphabet, ltlProperty));
     }
 
     /**

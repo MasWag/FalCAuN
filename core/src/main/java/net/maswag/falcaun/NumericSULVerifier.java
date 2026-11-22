@@ -240,7 +240,7 @@ public class NumericSULVerifier implements AutoCloseable {
                 result.statistics().learningRounds(),
                 result.statistics().hypothesisStates(),
                 OptionalInt.of(getSutExecutionCount()),
-                OptionalInt.of(getEqSutExecutionCount()),
+                OptionalInt.of(getEqEvaluationCount()),
                 OptionalDouble.of(getSimulationTimeSecond())));
     }
 
@@ -298,9 +298,15 @@ public class NumericSULVerifier implements AutoCloseable {
     }
 
     /**
-     * @return the number of the executions of the SUL triggered by the equivalence oracles
+     * Returns the number of the evaluations of input words by the equivalence oracles.
+     * <p>
+     * This is not necessarily the number of the SUL executions by the equivalence oracles. For example, the
+     * corner-case equivalence oracle counts every evaluated word, including the ones answered by a cache, while the
+     * robustness-based equivalence oracles count only the actual executions.
+     *
+     * @return the number of the evaluations of input words by the equivalence oracles
      */
-    public int getEqSutExecutionCount() {
+    public int getEqEvaluationCount() {
         return evaluationCountables.getEvaluateCount();
     }
 

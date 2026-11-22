@@ -42,10 +42,10 @@ class BouncingBallGAEQOracleTest {
 
             VerificationResult<List<Double>> result = verifier.run();
             assertTrue(result.allTargetsFalsified(), "The property should be falsified");
-            assertTrue(verifier.getEqSutExecutionCount() > 0, "The GA-based equivalence oracle should be used");
+            assertTrue(verifier.getEqEvaluationCount() > 0, "The GA-based equivalence oracle should be used");
             // Reported for comparing the numbers of the executions before and after changes of the caches
             System.out.println("BouncingBall SUL executions: " + verifier.getSutExecutionCount()
-                    + ", for equivalence testing: " + verifier.getEqSutExecutionCount());
+                    + ", for equivalence testing: " + verifier.getEqEvaluationCount());
 
             // Check the counterexample by simulating it again
             // The counterexample is a prefix that ends when the property is violated

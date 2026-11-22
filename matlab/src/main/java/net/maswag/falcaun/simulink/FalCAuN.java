@@ -243,7 +243,7 @@ public class FalCAuN {
         log.info("BBC Elapsed Time: " + totalTime.getSecond() + " [sec]");
         log.info("Simulink Execution: " + verifier.getSutExecutionCount() + " times");
         log.info("Simulink Execution Time: " + verifier.getSimulationTimeSecond() + " [sec]");
-        log.info("Simulink Execution for Equivalence Testing: " + verifier.getEqSutExecutionCount() + " times");
+        log.info("Simulink Execution for Equivalence Testing: " + verifier.getEqEvaluationCount() + " times");
 
         log.info("BBC termination reason: " + result.reason());
         List<VerificationResult.Counterexample<List<Double>>> counterexamples = result.confirmedCounterexamples();
