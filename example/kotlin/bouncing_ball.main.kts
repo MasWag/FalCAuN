@@ -81,19 +81,20 @@ BouncingBallSUL().use { sul ->
     )
 
     val result = verifier.run()
-    if (result) {
-        println("All the properties are likely satisfied")
+    val counterexamples = result.confirmedCounterexamples()
+    if (counterexamples.isEmpty()) {
+        println("No counterexample is found (termination reason: ${result.reason()})")
     } else {
-        if (verifier.properties.size() == verifier.cexProperty.size) {
+        if (result.allTargetsFalsified()) {
             println("All the properties are falsified")
         } else {
             println("Some properties are falsified")
         }
-        for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified.")
-            println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-            println("cex abstract input: ${verifier.cexAbstractInput[i]}")
-            println("cex output: ${verifier.cexOutput[i]}")
+        for (cex in counterexamples) {
+            println("${cex.property()} is falsified.")
+            println("cex concrete input: ${verifier.concreteInput(cex)}")
+            println("cex abstract input: ${cex.abstractInput()}")
+            println("cex output: ${cex.sutOutput()}")
         }
     }
     // Disabled for CI/headless runs because visualization requires a GUI.

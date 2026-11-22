@@ -101,19 +101,15 @@ try {
 
   val result = verifier.run()
 
-  if (result) {
-    println("The property is likely satisfied")
+  val cexs = result.confirmedCounterexamples().asScala
+  if (cexs.isEmpty) {
+    println(s"No counterexample is found (termination reason: ${result.reason()})")
   } else {
-    val props          = verifier.getCexProperty().asScala
-    val concreteInputs = verifier.getCexConcreteInput().asScala
-    val abstractInputs = verifier.getCexAbstractInput().asScala
-    val outputs        = verifier.getCexOutput().asScala
-
-    for (i <- props.indices) {
-      println(s"${props(i)} is falsified by the following counterexample")
-      println(s"cex concrete input: ${concreteInputs(i)}")
-      println(s"cex abstract input: ${abstractInputs(i)}")
-      println(s"cex output: ${outputs(i)}")
+    for (cex <- cexs) {
+      println(s"${cex.property()} is falsified by the following counterexample")
+      println(s"cex concrete input: ${verifier.concreteInput(cex)}")
+      println(s"cex abstract input: ${cex.abstractInput()}")
+      println(s"cex output: ${cex.sutOutput()}")
     }
   }
 

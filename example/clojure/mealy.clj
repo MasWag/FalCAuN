@@ -96,15 +96,12 @@
 (def result (.run verifier))
 
 ;; Print the result
-(if result
-  (println "All the properties are likely satisfied")
-  (do
-    (println "Some properties are falsified")
-    (let [properties (.getCexProperty verifier)
-          inputs (.getCexInput verifier)
-          outputs (.getCexOutput verifier)]
-      (doseq [[prop in out] (map vector properties inputs outputs)]
-        (do 
-          (printf "%s is falsified by the following counterexample:\n" prop)
-          (printf "cex concrete input: %s\n" in)
-          (printf "cex output: %s\n" out))))))
+(let [cexs (.confirmedCounterexamples result)]
+  (if (.isEmpty cexs)
+    (println "No counterexample is found (termination reason:" (str (.reason result)) ")")
+    (do
+      (println "Some properties are falsified")
+      (doseq [cex cexs]
+        (printf "%s is falsified by the following counterexample:\n" (.property cex))
+        (printf "cex input: %s\n" (.abstractInput cex))
+        (printf "cex output: %s\n" (.sutOutput cex))))))

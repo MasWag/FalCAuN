@@ -74,19 +74,15 @@ verifier.addRandomWordEQOracle(
 val result = verifier.run()
 
 // Print the result
-if (result) {
-  println("All the properties are likely satisfied")
+val cexs = result.confirmedCounterexamples().asScala
+if (cexs.isEmpty) {
+  println(s"No counterexample is found (termination reason: ${result.reason()})")
 } else {
   println("Some properties are falsified")
 
-  val props   = verifier.getCexProperty().asScala
-  val inputs  = verifier.getCexInput().asScala
-  val outputs = verifier.getCexOutput().asScala
-
-  for (i <- 0 until props.length) {
-
-    println(s"${props(i)} is falsified by the following counterexample:")
-    println(s"cex concrete input: ${inputs(i)}")
-    println(s"cex output: ${outputs(i)}")
+  for (cex <- cexs) {
+    println(s"${cex.property()} is falsified by the following counterexample:")
+    println(s"cex input: ${cex.abstractInput()}")
+    println(s"cex output: ${cex.sutOutput()}")
   }
 }

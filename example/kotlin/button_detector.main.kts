@@ -46,13 +46,13 @@ ButtonDetectorBuggy(100).use { rawSul ->
             ButtonDetectorMapper.getInputAlphabet(),
         )
     verifier.addRandomWordEQOracle(10, 20, 1000, Random(), 1)
-    val falsified = !verifier.run()
-    if (falsified) {
+    val counterexamples = verifier.run().confirmedCounterexamples()
+    if (counterexamples.isNotEmpty()) {
         println("Some of the properties were falsified.")
-        for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified.")
-            println("Input: ${verifier.cexInput[i]}")
-            println("Output: ${verifier.cexOutput[i]}")
+        for (cex in counterexamples) {
+            println("${cex.property()} is falsified.")
+            println("Input: ${cex.abstractInput()}")
+            println("Output: ${cex.sutOutput()}")
         }
     } else {
         println("No property was falsified.")

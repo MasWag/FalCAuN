@@ -8,6 +8,7 @@ import net.maswag.falcaun.EQSearchProblem
 import net.maswag.falcaun.EQSteadyStateGeneticAlgorithm
 import net.maswag.falcaun.NumericSULVerifier
 import net.maswag.falcaun.OutputMapperReader
+import net.maswag.falcaun.VerificationResult
 import net.maswag.falcaun.parser.STLFactory
 import net.maswag.falcaun.parser.TemporalLogic
 import org.slf4j.LoggerFactory
@@ -64,29 +65,31 @@ fun parseStlList(
 /**
  * Print verification result and counterexamples (if any) to stdout.
  *
- * When `result` is false, prints each falsified property along with
- * its concrete/abstract inputs and observed outputs from the verifier.
+ * Prints each property falsified by a counterexample confirmed by the SUL along with
+ * its concrete/abstract inputs and the observed outputs.
+ * If no counterexample is found, the result is inconclusive: it does not prove the properties.
  *
- * @param verifier The `NumericSULVerifier` that holds counterexample data.
- * @param result Overall verification outcome; true if all properties held.
+ * @param verifier The `NumericSULVerifier` used to construct the concrete inputs.
+ * @param result The result of `verifier.run()`.
  */
 fun printResults(
     verifier: NumericSULVerifier,
-    result: Boolean,
+    result: VerificationResult<List<Double>>,
 ) {
-    if (result) {
-        println("All the properties are likely satisfied")
+    val counterexamples = result.confirmedCounterexamples()
+    if (counterexamples.isEmpty()) {
+        println("No counterexample is found (termination reason: ${result.reason()})")
     } else {
-        if (verifier.properties.size() == verifier.cexProperty.size) {
+        if (result.allTargetsFalsified()) {
             println("All the properties are falsified")
         } else {
             println("Some properties are falsified")
         }
-        for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified by the following counterexample")
-            println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-            println("cex abstract input: ${verifier.cexAbstractInput[i]}")
-            println("cex output: ${verifier.cexOutput[i]}")
+        for (cex in counterexamples) {
+            println("${cex.property()} is falsified by the following counterexample")
+            println("cex concrete input: ${verifier.concreteInput(cex)}")
+            println("cex abstract input: ${cex.abstractInput()}")
+            println("cex output: ${cex.sutOutput()}")
         }
     }
 }

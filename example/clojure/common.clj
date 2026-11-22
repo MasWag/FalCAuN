@@ -34,55 +34,47 @@
 (defn print-results
   "Pretty-print verification results for numeric/continuous signals.
 
-  - verifier: a FalCAuN verifier exposing counterexample accessors
-    (`getCexProperty`, `getCexConcreteInput`, `getCexAbstractInput`, `getCexOutput`).
-  - result: boolean; true if all properties are (likely) satisfied.
+  - verifier: a FalCAuN `NumericSULVerifier` used to construct the concrete inputs.
+  - result: the `VerificationResult` returned by `(.run verifier)`.
 
-  Prints either a success message or each falsified property with its
-  concrete/abstract inputs and observed outputs."
+  Prints each property falsified by a counterexample confirmed by the SUL with its
+  concrete/abstract inputs and observed outputs. If no counterexample is found,
+  the result is inconclusive: it does not prove the properties."
   [verifier result]
-  (if result
-    (println "All the properties are likely satisfied")
-    (do
-      (if (= (.size (.getProperties verifier))
-             (.size (.getCexProperty verifier)))
-        (println "All the properties are falsified")
-        (println "Some properties are falsified"))
-      (let [properties (.getCexProperty verifier)
-            concrete-inputs (.getCexConcreteInput verifier)
-            abstract-inputs (.getCexAbstractInput verifier)
-            outputs (.getCexOutput verifier)]
-        (doseq [[prop cin ain out] (map vector properties concrete-inputs abstract-inputs outputs)]
-          (do
-            (printf "%s is falsified by the following counterexample:\n" prop)
-            (printf "cex concrete input: %s\n" cin)
-            (printf "cex abstract input: %s\n" ain)
-            (printf "cex output: %s\n" out)))))))
+  (let [cexs (.confirmedCounterexamples result)]
+    (if (.isEmpty cexs)
+      (println "No counterexample is found (termination reason:" (str (.reason result)) ")")
+      (do
+        (if (.allTargetsFalsified result)
+          (println "All the properties are falsified")
+          (println "Some properties are falsified"))
+        (doseq [cex cexs]
+          (printf "%s is falsified by the following counterexample:\n" (.property cex))
+          (printf "cex concrete input: %s\n" (.concreteInput verifier cex))
+          (printf "cex abstract input: %s\n" (.abstractInput cex))
+          (printf "cex output: %s\n" (.sutOutput cex)))))))
 
 (defn print-discrete-results
   "Pretty-print verification results for discrete alphabets.
 
-  - verifier: a FalCAuN verifier exposing `getCexProperty`, `getCexInput`, `getCexOutput`.
-  - result: boolean; true if all properties are (likely) satisfied.
+  - verifier: a FalCAuN verifier (unused; kept for symmetry with `print-results`).
+  - result: the `VerificationResult` returned by `(.run verifier)`.
 
-  Prints either a success message or each falsified property with its
-  discrete input trace and observed outputs."
-  [verifier result]
-  (if result
-    (println "All the properties are likely satisfied")
-    (do
-      (if (= (.size (.getProperties verifier))
-             (.size (.getCexProperty verifier)))
-        (println "All the properties are falsified")
-        (println "Some properties are falsified"))
-      (let [properties (.getCexProperty verifier)
-            inputs     (.getCexInput verifier)
-            outputs (.getCexOutput verifier)]
-        (doseq [[prop in out] (map vector properties inputs outputs)]
-          (do
-            (printf "%s is falsified by the following counterexample:\n" prop)
-            (printf "cex input: %s\n" in)
-            (printf "cex output: %s\n" out)))))))
+  Prints each property falsified by a counterexample confirmed by the SUL with its
+  discrete input trace and observed outputs. If no counterexample is found,
+  the result is inconclusive: it does not prove the properties."
+  [_verifier result]
+  (let [cexs (.confirmedCounterexamples result)]
+    (if (.isEmpty cexs)
+      (println "No counterexample is found (termination reason:" (str (.reason result)) ")")
+      (do
+        (if (.allTargetsFalsified result)
+          (println "All the properties are falsified")
+          (println "Some properties are falsified"))
+        (doseq [cex cexs]
+          (printf "%s is falsified by the following counterexample:\n" (.property cex))
+          (printf "cex input: %s\n" (.abstractInput cex))
+          (printf "cex output: %s\n" (.sutOutput cex)))))))
 
 (defn parse-stl-list
   "Parse a list of STL formulas using the given mappers.

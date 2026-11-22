@@ -101,17 +101,18 @@ fun runExperiment(verifier: NumericSULVerifier, systemName: String = "", propert
     val timer = TimeMeasure()
     timer.start()
     val result = verifier.run()
+    val cexs = result.confirmedCounterexamples()
     timer.stop()
 
     // Print the result
-    if (result) {
-        logger.info("The property is likely satisfied")
+    if (cexs.isEmpty()) {
+        logger.info("No counterexample is found (termination reason: ${result.reason()})")
     } else {
-        for (i in 0 until verifier.cexProperty.size) {
-            logger.info("${verifier.cexProperty[i]} is falsified by the following counterexample")
-            logger.info("cex concrete input: ${verifier.cexConcreteInput[i]}")
-            logger.info("cex abstract input: ${verifier.cexAbstractInput[i]}")
-            logger.info("cex output: ${verifier.cexOutput[i]}")
+        for (i in 0 until cexs.size) {
+            logger.info("${cexs[i].property()} is falsified by the following counterexample")
+            logger.info("cex concrete input: ${verifier.concreteInput(cexs[i])}")
+            logger.info("cex abstract input: ${cexs[i].abstractInput()}")
+            logger.info("cex output: ${cexs[i].sutOutput()}")
         }
     }
     logger.info("Total execution time: ${timer.getSecond()} [sec]")
@@ -126,7 +127,7 @@ fun runExperiment(verifier: NumericSULVerifier, systemName: String = "", propert
         timer.getSecond(),
         verifier.eqSutExecutionCount,
         verifier.simulationTimeSecond,
-        if (result) "no" else "yes",
-        if (result) "" else "\"${verifier.cexConcreteInput[0]}\""
+        if (cexs.isEmpty()) "no" else "yes",
+        if (cexs.isEmpty()) "" else "\"${verifier.concreteInput(cexs[0])}\""
     )
 }
