@@ -19,8 +19,7 @@ FalCAuN is implemented in Java. We suppose FalCAuN works on many UNIX-like opera
 
 The requirements for the core module of FalCAuN are as follows.
 
-- Java 17
-  - LearnLib 0.18 requires Java 11 or later; we use Java 17 for compatibility.
+- Java 21
 - Maven
 - LTSMin 3.1.0
   - This is not officially released yet.
@@ -29,9 +28,10 @@ The requirements for the core module of FalCAuN are as follows.
 
 The matlab module also requires the following.
 
-- MATLAB/Simulink
-  - We tested with MATLAB R2024a, but any later version should be fine.
-  - On Linux, we recommend MATLAB R2026b or later. With R2024b and R2025b on Linux, repeated simulations with Fast Restart in accelerator mode, which FalCAuN uses, can corrupt the MATLAB heap. MATLAB then crashes or hangs within a few simulations. We reproduced this on Ubuntu 24.04 in plain MATLAB without FalCAuN, while R2026b works.
+- MATLAB/Simulink R2024b or later
+  - R2024b is the first release that supports Java 21, which FalCAuN uses.
+  - On Linux, we recommend R2026b or later. With R2024b and R2025b, repeated simulations with Fast Restart in accelerator mode, which FalCAuN uses, can corrupt the MATLAB heap, and MATLAB crashes or hangs within a few simulations. We reproduced this on Ubuntu 24.04 in plain MATLAB without FalCAuN. R2026b does not have this problem.
+  - If you use R2024b on Linux, use OpenJDK 21.0.2+13 or earlier, the newest version that R2024b supports on Linux. See [Versions of OpenJDK Compatible with MATLAB by Release](https://www.mathworks.com/support/requirements/openjdk.html).
 
 ### Installation of the core Module
 
@@ -39,10 +39,10 @@ Here, we provide the instructions to install the core module of FalCAuN.
 
 #### 1. Install the Requirements
 
-You need to install the requirements above. For example, on Ubuntu, you can install Java 17 and Maven by the following command.
+You need to install the requirements above. For example, on Ubuntu, you can install Java 21 and Maven by the following command.
 
 ```sh
-sudo apt-get install maven openjdk-17-jdk-headless -y
+sudo apt-get install maven openjdk-21-jdk-headless -y
 ```
 
 You have to manually install LTSMin 3.1.0, Owl 21.0, and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 and Owl 21.0 with the following commands after installing Maven.
@@ -88,7 +88,7 @@ We assume that the environment variable `MATLAB_HOME` shows where MATLAB is inst
 ```sh
 export MATLAB_HOME=<path/to/matlab/home>
 ## Example:
-# export MATLAB_HOME=/usr/local/MATLAB/R2024a/
+# export MATLAB_HOME=/usr/local/MATLAB/R2024b/
 ```
 
 #### 3. Build and Install FalCAuN
@@ -122,13 +122,20 @@ The Python binding tests are skipped when `PYTHONEXECUTABLE` is not set to an ab
 
 #### 3. Build and Install FalCAuN
 ```sh
-JAVA_HOME=/path/to/jdk17 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn clean install
+JAVA_HOME=/path/to/jdk21 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn clean install
 ```
 
 To install only the Python binding module, run:
 
 ```sh
-JAVA_HOME=/path/to/jdk17 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn install --also-make --projects python
+JAVA_HOME=/path/to/jdk21 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn install --also-make --projects python
+```
+
+If the tests fail with `UnsatisfiedLinkError: no jep in java.library.path`, pass the directory containing the native library of Jep to `java.library.path` explicitly. On Linux, you can instead add the directory to `LD_LIBRARY_PATH`. On macOS, this is necessary because `DYLD_LIBRARY_PATH` is removed when Maven starts.
+
+```sh
+JEP_PATH="$(venv/bin/python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')/jep"
+JAVA_HOME=/path/to/jdk21 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn install --also-make --projects python -DargLine="-Djava.library.path=$JEP_PATH"
 ```
 
 ### Installation of LTSMin 3.1.0 on macOS with ARM processors
@@ -142,7 +149,7 @@ FalCAuN works on macOS with ARM processors, but the setup of LTSMin is a bit tri
 ### Notes
 
 - For the matlab module, the unit test on `mvn install` is disabled by default because it takes much time. If you want, you can run it by `mvn test -DskipTests=false`.
-    - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=false`.
+    - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 21) mvn test -DskipTests=false`.
     - Also, the automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand. 
         - The example by MathWorks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
         - See `./src/test/resources/MATLAB/initAT.m` for an example to set the path.
@@ -220,7 +227,7 @@ The source code is partially commented using the Javadoc syntax. The documentati
 
 To generate the JavaDoc documentation locally, you need:
 
-- Java 17 or later
+- Java 21 or later
 - Maven
 
 You can generate the documentation using the following Maven commands:
@@ -256,6 +263,13 @@ Obsolete CLI interface
 After FalCAuN 1.0, FalCAuN is mainly intended to be used as a library called from a program written in some JVM language, such as Kotlin. The CLI interface is still available for backward compatibility, but it is not actively maintained.
 
 To execute FalCAuN via the CLI interface, you can use the helper shell script `falcaun` in the root directory of the repository. The script is a wrapper of the CLI interface of FalCAuN. The script is written in POSIX sh and should work on most UNIX-like operating systems.
+
+The script requires the following.
+
+- The environment variable `MATLAB_HOME` is set to the root directory of MATLAB R2024b or later.
+- Java 21 is installed. The script uses `JAVA_HOME` if it points to Java 21. Otherwise, it looks for Java 21 using `/usr/libexec/java_home` on macOS and under `/usr/lib/jvm` (OpenJDK, Eclipse Temurin, or Amazon Corretto packages) on Linux.
+- The matlab module is installed by `mvn install` because the script runs the JAR file with dependencies in the local Maven repository.
+
 An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in `./example/AT_M4.stl`. Please be patient!!
 
 ```sh

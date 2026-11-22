@@ -16,7 +16,7 @@
  *  PORTABILITY
  *   This script assumes the following:
  *   - FalCAuN is installed, for example, by mvn install.
- *   - The environment variable MATLAB_HOME is set to the root directory of MATLAB, e.g., /Applications/MATLAB_R2024a.app/ or /usr/local/MATLAB/R2024a.
+ *   - The environment variable MATLAB_HOME is set to the root directory of MATLAB, e.g., /Applications/MATLAB_R2024b.app/ or /usr/local/MATLAB/R2024b.
  *
  *  USAGE
  *   ./ATS6b.main.kts

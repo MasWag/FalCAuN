@@ -44,8 +44,12 @@ SHELL ["/bin/bash", "-c"]
 # Install Java, Kotlin, and kscript with sdkman
 RUN curl -s "https://get.sdkman.io?ci=true" | bash \
     && source ~/.sdkman/bin/sdkman-init.sh \
-    # 11.0.27-tem
-    && sdk install java 17.0.12-oracle \
+    # MATLAB R2024b on Linux supports only OpenJDK 21.0.2+13 and earlier, which sdkman no longer lists
+    && wget -q https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2%2B13/OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz \
+    && mkdir -p ~/jdk && tar xzf OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz -C ~/jdk \
+    && rm OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz \
+    && sdk install java 21.0.2-tem ~/jdk/jdk-21.0.2+13 \
+    && sdk default java 21.0.2-tem \
     && sdk install kotlin 1.9.24 \
     && sdk install kscript \
     && sdk install maven
@@ -57,8 +61,8 @@ RUN wget https://github.com/Meijuh/ltsmin/releases/download/v3.1.0/ltsmin-v3.1.0
 
 # Install Python and Jep
 RUN source ~/.sdkman/bin/sdkman-init.sh \
-    pip install --upgrade setuptools wheel \
-    && pip install --no-cache-dir --no-build-isolation jep==4.2.1 \
+    && pip install --upgrade setuptools wheel \
+    && pip install --no-cache-dir --no-build-isolation jep \
     && pip show jep
 
 # Install FalCAuN

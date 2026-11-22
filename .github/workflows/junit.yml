@@ -16,7 +16,7 @@ jobs:
           sudo apt-get update && sudo apt-get install maven -y
       - uses: actions/setup-java@v6
         with:
-          java-version: '17'
+          java-version: '21'
           java-package: jdk
           distribution: 'temurin'
       - name: Install LTSMin
@@ -55,7 +55,7 @@ jobs:
       - name: Install jep
         run: |
           pip install --upgrade setuptools wheel
-          pip install --no-cache-dir --no-build-isolation jep==4.3.1
+          pip install --no-cache-dir --no-build-isolation jep
           pip show jep
 
       - name: Build and test core project with Maven
@@ -65,6 +65,10 @@ jobs:
         env:
           LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
           JEP_JAVA_LIBRARY_PATH: ${{ env.Python3_ROOT_DIR }}/lib/python3.13/site-packages/jep
+
+      - name: Build and test examples project with Maven
+        run: |
+          mvn verify --projects examples --fail-at-end
 
       - name: Build and test python project with Maven
         run: |
@@ -77,7 +81,7 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v7.1.1
         with:
-          files: core/target/site/jacoco/jacoco.xml,python/target/site/jacoco/jacoco.xml
+          files: core/target/site/jacoco/jacoco.xml,examples/target/site/jacoco/jacoco.xml,python/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true

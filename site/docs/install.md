@@ -8,7 +8,7 @@ Requirements
 
 The requirements for the core and examples modules of FalCAuN are as follows.
 
-- Java 17
+- Java 21
 - Maven
 - LTSMin 3.1.0
     - This is not officially released yet.
@@ -17,8 +17,10 @@ The requirements for the core and examples modules of FalCAuN are as follows.
 
 The matlab module also requires the following.
 
-- MATLAB/Simulink
-    - We tested with MATLAB R2024a, but any later version should be fine.
+- MATLAB/Simulink R2024b or later
+    - R2024b is the first release that supports Java 21, which FalCAuN uses.
+    - On Linux, we recommend R2026b or later. With R2024b and R2025b, repeated simulations with Fast Restart in accelerator mode, which FalCAuN uses, can corrupt the MATLAB heap, and MATLAB crashes or hangs within a few simulations. We reproduced this on Ubuntu 24.04 in plain MATLAB without FalCAuN. R2026b does not have this problem.
+    - If you use R2024b on Linux, use OpenJDK 21.0.2+13 or earlier, the newest version that R2024b supports on Linux. See [Versions of OpenJDK Compatible with MATLAB by Release](https://www.mathworks.com/support/requirements/openjdk.html).
 
 Installation of the core Module
 -------------------------------
@@ -27,11 +29,11 @@ Here, we provide the instructions to install the core module of FalCAuN.
 
 ### 1. Install the Requirements
 
-You need to install the requirements above. For example, on Ubuntu, you can install Java 17 and Maven by the following command.
+You need to install the requirements above. For example, on Ubuntu, you can install Java 21 and Maven by the following command.
 
 === "Ubuntu"
     ```bash
-    sudo apt-get install maven openjdk-17-jdk-headless -y
+    sudo apt-get install maven openjdk-21-jdk-headless -y
     ```
 === "macOS"
     ```bash
@@ -91,7 +93,7 @@ We assume that the environment variable `MATLAB_HOME` shows where MATLAB is inst
 ```sh
 export MATLAB_HOME=<path/to/matlab/home>
 ## Example:
-# export MATLAB_HOME=/usr/local/MATLAB/R2024a/
+# export MATLAB_HOME=/usr/local/MATLAB/R2024b/
 ```
 
 ### 3. Build and Install FalCAuN
@@ -110,24 +112,35 @@ Here, we provide the instructions to install the python binding module.
 
 ### 1. Install the Requirements
 
-You need to install Jep manually. Follow the instructions on the [official site](https://github.com/ninia/jep)
+You need to install [Jep](https://github.com/ninia/jep) in the Python environment that Maven should use. For example, create and activate a virtual environment and install Jep there.
+
+```sh
+python3 -m venv venv
+. venv/bin/activate
+pip install jep
+```
 
 ### 2. Set up the environment variable
 
-Add the installed path, which has the JEP native library including `jep-VERSION.jar`, to the environment variable `LD_LIBRARY_PATH`.
+Set `PYTHONEXECUTABLE` to the absolute path of the Python executable that has Jep installed. This is required because Maven runs tests in forked JVMs, and Jep initializes Python from that executable. Do not use a relative path such as `./venv/bin/python`; use `$PWD/venv/bin/python` instead.
 
 ```sh
-export LD_LIBRARY_PATH=<path/to/jep>:${LD_LIBRARY_PATH}
-# Example:
-# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep
+export PYTHONEXECUTABLE="$PWD/venv/bin/python"
 ```
+
+The Python binding tests are skipped when `PYTHONEXECUTABLE` is not set to an absolute executable path.
 
 ### 3. Build and Install FalCAuN
 
-Build FalCAuN using Maven. You may need to set the environment variable `PYTHONEXECUTABLE` to the full path of the Python executable, for example: `export PYTHONEXECUTABLE="$PWD/.venv/bin/python3"`.
+```sh
+JAVA_HOME=/path/to/jdk21 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn install --also-make --projects python
+```
+
+If the tests fail with `UnsatisfiedLinkError: no jep in java.library.path`, pass the directory containing the native library of Jep to `java.library.path` explicitly. On Linux, you can instead add the directory to `LD_LIBRARY_PATH`. On macOS, this is necessary because `DYLD_LIBRARY_PATH` is removed when Maven starts.
 
 ```sh
-mvn install --also-make --projects python
+JEP_PATH="$(venv/bin/python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')/jep"
+JAVA_HOME=/path/to/jdk21 PYTHONEXECUTABLE="$PWD/venv/bin/python" mvn install --also-make --projects python -DargLine="-Djava.library.path=$JEP_PATH"
 ```
 
 Installation of LTSMin 3.1.0 on macOS with ARM processors
@@ -142,7 +155,7 @@ FalCAuN works on macOS with ARM processors, but the setup of LTSMin is a bit tri
 Notes
 -----
 
-- You may have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn test -DskipTests=false`.
+- You may have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 21) mvn test -DskipTests=false`.
 - The automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand.
     - The example by MathWorks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
     - See `./src/test/resources/MATLAB/initAT.m` for an example to set the path.

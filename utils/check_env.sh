@@ -32,7 +32,7 @@ log_warn () {
 }
 
 ## Check Java
-log "Check if Java 17 is installed"
+log "Check if Java 21 is installed"
 
 ## Use JAVA_HOME if it is set
 set +u
@@ -44,12 +44,12 @@ set -u
 if which java > /dev/null; then
     JAVA_VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
     JAVA_VERSION_MAJOR=$(echo "$JAVA_VERSION" | cut -d '.' -f1)
-    if [ "$JAVA_VERSION_MAJOR" = "17" ]; then
+    if [ "$JAVA_VERSION_MAJOR" = "21" ]; then
         log_ok "Detected Java $JAVA_VERSION"
     else
         log_error "Detected Java $JAVA_VERSION"
-        log_error "FalCAuN requires Java 17"
-        log "Maybe you need to set JAVA_HOME to the correct Java 17 installation"
+        log_error "FalCAuN requires Java 21"
+        log "Maybe you need to set JAVA_HOME to the correct Java 21 installation"
         exit 1
     fi
 else
@@ -97,14 +97,14 @@ else
     exit 1
 fi
 
-log "Check if the MATLAB version is at least R2024a"
+log "Check if the MATLAB version is at least R2024b"
 MATLAB_version="$("$MATLAB_HOME/bin/matlab" -nodisplay -nosplash -r "disp(version('-release')); exit" 2>/dev/null | grep -o 'R[0-9]\{4\}[ab]')"
 MATLAB_version_year="$(echo "$MATLAB_version" | tr -d 'abR')"
-if [ "$MATLAB_version_year" -ge 2024 ]; then
+if [ "$MATLAB_version_year" -gt 2024 ] || [ "$MATLAB_version" = "R2024b" ]; then
     log_ok "Detected MATLAB $MATLAB_version"
 else
     log_error "Detected MATLAB $MATLAB_version"
-    log_error "FalCAuN requires MATLAB version R2024a or later"
+    log_error "FalCAuN requires MATLAB version R2024b or later"
     exit 1
 fi
 

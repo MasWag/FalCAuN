@@ -16,9 +16,9 @@ jobs:
       - run:
           name: Install OpenJDK 17
           command: |
-            sudo apt-get update && sudo apt-get install openjdk-17-jdk maven unzip -y
-            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+            sudo apt-get update && sudo apt-get install openjdk-21-jdk maven unzip -y
+            sudo update-alternatives --set java /usr/lib/jvm/java-21-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-21-openjdk-amd64/bin/javac
       - run:
           name: Install Owl
           command: |
@@ -36,13 +36,13 @@ jobs:
           command: |
             sudo apt-get update && sudo apt-get install -y python3 python3-pip python3-dev
             pip3 install --break-system-packages --upgrade setuptools wheel
-            pip3 install --break-system-packages --no-cache-dir --no-build-isolation jep==4.2.1
+            pip3 install --break-system-packages --no-cache-dir --no-build-isolation jep
             pip3 show jep
             jep_path=$(python3 -c 'import site, os; print(os.path.join(site.getsitepackages()[0], "jep"))')
             echo "export LD_LIBRARY_PATH=${jep_path}:$LD_LIBRARY_PATH" >> $BASH_ENV
             echo "export JEP_JAVA_LIBRARY_PATH=${jep_path}" >> $BASH_ENV
       - matlab/install:
-          release: R2024a
+          release: R2024b
           products: Simulink
       - restore_cache:
           key: FalCAuN-{{ checksum "pom.xml" }}

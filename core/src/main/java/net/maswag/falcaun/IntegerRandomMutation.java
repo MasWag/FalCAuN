@@ -1,8 +1,8 @@
 package net.maswag.falcaun;
 
 import org.jetbrains.annotations.NotNull;
-import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.operator.mutation.MutationOperator;
+import org.uma.jmetal.solution.integersolution.IntegerSolution;
 
 import java.util.Objects;
 import java.util.Random;
@@ -46,15 +46,21 @@ public class IntegerRandomMutation implements MutationOperator<IntegerSolution> 
     public IntegerSolution execute(IntegerSolution solution) {
         assert (Objects.nonNull(solution));
 
-        for (int i = 0; i < solution.getNumberOfVariables(); i++) {
+        for (int i = 0; i < solution.variables().size(); i++) {
             if (this.random.nextDouble() < mutationProbability) {
-                int positionToChange = this.random.nextInt(solution.getNumberOfVariables());
-                int lowerBound = solution.getLowerBound(positionToChange);
-                int upperBound = solution.getUpperBound(positionToChange);
+                int positionToChange = this.random.nextInt(solution.variables().size());
+                int lowerBound = solution.getBounds(positionToChange).getLowerBound();
+                int upperBound = solution.getBounds(positionToChange).getUpperBound();
                 Integer newValue = random.nextInt(upperBound - lowerBound + 1) + lowerBound;
-                solution.setVariableValue(positionToChange, newValue);
+                solution.variables().set(positionToChange, newValue);
             }
         }
         return solution;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double mutationProbability() {
+        return mutationProbability;
     }
 }

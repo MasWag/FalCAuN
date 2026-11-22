@@ -12,42 +12,49 @@
 
 readonly JAR_NAME=net/maswag/falcaun/FalCAuN-matlab/1.0-SNAPSHOT/FalCAuN-matlab-1.0-SNAPSHOT-jar-with-dependencies.jar
 
-if [ -z "$MATLAB_HOME" ]; then
+if [ -z "${MATLAB_HOME:-}" ]; then
   echo "Error: environment variable MATLAB_HOME is not set"
   exit 1
 fi
 
 # Check the MATLAB version
 MATLAB_VERSION=$(echo "$MATLAB_HOME" | grep -o 'R[0-9]\+[ab]')
-if expr "$MATLAB_VERSION" \< R2021a > /dev/null 2>&1; then
-    printf "Warning: You are using MATLAB %s. This may be too old\n" "$MATLAB_VERSION"
+if [ -n "$MATLAB_VERSION" ] && expr "$MATLAB_VERSION" \< R2024b > /dev/null 2>&1; then
+    printf "Warning: You are using MATLAB %s. FalCAuN requires MATLAB R2024b or later\n" "$MATLAB_VERSION"
+fi
+
+# Print the version of the given java executable, e.g., 21.0.2
+java_version() {
+  "$1" -version 2>&1 | awk -F '"' '/version/ {print $2}'
+}
+
+# Use JAVA_HOME if it points to Java 21
+java=
+if [ -n "${JAVA_HOME:-}" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+  if [ "$(java_version "$JAVA_HOME/bin/java" | cut -d '.' -f1)" = 21 ]; then
+    java="$JAVA_HOME/bin/java"
+  else
+    echo "Warning: JAVA_HOME ($JAVA_HOME) is not Java 21. Looking for Java 21 elsewhere"
+  fi
 fi
 
 case "$(uname)" in
 Darwin)
-    if [ "$(arch)" = arm64 ]; then
-        arch=maca64
-    else
-        arch=maci64
-    fi
-  if java="$(/usr/libexec/java_home -v '17')/bin/java"; then
-    echo "Java 17 found at $java"
-  elif java="$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home -v '17')/bin/java"; then
-    echo "Java 17 found at $java"
+  if [ "$(arch)" = arm64 ]; then
+    arch=maca64
   else
-    echo "Error: Java 17 did not found"
-    exit 1
+    arch=maci64
+  fi
+  if [ -z "$java" ] && java_home="$(/usr/libexec/java_home -v 21 2>/dev/null)"; then
+    java="$java_home/bin/java"
   fi
   ;;
 Linux)
   arch=glnxa64
-  if java=$(find /usr/lib/jvm/java-17-openjdk* -name java -type f) 2>/dev/null; then
-    echo "Java 17 found at $java"
-  elif java=$(find /usr/lib/jvm/java-1.17.0-openjdk* -name java -type f | head -n 1) 2>/dev/null; then
-    echo "Java 17 found at $java"
-  else
-    echo "Error: Java 17 did not found"
-    exit 1
+  if [ -z "$java" ]; then
+    # OpenJDK, Eclipse Temurin, and Amazon Corretto packages
+    java=$(find /usr/lib/jvm/java-21-openjdk* /usr/lib/jvm/java-1.21.0-openjdk* /usr/lib/jvm/temurin-21-jdk* /usr/lib/jvm/java-21-amazon-corretto* \
+                -path '*/bin/java' -type f 2>/dev/null | head -n 1)
   fi
   ;;
 *)
@@ -55,6 +62,23 @@ Linux)
   exit 1
   ;;
 esac
+
+if [ -z "$java" ]; then
+  echo "Error: Java 21 was not found. Set JAVA_HOME to a Java 21 installation"
+  exit 1
+fi
+echo "Java 21 found at $java"
+
+# MATLAB R2024b on Linux supports only OpenJDK 21.0.2+13 and earlier
+if [ "$arch" = glnxa64 ] && [ "$MATLAB_VERSION" = R2024b ]; then
+  version=$(java_version "$java")
+  case "$version" in
+  21 | 21.0.[0-2] | 21.0.[0-2][!0-9]*) ;;
+  *)
+    printf "Warning: MATLAB R2024b on Linux supports only OpenJDK 21.0.2+13 and earlier, but Java %s is used\n" "$version"
+    ;;
+  esac
+fi
 
 if ! (command -v mvn >/dev/null 2>&1); then
   echo "Error: Maven must be installed"

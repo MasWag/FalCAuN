@@ -6,8 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
-import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
-import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.problem.integerproblem.impl.AbstractIntegerProblem;
+import org.uma.jmetal.solution.integersolution.IntegerSolution;
+import org.uma.jmetal.util.bounds.Bounds;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,35 +33,40 @@ public class EQSearchProblem extends AbstractIntegerProblem implements Evaluatio
     EQSearchProblem(NumericMembershipOracleCost memOracle, int length) {
         this.memOracle = memOracle;
         this.length = length;
-        setNumberOfVariables(length);
-        setNumberOfObjectives(1);
-        setName("EQSearchProblem");
+        numberOfObjectives(1);
+        name("EQSearchProblem");
 
-        List<Integer> lowerLimit = Collections.nCopies(length, 0);
+        // The solutions share these bounds, so the upper bound follows the latest symbol list even for a reused population.
+        bounds = Collections.nCopies(length, new Bounds<>() {
+            @Override
+            public Integer getLowerBound() {
+                return 0;
+            }
 
-        setLowerLimit(lowerLimit);
+            @Override
+            public Integer getUpperBound() {
+                return Objects.isNull(symbolList) ? 0 : symbolList.size() - 1;
+            }
+        });
     }
 
     void setSymbolList(List<? extends String> symbolList) {
-        List<Integer> upperLimit = Collections.nCopies(length, symbolList.size() - 1);
-
         this.symbolList = symbolList;
-        setUpperLimit(upperLimit);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void evaluate(IntegerSolution integerSolution) {
+    public IntegerSolution evaluate(IntegerSolution integerSolution) {
         WordBuilder<String> currentSample = new WordBuilder<>();
-        for (int i = 0; i < integerSolution.getNumberOfVariables(); i++) {
-            int value = integerSolution.getVariableValue(i);
+        for (int i = 0; i < integerSolution.variables().size(); i++) {
+            int value = integerSolution.variables().get(i);
             currentSample.append(symbolList.get(value));
         }
         DefaultQuery<String, Word<String>> query = new DefaultQuery<>(currentSample.toWord());
         int oldCount = memOracle.getEvaluateCount();
         double robustness = memOracle.processQueryWithCost(query);
         evaluateCount += memOracle.getEvaluateCount() - oldCount;
-        integerSolution.setObjective(0, robustness);
+        integerSolution.objectives()[0] = robustness;
         log.trace("Robustness: {}", robustness);
         Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
         if (!Objects.equals(hypOutput, query.getOutput())) {
@@ -68,6 +74,7 @@ public class EQSearchProblem extends AbstractIntegerProblem implements Evaluatio
             stopped = true;
             cexQuery = query;
         }
+        return integerSolution;
     }
 
     DefaultQuery<String, Word<String>> getCexQuery() {

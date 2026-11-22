@@ -1,7 +1,7 @@
 package net.maswag.falcaun;
 
-import org.uma.jmetal.operator.CrossoverOperator;
-import org.uma.jmetal.solution.IntegerSolution;
+import org.uma.jmetal.operator.crossover.CrossoverOperator;
+import org.uma.jmetal.solution.integersolution.IntegerSolution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,33 +62,39 @@ public class IntegerUniformCrossover implements CrossoverOperator<IntegerSolutio
         List<IntegerSolution> offspring = new ArrayList<>(2);
         offspring.add((IntegerSolution) integerSolutions.get(0).copy());
         offspring.add((IntegerSolution) integerSolutions.get(1).copy());
-        for (int i = 0; i < integerSolutions.get(0).getNumberOfVariables(); i++) {
+        for (int i = 0; i < integerSolutions.get(0).variables().size(); i++) {
             if (random.nextDouble() < crossoverProbability) {
-                int tmp = offspring.get(0).getVariableValue(i);
-                offspring.get(0).setVariableValue(i, offspring.get(1).getVariableValue(i));
-                offspring.get(1).setVariableValue(i, tmp);
+                int tmp = offspring.get(0).variables().get(i);
+                offspring.get(0).variables().set(i, offspring.get(1).variables().get(i));
+                offspring.get(1).variables().set(i, tmp);
             }
         }
         return offspring;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double crossoverProbability() {
+        return crossoverProbability;
+    }
+
     /**
-     * <p>getNumberOfRequiredParents.</p>
+     * <p>numberOfRequiredParents.</p>
      *
      * @return a int.
      */
     @Override
-    public int getNumberOfRequiredParents() {
+    public int numberOfRequiredParents() {
         return 2;
     }
 
     /**
-     * <p>getNumberOfGeneratedChildren.</p>
+     * <p>numberOfGeneratedChildren.</p>
      *
      * @return a int.
      */
     @Override
-    public int getNumberOfGeneratedChildren() {
+    public int numberOfGeneratedChildren() {
         return 2;
     }
 }

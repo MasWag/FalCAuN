@@ -7,13 +7,12 @@ import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.word.Word;
 import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.Algorithm;
-import org.uma.jmetal.operator.CrossoverOperator;
-import org.uma.jmetal.operator.MutationOperator;
-import org.uma.jmetal.operator.SelectionOperator;
-import org.uma.jmetal.operator.impl.selection.BestSolutionSelection;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
-import org.uma.jmetal.solution.IntegerSolution;
-import org.uma.jmetal.util.AlgorithmRunner;
+import org.uma.jmetal.operator.crossover.CrossoverOperator;
+import org.uma.jmetal.operator.mutation.MutationOperator;
+import org.uma.jmetal.operator.selection.SelectionOperator;
+import org.uma.jmetal.operator.selection.impl.BestSolutionSelection;
+import org.uma.jmetal.operator.selection.impl.BinaryTournamentSelection;
+import org.uma.jmetal.solution.integersolution.IntegerSolution;
 import org.uma.jmetal.util.comparator.ObjectiveComparator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.pseudorandom.JMetalRandom;
@@ -103,7 +102,7 @@ public class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<Stri
         problem.setHypothesis(hypothesis);
         problem.setSymbolList(new ArrayList<>(symbolList));
         JMetalRandom.getInstance().setSeed(random.nextLong());
-        new AlgorithmRunner.Executor(algorithm).execute();
+        algorithm.run();
         if (problem.isStopped()) {
             LOGGER.info("Counter example is found!! {}", problem.getCexQuery());
             return problem.getCexQuery();
