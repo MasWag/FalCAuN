@@ -31,6 +31,7 @@ The matlab module also requires the following.
 
 - MATLAB/Simulink
   - We tested with MATLAB R2024a, but any later version should be fine.
+  - On Linux, we recommend MATLAB R2026b or later. With R2024b and R2025b on Linux, repeated simulations with Fast Restart in accelerator mode, which FalCAuN uses, can corrupt the MATLAB heap. MATLAB then crashes or hangs within a few simulations. We reproduced this on Ubuntu 24.04 in plain MATLAB without FalCAuN, while R2026b works.
 
 ### Installation of the core Module
 
