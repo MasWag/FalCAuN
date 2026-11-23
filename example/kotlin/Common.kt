@@ -2,15 +2,15 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
-import net.maswag.falcaun.temporal.AbstractAdaptiveSTLUpdater
-import net.maswag.falcaun.temporal.AdaptiveSTLList
+import net.maswag.falcaun.abstraction.OutputMapperReader
 import net.maswag.falcaun.oracle.EQSearchProblem
 import net.maswag.falcaun.oracle.EQSteadyStateGeneticAlgorithm
-import net.maswag.falcaun.verification.NumericSULVerifier
-import net.maswag.falcaun.abstraction.OutputMapperReader
-import net.maswag.falcaun.verification.VerificationResult
+import net.maswag.falcaun.temporal.AbstractAdaptiveSTLUpdater
+import net.maswag.falcaun.temporal.AdaptiveSTLList
 import net.maswag.falcaun.temporal.STLFactory
 import net.maswag.falcaun.temporal.TemporalLogic
+import net.maswag.falcaun.verification.NumericSULVerifier
+import net.maswag.falcaun.verification.VerificationResult
 import org.slf4j.LoggerFactory
 
 /**

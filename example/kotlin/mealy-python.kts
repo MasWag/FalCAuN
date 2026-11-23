@@ -17,10 +17,10 @@ import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.automatalib.util.automaton.builder.AutomatonBuilders
 import net.automatalib.visualization.Visualization
 import net.maswag.falcaun.oracle.*
-import net.maswag.falcaun.temporal.*
-import net.maswag.falcaun.verification.*
-import net.maswag.falcaun.temporal.LTLFactory
 import net.maswag.falcaun.python.PythonSUL
+import net.maswag.falcaun.temporal.*
+import net.maswag.falcaun.temporal.LTLFactory
+import net.maswag.falcaun.verification.*
 import org.slf4j.LoggerFactory
 import java.util.*
 
