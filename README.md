@@ -116,6 +116,23 @@ mvn clean --projects matlab
 mvn install
 ```
 
+#### About the MATLAB Engine API for Java
+
+FalCAuN's matlab module uses the MATLAB Engine API for Java (`$MATLAB_HOME/extern/engines/java/jar/engine.jar`). This JAR file is part of your MATLAB installation; FalCAuN does not redistribute it. You need an installation of MATLAB/Simulink with an appropriate license.
+
+- `mvn clean --projects matlab` installs `engine.jar` of `$MATLAB_HOME` into your local Maven repository as `com.mathworks:engine:1.1`. Equivalently, you can run the following.
+
+  ```sh
+  mvn install:install-file -Dfile="$MATLAB_HOME/extern/engines/java/jar/engine.jar" \
+      -DgroupId=com.mathworks -DartifactId=engine -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
+  ```
+
+- `FalCAuN-matlab` declares this dependency with Maven's `provided` scope: it is used to compile and test FalCAuN, but it is neither bundled in FalCAuN's JAR files (including `FalCAuN-matlab-*-jar-with-dependencies.jar`) nor passed to your application as a transitive dependency. An application using `FalCAuN-matlab` must supply it explicitly, e.g., `@file:DependsOn("com.mathworks:engine:1.1")` in Kotlin scripts or `$MATLAB_HOME/extern/engines/java/jar/engine.jar` in the classpath. See [`example/java/README.md`](example/java/README.md) for an example with Maven.
+- The Java classpath (`engine.jar`) and the native library path of MATLAB (`-Djava.library.path=$MATLAB_HOME/bin/<arch>`, where `<arch>` is `glnxa64`, `maci64`, or `maca64`) are separate requirements. You need both.
+- The `falcaun` script finds `engine.jar` through `MATLAB_HOME` automatically.
+
+Note that the `provided` scope only controls how the JAR file is bundled and propagated. It does not by itself settle every licensing question about combining FalCAuN with proprietary software.
+
 ### Installation of the python binding Module
 
 #### 1. Install the Requirements
@@ -286,6 +303,7 @@ The script requires the following.
 - The environment variable `MATLAB_HOME` is set to the root directory of MATLAB R2024b or later.
 - Java 21 is installed. The script uses `JAVA_HOME` if it points to Java 21. Otherwise, it looks for Java 21 using `/usr/libexec/java_home` on macOS and under `/usr/lib/jvm` (OpenJDK, Eclipse Temurin, or Amazon Corretto packages) on Linux.
 - The matlab module is installed by `mvn install` because the script runs the JAR file with dependencies in the local Maven repository.
+- `$MATLAB_HOME/extern/engines/java/jar/engine.jar` exists. The script adds this MATLAB Engine API for Java to the classpath because it is not bundled with FalCAuN.
 
 An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in `./example/shell/AT_M4.stl`. Please be patient!!
 

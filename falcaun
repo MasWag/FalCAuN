@@ -87,4 +87,19 @@ fi
 
 maven_repo_path="$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)"
 
-$java -Djava.awt.headless=true -Djava.library.path="$MATLAB_HOME/bin/$arch" -jar "${maven_repo_path}/${JAR_NAME}" "$@"
+falcaun_jar="${maven_repo_path}/${JAR_NAME}"
+if [ ! -f "$falcaun_jar" ]; then
+  echo "Error: $falcaun_jar is not found. Install FalCAuN, e.g., by 'mvn clean --projects matlab && mvn install'"
+  exit 1
+fi
+
+# The MATLAB Engine API for Java is not bundled with FalCAuN. We use the one in the user's MATLAB installation.
+engine_jar="$MATLAB_HOME/extern/engines/java/jar/engine.jar"
+if [ ! -f "$engine_jar" ]; then
+  echo "Error: The MATLAB Engine API for Java is not found at $engine_jar. Check that MATLAB_HOME points to the root directory of MATLAB"
+  exit 1
+fi
+
+# The native libraries of MATLAB (java.library.path) and the Engine API (classpath) are separately required
+exec "$java" -Djava.awt.headless=true -Djava.library.path="$MATLAB_HOME/bin/$arch" \
+  -cp "$falcaun_jar:$engine_jar" net.maswag.falcaun.simulink.FalCAuN "$@"

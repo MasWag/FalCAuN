@@ -24,6 +24,8 @@ mvn install
 
 After that, you can directly execute the example scripts, for example, `./ATS1.kts`.
 
+The MATLAB examples declare the MATLAB Engine API for Java explicitly by `@file:DependsOn("com.mathworks:engine:1.1")`, because `FalCAuN-matlab` declares it with the `provided` scope and FalCAuN does not redistribute it. This artifact is the `engine.jar` of your MATLAB installation, installed to your local Maven repository by `mvn clean --projects matlab`. The native library path of MATLAB is set separately by `@file:KotlinOptions("-Djava.library.path=...")`.
+
 Lint and format
 ---------------
 
@@ -58,7 +60,7 @@ mvn clean --projects matlab
 mvn install
 ```
 
-After that, execute `jupyter` with suitable environment variables.
+The MATLAB notebooks also declare `@file:DependsOn("com.mathworks:engine:1.1")` (see above). After that, execute `jupyter` with suitable environment variables, including the native library path of MATLAB.
 
 On macOS, the following is an example.
 

@@ -17,6 +17,8 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [net.maswag.falcaun/FalCAuN-core "1.0-SNAPSHOT"]
                  [net.maswag.falcaun/FalCAuN-matlab "1.0-SNAPSHOT"]
+                 ;; The MATLAB Engine API is provided by your MATLAB installation (installed to ~/.m2 by `mvn clean --projects matlab`), not by FalCAuN
+                 [com.mathworks/engine "1.1" :scope "provided"]
                  [net.maswag.falcaun/FalCAuN-python "1.0-SNAPSHOT"]]
   :plugins [[lein-exec "0.3.7"]
             [lein-kibit "0.1.11"]

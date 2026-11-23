@@ -121,6 +121,23 @@ mvn clean --projects matlab
 mvn install
 ```
 
+### About the MATLAB Engine API for Java
+
+FalCAuN's matlab module uses the MATLAB Engine API for Java (`$MATLAB_HOME/extern/engines/java/jar/engine.jar`). This JAR file is part of your MATLAB installation; FalCAuN does not redistribute it. You need an installation of MATLAB/Simulink with an appropriate license.
+
+- `mvn clean --projects matlab` installs `engine.jar` of `$MATLAB_HOME` into your local Maven repository as `com.mathworks:engine:1.1`. Equivalently, you can run the following.
+
+  ```sh
+  mvn install:install-file -Dfile="$MATLAB_HOME/extern/engines/java/jar/engine.jar" \
+      -DgroupId=com.mathworks -DartifactId=engine -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
+  ```
+
+- `FalCAuN-matlab` declares this dependency with Maven's `provided` scope: it is used to compile and test FalCAuN, but it is neither bundled in FalCAuN's JAR files (including `FalCAuN-matlab-*-jar-with-dependencies.jar`) nor passed to your application as a transitive dependency. An application using `FalCAuN-matlab` must supply it explicitly, e.g., `@file:DependsOn("com.mathworks:engine:1.1")` in Kotlin scripts or `$MATLAB_HOME/extern/engines/java/jar/engine.jar` in the classpath. See [`example/java/README.md`](https://github.com/MasWag/FalCAuN/blob/master/example/java/README.md) for an example with Maven.
+- The Java classpath (`engine.jar`) and the native library path of MATLAB (`-Djava.library.path=$MATLAB_HOME/bin/<arch>`, where `<arch>` is `glnxa64`, `maci64`, or `maca64`) are separate requirements. You need both.
+- The `falcaun` script finds `engine.jar` through `MATLAB_HOME` automatically.
+
+Note that the `provided` scope only controls how the JAR file is bundled and propagated. It does not by itself settle every licensing question about combining FalCAuN with proprietary software.
+
 Installation of the python binding Module
 ----------------------------------------
 

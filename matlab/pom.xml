@@ -33,6 +33,9 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <!-- Copy only the runtime dependencies. The MATLAB Engine API (com.mathworks:engine) is a provided dependency and must never be copied. -->
+                            <includeScope>runtime</includeScope>
+                            <excludeGroupIds>com.mathworks</excludeGroupIds>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
@@ -56,8 +59,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-	        	    <mainClass>net.maswag.falcaun.simulink.FalCAuN</mainClass>
-                            <addClasspath>true</addClasspath>
+                            <!-- No Class-Path: the dependencies are bundled, and the MATLAB Engine API (not bundled) must be given by an explicit -cp -->
+                            <mainClass>net.maswag.falcaun.simulink.FalCAuN</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -72,7 +75,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.maswag.falcaun.FalCAuN</mainClass>
+                            <mainClass>net.maswag.falcaun.simulink.FalCAuN</mainClass>
+                            <!-- Lists only the runtime dependencies. The MATLAB Engine API is provided by the user's MATLAB installation. -->
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -130,10 +134,14 @@
 
     <dependencies>
         <!-- BEGIN MATLAB -->
+        <!-- The MATLAB Engine API for Java ($MATLAB_HOME/extern/engines/java/jar/engine.jar) is provided by the user's
+             MATLAB installation and installed to the local Maven repository by `mvn clean`. FalCAuN does not redistribute it.
+             The provided scope keeps it out of the assembled JAR, target/lib, and the transitive dependencies of the users. -->
         <dependency>
             <groupId>com.mathworks</groupId>
             <artifactId>engine</artifactId>
             <version>1.1</version>
+            <scope>provided</scope>
         </dependency>
         <!-- END MATLAB -->
 

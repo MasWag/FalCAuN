@@ -91,6 +91,15 @@ public class FalCAuN {
      * @throws java.lang.Exception if any.
      */
     public static void main(String[] args) throws Exception {
+        // The MATLAB Engine API for Java is not bundled with FalCAuN. It must be supplied by the user's MATLAB installation.
+        try {
+            Class.forName("com.mathworks.engine.MatlabEngine", false, FalCAuN.class.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: The MATLAB Engine API for Java (com.mathworks.engine) is not in the classpath.");
+            System.err.println("       Add $MATLAB_HOME/extern/engines/java/jar/engine.jar of your MATLAB installation to the classpath,");
+            System.err.println("       for example, by running FalCAuN with the ./falcaun script.");
+            System.exit(1);
+        }
         ArgParser argParser = new ArgParser(args);
         if (argParser.isQuit()) {
             return;

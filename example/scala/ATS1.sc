@@ -3,6 +3,8 @@
 //> using repository m2Local
 //> using dep "net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT"
 //> using dep "net.maswag.falcaun:FalCAuN-matlab:1.0-SNAPSHOT"
+// The MATLAB Engine API is provided by your MATLAB installation (installed to ~/.m2 by `mvn clean --projects matlab`), not by FalCAuN
+//> using dep "com.mathworks:engine:1.1"
 //> using file "AutoTrans.scala"
 
 /*****h* scala/ATS1

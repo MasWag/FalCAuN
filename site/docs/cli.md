@@ -10,6 +10,7 @@ The script requires the following.
 - The environment variable `MATLAB_HOME` is set to the root directory of MATLAB R2024b or later.
 - Java 21 is installed. The script uses `JAVA_HOME` if it points to Java 21. Otherwise, it looks for Java 21 using `/usr/libexec/java_home` on macOS and under `/usr/lib/jvm` (OpenJDK, Eclipse Temurin, or Amazon Corretto packages) on Linux.
 - The matlab module is installed by `mvn install` because the script runs the JAR file with dependencies in the local Maven repository.
+- `$MATLAB_HOME/extern/engines/java/jar/engine.jar` exists. The script adds this MATLAB Engine API for Java to the classpath because it is not bundled with FalCAuN.
 
 An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in `./example/shell/AT_M4.stl`. Please be patient!!
 

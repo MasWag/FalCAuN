@@ -21,6 +21,9 @@
 
 // The scripts depends on FalCAuN-core and FalCAuN-matlab
 @file:DependsOn("net.maswag.falcaun:FalCAuN-core:1.0-SNAPSHOT", "net.maswag.falcaun:FalCAuN-matlab:1.0-SNAPSHOT")
+// The MATLAB Engine API is not redistributed by FalCAuN. It is provided by your MATLAB installation
+// and installed to the local Maven repository by `mvn clean --projects matlab`.
+@file:DependsOn("com.mathworks:engine:1.1")
 // We use kotlin-logging for logging
 @file:DependsOn("io.github.oshai:kotlin-logging-jvm:5.1.0")
 // We assume that the MATLAB_HOME environment variable is set
