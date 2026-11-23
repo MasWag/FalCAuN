@@ -131,8 +131,7 @@ The files in this directory are as follows.
     ├── AT_S4.stl
     ├── AT_S5.omap.tsv
     ├── AT_S5.stl
-    ├── Autotrans_shift.mdl
-    ├── initAT.m
+    ├── initAT.m (runs ../../benchmarks/simulink/AT/initAT.m)
     << Files for Breach >>
     ├── breach_scripts
     │   ├── InitAT.m
@@ -200,7 +199,7 @@ The input/output mapper definition and STL files are in this directory. Namely, 
 Description of the Benchmarks
 -----------------------------
 
-In all of the benchmarks, we use the Simulink model (`Autotrans_shift.mdl`) of an automatic transmission system [HAF14]. The STL formulas in S1--S5 are taken from [ZESAH18] and the STL formulas in M1 and M2 are our original.
+In all of the benchmarks, we use the Simulink model (`Autotrans_shift.mdl`) of an automatic transmission system [HAF14]. The Simulink model `Autotrans_shift.mdl` is no longer copied into this directory. `initAT.m` runs the shared benchmark definition [`benchmarks/simulink/AT/initAT.m`](../../benchmarks/simulink/README.md), which loads the model from the Breach Git submodule (byte-identical to the copy used for the original experiments). Initialize it with `git submodule update --init --recursive`. With MATLAB R2026b or later, the shared script also converts the data of the example by MathWorks back to the units the model assumes. The Breach scripts in `breach_scripts/` do not use `initAT.m`: they call `BreachSimulinkSystem('Autotrans_shift')` and rely on the separately installed Breach 1.5.2 (`InitBreach`) to find the model. They were not updated or re-run. **Known limitation:** with MATLAB R2026b or later, the example by MathWorks provides the model data in SI units, and these Breach scripts do not convert it back (unlike `benchmarks/simulink/AT/initAT.m`), so the Breach baseline does not reproduce the original benchmark with these releases. The STL formulas in S1--S5 are taken from [ZESAH18] and the STL formulas in M1 and M2 are our original.
 
 ### S1
 

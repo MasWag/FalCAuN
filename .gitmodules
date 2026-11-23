@@ -1,0 +1,6 @@
+[submodule "benchmarks/simulink/third_party/breach"]
+	path = benchmarks/simulink/third_party/breach
+	url = https://github.com/decyphir/breach.git
+[submodule "benchmarks/simulink/third_party/chasing_cars"]
+	path = benchmarks/simulink/third_party/chasing_cars
+	url = https://github.com/lassekotz/Chasing_Cars.git

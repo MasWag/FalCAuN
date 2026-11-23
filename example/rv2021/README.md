@@ -66,14 +66,13 @@ The files in this directory are as follows.
     ├── AT_F4.stl
     ├── AT_F5.omap.tsv
     ├── AT_F5.stl
-    ├── Autotrans_shift.mdl
-    └── initAT.m
+    └── initAT.m (runs ../../benchmarks/simulink/AT/initAT.m)
 
 
 Description of the Benchmarks
 -----------------------------
 
-In all of the benchmarks, we use the Simulink model (`Autotrans_shift.mdl`) of an automatic transmission system [HAF14]. The STL formulas in F1 and F2 are taken from [ZESAH18] and the STL formulas in F3--F5 are our original.
+In all of the benchmarks, we use the Simulink model (`Autotrans_shift.mdl`) of an automatic transmission system [HAF14]. The Simulink model `Autotrans_shift.mdl` is no longer copied into this directory. `initAT.m` runs the shared benchmark definition [`benchmarks/simulink/AT/initAT.m`](../../benchmarks/simulink/README.md), which loads the model from the Breach Git submodule (byte-identical to the copy used for the original experiments). Initialize it with `git submodule update --init --recursive`. With MATLAB R2026b or later, the shared script also converts the data of the example by MathWorks back to the units the model assumes. The STL formulas in F1 and F2 are taken from [ZESAH18] and the STL formulas in F3--F5 are our original.
 
 ### F1
 

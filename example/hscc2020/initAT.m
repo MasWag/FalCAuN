@@ -1,12 +1,12 @@
-%% Init Script for the Automatic transmission  model
-% We use the automatic transmission model in [Hoxha et al.,
-% ARCH@CPSWeek 2014].
-
-%% Load the AT model
-mdl = 'Autotrans_shift';
-load_system(mdl);
-
-%% References
-% * [Hoxha et al., ARCH@CPSWeek 2014]: *Benchmarks for Temporal
-% Logic Requirements for Automotive Systems*, ARCH@CPSWeek 2014,
-% Bardh Hoxha, Houssam Abbas, Georgios E. Fainekos
+%% Init Script for the Automatic transmission (AT) benchmark
+% This is a thin wrapper of the shared FalCAuN benchmark definition
+% benchmarks/simulink/AT/initAT.m, which loads the model from a pinned Git submodule.
+% See benchmarks/simulink/README.md.
+falcaunRoot = fileparts(mfilename('fullpath')); % directory of this script
+for falcaunLevel = 1:2 % up to the root of the FalCAuN repository
+    falcaunRoot = fileparts(falcaunRoot);
+end
+falcaunInitScript = fullfile(falcaunRoot, 'benchmarks', 'simulink', 'AT', 'initAT.m');
+clear falcaunRoot falcaunLevel;
+run(falcaunInitScript);
+clear falcaunInitScript;

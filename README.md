@@ -81,6 +81,22 @@ Here, we provide the instructions to install the matlab module.
 
 You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of MathWorks.
 
+#### Simulink benchmark models (Git submodules)
+
+The Simulink models used by the MATLAB tests and most MATLAB examples (automatic transmission, abstract fuel control, and chasing cars) are not part of FalCAuN. They are separate upstream projects, included as Git submodules under `./benchmarks/simulink/third_party` and pinned to specific commits. The scripts in `./benchmarks/simulink` set them up for FalCAuN. Clone FalCAuN with the submodules:
+
+```sh
+git clone --recurse-submodules https://github.com/MasWag/FalCAuN.git
+```
+
+If you have already cloned FalCAuN without them, initialize the submodules as follows:
+
+```sh
+git submodule update --init --recursive
+```
+
+Without the submodules, the MATLAB tests and examples using these models stop with an error explaining this command. See [`benchmarks/simulink/README.md`](benchmarks/simulink/README.md) for the benchmarks and [`benchmarks/simulink/third_party/README.md`](benchmarks/simulink/third_party/README.md) for the provenance, pinned revisions, and licenses of the models.
+
 #### 2. Set up the environment variable
 
 We assume that the environment variable `MATLAB_HOME` shows where MATLAB is installed. An example is as follows.
@@ -152,7 +168,7 @@ FalCAuN works on macOS with ARM processors, but the setup of LTSMin is a bit tri
     - Perhaps you have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 21) mvn test -DskipTests=false`.
     - Also, the automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand. 
         - The example by MathWorks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
-        - See `./src/test/resources/MATLAB/initAT.m` for an example to set the path.
+        - `./benchmarks/simulink/AT/initAT.m` sets the path, loads the model from the Breach submodule, and converts the data of R2026b or later to the units the model assumes.
 
 Examples
 --------
@@ -174,7 +190,6 @@ The following examples require MATLAB/Simulink.
 - `./example/kotlin/ATS2.kts`
 - `./example/kotlin/ATS6a.main.kts`
 - `./example/kotlin/ATS6b.main.kts`
-- `./example/kotlin/pacemaker.main.kts`
 
 STL
 ---
@@ -272,10 +287,10 @@ The script requires the following.
 - Java 21 is installed. The script uses `JAVA_HOME` if it points to Java 21. Otherwise, it looks for Java 21 using `/usr/libexec/java_home` on macOS and under `/usr/lib/jvm` (OpenJDK, Eclipse Temurin, or Amazon Corretto packages) on Linux.
 - The matlab module is installed by `mvn install` because the script runs the JAR file with dependencies in the local Maven repository.
 
-An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in `./example/AT_M4.stl`. Please be patient!!
+An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in `./example/shell/AT_M4.stl`. Please be patient!!
 
 ```sh
-./falcaun --stl-file=./example/AT_M4.stl --output-mapper=./example/AT_M4.omap.tsv --input-mapper=./example/AT.imap.tsv --equiv=GA --step-time=1.0 --signal-length=30  --init='cd ./example; initAT' --max-test=50000 --param-names="throttle brake" --ga-crossover-prob=0.5 --ga-mutation-prob=0.01 --population-size=150 --ga-selection-kind=Tournament
+./falcaun --stl-file=./example/shell/AT_M4.stl --output-mapper=./example/shell/AT_M4.omap.tsv --input-mapper=./example/shell/AT.imap.tsv --equiv=GA --step-time=1.0 --signal-length=30  --init='cd ./example/shell; initAT' --max-test=50000 --param-names="throttle brake" --ga-crossover-prob=0.5 --ga-mutation-prob=0.01 --population-size=150 --ga-selection-kind=Tournament
 ```
 
 You can also install this script as follows.

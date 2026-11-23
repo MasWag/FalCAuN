@@ -2,29 +2,30 @@
           SimulinkSUL))
 ;; Clojure definitions for AutoTrans
 
+(defn benchmark-init-script
+  "MATLAB command running the shared FalCAuN benchmark definition
+  `benchmarks/simulink/<relative-path>`. The root of the FalCAuN repository
+  is searched from the current working directory upwards. The script is run
+  by its absolute path, so the command works regardless of the current
+  directory of MATLAB. See `benchmarks/simulink/README.md`."
+  [relative-path]
+  (let [root (->> (.getAbsoluteFile (java.io.File. ""))
+                  (iterate #(.getParentFile ^java.io.File %))
+                  (take-while some?)
+                  (filter #(.isDirectory (java.io.File. ^java.io.File % "benchmarks/simulink")))
+                  first)
+        script (when root (java.io.File. ^java.io.File root (str "benchmarks/simulink/" relative-path)))]
+    (when-not (and script (.isFile script))
+      (throw (ex-info (str "benchmarks/simulink/" relative-path " is not found. "
+                           "Run this example inside the FalCAuN repository.")
+                      {:script relative-path})))
+    (str "run('" (.replace (.getCanonicalPath script) "'" "''") "');")))
+
 (def init-script
-  "MATLAB init script for the automatic transmission Simulink model.
-
-  Adds the example path based on the MATLAB release, then loads the
-  `Autotrans_shift` model used in the FalCAuN benchmarks."
-  "
-%% Init Script for the Automatic transmission  model
-% We use the automatic transmission model in [Hoxha et al.,
-% ARCH@CPSWeek 2014].
-
-%% Add the example directory to the path
-versionString = version('-release');
-oldpath = path;
-path(strcat(userpath, '/Examples/R', versionString, '/simulink_automotive/ModelingAnAutomaticTransmissionControllerExample/'), oldpath);
-
-%% Load the AT model
-mdl = 'Autotrans_shift';
-load_system(mdl);
-
-%% References
-% * [Hoxha et al., ARCH@CPSWeek 2014]: *Benchmarks for Temporal
-% Logic Requirements for Automotive Systems*, ARCH@CPSWeek 2014,
-% Bardh Hoxha, Houssam Abbas, Georgios E. Fainekos")
+  "MATLAB init script for the automatic transmission model [Hoxha et al.,
+  ARCH@CPSWeek 2014]. See benchmarks/simulink/AT/initAT.m for the details,
+  e.g., the model and the unit conversion."
+  (benchmark-init-script "AT/initAT.m"))
 
 ;; Parameter names for Simulink inputs
 (def param-names

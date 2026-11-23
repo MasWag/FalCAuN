@@ -11,10 +11,10 @@ The script requires the following.
 - Java 21 is installed. The script uses `JAVA_HOME` if it points to Java 21. Otherwise, it looks for Java 21 using `/usr/libexec/java_home` on macOS and under `/usr/lib/jvm` (OpenJDK, Eclipse Temurin, or Amazon Corretto packages) on Linux.
 - The matlab module is installed by `mvn install` because the script runs the JAR file with dependencies in the local Maven repository.
 
-An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in `./example/AT_M4.stl`. Please be patient!!
+An example of usage is as follows. This takes at least a few minutes for MATLAB to start up and another few minutes to falsify all the STL formulas in `./example/shell/AT_M4.stl`. Please be patient!!
 
 ```sh
-./falcaun --stl-file=./example/AT_M4.stl --output-mapper=./example/AT_M4.omap.tsv --input-mapper=./example/AT.imap.tsv --equiv=GA --step-time=1.0 --signal-length=30  --init='cd ./example; initAT' --max-test=50000 --param-names="throttle brake" --ga-crossover-prob=0.5 --ga-mutation-prob=0.01 --population-size=150 --ga-selection-kind=Tournament
+./falcaun --stl-file=./example/shell/AT_M4.stl --output-mapper=./example/shell/AT_M4.omap.tsv --input-mapper=./example/shell/AT.imap.tsv --equiv=GA --step-time=1.0 --signal-length=30  --init='cd ./example/shell; initAT' --max-test=50000 --param-names="throttle brake" --ga-crossover-prob=0.5 --ga-mutation-prob=0.01 --population-size=150 --ga-selection-kind=Tournament
 ```
 
 You can also install this script as follows.

@@ -6,8 +6,7 @@ Files
 Autotrans
 ---------
 
-- `Autotrans_shift.mdl`: Autotrans Simulink model
-- `initAT.m`: init script for Autotrans model
+- `initAT.m`: init script for Autotrans model. It runs the shared benchmark definition [`benchmarks/simulink/AT/initAT.m`](../../benchmarks/simulink/README.md), which loads the model from the Breach submodule.
 - `AT.imap.tsv`: input mapper for Autotrans model
 - `AT_M3.omap.tsv`: output mapper for Autotrans M3 benchmark
 - `AT_M3.stl`: STL specifications for Autotrans M3 benchmark
@@ -28,8 +27,7 @@ Autotrans
 Abstractfuelcontrol
 -------------------
 
-- `Abstractfuelcontrol_breach.slxc`: Abstract fuel control Simulink model
-- `initAFC.m`: init script for Abstract fuel control model
+- `initAFC.m`: init script for Abstract fuel control model. It runs the shared benchmark definition [`benchmarks/simulink/AFC/initAFC.m`](../../benchmarks/simulink/README.md), which loads the model from the Breach submodule, and then wraps the model with Breach (`BreachSimulinkSystem`), so Breach must be on the MATLAB path.
 
 Benchmarks
 ==========

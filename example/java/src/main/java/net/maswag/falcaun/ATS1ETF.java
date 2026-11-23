@@ -1,4 +1,4 @@
-package org.group_mmm.examples;
+package net.maswag.falcaun;
 
 import net.maswag.falcaun.temporal.STLFactory;
 import net.maswag.falcaun.temporal.TemporalLogic.STLCost;
@@ -17,7 +17,6 @@ public class ATS1ETF {
     public static void main(String[] args) throws Exception {
         /// Configure the output
         final String etfFileName = "/tmp/ATS1.etf";
-        FileOutputStream stream = new FileOutputStream(etfFileName);
 
         /// Configure Simulink
         String initScript = "cd ./src/resources/MATLAB/; initAT";
@@ -53,19 +52,20 @@ public class ATS1ETF {
         NumericSULMapper mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper());
 
         STLCost costFunc = new STLFactory().parse("alw(signal(0) <= 120.0)", inputMapper, outputMapper, largest);
-        final var properties = new StaticSTLList(Collections.singletonList(costFunc.toAbstractString()));
+        final var properties = new StaticSTLList<>(Collections.singletonList(costFunc));
 
-        SimulinkSULVerifier verifier = new SimulinkSULVerifier(initScript, paramName, signalStep, 0.0025, properties, mapper);
+        try (SimulinkSULVerifier verifier = new SimulinkSULVerifier(initScript, paramName, signalStep, 0.0025, properties, mapper);
+             FileOutputStream stream = new FileOutputStream(etfFileName)) {
+            verifier.addHillClimbingEQOracle(costFunc,
+                    15,
+                    new Random(),
+                    500,
+                    5,
+                    15 * 4,
+                    false);
 
-        verifier.addHillClimbingEQOracle(costFunc,
-                15,
-                new Random(),
-                500,
-                5,
-                15 * 4,
-                false);
-
-        verifier.run();
-        verifier.writeETFLearnedMealy(stream);
+            verifier.run();
+            verifier.writeETFLearnedMealy(stream);
+        }
     }
 }

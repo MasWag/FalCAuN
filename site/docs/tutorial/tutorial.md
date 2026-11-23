@@ -19,7 +19,7 @@ Optimization-based falsification [Kapinski+16] is a testing method to find a cou
 Here, we demonstrate the usage of FalCAuN with an example called the automatic transmission benchmark [Hoxha+14] as a tutorial.
 We provide the same code in `example/kotlin/ATS1-step-5.ipynb`, which can be run using Jupyter with the Kotlin kernel.
 Details are in `example/kotlin/README.md`.
-This example uses a Simulink model of an automatic transmission system. It is located in `example/kotlin/Autotrans_shift.mdl`.
+This example uses a Simulink model of an automatic transmission system. The model is provided by the [Breach](https://github.com/decyphir/breach) Git submodule at `benchmarks/simulink/third_party/breach/Ext/Models/Autotrans_shift.mdl`, and `benchmarks/simulink/AT/initAT.m` sets it up for FalCAuN. Run `git submodule update --init --recursive` if you have not initialized the submodules (see [`benchmarks/simulink/README.md`](https://github.com/MasWag/FalCAuN/blob/master/benchmarks/simulink/README.md)).
 ![](ats.png)
 
 First, include FalCAuN and write the `initScript` that MATLAB executes.
@@ -30,15 +30,10 @@ import net.maswag.falcaun.signal.*
 import net.maswag.falcaun.temporal.*
 import net.maswag.falcaun.verification.*
 
-// Initializing script for MATLAB
-val initScript = """
-versionString = version('-release');
-oldpath = path;
-path(strcat(userpath, '/Examples/R', versionString, '/simulink_automotive/ModelingAnAutomaticTransmissionControllerExample/'), oldpath);
-
-mdl = 'Autotrans_shift';
-load_system(mdl);
-"""
+// Initializing script for MATLAB: run the shared benchmark definition benchmarks/simulink/AT/initAT.m by its absolute path.
+// The script adds the example by MathWorks to the path, loads the model from the Breach submodule, and fixes the units of its data.
+// benchmarkInitScript is a small helper defined in the notebook (and in example/kotlin/AutoTrans.kt).
+val initScript = benchmarkInitScript("AT/initAT.m")
 val paramNames = listOf("throttle", "brake")
 val signalStep = 5.0
 val simulinkSimulationStep = 0.0025

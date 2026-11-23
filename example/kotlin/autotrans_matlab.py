@@ -2,6 +2,8 @@ import sys
 sys.path.append(".")
 
 import os
+import shutil
+import tempfile
 from abstract_sul import AbstractSUL
 from typing import List, Callable, Tuple
 import matlab.engine
@@ -57,7 +59,6 @@ class SimulinkModel:
     inputSignal : Signal
 
     eng : matlab.engine.MatlabEngine
-    isInitial : bool
     counter : int
     useFastRestart = True
     def __init__(
@@ -75,67 +76,81 @@ class SimulinkModel:
         self.counter = 0
 
         engines = matlab.engine.find_matlab()
-        self.eng = matlab.engine.start_matlab() if len(engines) == 0 else matlab.engine.connect_matlab()
+        # Connect to a shared MATLAB session if any (e.g., in the Docker image). Otherwise, start a new one.
+        self.ownsEngine = len(engines) == 0
+        self.eng = matlab.engine.start_matlab() if self.ownsEngine else matlab.engine.connect_matlab()
 
         self.eng.clear(nargout=0)
         self.eng.warning('off', 'Simulink:LoadSave:EncodingMismatch')
+        # Use dedicated Simulink cache and code generation folders, as FalCAuN's SimulinkModel does, so that
+        # build artifacts of another MATLAB release in the current directory (e.g., slprj) are never reused.
+        self.fileGenDir = tempfile.mkdtemp(prefix="falcaun-sl-py-")
+        self.eng.workspace["falcaunFileGenDir"] = self.fileGenDir
+        self.eng.eval("Simulink.fileGenControl('set', 'CacheFolder', falcaunFileGenDir, 'CodeGenFolder', falcaunFileGenDir);"
+                      " clear falcaunFileGenDir;", nargout=0)
         self.eng.workspace["signalStep"] = signalStep
 
         initScript(self.eng)
 
+        # Simulate in the private folder, as FalCAuN's SimulinkModel does, so that simulation artifacts in the
+        # original current directory (e.g., *.slxc or slprj of another release) never shadow the new ones.
+        self.previousDir = self.eng.cd(self.fileGenDir)
+
         self.reset()
 
     def step(self, inputSignal : List[float]) -> Tuple[List[float], List[List[float]]]:
-        assert self.isInitial or not inputSignal
+        """
+        Appends inputSignal and simulates the whole input signal so far from the initial state.
+
+        As FalCAuN's SimulinkModel does, the accumulated input is replayed from the initial state instead of loading
+        the final state of the previous simulation. The result is the whole trace from time 0.
+        """
         self.inputSignal.add(inputSignal)
         return self.exec_aux()
 
     def exec(self, inputSignals: List[List[float]]) -> Tuple[List[float], List[List[float]]]:
-        assert self.isInitial or not inputSignals
-
+        """
+        Appends inputSignals and simulates the whole input signal so far from the initial state.
+        """
         for e in inputSignals:
             self.inputSignal.add(e)
 
         return self.exec_aux()
 
-    def exec_aux(self):
-        # For efficiency, we use StringBuilder to make the entire script to execute in MATLAB rather than evaluate each line.
-
+    def exec_aux(self) -> Tuple[List[float], List[List[float]]]:
         # Make the input signal
         self.make_dataset()
         self.configureSimulink()
         self.preventHugeTempFile()
 
-        # Execute the simulation
-        self.eng.set_param(self.mdl,'SaveFinalState','on','FinalStateName', 'myOperPoint','SaveCompleteFinalSimState','on', nargout=0)
-        if self.isInitial:
-            self.eng.set_param(self.mdl, 'LoadInitialState', 'off', nargout=0)
-            self.isInitial = False
-        else:
-            self.eng.set_param(self.mdl, 'LoadInitialState', 'on', nargout=0)
-            self.eng.set_param(self.mdl, 'InitialState', 'myOperPoint', nargout=0)
-        
+        # Always simulate from the initial state
+        self.eng.set_param(self.mdl, 'SaveFinalState', 'off', nargout=0)
+        self.eng.set_param(self.mdl, 'LoadInitialState', 'off', nargout=0)
 
         # Run the simulation
         self.runSimulation(self.inputSignal.duration())
+        self.counter += 1
 
-        # get the simulation result and make the result
-        y = self.getResult()
+        # get the simulation result
         t = self.getTimestamps()
-        assert(len(t) == len(y))
-
-        # Final internal process
-        assert not self.isInitial
+        y = self.getResult()
+        if len(t) != len(y):
+            raise RuntimeError(f"Inconsistent simulation result: {len(t)} timestamps and {len(y)} output samples")
 
         return (t, y)
 
     def reset(self) -> None:
         self.inputSignal = Signal(self.signalStep)
-        self.isInitial = True
-        self.counter += 1
 
     def close(self) -> None:
-        self.eng.close()
+        if self.ownsEngine:
+            # Terminate the MATLAB session started by this object
+            self.eng.quit()
+        else:
+            # Keep the shared MATLAB session running, and restore its folders
+            self.eng.cd(self.previousDir, nargout=0)
+            self.eng.eval("Simulink.fileGenControl('reset');", nargout=0)
+        shutil.rmtree(self.fileGenDir, ignore_errors=True)
     
     def make_dataset(self) -> None:
         eng = self.eng
@@ -227,39 +242,37 @@ class SimulinkModel:
     
     
     def getResult(self) -> List[List[float]]:
-        eng = self.eng
-        ySize = eng.size(eng.workspace["y"])[0]
-        
-        if self.inputSignal.duration() == 0.0:
-            tmpY = []
-            if ySize[1] == 1.0 :
-                # When the output is one dimensional, we need to convert it to 1D array first.
-                tmp : float = eng.workspace["y"]
-                tmpY = [tmp]
-            else:
-                tmpY = eng.workspace["y"]
-
-            if tmpY == []:
-                # The simulation output is null
-                y = []
-            else:
-                y = [tmpY]
-
-        else:
-            if ySize[1] == 1.0:
-                # When the output is one dimensional, we need to convert it to 2D array.
-                tmpY = eng.workspace["y"]
-                y = [[d] for d in tmpY]
-            else:
-                y = eng.workspace["y"]
-        
-        return y
+        """
+        Returns the output signal of the last simulation: one row of the output values for each timestamp.
+        """
+        y = np.asarray(self.eng.workspace["y"], dtype=np.float64)
+        # A simulation with one output (or one timestamp) may return a vector or a scalar
+        return y.reshape(len(self.getTimestamps()), -1).tolist()
 
     def getTimestamps(self) -> List[float]:
-        if self.inputSignal.duration() == 0.0 :
-            return [0.0]
-        else:
-            return self.eng.workspace["t"]
+        """
+        Returns the timestamps of the last simulation.
+        """
+        return np.asarray(self.eng.workspace["t"], dtype=np.float64).reshape(-1).tolist()
+
+def benchmark_init_script(relative_path: str) -> str:
+    """
+    Returns the absolute path of the shared FalCAuN benchmark definition benchmarks/simulink/<relative_path>.
+
+    The root of the FalCAuN repository is searched upwards from the directory of this file or, when this file is
+    executed by Jep, which does not define __file__, from the current working directory.
+    """
+    start = os.path.dirname(os.path.realpath(__file__)) if "__file__" in globals() else os.getcwd()
+    directory = os.path.abspath(start)
+    while True:
+        candidate = os.path.join(directory, "benchmarks", "simulink", relative_path)
+        if os.path.isfile(candidate):
+            return os.path.realpath(candidate)
+        parent = os.path.dirname(directory)
+        if parent == directory:
+            raise FileNotFoundError(f"benchmarks/simulink/{relative_path} is not found. "
+                                    "Run this example inside the FalCAuN repository.")
+        directory = parent
 
 class SUL(AbstractSUL):
     """
@@ -274,13 +287,9 @@ class SUL(AbstractSUL):
         Compatible to `initScript` in AutoTrans.kt
         """
 
-        versionString = eng.version('-release')
-        oldpath = eng.path()
-        userpath = eng.userpath()
-        arg0 = os.path.join(userpath, "Examples", versionString, "simulink_automotive", "ModelingAnAutomaticTransmissionControllerExample")
-        eng.path(arg0, oldpath)
-
-        eng.load_system(SUL.MDL, nargout=0)
+        # Run the shared FalCAuN benchmark definition by its absolute path.
+        # See benchmarks/simulink/AT/initAT.m for the details, e.g., the model and the unit conversion.
+        eng.run(benchmark_init_script(os.path.join("AT", "initAT.m")), nargout=0)
 
     def __init__(self):
         paramNames = ["throttle", "brake"]
@@ -288,37 +297,27 @@ class SUL(AbstractSUL):
         simulinkSimulationStep = 0.0025
         self.simulinkModel = SimulinkModel(SUL.initScript, SUL.MDL, paramNames, signalStep, simulinkSimulationStep)
 
+    @staticmethod
+    def to_rows(t: List[float], y: List[List[float]]) -> List[List[float]]:
+        """
+        Returns rows whose first column is the timestamp and whose remaining columns are the output values.
+        """
+        return [[ti] + yi for ti, yi in zip(t, y)]
+
     def step(self, inputSignal : List[float]) -> List[List[float]]:
         """
-        Returns an array 'ary' : ary[i][0] is the time, and ary[i][1:] is the output signal.
+        Returns the whole trace from time 0: ary[i][0] is the time, and ary[i][1:] is the output signal.
         """
-
         (t, y) = self.simulinkModel.step(inputSignal)
-        y = np.array(y[0], dtype=np.float64)
-        t = np.array(t, dtype=np.float64)
-
-        ary = []
-        for i in range(len(y)):
-            a = np.insert(y[i], 0, t[i])
-            ary.append(list(a))
-
-        ret = np.array(ary, dtype=np.float64)
-        return ret.tolist()
+        return SUL.to_rows(t, y)
 
     def exec(self, inputSignals: List[List[float]]) -> List[List[float]]:
+        """
+        Returns the whole trace from time 0: ary[i][0] is the time, and ary[i][1:] is the output signal.
+        """
         (t, y) = self.simulinkModel.exec(inputSignals)
-        y = np.array(y[0], dtype=np.float64)
-        t = np.array(t, dtype=np.float64)
+        return SUL.to_rows(t, y)
 
-        # Convert the result to numpy array
-        ary = []
-        for i in range(len(y)):
-            a = np.insert(y[i], 0, t[i])
-            ary.append(list(a))
-
-        ret = np.array(ary, dtype=np.float64)
-        return ret.tolist()
-    
     def pre(self) -> None:
         self.simulinkModel.reset()
 

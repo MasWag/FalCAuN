@@ -86,6 +86,22 @@ Here, we provide the instructions to install the matlab module.
 
 You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of MathWorks.
 
+### Simulink benchmark models (Git submodules)
+
+The Simulink models used by the MATLAB tests and most MATLAB examples (automatic transmission, abstract fuel control, and chasing cars) are not part of FalCAuN. They are separate upstream projects, included as Git submodules under `./benchmarks/simulink/third_party` and pinned to specific commits. The scripts in `./benchmarks/simulink` set them up for FalCAuN. Clone FalCAuN with the submodules:
+
+```sh
+git clone --recurse-submodules https://github.com/MasWag/FalCAuN.git
+```
+
+If you have already cloned FalCAuN without them, initialize the submodules as follows:
+
+```sh
+git submodule update --init --recursive
+```
+
+Without the submodules, the MATLAB tests and examples using these models stop with an error explaining this command. See [`benchmarks/simulink/README.md`](https://github.com/MasWag/FalCAuN/blob/master/benchmarks/simulink/README.md) for the benchmarks and [`benchmarks/simulink/third_party/README.md`](https://github.com/MasWag/FalCAuN/blob/master/benchmarks/simulink/third_party/README.md) for the provenance, pinned revisions, and licenses of the models.
+
 ### 2. Set up the environment variable
 
 We assume that the environment variable `MATLAB_HOME` shows where MATLAB is installed. An example is as follows.
@@ -158,4 +174,4 @@ Notes
 - You may have to explicitly specify `JAVA_HOME`, for example, `JAVA_HOME=$(/usr/libexec/java_home -v 21) mvn test -DskipTests=false`.
 - The automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand.
     - The example by MathWorks can be opened with `openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')`
-    - See `./src/test/resources/MATLAB/initAT.m` for an example to set the path.
+    - `./benchmarks/simulink/AT/initAT.m` sets the path, loads the model from the Breach submodule, and converts the data of R2026b or later to the units the model assumes.

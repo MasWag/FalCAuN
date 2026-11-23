@@ -3,6 +3,8 @@ FalCAuN Examples with Kotlin
 
 This directory contains examples to directly execute FalCAuN via Kotlin. Our examples depend on [kscript](https://github.com/kscripting/kscript) or [kotlin-jupyter kernel](https://github.com/Kotlin/kotlin-jupyter) to execute the examples.
 
+The Simulink models used by the MATLAB examples (the automatic transmission model in `AutoTrans.kt` and the notebooks) are set up by the shared benchmark definitions in [`benchmarks/simulink`](../../benchmarks/simulink/README.md), and the models are provided by Git submodules. Initialize them with `git submodule update --init --recursive` and run the examples from inside the FalCAuN repository: the path of the benchmark definition is resolved by searching upwards from the current working directory.
+
 For the scripts using Python, you probably have to set some environment variables appropriately, such as:
 
 ```sh

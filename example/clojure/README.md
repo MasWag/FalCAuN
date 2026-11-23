@@ -11,6 +11,8 @@ Requirements
 
 We assume that the environment variable `MATLAB_HOME` is appropriately specified.
 
+The Simulink models used by the MATLAB examples (the automatic transmission model in `auto_trans.clj`) are set up by the shared benchmark definitions in [`benchmarks/simulink`](../../benchmarks/simulink/README.md), and the models are provided by Git submodules. Initialize them with `git submodule update --init --recursive` and run the examples from inside the FalCAuN repository: the path of the benchmark definition is resolved by searching upwards from the current working directory.
+
 Usage
 -----
 

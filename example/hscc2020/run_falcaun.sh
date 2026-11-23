@@ -37,7 +37,8 @@ readonly SELECTION_KIND=Tournament
 readonly MAX_TEST=50000
 readonly WP_MAX_DEPTH=30
 
-rm -f /home/mwaga/CyVeriA/src/test/resources/MATLAB/Autotrans_shift.mdl.autosave
+# The AT model is loaded from the Breach submodule (see benchmarks/simulink/README.md)
+rm -f "$(dirname "$0")/../../benchmarks/simulink/third_party/breach/Ext/Models/Autotrans_shift.mdl.autosave"
 
 if sed -h 2>&1 | grep GNU > /dev/null; then
     SED='sed -u'

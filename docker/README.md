@@ -46,4 +46,6 @@ If you use the AT environment, run `openExample('simulink_automotive/ModelingAnA
 
 ### Run the scripts
 
-Finally, you can run the Kotlin scripts. Open a terminal at the bottom of the desktop. Move to the directory containing examples of FalCAuN with `cd /home/matlab/FalCAuN/example/kotlin` and run a script, e.g., `./mealy-nox.main.kts` or `./ATS1.main.kts`. Most of the example scripts assume that the current directory of MATLAB session is the directory of the script. Therefore, you also have to run `cd /home/matlab/FalCAuN/example/kotlin` in MATLAB.
+The Docker image clones FalCAuN **without** its Git submodules: the third-party Simulink models are not redistributed in the image (see `benchmarks/simulink/third_party/README.md`). To run the examples that use these models, initialize them in the container first: `cd /home/matlab/FalCAuN && git submodule update --init --recursive`.
+
+Finally, you can run the Kotlin scripts. Open a terminal at the bottom of the desktop. Move to the directory containing examples of FalCAuN with `cd /home/matlab/FalCAuN/example/kotlin` and run a script, e.g., `./mealy-nox.main.kts` or `./ATS1.main.kts`. The examples using the Simulink benchmarks (e.g., `ATS1.main.kts`) run the shared definitions in `benchmarks/simulink` by their absolute paths, so the current directory of the MATLAB session does not matter for them.

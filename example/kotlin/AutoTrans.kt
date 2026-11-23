@@ -1,24 +1,27 @@
 package net.maswag
 
-val initScript = """
-%% Init Script for the Automatic transmission  model
-% We use the automatic transmission model in [Hoxha et al.,
-% ARCH@CPSWeek 2014].
+/**
+ * Returns a MATLAB command running the shared FalCAuN benchmark definition `benchmarks/simulink/[relativePath]`.
+ *
+ * The root of the FalCAuN repository is searched from the current working directory upwards.
+ * The script is run by its absolute path, so the command works regardless of the current directory of MATLAB.
+ * See `benchmarks/simulink/README.md`.
+ */
+fun benchmarkInitScript(relativePath: String): String {
+    var root: java.io.File? = java.io.File("").absoluteFile
+    while (root != null && !java.io.File(root, "benchmarks/simulink").isDirectory) {
+        root = root.parentFile
+    }
+    val script = root?.let { java.io.File(it, "benchmarks/simulink/$relativePath") }
+    require(script != null && script.isFile) {
+        "benchmarks/simulink/$relativePath is not found. Run this example inside the FalCAuN repository."
+    }
+    return "run('${script.canonicalPath.replace("'", "''")}');"
+}
 
-%% Add the example directory to the path
-versionString = version('-release');
-oldpath = path;
-path(strcat(userpath, '/Examples/R', versionString, '/simulink_automotive/ModelingAnAutomaticTransmissionControllerExample/'), oldpath);
-
-%% Load the AT model
-mdl = 'Autotrans_shift';
-load_system(mdl);
-
-%% References
-% * [Hoxha et al., ARCH@CPSWeek 2014]: *Benchmarks for Temporal
-% Logic Requirements for Automotive Systems*, ARCH@CPSWeek 2014,
-% Bardh Hoxha, Houssam Abbas, Georgios E. Fainekos
-"""
+// Initialization script for the automatic transmission model [Hoxha et al., ARCH@CPSWeek 2014].
+// See benchmarks/simulink/AT/initAT.m for the details, e.g., the model and the unit conversion.
+val initScript = benchmarkInitScript("AT/initAT.m")
 val paramNames = listOf("throttle", "brake")
 var signalStep = 1.0
 val simulinkSimulationStep = 0.0025
