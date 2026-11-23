@@ -24,8 +24,7 @@ public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>
      * a step fails, provided {@code pre()} completed successfully.
      * <p>
      * Implementations may override this method for backend-specific batch execution without individually
-     * calling {@code pre()}, {@code step()}, or {@code post()}. Such implementations are responsible for
-     * equivalent initialization and cleanup, including when execution fails.
+     * calling {@code pre()}, {@code step()}, or {@code post()}.
      * <p>
      * Batch execution must not be interleaved with an active step-wise execution session.
      *
