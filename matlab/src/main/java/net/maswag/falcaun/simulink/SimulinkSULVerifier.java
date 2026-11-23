@@ -33,6 +33,6 @@ public class SimulinkSULVerifier extends NumericSULVerifier {
      * @param simulinkSimulationStep The fixed simulation step of Simulink. If this value is too large, Simulink can abort due to an computation error.
      */
     public void setSimulationStep(double simulinkSimulationStep) {
-        ((SimulinkSUL)this.rawSUL).setSimulationStep(simulinkSimulationStep);
+        ((SimulinkSUL) this.sul).setSimulationStep(simulinkSimulationStep);
     }
 }

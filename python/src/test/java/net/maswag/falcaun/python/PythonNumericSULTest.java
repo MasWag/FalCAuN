@@ -54,7 +54,6 @@ class PythonNumericSULTest {
     @Test
     void numericExecuteTest() throws Exception {
         try (var sul = new PythonNumericSUL(numericScript)) {
-            sul.pre();
 
             var inputSeq = java.util.List.of(
                 java.util.Arrays.asList(10.0, 0.5),
@@ -73,7 +72,6 @@ class PythonNumericSULTest {
             assertIterableEquals(java.util.Arrays.asList(100.0, 62.0), outputs.getSymbol(3));
             assertIterableEquals(java.util.Arrays.asList(80.5, 42.5), outputs.getSymbol(4));
 
-            sul.post();
         }
     }
 
@@ -81,7 +79,6 @@ class PythonNumericSULTest {
     void numericExecuteTest2() throws Exception {
         // Same results as numericExecuteTest, but using exec function in python.
         try (var sul = new PythonNumericSUL(numericScriptWithExec)) {
-            sul.pre();
 
             var inputSeq = java.util.List.of(
                 java.util.Arrays.asList(10.0, 0.5),
@@ -100,7 +97,6 @@ class PythonNumericSULTest {
             assertIterableEquals(java.util.Arrays.asList(100.0, 62.0), outputs.getSymbol(3));
             assertIterableEquals(java.util.Arrays.asList(80.5, 42.5), outputs.getSymbol(4));
 
-            sul.post();
         }
     }
 }

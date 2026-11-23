@@ -56,7 +56,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
     /**
      * The membership oracle responsible for evaluating the generated test cases against the Mealy machine. It provides the cost associated with each test case and determines whether it is a counterexample.
      */
-    protected NumericMembershipOracleCost memOracle;
+    protected RobustnessOracle memOracle;
 
     /**
      * The length of each generated test word. This parameter defines how long each test case will be, affecting the complexity and coverage of the tests.
@@ -100,7 +100,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
      * @param childrenSize   Number of child test cases generated from each successful (good) sample.
      * @param resetWord      Flag indicating whether to reset the word generation process, clearing and regenerating the initial set of test cases if true.
      */
-    AbstractSelectEQOracle(NumericMembershipOracleCost memOracle,
+    AbstractSelectEQOracle(RobustnessOracle memOracle,
                            int length,
                            Random random,
                            int maxTests,
@@ -128,7 +128,7 @@ public abstract class AbstractSelectEQOracle implements EquivalenceOracle.MealyE
      * @param resetWord      Flag indicating whether to reset the word generation process, clearing and regenerating the initial set of test cases if true.
      * @param ltlOracle      The property oracle used to check if a specific property is disproved by the generated test cases. If provided, it overrides the cost-based evaluation mechanism.
      */
-    AbstractSelectEQOracle(NumericMembershipOracleCost memOracle,
+    AbstractSelectEQOracle(RobustnessOracle memOracle,
                            int length,
                            Random random,
                            int maxTests,

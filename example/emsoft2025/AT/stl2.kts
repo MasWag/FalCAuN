@@ -102,21 +102,22 @@ SimulinkSUL(initScript, paramNames, signalStep, simulinkSimulationStep).use { au
         mutationProb
     )
     val result = verifier.run()
+    val cexs = result.confirmedCounterexamples()
 
     // Print the result
-    if (result) {
-        println("The property is likely satisfied")
+    if (cexs.isEmpty()) {
+        println("No counterexample is found (termination reason: ${result.reason()})")
     } else {
-        for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified by the following counterexample")
-            println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-            println("cex abstract input: ${verifier.cexAbstractInput[i]}")
-            println("cex output: ${verifier.cexOutput[i]}")
+        for (i in 0 until cexs.size) {
+            println("${cexs[i].property()} is falsified by the following counterexample")
+            println("cex concrete input: ${verifier.concreteInput(cexs[i])}")
+            println("cex abstract input: ${cexs[i].abstractInput()}")
+            println("cex output: ${cexs[i].sutOutput()}")
         }
     }
     println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
-    println("Number of simulations: ${verifier.simulinkCount}")
-    println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
+    println("Number of simulations: ${verifier.sutExecutionCount}")
+    println("Number of simulations for equivalence testing: ${verifier.eqEvaluationCount}")
 }
 
 val overallEnd = System.currentTimeMillis()

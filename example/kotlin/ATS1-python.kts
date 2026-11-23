@@ -91,17 +91,18 @@ PythonContinuousNumericSUL(initScript, signalStep).use { autoTransSUL ->
     val result = verifier.run()
 
     // Print the result
-    if (result) {
-        println("The property is likely satisfied")
+    val counterexamples = result.confirmedCounterexamples()
+    if (counterexamples.isEmpty()) {
+        println("No counterexample is found (termination reason: ${result.reason()})")
     } else {
-        for (i in 0 until verifier.cexProperty.size) {
-            println("${verifier.cexProperty[i]} is falsified by the following counterexample")
-            println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-            println("cex abstract input: ${verifier.cexAbstractInput[i]}")
-            println("cex output: ${verifier.cexOutput[i]}")
+        for (cex in counterexamples) {
+            println("${cex.property()} is falsified by the following counterexample")
+            println("cex concrete input: ${verifier.concreteInput(cex)}")
+            println("cex abstract input: ${cex.abstractInput()}")
+            println("cex output: ${cex.sutOutput()}")
         }
     }
     println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
-    println("Number of simulations: ${verifier.simulinkCount}")
-    println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
+    println("Number of simulations: ${verifier.sutExecutionCount}")
+    println("Number of simulations for equivalence testing: ${verifier.eqEvaluationCount}")
 }

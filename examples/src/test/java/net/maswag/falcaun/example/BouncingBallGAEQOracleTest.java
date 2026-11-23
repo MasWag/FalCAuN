@@ -9,6 +9,7 @@ import net.maswag.falcaun.NumericSULVerifier;
 import net.maswag.falcaun.OutputMapper;
 import net.maswag.falcaun.Signal;
 import net.maswag.falcaun.SignalAdapter;
+import net.maswag.falcaun.VerificationResult;
 import net.maswag.falcaun.parser.STLFactory;
 import net.maswag.falcaun.parser.TemporalLogic;
 import org.junit.jupiter.api.Test;
@@ -39,16 +40,20 @@ class BouncingBallGAEQOracleTest {
             NumericSULVerifier verifier = new NumericSULVerifier(sul, BouncingBallSUL.DEFAULT_SIMULATION_STEP, properties, new SignalAdapter(inputMapper, outputMapper));
             verifier.addGAEQOracleAll(SIGNAL_LENGTH, 5000, GASelectionKind.Tournament, 50, 0.9, 0.01);
 
-            assertFalse(verifier.run(), "The property should be falsified");
-            assertTrue(verifier.getSimulinkCountForEqTest() > 0, "The GA-based equivalence oracle should be used");
+            VerificationResult<List<Double>> result = verifier.run();
+            assertTrue(result.allTargetsFalsified(), "The property should be falsified");
+            assertTrue(verifier.getEqEvaluationCount() > 0, "The GA-based equivalence oracle should be used");
+            // Reported for comparing the numbers of the executions before and after changes of the caches
+            System.out.println("BouncingBall SUL executions: " + verifier.getSutExecutionCount()
+                    + ", for equivalence testing: " + verifier.getEqEvaluationCount());
 
             // Check the counterexample by simulating it again
             // The counterexample is a prefix that ends when the property is violated
-            Signal cex = verifier.getCexConcreteInput().get(0);
+            Signal cex = verifier.concreteInput(result.confirmedCounterexamples().get(0));
             assertTrue(5 < cex.size() && cex.size() <= SIGNAL_LENGTH);
             try (BouncingBallSUL freshSUL = new BouncingBallSUL()) {
-                IOContinuousSignal<List<Double>> result = freshSUL.execute(Word.fromList(cex.getSignalValues()));
-                double maxPosition = result.getOutputSignal().subWord(5, cex.size()).stream()
+                IOContinuousSignal<List<Double>> simulated = freshSUL.execute(Word.fromList(cex.getSignalValues()));
+                double maxPosition = simulated.getOutputSignal().subWord(5, cex.size()).stream()
                         .mapToDouble(output -> output.get(0)).max().orElseThrow();
                 assertTrue(maxPosition >= THRESHOLD, "The counterexample should reach " + THRESHOLD + " but the maximum is " + maxPosition);
             }

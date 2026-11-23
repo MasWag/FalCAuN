@@ -5,7 +5,6 @@ import de.learnlib.sul.SUL;
 import de.learnlib.oracle.PropertyOracle.MealyPropertyOracle;
 import de.learnlib.mapper.MappedSUL;
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.word.Word;
 import net.maswag.falcaun.parser.TemporalLogic;
 
 import java.io.IOException;
@@ -22,57 +21,47 @@ import static de.learnlib.filter.cache.sul.SULCaches.createTreeCache;
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 @Slf4j
-public class NumericSULVerifier {
-    protected SUL<List<Double>, IOSignalPiece<List<Double>>> simulink;
-    protected final NumericSUL rawSUL;
+public class NumericSULVerifier implements AutoCloseable {
+    protected final NumericSUL sul;
     private final SignalDiscretizer signalDiscretizer;
     private final BlackBoxVerifier<List<Double>> verifier;
     private final NumericMembershipOracle memOracle;
-    private final List<NumericMembershipOracleCost> memOracleCosts = new ArrayList<>();
     private final EvaluationCountable.Sum evaluationCountables = new EvaluationCountable.Sum();
     private final double signalStep;
 
     /**
-     * <p>Constructor for SimulinkVerifier.</p>
+     * <p>Constructor for NumericSULVerifier.</p>
      *
-     * @param rawSUL     The system under test.
+     * @param sul        The system under test.
      * @param signalStep The signal step in the simulation
      * @param properties The LTL properties to be verified
-     * @param signalDiscretizer     The I/O mapper between abstract/concrete Simulink models.
+     * @param signalDiscretizer     The I/O mapper between the abstract and concrete signals.
      */
-    public NumericSULVerifier(NumericSUL rawSUL, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, SignalDiscretizer signalDiscretizer) {
+    public NumericSULVerifier(NumericSUL sul, double signalStep, AdaptiveSTLUpdater<List<Double>> properties, SignalDiscretizer signalDiscretizer) {
         log.debug("Initialize numeric SUL verifier with signalStep: {}, properties: {}", signalStep, properties);
-        this.rawSUL = rawSUL;
+        this.sul = sul;
         this.signalStep = signalStep;
         this.signalDiscretizer = signalDiscretizer;
         Alphabet<List<Double>> concreteInputAlphabet = signalDiscretizer.constructConcreteAlphabet();
         Alphabet<String> abstractInputAlphabet = signalDiscretizer.constructAbstractAlphabet();
 
-        this.simulink = createTreeCache(concreteInputAlphabet, rawSUL);
-
-        SUL<String, String> mappedSimulink = new MappedSUL<>(signalDiscretizer, simulink);
-        mappedSimulink = createTreeCache(abstractInputAlphabet, mappedSimulink);
+        // The step-wise SUL with the LearnLib caches. It is used only by the equivalence oracles executing the SUL step by step.
+        SUL<List<Double>, IOSignalPiece<List<Double>>> cachedSUL = createTreeCache(concreteInputAlphabet, sul);
+        SUL<String, String> mappedSUL = createTreeCache(abstractInputAlphabet, new MappedSUL<>(signalDiscretizer, cachedSUL));
         // create a regular membership oracle
-        this.memOracle = new NumericMembershipOracle(rawSUL, this.signalDiscretizer);
+        this.memOracle = new NumericMembershipOracle(sul, this.signalDiscretizer);
         properties.setMemOracle(memOracle);
-        verifier = new BlackBoxVerifier<>(this.memOracle, mappedSimulink, properties, abstractInputAlphabet);
+        verifier = new BlackBoxVerifier<>(this.memOracle, mappedSUL, properties, abstractInputAlphabet);
     }
 
     /**
-     * Returns the falsified STL formulas in the string representation.
+     * Add an equivalence oracle guided by the robustness of the given cost function.
+     * The SUL executions and their caches are shared with the membership oracle.
      */
-    public List<TemporalLogic<List<Double>>> getCexProperty() {
-        return verifier.getCexProperty();
-    }
-
-    void addSimulinkEqOracle(Function<IOSignal<List<Double>>, Double> costFunc,
-                             Function<NumericMembershipOracleCost,
-                                     ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
-        // Define the cost function from a discrete input signal to a double using the Simulink model and the STL formula
-        NumericMembershipOracleCost oracle =
-                new NumericMembershipOracleCost(this.rawSUL, this.signalDiscretizer, costFunc);
-        oracle.setCache(this.memOracle.getCache());
-        memOracleCosts.add(oracle);
+    void addRobustnessEqOracle(Function<IOSignal<List<Double>>, Double> costFunc,
+                               Function<RobustnessOracle,
+                                       ? extends EvaluationCountable.MealyEquivalenceOracle<String, String>> constructor) {
+        RobustnessOracle oracle = this.memOracle.registerCostFunction(costFunc);
         EvaluationCountable.MealyEquivalenceOracle<String, String> eqOracle = constructor.apply(oracle);
         evaluationCountables.add(eqOracle);
         this.verifier.addEqOracle(eqOracle);
@@ -124,7 +113,7 @@ public class NumericSULVerifier {
                                         int generationSize,
                                         int childrenSize,
                                         boolean resetWord) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord));
     }
 
@@ -148,7 +137,7 @@ public class NumericSULVerifier {
                                         int childrenSize,
                                         boolean resetWord,
                                         MealyPropertyOracle<String, String, String> ltlOracle) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new HillClimbingEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, ltlOracle));
     }
 
@@ -187,7 +176,7 @@ public class NumericSULVerifier {
                               boolean resetWord,
                               double alpha,
                               MealyPropertyOracle<String, String, String> ltlOracle) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new SAEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, alpha, ltlOracle));
     }
 
@@ -199,7 +188,7 @@ public class NumericSULVerifier {
                                  int childrenSize,
                                  int changeSize,
                                  boolean resetWord) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new MutateSelectEQOracle(oracle, length, random, maxTests, generationSize, childrenSize, resetWord, changeSize));
     }
 
@@ -223,61 +212,47 @@ public class NumericSULVerifier {
                        double crossoverProb,
                        double mutationProbability, // e.g., 1.0 / length
                        MealyPropertyOracle<String, String, String> ltlOracle) {
-        this.addSimulinkEqOracle(costFunc, oracle ->
+        this.addRobustnessEqOracle(costFunc, oracle ->
                 new GAEQOracle(oracle, length, maxTests, selectionKind, generationSize, crossoverProb, mutationProbability, ltlOracle));
     }
 
     /**
-     * @return A list of input words that led to counterexamples found during the verification process.
+     * Returns the concrete input signal of a counterexample.
+     *
+     * @param cex a counterexample in the result of {@link #run()}
+     * @return the concrete input signal constructed from the abstract input of {@code cex}
      */
-    public List<Word<String>> getCexAbstractInput() {
-        return verifier.getCexInput();
-    }
-
-    /**
-     * @return A list of concrete input signals corresponding to the counterexamples found during the verification process.
-     *         Each signal is constructed from the abstract input words.
-     */
-    public List<Signal> getCexConcreteInput() {
-        List<Signal> result = new ArrayList<>();
-        for (Word<String> abstractCex : this.getCexAbstractInput()) {
-            result.add(new Signal(this.signalStep));
-            result.get(result.size() - 1).addAll(this.signalDiscretizer.mapInput(abstractCex));
-        }
+    public Signal concreteInput(VerificationResult.Counterexample<?> cex) {
+        Signal result = new Signal(this.signalStep);
+        result.addAll(this.signalDiscretizer.mapInput(cex.abstractInput()));
         return result;
     }
 
     /**
-     * @return a list of output words produced by the black-box system for the counterexamples
-     *         found during the verification process.
+     * Run black-box checking.
+     *
+     * @return the result of black-box checking including the statistics of the SUL executions
+     * @see BlackBoxVerifier#run()
      */
-    public List<Word<String>> getCexOutput() {
-        return verifier.getCexOutput();
+    public VerificationResult<List<Double>> run() {
+        VerificationResult<List<Double>> result = verifier.run();
+        return result.withStatistics(new VerificationResult.Statistics(
+                result.statistics().learningRounds(),
+                result.statistics().hypothesisStates(),
+                OptionalInt.of(getSutExecutionCount()),
+                OptionalInt.of(getEqEvaluationCount()),
+                OptionalDouble.of(getSimulationTimeSecond())));
     }
 
     /**
-     * <p>run.</p>
+     * Wirte the DOT of the Mealy machine witnessing a counterexample.
      *
-     * @return Returns {@code true} if and only if the Simulink model is verified i.e., no counter example is found.
-     */
-    public boolean run() {
-        Set<NumericMembershipOracleCost> tmp = new HashSet<>(memOracleCosts);
-        for (NumericMembershipOracleCost memOracleCost : memOracleCosts) {
-            tmp.remove(memOracleCost);
-            memOracleCost.addNotifiedAll(tmp);
-        }
-
-        return verifier.run();
-    }
-
-    /**
-     * Wirte the DOT of the found counter example.
-     *
-     * @param a Write the DOT to {@code a}
+     * @param cex a counterexample in the result of {@link #run()}
+     * @param a   Write the DOT to {@code a}
      * @throws IOException The exception by GraphDOT.write
      */
-    public void writeDOTCex(int index, Appendable a) throws IOException {
-        verifier.writeDOTCex(index, a);
+    public void writeDOTCex(VerificationResult.Counterexample<?> cex, Appendable a) throws IOException {
+        verifier.writeDOTCex(cex, a);
     }
 
     /**
@@ -300,10 +275,12 @@ public class NumericSULVerifier {
     }
 
     /**
-     * Visualize the found counter example.
+     * Visualize the Mealy machine witnessing a counterexample.
+     *
+     * @param cex a counterexample in the result of {@link #run()}
      */
-    public void visualizeCex(int index) {
-        this.verifier.visualizeCex(index);
+    public void visualizeCex(VerificationResult.Counterexample<?> cex) {
+        this.verifier.visualizeCex(cex);
     }
 
     /**
@@ -314,13 +291,22 @@ public class NumericSULVerifier {
     }
 
     /**
-     * @return the number of the Simulink executions
+     * @return the number of the executions of the SUL
      */
-    public int getSimulinkCount() {
-        return this.rawSUL.getCounter();
+    public int getSutExecutionCount() {
+        return this.sul.getExecutionCount();
     }
 
-    public int getSimulinkCountForEqTest() {
+    /**
+     * Returns the number of the evaluations of input words by the equivalence oracles.
+     * <p>
+     * This is not necessarily the number of the SUL executions by the equivalence oracles. For example, the
+     * corner-case equivalence oracle counts every evaluated word, including the ones answered by a cache, while the
+     * robustness-based equivalence oracles count only the actual executions.
+     *
+     * @return the number of the evaluations of input words by the equivalence oracles
+     */
+    public int getEqEvaluationCount() {
         return evaluationCountables.getEvaluateCount();
     }
 
@@ -346,16 +332,17 @@ public class NumericSULVerifier {
     }
 
     /**
-     * Close the MATLAB engine. This method must be called when the object is no longer used.
+     * Close the SUL, e.g., the MATLAB engine or the Python interpreter.
      */
+    @Override
     public void close() throws Exception {
-        this.rawSUL.close();
+        this.sul.close();
     }
 
     /**
      * @return the execution time for the simulations
      */
     public double getSimulationTimeSecond() {
-        return this.rawSUL.getSimulationTimeSecond();
+        return this.sul.getSimulationTimeSecond();
     }
 }

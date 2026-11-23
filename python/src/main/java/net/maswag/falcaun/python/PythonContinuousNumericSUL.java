@@ -38,7 +38,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     protected Signal inputSignal = null;
 
     @Getter
-    private int counter = 0;
+    private int executionCount = 0;
 
     /**
      * @param initScript The Python script to initialize the model. It defines a
@@ -70,12 +70,12 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     }
 
     /**
-     * Clear the counter and the time measure.
+     * Clear the executionCount and the time measure.
      */
     @Override
     public void clear() {
         this.model.getSimulationTime().reset();
-        counter = 0;
+        executionCount = 0;
     }
 
     /**
@@ -85,7 +85,7 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     public void pre() {
         inputSignal = new Signal(signalStep);
         this.model.pre();
-        counter++;
+        executionCount++;
     }
 
     /**
@@ -166,6 +166,10 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
 
     /**
      * Run all steps of the Python model by feeding {@code inputSignal}.
+     * <p>
+     * If the Python model has an {@code exec} method, it is used for the batch execution.
+     * Otherwise, {@code step} is called for each input. In both cases, {@code post} is called after the execution,
+     * even if the execution fails.
      *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
@@ -173,11 +177,10 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
     @Override
     public IOContinuousSignal<List<Double>> execute(@Nonnull Word<List<Double>> inputSignal)
             throws InterruptedException, ExecutionException {
-        pre();
-
         @SuppressWarnings("rawtypes")
         ArrayList<?> ret = null;
 
+        pre();
         try {
             // Use exec() if it is available in the model for batch processing.
             // Otherwise, use step() for each input signal.
@@ -192,6 +195,8 @@ public class PythonContinuousNumericSUL implements ContinuousNumericSUL, Closeab
             }
         } catch (JepException exc) {
             throw new ExecutionException(exc);
+        } finally {
+            post();
         }
 
         var values = constructValueWithTime(ret);

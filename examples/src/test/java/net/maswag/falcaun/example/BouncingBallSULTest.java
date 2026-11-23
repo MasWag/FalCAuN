@@ -27,7 +27,7 @@ public class BouncingBallSULTest {
     @Test
     public void testInitialCounter() {
         try (BouncingBallSUL sul = new BouncingBallSUL()) {
-            assertEquals(0, sul.getCounter(), "Counter should be 0 initially");
+            assertEquals(0, sul.getExecutionCount(), "Counter should be 0 initially");
         }
     }
 
@@ -38,7 +38,7 @@ public class BouncingBallSULTest {
     public void testCounterAfterSimulation() {
         try (BouncingBallSUL sul = new BouncingBallSUL()) {
             // Initial counter should be 0
-            assertEquals(0, sul.getCounter(), "Counter should be 0 initially");
+            assertEquals(0, sul.getExecutionCount(), "Counter should be 0 initially");
             
             // Perform a complete simulation
             sul.pre();
@@ -48,7 +48,7 @@ public class BouncingBallSULTest {
             sul.post();
             
             // Counter should be 1 after a complete simulation
-            assertEquals(1, sul.getCounter(), "Counter should be 1 after a complete simulation");
+            assertEquals(1, sul.getExecutionCount(), "Counter should be 1 after a complete simulation");
         }
     }
 
@@ -59,7 +59,7 @@ public class BouncingBallSULTest {
     public void testCounterWithMultipleSteps() {
         try (BouncingBallSUL sul = new BouncingBallSUL()) {
             // Initial counter should be 0
-            assertEquals(0, sul.getCounter(), "Counter should be 0 initially");
+            assertEquals(0, sul.getExecutionCount(), "Counter should be 0 initially");
             
             // Perform a complete simulation with multiple steps
             sul.pre();
@@ -72,12 +72,12 @@ public class BouncingBallSULTest {
             sul.step(input);
             
             // Counter should still be 0 before post
-            assertEquals(0, sul.getCounter(), "Counter should be 0 before post");
+            assertEquals(0, sul.getExecutionCount(), "Counter should be 0 before post");
             
             sul.post();
             
             // Counter should be 1 after a complete simulation, regardless of the number of steps
-            assertEquals(1, sul.getCounter(), "Counter should be 1 after a complete simulation");
+            assertEquals(1, sul.getExecutionCount(), "Counter should be 1 after a complete simulation");
         }
     }
 
@@ -88,7 +88,7 @@ public class BouncingBallSULTest {
     public void testCounterAfterExecute() {
         try (BouncingBallSUL sul = new BouncingBallSUL()) {
             // Initial counter should be 0
-            assertEquals(0, sul.getCounter(), "Counter should be 0 initially");
+            assertEquals(0, sul.getExecutionCount(), "Counter should be 0 initially");
             
             // Simulate execute by doing pre, step, post manually
             sul.pre();
@@ -98,7 +98,7 @@ public class BouncingBallSULTest {
             sul.post();
             
             // Counter should be 1 after executing a sequence
-            assertEquals(1, sul.getCounter(), "Counter should be 1 after executing a sequence");
+            assertEquals(1, sul.getExecutionCount(), "Counter should be 1 after executing a sequence");
         }
     }
 
@@ -116,13 +116,13 @@ public class BouncingBallSULTest {
             sul.post();
             
             // Counter should be 1 after a complete simulation
-            assertEquals(1, sul.getCounter(), "Counter should be 1 after a complete simulation");
+            assertEquals(1, sul.getExecutionCount(), "Counter should be 1 after a complete simulation");
             
             // Clear the counter
             sul.clear();
             
             // Counter should be 0 after clearing
-            assertEquals(0, sul.getCounter(), "Counter should be 0 after clearing");
+            assertEquals(0, sul.getExecutionCount(), "Counter should be 0 after clearing");
         }
     }
 
@@ -133,7 +133,7 @@ public class BouncingBallSULTest {
     public void testMultipleSimulations() {
         try (BouncingBallSUL sul = new BouncingBallSUL()) {
             // Initial counter should be 0
-            assertEquals(0, sul.getCounter(), "Counter should be 0 initially");
+            assertEquals(0, sul.getExecutionCount(), "Counter should be 0 initially");
             
             // First simulation
             sul.pre();
@@ -143,7 +143,7 @@ public class BouncingBallSULTest {
             sul.post();
             
             // Counter should be 1 after first simulation
-            assertEquals(1, sul.getCounter(), "Counter should be 1 after first simulation");
+            assertEquals(1, sul.getExecutionCount(), "Counter should be 1 after first simulation");
             
             // Second simulation
             sul.pre();
@@ -151,7 +151,7 @@ public class BouncingBallSULTest {
             sul.post();
             
             // Counter should be 2 after second simulation
-            assertEquals(2, sul.getCounter(), "Counter should be 2 after second simulation");
+            assertEquals(2, sul.getExecutionCount(), "Counter should be 2 after second simulation");
             
             // Third simulation
             sul.pre();
@@ -162,7 +162,7 @@ public class BouncingBallSULTest {
             sul.pre();
             
             // Counter should be 3 after third simulation
-            assertEquals(3, sul.getCounter(), "Counter should be 3 after third simulation");
+            assertEquals(3, sul.getExecutionCount(), "Counter should be 3 after third simulation");
         }
     }
 
@@ -172,7 +172,7 @@ public class BouncingBallSULTest {
     @Test
     public void testExecute() {
         try (BouncingBallSUL sul = new BouncingBallSUL()) {
-            assertEquals(0, sul.getCounter(), "Counter should be 0 initially");
+            assertEquals(0, sul.getExecutionCount(), "Counter should be 0 initially");
 
             // Perform a complete simulation
             sul.pre();
@@ -184,7 +184,7 @@ public class BouncingBallSULTest {
             IOContinuousSignal<List<Double>> result = sul.execute(Word.fromList(input));
 
             // Counter should be 1 after executing a sequence
-            assertEquals(1, sul.getCounter(), "Counter should be 1 after executing a sequence");
+            assertEquals(1, sul.getExecutionCount(), "Counter should be 1 after executing a sequence");
             assertEquals(3.0, result.getContinuousOutputSignal().duration(), 0.0001, "Duration should be 3 seconds");
             result.prefixes(false);
         } catch (ExecutionException | InterruptedException e) {

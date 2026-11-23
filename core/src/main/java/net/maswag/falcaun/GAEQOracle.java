@@ -39,11 +39,11 @@ public class GAEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<Stri
     private final PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle;
     private final Random random;
 
-    GAEQOracle(NumericMembershipOracleCost memOracle, int length, int maxEvaluations, GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
+    GAEQOracle(RobustnessOracle memOracle, int length, int maxEvaluations, GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle) {
         this(memOracle, length, maxEvaluations, selectionKind, populationSize, crossoverProb, mutationProbability, ltlOracle, new Random(0));
     }
 
-    GAEQOracle(NumericMembershipOracleCost memOracle, int length, int maxEvaluations, GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle, Random random) {
+    GAEQOracle(RobustnessOracle memOracle, int length, int maxEvaluations, GASelectionKind selectionKind, int populationSize, double crossoverProb, double mutationProbability, PropertyOracle.MealyPropertyOracle<String, String, String> ltlOracle, Random random) {
 
         this.problem = new EQSearchProblem(memOracle, length);
         this.random = random;

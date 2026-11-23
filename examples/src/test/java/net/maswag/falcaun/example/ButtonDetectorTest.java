@@ -10,6 +10,7 @@ import net.automatalib.word.Word;
 import net.maswag.falcaun.BlackBoxVerifier;
 import net.maswag.falcaun.StopDisprovedEQOracle;
 import net.maswag.falcaun.StopDisprovedEQOracle.StaticLTLList;
+import net.maswag.falcaun.VerificationResult;
 import net.maswag.falcaun.example.ButtonDetector;
 import net.maswag.falcaun.example.ButtonDetectorMapper;
 
@@ -371,11 +372,12 @@ public class ButtonDetectorTest {
             verifier.addCornerCaseEQOracle(10, 2);
 
             // Run the verifier
-            boolean isVerified = verifier.run();
+            VerificationResult<List<Double>> result = verifier.run();
 
-            // The verification should pass (no counterexamples found)
+            // No counterexample is reported. Notice that the counterexamples are reported only for the STL properties,
+            // and StaticLTLList has only LTL properties.
             // Note: This might need adjustment based on the actual behavior of ButtonDetector
-            assertTrue(isVerified, "ButtonDetector should satisfy all STL properties");
+            assertTrue(result.counterexamples().isEmpty(), "No counterexample should be reported");
         }
     }
 }

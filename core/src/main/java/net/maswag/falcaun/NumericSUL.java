@@ -8,29 +8,50 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Systems under learning with numerical I/O.
+ * A {@link SUL} with numerical inputs and outputs.
+ * <p>
+ * In addition to the step-wise execution defined by {@link SUL}, this interface supports
+ * full-word execution through {@link #execute(Word)}.
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>>>, AutoCloseable {
     /**
-     * Execute the SUL by feeding the entire input
-    */
+     * Executes an input word from the initial state and returns its input/output signal.
+     * <p>
+     * The default implementation calls {@link #pre()}, executes each input using {@link #step(Object)},
+     * and calls {@link #post()} in a {@code finally} block. Thus, {@code post()} is called even if
+     * a step fails, provided {@code pre()} completed successfully.
+     * <p>
+     * Implementations may override this method for backend-specific batch execution without individually
+     * calling {@code pre()}, {@code step()}, or {@code post()}.
+     * <p>
+     * Batch execution must not be interleaved with an active step-wise execution session.
+     *
+     * @param inputSignal the input word
+     * @return the corresponding input/output signal, with one output per input symbol
+     */
     default IOSignal<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
         List<List<Double>> outputs = new ArrayList<>();
         this.pre();
-        for (List<Double> input : inputSignal) {
-            outputs.add(this.step(input).getOutputSignal());
+        try {
+            for (List<Double> input : inputSignal) {
+                outputs.add(this.step(input).getOutputSignal());
+            }
+        } finally {
+            this.post();
         }
-        this.post();
         assert inputSignal.size() == outputs.size();
         return new IODiscreteSignal<>(inputSignal, Word.fromList(outputs));
     }
 
     /**
-     * Returns the number of SUL executions
+     * Returns the number of the executions of the SUL.
+     * <p>
+     * What is counted as an execution is backend specific. Typically, it is the number of the sessions, i.e.,
+     * the calls of {@link #pre()} or {@link #execute(Word)}.
      */
-    int getCounter();
+    int getExecutionCount();
 
     /**
      * Returns the execution time for the simulations
@@ -42,16 +63,12 @@ public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>
      */
     void clear();
 
-    /**
-     * Performs setup before the first step.
-     */
+    /** {@inheritDoc} */
     default void pre() {
         // do nothing
     }
 
-    /**
-     * Performs cleanup operations after the last step
-     */
+    /** {@inheritDoc} */
     default void post() {
         // do nothing
     }

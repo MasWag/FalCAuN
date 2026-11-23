@@ -173,22 +173,31 @@ verifier.addGAEQOracleAll(
 val result = verifier.run()
 ```
 
-You can show the result via `verifier`.
+`result` is a `VerificationResult`. It contains
+- the counterexamples found on the learned Mealy machine together with the outputs observed by executing the system,
+- the specifications without a confirmed counterexample (`unresolved()`),
+- the reason why the verification terminated (`reason()`), e.g., all the specifications are falsified, equivalence testing found no further counterexample, or the timeout, and
+- statistics such as the number of the simulations (`statistics()`).
+
+A counterexample is *confirmed* if the system produces the same output as the learned Mealy machine for its input.
+Notice that if no counterexample is found, it does not mean that the system satisfies the specifications.
+You can show the result as follows.
 ```kotlin
 // Print the result
-if (result) {
-    println("The property is likely satisfied")
+val cexs = result.confirmedCounterexamples()
+if (cexs.isEmpty()) {
+    println("No counterexample is found (termination reason: ${result.reason()})")
 } else {
-    for (i in 0 until verifier.cexProperty.size) {
-        println("${verifier.cexProperty[i]} is falsified by the following counterexample")
-        println("cex concrete input: ${verifier.cexConcreteInput[i]}")
-        println("cex abstract input: ${verifier.cexAbstractInput[i]}")
-        println("cex output: ${verifier.cexOutput[i]}")
+    for (cex in cexs) {
+        println("${cex.property()} is falsified by the following counterexample")
+        println("cex concrete input: ${verifier.concreteInput(cex)}")
+        println("cex abstract input: ${cex.abstractInput()}")
+        println("cex output: ${cex.sutOutput()}")
     }
 }
 println("Execution time for simulation: ${verifier.simulationTimeSecond} [sec]")
-println("Number of simulations: ${verifier.simulinkCount}")
-println("Number of simulations for equivalence testing: ${verifier.simulinkCountForEqTest}")
+println("Number of simulations: ${verifier.sutExecutionCount}")
+println("Number of simulations for equivalence testing: ${verifier.eqEvaluationCount}")
 ```
 
 In this example, since the system does not satisfy the specification,

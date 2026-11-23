@@ -52,7 +52,6 @@ class PythonContinuousNumericSULTest {
     @Test
     void execTest() throws Exception {
         try (var sul = new PythonContinuousNumericSUL(script, 1.0)) {
-            sul.pre();
             var inputSeq = Arrays.asList(
                 Arrays.asList(0.0),
                 Arrays.asList(0.125),

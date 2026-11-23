@@ -2,40 +2,42 @@ package net.maswag.falcaun;
 
 import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
-import de.learnlib.oracle.PropertyOracle;
-import de.learnlib.query.DefaultQuery;
+import de.learnlib.oracle.equivalence.AbstractTestWordEQOracle;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.word.Word;
 
-import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
- * Equivalence oracle that uses a fixed set of samples.
+ * Equivalence oracle that tests a fixed list of input words in the order of their addition.
+ * <p>
+ * Each word is answered by the membership oracle when a hypothesis is tested, i.e., the outputs are not fixed when the
+ * words are added. The membership queries, the comparison with the hypothesis, and the termination at the first
+ * counterexample are by {@link AbstractTestWordEQOracle}.
+ * <p>
+ * This oracle does not check whether the properties are already disproved. {@link BlackBoxVerifier#addEqOracle}
+ * wraps it with {@link StopDisprovedEQOracle} for that.
  */
-@Slf4j
-public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalenceOracle<String, String>, EvaluationCountable. MealyEquivalenceOracle<String, String> {
-    List<Word<String>> fixedSamples = new ArrayList<>();
-    private final List<PropertyOracle.MealyPropertyOracle<String, String, String>> ltlOracles;
-    protected final MembershipOracle.MealyMembershipOracle<String, String> memOracle;
+public class MealyFixedSetEQOracle extends AbstractTestWordEQOracle<MealyMachine<?, String, ?, String>, String, Word<String>>
+        implements EquivalenceOracle.MealyEquivalenceOracle<String, String>, EvaluationCountable.MealyEquivalenceOracle<String, String> {
+    private final List<Word<String>> fixedSamples = new ArrayList<>();
+    /**
+     * The number of the words evaluated by this oracle, including the ones answered by a cache of the membership
+     * oracle. A word is counted each time it is evaluated.
+     */
     @Getter
-    protected int evaluateCount = 0;
+    private int evaluateCount = 0;
 
     /**
-     * Constructor for MealyFixedSetEQOracle.
-     *
-     * @param ltlOracles the list of LTL oracles so that we stop if all of them are disproved.
-     * @param memOracle  the membership oracle used to test the equivalence.
+     * @param memOracle the membership oracle used to test the equivalence.
      */
-    public MealyFixedSetEQOracle(List<PropertyOracle.MealyPropertyOracle<String, String, String>> ltlOracles,
-                                 MembershipOracle.MealyMembershipOracle<String, String> memOracle) {
-        this.ltlOracles = ltlOracles;
-        this.memOracle = memOracle;
+    public MealyFixedSetEQOracle(MembershipOracle.MealyMembershipOracle<String, String> memOracle) {
+        // We do not batch the queries so that the words after the first counterexample are not evaluated.
+        super(memOracle);
     }
 
     public void add(Word<String> sample) {
@@ -47,46 +49,13 @@ public class MealyFixedSetEQOracle implements EquivalenceOracle.MealyEquivalence
     }
 
     /**
-     * Returns whether the property is disproved i.e., whether it observed such an input that the cost function {@literal < 0}.
-     *
-     * @return whether the property is disproved.
-     */
-    private boolean isDisproved() {
-        return ltlOracles != null && ltlOracles.stream().allMatch(PropertyOracle::isDisproved);
-    }
-
-    /**
      * {@inheritDoc}
+     * <p>
+     * Without batching, {@link AbstractTestWordEQOracle} consumes the stream one word at a time and stops at the first
+     * counterexample. Thus, counting the words when they are consumed counts exactly the evaluated words.
      */
-    @Nullable
     @Override
-    public DefaultQuery<String, Word<String>> findCounterExample(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> inputs) {
-        if (isDisproved()) {
-            log.debug("A counterexample is already found!!");
-            return null;
-        }
-        // Fail fast on empty inputs
-        if (inputs.isEmpty()) {
-            log.warn("Passed empty set of inputs to equivalence oracle; no counterexample can be found!");
-            return null;
-        }
-
-        // Evaluate fixed inputs
-        for (Word<String> sample : fixedSamples) {
-            DefaultQuery<String, Word<String>> query = new DefaultQuery<>(sample);
-            memOracle.processQuery(query);
-            evaluateCount++;
-            Word<String> hypOutput = hypothesis.computeOutput(query.getInput());
-            log.trace("Processing fixed sample: {}", sample);
-            log.trace("Query: {}", query);
-            log.trace("Hypothesis output: {}", hypOutput);
-            if (!Objects.equals(hypOutput, query.getOutput())) {
-                log.debug("A counterexample is found with: {}", query);
-                return query;
-            }
-        }
-
-        log.debug("No counterexample found in the fixed set of samples.");
-        return null;
+    public Stream<Word<String>> generateTestWords(MealyMachine<?, String, ?, String> hypothesis, Collection<? extends String> inputs) {
+        return fixedSamples.stream().peek(sample -> evaluateCount++);
     }
 }

@@ -12,6 +12,7 @@ import net.maswag.falcaun.StaticSTLList;
 import net.maswag.falcaun.parser.STLFactory;
 import net.maswag.falcaun.parser.TemporalLogic;
 import net.maswag.falcaun.StopDisprovedEQOracle;
+import net.maswag.falcaun.VerificationResult;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -94,7 +95,7 @@ class SimulinkSULVerifierTest {
 
     @Test
     void run() {
-        assertFalse(verifier.run());
+        assertFalse(verifier.run().falsified().isEmpty());
     }
 
     @Test
@@ -177,8 +178,9 @@ class SimulinkSULVerifierTest {
             System.out.println(e.getMessage());
             assert false;
         }
-        assertFalse(verifier.run());
-        System.out.println(verifier.getCexAbstractInput());
+        VerificationResult<List<Double>> result = verifier.run();
+        assertFalse(result.falsified().isEmpty());
+        System.out.println(result.counterexamples());
     }
 
     @Test
@@ -261,25 +263,19 @@ class SimulinkSULVerifierTest {
             System.out.println(e.getMessage());
             assert false;
         }
-        assertFalse(verifier.run());
-        System.out.println(verifier.getCexAbstractInput());
+        VerificationResult<List<Double>> result = verifier.run();
+        assertFalse(result.falsified().isEmpty());
+        System.out.println(result.counterexamples());
     }
 
     @Test
-    void getCexProperty() {
-        assertFalse(verifier.run());
+    void falsified() {
+        VerificationResult<List<Double>> result = verifier.run();
         List<TemporalLogic<List<Double>>> expected = properties.getSTLProperties();
-        assertEquals(expected, verifier.getCexProperty());
-    }
-
-    @Test
-    @Disabled
-    void getCexInput() {
-    }
-
-    @Test
-    @Disabled
-    void getCexOutput() {
+        assertEquals(expected, result.falsified());
+        assertEquals(VerificationResult.TerminationReason.ALL_TARGETS_FALSIFIED, result.reason());
+        assertTrue(result.counterexamples().stream().allMatch(VerificationResult.Counterexample::confirmed));
+        assertEquals(verifier.getSutExecutionCount(), result.statistics().sutExecutions().orElseThrow());
     }
 
     @Nested
@@ -345,7 +341,7 @@ class SimulinkSULVerifierTest {
                 verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
                 verifier.addGAEQOracleAll(15, 5000, GASelectionKind.Tournament,
                         50, 0.9, 0.01);
-                assertFalse(verifier.run());
+                assertFalse(verifier.run().falsified().isEmpty());
             }
         }
 
@@ -384,14 +380,15 @@ class SimulinkSULVerifierTest {
                 verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
                 verifier.addGAEQOracleAll(15, 5000, GASelectionKind.Tournament,
                         50, 0.9, 0.01);
-                assertFalse(verifier.run());
+                VerificationResult<List<Double>> result = verifier.run();
                 // Confirm that the number of the properties is correctly handled
                 assertThat("All the given properties should be reported as counterexamples",
-                        verifier.getCexProperty().stream().map(Object::toString).collect(Collectors.toList()),
+                        result.falsified().stream().map(Object::toString).collect(Collectors.toList()),
                         containsInAnyOrder(expectedStlStringList.get(0), expectedStlStringList.get(1)));
-                assertEquals(2, verifier.getCexProperty().size());
+                assertEquals(2, result.falsified().size());
                 // Confirm that the number of the counterexamples is correctly handled
-                assertEquals(2, (int) verifier.getCexAbstractInput().stream().filter(Objects::nonNull).count());
+                assertEquals(2, result.confirmedCounterexamples().size());
+                assertTrue(result.allTargetsFalsified());
             }
         }
     }

@@ -28,7 +28,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     protected final PythonModel<List<Double>, ArrayList> model;
 
     @Getter
-    private int counter = 0;
+    private int executionCount = 0;
 
     /**
      * @param initScript The Python script to initialize the model. It defines a
@@ -52,12 +52,12 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     }
 
     /**
-     * Clear the counter and the time measure.
+     * Clear the executionCount and the time measure.
      */
     @Override
     public void clear() {
         this.model.getSimulationTime().reset();
-        counter = 0;
+        executionCount = 0;
     }
 
     /**
@@ -66,7 +66,7 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     @Override
     public void pre() {
         this.model.pre();
-        counter++;
+        executionCount++;
     }
 
     /**
@@ -100,6 +100,10 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
 
     /**
      * Run all steps of the Python model by feeding {@code inputSignal}.
+     * <p>
+     * If the Python model has an {@code exec} method, it is used for the batch execution.
+     * Otherwise, {@code step} is called for each input. In both cases, {@code post} is called after the execution,
+     * even if the execution fails.
      *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
@@ -107,10 +111,9 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
     @Override
     public IOSignal<List<Double>> execute(@Nonnull Word<List<Double>> inputSignal)
             throws InterruptedException, ExecutionException {
-        pre();
-
         ArrayList<List<Double>> outputs = new ArrayList<List<Double>>();
 
+        pre();
         try {
             // Use exec() if it is available in the model for batch processing.
             // Otherwise, use step() for each input signal.
@@ -129,6 +132,8 @@ public class PythonNumericSUL implements NumericSUL, Closeable {
             }
         } catch (JepException exc) {
             throw new ExecutionException(exc);
+        } finally {
+            post();
         }
 
         var outputSignal = Word.fromList(outputs);

@@ -94,6 +94,9 @@ public class SimulinkSUL implements ContinuousNumericSUL, Closeable {
      * Execute the Simulink model by feeding inputSignal
      * <p>
      * For inputSignal = a1, a2, ..., an, we construct a timed word w = (a1, 0), (a2, T), (a3, 2 * T), ... (an, (n - 1) * T) and execute the Simulink model by feeding the piecewise-linear interpolation of w.
+     * <p>
+     * This is a batch execution by {@link SimulinkModel#execute(Word)}, which runs a complete simulation from the
+     * initial state by itself. Thus, it does not use {@link #pre()}, {@link #step(List)}, and {@link #post()}.
      *
      * @param inputSignal The input signal
      * @return The output signal. The size is same as the input.
@@ -150,7 +153,7 @@ public class SimulinkSUL implements ContinuousNumericSUL, Closeable {
      * {@inheritDoc}
      */
     @Override
-    public int getCounter() {
+    public int getExecutionCount() {
         return this.model.getCounter();
     }
 

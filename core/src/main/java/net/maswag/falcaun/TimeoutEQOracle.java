@@ -13,7 +13,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.LongSupplier;
 
 /**
- * Am equivalence oracle to add timeout in addition to the original oracle.
+ * An equivalence oracle to add timeout in addition to the original oracle.
+ * <p>
+ * The timeout is checked only when {@link #findCounterExample} is called: if the elapsed time since {@link #start()}
+ * exceeds the timeout, the wrapped oracle is skipped. An ongoing invocation of the wrapped oracle is not interrupted,
+ * so this is not a strict timeout of the entire black-box checking.
  *
  * @param <I> Input symbol
  * @param <O> Output symbol
@@ -24,6 +28,10 @@ public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalence
 
     private final long timeout;
     private long startTime;
+    /**
+     * Whether the wrapped oracle has been skipped because of the timeout since the last {@link #start()}.
+     */
+    private boolean timedOut = false;
     private final MealyEquivalenceOracle<I, O> eqOracle;
     /**
      * Clock supplier for reading the current time.
@@ -61,6 +69,14 @@ public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalence
      */
     void start() {
         startTime = nanoTime.getAsLong();
+        timedOut = false;
+    }
+
+    /**
+     * @return {@code true} if and only if the wrapped oracle has been skipped because of the timeout since the last {@link #start()}.
+     */
+    boolean hasTimedOut() {
+        return timedOut;
     }
 
     /** {@inheritDoc} */
@@ -69,6 +85,7 @@ public class TimeoutEQOracle<I, O> implements EquivalenceOracle.MealyEquivalence
     public DefaultQuery<I, Word<O>> findCounterExample(MealyMachine<?, I, ?, O> objects, Collection<? extends I> collection) {
         if ((nanoTime.getAsLong() - startTime) > timeout) {
             LOGGER.info("EQQuery finished because of timeout!!");
+            timedOut = true;
             return null;
         } else {
             return eqOracle.findCounterExample(objects, collection);

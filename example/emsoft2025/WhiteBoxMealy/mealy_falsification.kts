@@ -95,23 +95,24 @@ verifier.addEqOracle(eqOracle)
 val timeBeforeFalsification = System.currentTimeMillis()
 
 val result = verifier.run()
+val cexs = result.confirmedCounterexamples()
 
 val timeAfterFalsification = System.currentTimeMillis()
 
 // Print the result
-if (result) {
-    println("All the properties are likely satisfied")
+if (cexs.isEmpty()) {
+    println("No counterexample is found (termination reason: ${result.reason()})")
 } else {
     println("Some properties are falsified")
-    for (i in 0 until verifier.cexProperty.size) {
-        println("${verifier.cexProperty[i]} is falsified by the following counterexample:")
-        println("cex concrete input: ${verifier.cexInput[i]}")
-        println("cex output: ${verifier.cexOutput[i]}")
+    for (i in 0 until cexs.size) {
+        println("${cexs[i].property()} is falsified by the following counterexample:")
+        println("cex concrete input: ${cexs[i].abstractInput()}")
+        println("cex output: ${cexs[i].sutOutput()}")
     }
 }
 
 println("# of ltl formulae: ${ltlList.size}")
-println("# of falsified ltl formulae: ${verifier.cexProperty.size}")
+println("# of falsified ltl formulae: ${cexs.size}")
 println("# of MQ: ${Statistics.getService().getCount(CounterOracle.KEY_QUERY).orElse(0L)}")
 println("Time for initialize: ${timeBeforeFalsification - timeBeforeInit}")
 println("Time for falsification: ${timeAfterFalsification - timeBeforeFalsification}")
