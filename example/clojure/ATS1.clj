@@ -58,12 +58,12 @@
 ;; Define the STL properties
 (def stl-list
   (parse-stl-list
-   ["[] (output(0) < 120)"
-    "[] (output(0) < 100)"
-    "[] (output(0) < 80)"
-    "[] (output(0) < 60)"
-    "[] (output(0) < 40)"
-    "[] (output(0) < 20)"]
+   ["[] (output(0) <= 120)"
+    "[] (output(0) <= 100)"
+    "[] (output(0) <= 80)"
+    "[] (output(0) <= 60)"
+    "[] (output(0) <= 40)"
+    "[] (output(0) <= 20)"]
    input-mapper
    output-mapper-reader))
 

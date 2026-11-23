@@ -40,13 +40,13 @@ val stlList =
         listOf(
             // BG must be in a good range
             "G($min_bg > 70.0)",
-            "G($max_bg < 180.0)",
+            "G($max_bg <= 180.0)",
             // BG must be below 180 if the meal is not given too much
-            "(G_[0,5] $mealSize == 50.0) R ($max_bg < 180.0)",
+            "(G_[0,5] $mealSize == 50.0) R ($max_bg <= 180.0)",
             // The change in BG is between -5 and 3.
-            "G($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
+            "G($min_delta_bg > -5.0 && $max_delta_bg <= 3.0)",
             // The change in BG is between -5 and 3 if the meal is not given too much
-            "(G_[0,5] $mealSize == 50.0) R ($min_delta_bg > -5.0 && $max_delta_bg < 3.0)",
+            "(G_[0,5] $mealSize == 50.0) R ($min_delta_bg > -5.0 && $max_delta_bg <= 3.0)",
         ),
         inputMapper,
         outputMapperReader,

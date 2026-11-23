@@ -32,8 +32,7 @@ import net.maswag.falcaun.abstraction.OutputMapper;
  * 
  * <ul>
  * <li> Given {@literal output(0) > 2.0}, the satisfying 0-th alphabets are {@literal {'c', 'd'}}.
- * <li> Given {@literal output(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
- *  Note that {@literal <} ({@literal Operation.lt}) represents a less-than-or-equal-to operator.
+ * <li> Given {@literal output(0) <= 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
  * <li> Given {@literal output(0) == 4.0}, {@code getAllAPs()} raises a {@link RuntimeException}.
  * </ul>
  *
@@ -79,7 +78,7 @@ public class STLOutputAtomic extends STLAbstractAtomic {
      * {@inheritDoc}
      */
     @Override
-    protected Set<Character> constructSmallerAPs(int index, double threshold) {
+    protected Set<Character> constructSmallerOrEqualAPs(int index, double threshold) {
         //Each element of concreteValues must be sorted in ascending order.
         var concreteValues = concreteOutputs;
         var abstractValues = abstractOutputs;

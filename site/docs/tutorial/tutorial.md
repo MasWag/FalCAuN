@@ -56,7 +56,7 @@ Since Mealy machines receive finite events, real-valued signals are abstracted i
 - The output mapper maps a real-valued output signal into discrete observations.
 - The signal mapper creates "pseudo output signals" from the input and output signals to handle complicated properties.
 
-The approximated Mealy machine uses these alphabet-abstracted signals. For instance, in the following example, an input signal consists of two dimensions (throttle and brake), and we create input events for each pair of the following values: (0.0, 0.0), (100.0, 0.0), (0.0, 325.0), and (100.0, 325.0). An output signal consists of three dimensions (velocity, acceleration, and gear value). By specifying `previous_max_output(0)` in the definition of signal mapper, it creates a pseudo signal of the maximum value of `output(0)` (velocity in this case) since the latest sampling point. The output mapper ignores the velocity, acceleration, and gear value and assigns a discrete observation for each of the following range of the pseudo signal: $(-\infty, 20.0)$, $[20.0, 40.0)$, $[40.0, 60.0)$, $[60.0, 80.0)$, $[80.0, 100.0)$, $[100.0, 120.0)$, and $[120.0, \infty)$.
+The approximated Mealy machine uses these alphabet-abstracted signals. For instance, in the following example, an input signal consists of two dimensions (throttle and brake), and we create input events for each pair of the following values: (0.0, 0.0), (100.0, 0.0), (0.0, 325.0), and (100.0, 325.0). An output signal consists of three dimensions (velocity, acceleration, and gear value). By specifying `previous_max_output(0)` in the definition of signal mapper, it creates a pseudo signal of the maximum value of `output(0)` (velocity in this case) since the latest sampling point. The output mapper ignores the velocity, acceleration, and gear value and assigns a discrete observation for each of the following range of the pseudo signal: $(-\infty, 20.0]$, $(20.0, 40.0]$, $(40.0, 60.0]$, $(60.0, 80.0]$, $(80.0, 100.0]$, $(100.0, 120.0]$, and $(120.0, \infty)$.
 
 
 ```kotlin
@@ -96,15 +96,15 @@ expr : atomic
      | ( expr )
 
 atomic : signal(NATURAL) == value
-       | signal(NATURAL) < value
+       | signal(NATURAL) <= value
        | signal(NATURAL) > value
        | signal(NATURAL) != value
        | input(NATURAL) == value
-       | input(NATURAL) < value
+       | input(NATURAL) <= value
        | input(NATURAL) > value
        | input(NATURAL) != value
        | output(NATURAL) == value
-       | output(NATURAL) < value
+       | output(NATURAL) <= value
        | output(NATURAL) > value
        | output(NATURAL) != value
 
@@ -117,6 +117,8 @@ EVENTUALLY : '<>' | 'ev' | 'F'
 INTERVAL : [ NATURAL , NATURAL ]
 ```
 
+The comparison `<=` is non-strict (less than or equal to). Strict `<` and non-strict `>=` are not supported and are rejected by the parser; `<>` denotes the eventually operator.
+
 `GLOBALLY` and `EVENTUALLY` have three alternative notations with the same semantics.
 For STL semantics, see the paper [Waga20].
 
@@ -127,7 +129,7 @@ import net.maswag.falcaun.temporal.TemporalLogic.STLCost;
 // Define the STL properties
 val stlFactory = STLFactory()
 val stlList: List<STLCost> = listOf(
-    "[] (signal(3) < 120)",
+    "[] (signal(3) <= 120)",
 ).map { stlString ->
     stlFactory.parse(
         stlString,
@@ -209,7 +211,7 @@ a counterexample violating the specification is shown as follows.
 `concrete input` is a list of real values specifying the signal given to the system.
 `abstract input` is the alphabet-abstracted input by the input mapper.
 ```
-[] ( output(3) < 120.000000 ) is falsified by the following counterexample
+[] ( output(3) <= 120.000000 ) is falsified by the following counterexample
 cex concrete input: [0.0 100.0 0.0; 5.0 100.0 0.0; 10.0 100.0 0.0; 15.0 100.0 0.0; 20.0 100.0 0.0]
 cex abstract input: ba ba ba ba ba
 cex abstract output: aaaa aaad aaae aaaf aaag
@@ -218,7 +220,7 @@ cex abstract output: aaaa aaad aaae aaaf aaag
 The following input and output traces for the target system reproduce the output shown above.
 ![](timeline.png)
 
-Intuitively, the formula `[] ( output(3) < 120.000000 )` means that
+Intuitively, the formula `[] ( output(3) <= 120.000000 )` means that
 the velocity does not exceed `120`, and
 FalCAuN falsified this specification by finding a counterexample.
 This counterexample shows that when the `throttle` input stays at the maximum value `100` (full throttle), the velocity exceeds `120` in `20` ticks.

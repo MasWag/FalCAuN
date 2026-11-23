@@ -54,12 +54,12 @@ val mapper =
 val stlFactory = STLFactory()
 val stlList =
     listOf(
-        "[] (signal(0) < 120)",
-        "[] (signal(0) < 100)",
-        "[] (signal(0) < 80)",
-        "[] (signal(0) < 60)",
-        "[] (signal(0) < 40)",
-        "[] (signal(0) < 20)",
+        "[] (signal(0) <= 120)",
+        "[] (signal(0) <= 100)",
+        "[] (signal(0) <= 80)",
+        "[] (signal(0) <= 60)",
+        "[] (signal(0) <= 40)",
+        "[] (signal(0) <= 20)",
     ).map { stlString ->
         stlFactory.parse(
             stlString,

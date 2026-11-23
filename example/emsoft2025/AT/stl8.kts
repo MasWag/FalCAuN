@@ -52,17 +52,17 @@ val signalMapper = ExtendedSignalMapper()
 // Define the STL properties
 val stlFactory = STLFactory()
 val stlList = listOf(
-    // "[] (signal(0) < 90)"
-    // "([]_[0, 26] (signal(0) < 90)) || ([]_[28, 28] (signal(0) > 50))", // ok
-    // "([]_[0, 26] (signal(0) < 90)) || ([]_[28, 28] (signal(0) > 60))",
-    "[] ((signal(0) < 40)  -> ([]_[0,8] (signal(0) < 60)))",
-    "[] ((signal(0) < 50)  -> ([]_[0,8] (signal(0) < 60)))",
-    "[] ((signal(0) < 40)  -> ([]_[0,10] (signal(0) < 60)))",
-    "[] ((signal(0) < 50)  -> ([]_[0,10] (signal(0) < 60)))",
-    "[] ((signal(0) < 40)  -> ([]_[0,8] (signal(0) < 90)))",
-    "[] ((signal(0) < 50)  -> ([]_[0,8] (signal(0) < 90)))",
-    "[] ((signal(0) < 40)  -> ([]_[0,10] (signal(0) < 90)))",
-    "[] ((signal(0) < 50)  -> ([]_[0,10] (signal(0) < 90)))"
+    // "[] (signal(0) <= 90)"
+    // "([]_[0, 26] (signal(0) <= 90)) || ([]_[28, 28] (signal(0) > 50))", // ok
+    // "([]_[0, 26] (signal(0) <= 90)) || ([]_[28, 28] (signal(0) > 60))",
+    "[] ((signal(0) <= 40)  -> ([]_[0,8] (signal(0) <= 60)))",
+    "[] ((signal(0) <= 50)  -> ([]_[0,8] (signal(0) <= 60)))",
+    "[] ((signal(0) <= 40)  -> ([]_[0,10] (signal(0) <= 60)))",
+    "[] ((signal(0) <= 50)  -> ([]_[0,10] (signal(0) <= 60)))",
+    "[] ((signal(0) <= 40)  -> ([]_[0,8] (signal(0) <= 90)))",
+    "[] ((signal(0) <= 50)  -> ([]_[0,8] (signal(0) <= 90)))",
+    "[] ((signal(0) <= 40)  -> ([]_[0,10] (signal(0) <= 90)))",
+    "[] ((signal(0) <= 50)  -> ([]_[0,10] (signal(0) <= 90)))"
 ).stream().map { stlString ->
     stlFactory.parse(
         stlString,

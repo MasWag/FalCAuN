@@ -33,7 +33,7 @@ class BouncingBallGAEQOracleTest {
         OutputMapper outputMapper = new OutputMapper(Arrays.asList(Arrays.asList(THRESHOLD, null), Collections.singletonList(null)));
         // The ball goes above the threshold only if the wind is applied at the right timings.
         // Neither the constant nor no wind violates this property.
-        TemporalLogic.STLCost stl = new STLFactory().parse("G_[5,10] (output(0) < " + THRESHOLD + ")", inputMapper, outputMapper);
+        TemporalLogic.STLCost stl = new STLFactory().parse("G_[5,10] (output(0) <= " + THRESHOLD + ")", inputMapper, outputMapper);
         AdaptiveSTLList<List<Double>> properties = new AdaptiveSTLList<>(Collections.singletonList(stl), SIGNAL_LENGTH);
 
         try (BouncingBallSUL sul = new BouncingBallSUL()) {

@@ -62,33 +62,33 @@ class NumericSULMapperOutputTest {
         for (var e0 : values) {
             for (var e1 : outputMapper.get(0).values()) {
                 if (e0 <= e1) {
-                    assertTrue(isSatisfiedBy(e0, Operation.lt, e1));
+                    assertTrue(isSatisfiedBy(e0, Operation.LE, e1));
                 }
                 if (e0 > e1) {
-                    assertTrue(isSatisfiedBy(e0, Operation.gt, e1));
+                    assertTrue(isSatisfiedBy(e0, Operation.GT, e1));
                 }
                 if (e0.equals(e1)) {
-                    assertTrue(isSatisfiedBy(e0, Operation.eq, e1));
+                    assertTrue(isSatisfiedBy(e0, Operation.EQ, e1));
                 }
             }
         }
 
-        final var ops = List.of(Operation.eq, Operation.gt, Operation.lt, Operation.ne);
+        final var ops = List.of(Operation.EQ, Operation.GT, Operation.LE, Operation.NE);
         // The inverse of the above
         for (var e0 : values) {
             for (var e1 : outputMapper.get(0).values()) {
                 for(var op : ops) {
                     if(isSatisfiedBy(e0, op, e1)) {
                         switch(op) {
-                            case eq:
+                            case EQ:
                                 break;
-                            case gt:
+                            case GT:
                                 assertTrue(e0 > e1);
                                 break;
-                            case lt:
+                            case LE:
                                 assertTrue(e0 <= e1);
                                 break;
-                            case ne:
+                            case NE:
                                 assertTrue(e0 != e1);
                                 break;
                         }

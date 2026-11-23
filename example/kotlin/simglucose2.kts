@@ -38,25 +38,25 @@ val stlList =
     parseStlList(
         listOf(
             // BG does not go above 180
-            // "G($max_bg < 180.0)",
+            // "G($max_bg <= 180.0)",
             // BG does not go below 70
             // "G($min_bg > 70.0)",
             // // BG does not go above 400
-            "G($max_bg < 400.0)",
+            "G($max_bg <= 400.0)",
             // BG does not go above 400 if the meal is not given too much
-            // "($mealSize == 50.0 && X ($mealSize == 50.0)) R ($max_bg < 400.0)",
+            // "($mealSize == 50.0 && X ($mealSize == 50.0)) R ($max_bg <= 400.0)",
             // Does not fall below the lower 10% for more than 30 minutes
-            "G($bg < 70.0 -> X ($max_bg > 70.0))",
+            "G($bg <= 70.0 -> X ($max_bg > 70.0))",
             // Does not fall below the lower 10% for more than 30 minutes if the meal is not given too much
-            // "($mealSize == 50.0 && X ($mealSize == 50.0)) R ($bg < 70.0 -> X ($max_bg > 70.0))",
+            // "($mealSize == 50.0 && X ($mealSize == 50.0)) R ($bg <= 70.0 -> X ($max_bg > 70.0))",
             // Hypoglycemia does not last longer than 150 minutes
             "G(F_[0, ${(150.0 / stepDuration).toInt()}] ($max_bg > 70.0))",
             // Hypoglycemia does not last longer than 150 minutes if the meal is not given too much
-            // "(input(0) == 50.0 && X (input(0) == 50.0)) R ! []_[0,$alpha] ($max_bg < 70.0)",
+            // "(input(0) == 50.0 && X (input(0) == 50.0)) R ! []_[0,$alpha] ($max_bg <= 70.0)",
             // Does not administer insulin when hypoglycemia
-            "G($bg < 70.0 -> $insulin < 0.5)",
+            "G($bg <= 70.0 -> $insulin <= 0.5)",
             // Does not administer insulin when hypoglycemia if the meal is not given too much
-            // "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg < 70.0 -> $insulin < 0.5)",
+            // "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg <= 70.0 -> $insulin <= 0.5)",
         ),
         inputMapper,
         outputMapperReader,

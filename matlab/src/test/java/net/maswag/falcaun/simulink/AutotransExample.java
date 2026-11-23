@@ -153,7 +153,7 @@ public class AutotransExample {
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(this.sigMap));
     }
 
-    private List<Character> constructSmallerAPs(int index, double threshold) {
+    private List<Character> constructSmallerOrEqualAPs(int index, double threshold) {
         int bsResult = Collections.binarySearch(concreteOutputs.get(index), threshold);
         int thresholdIndex = (bsResult >= 0) ? bsResult : (~bsResult - 1);
         ArrayList<Character> resultAPs = new ArrayList<>(abstractOutputs.get(index).subList(0, thresholdIndex + 1));
@@ -222,7 +222,7 @@ public class AutotransExample {
         builder.append("[] (");
 
         List<Character> velocityAPs = constructAllAPs(velocityIndex);
-        List<Character> rotationAPs = constructSmallerAPs(rotationIndex, rotationThreshold);
+        List<Character> rotationAPs = constructSmallerOrEqualAPs(rotationIndex, rotationThreshold);
         List<Character> gearAPs = constructAllAPs(gearIndex);
 
         List<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
@@ -243,9 +243,9 @@ public class AutotransExample {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
-        List<Character> velocityAPs = constructSmallerAPs(velocityIndex, velocityThreshold);
+        List<Character> velocityAPs = constructSmallerOrEqualAPs(velocityIndex, velocityThreshold);
         List<Character> gearAPs = constructAllAPs(gearIndex);
-        List<Character> rotationAPs = constructSmallerAPs(rotationIndex, rotationThreshold);
+        List<Character> rotationAPs = constructSmallerOrEqualAPs(rotationIndex, rotationThreshold);
 
         List<String> APs = constructProductAPs(velocityAPs, rotationAPs, gearAPs);
 
@@ -302,7 +302,7 @@ public class AutotransExample {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
-        List<Character> velocityAPs = constructSmallerAPs(velocityIndex, velocityThreshold);
+        List<Character> velocityAPs = constructSmallerOrEqualAPs(velocityIndex, velocityThreshold);
         List<Character> rotationAPs = constructAllAPs(rotationIndex);
         List<Character> gearAPs = constructAllAPs(gearIndex);
 
@@ -351,16 +351,16 @@ public class AutotransExample {
      * <p>
      * This is difficult for the falsification algorithm only using hill-climbing.
      *
-     * @param ltThreshold This is 100.0 in ZHSAH18
+     * @param leThreshold This is 100.0 in ZHSAH18
      * @param gtThreshold This is 65.0 in ZHSAH18
      * @return The constructed LTL formula.
      */
-    String constructS4(double ltThreshold, double gtThreshold) {
+    String constructS4(double leThreshold, double gtThreshold) {
         StringBuilder builder = new StringBuilder();
         builder.append("(");
 
         final int numOfSamples = (int) Math.ceil(30.0 / signalStep);
-        List<Character> velocity100APs = constructSmallerAPs(velocityIndex, ltThreshold);
+        List<Character> velocity100APs = constructSmallerOrEqualAPs(velocityIndex, leThreshold);
         List<Character> velocity65APs = constructLargerAPs(velocityIndex, gtThreshold);
 
         List<Character> rotationAPs = constructAllAPs(rotationIndex);
@@ -409,17 +409,17 @@ public class AutotransExample {
      * <p>
      * This is difficult for the falsification algorithm only using hill-climbing.
      *
-     * @param ltThreshold This is 4770 in ZHSAH18
+     * @param leThreshold This is 4770 in ZHSAH18
      * @param gtThreshold This is 600 in ZHSAH18
      * @return The constructed LTL formula.
      */
-    String constructS5(double ltThreshold, double gtThreshold) {
+    String constructS5(double leThreshold, double gtThreshold) {
         StringBuilder builder = new StringBuilder();
         builder.append("[] (");
 
         List<Character> velocityAPs = constructAllAPs(velocityIndex);
 
-        List<Character> rotation4770APs = constructSmallerAPs(rotationIndex, ltThreshold);
+        List<Character> rotation4770APs = constructSmallerOrEqualAPs(rotationIndex, leThreshold);
         List<Character> rotation600APs = constructLargerAPs(rotationIndex, gtThreshold);
 
         List<Character> gearAPs = constructAllAPs(gearIndex);

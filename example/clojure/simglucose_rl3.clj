@@ -48,9 +48,9 @@
    [;; BG does not go below 55
     (format "[] (%s > 55.0)" min-bg)
     ;; Does not exceed the upper 10% for more than 30 minutes
-    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s > 180.0 -> X (%s < 180.0))" bg min-bg)
+    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s > 180.0 -> X (%s <= 180.0))" bg min-bg)
     ;; Does not exceed the upper 10% for more than 30 minutes after insulin administration
-    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s > 0.5 -> X (%s < 180.0))" insulin min-bg)
+    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s > 0.5 -> X (%s <= 180.0))" insulin min-bg)
     ;; Hyperglycemia does not last longer than 180 minutes
     (format "(<> (input(0) == 50.0 && X (input(0) == 50.0))) R ! []_[0,%d] (%s > 240.0)" alpha min-bg)]
    input-mapper

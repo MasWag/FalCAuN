@@ -52,7 +52,7 @@ public class ATS1ETF {
 
         NumericSULMapper mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper());
 
-        STLCost costFunc = new STLFactory().parse("alw(signal(0) < 120.0)", inputMapper, outputMapper, largest);
+        STLCost costFunc = new STLFactory().parse("alw(signal(0) <= 120.0)", inputMapper, outputMapper, largest);
         final var properties = new StaticSTLList(Collections.singletonList(costFunc.toAbstractString()));
 
         SimulinkSULVerifier verifier = new SimulinkSULVerifier(initScript, paramName, signalStep, 0.0025, properties, mapper);

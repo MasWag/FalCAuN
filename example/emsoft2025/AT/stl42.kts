@@ -51,18 +51,18 @@ val signalMapper = ExtendedSignalMapper()
 // Define the STL properties
 val stlFactory = STLFactory()
 val stlList = listOf(
-    "[]_[0,10] ((signal(2) == 1 -> signal(0) < 35) && (signal(2) == 2 -> signal(0) < 65))",
-    "[]_[0,10] ((signal(2) == 1 -> signal(0) < 35) && (signal(2) == 2 -> signal(0) < 70))",
-    "[]_[0,10] ((signal(2) == 1 -> signal(0) < 40) && (signal(2) == 2 -> signal(0) < 65))",
-    "[]_[0,10] ((signal(2) == 1 -> signal(0) < 40) && (signal(2) == 2 -> signal(0) < 70))",
-    "[]_[11,20] ((signal(2) == 1 -> signal(0) < 35) && (signal(2) == 2 -> signal(0) < 65))",
-    "[]_[11,20] ((signal(2) == 1 -> signal(0) < 35) && (signal(2) == 2 -> signal(0) < 70))",
-    "[]_[11,20] ((signal(2) == 1 -> signal(0) < 40) && (signal(2) == 2 -> signal(0) < 65))",
-    "[]_[11,20] ((signal(2) == 1 -> signal(0) < 40) && (signal(2) == 2 -> signal(0) < 70))",
-    "[]_[21,30] ((signal(2) == 1 -> signal(0) < 35) && (signal(2) == 2 -> signal(0) < 65))",
-    "[]_[21,30] ((signal(2) == 1 -> signal(0) < 35) && (signal(2) == 2 -> signal(0) < 70))",
-    "[]_[21,30] ((signal(2) == 1 -> signal(0) < 40) && (signal(2) == 2 -> signal(0) < 65))",
-    "[]_[21,30] ((signal(2) == 1 -> signal(0) < 40) && (signal(2) == 2 -> signal(0) < 70))"
+    "[]_[0,10] ((signal(2) == 1 -> signal(0) <= 35) && (signal(2) == 2 -> signal(0) <= 65))",
+    "[]_[0,10] ((signal(2) == 1 -> signal(0) <= 35) && (signal(2) == 2 -> signal(0) <= 70))",
+    "[]_[0,10] ((signal(2) == 1 -> signal(0) <= 40) && (signal(2) == 2 -> signal(0) <= 65))",
+    "[]_[0,10] ((signal(2) == 1 -> signal(0) <= 40) && (signal(2) == 2 -> signal(0) <= 70))",
+    "[]_[11,20] ((signal(2) == 1 -> signal(0) <= 35) && (signal(2) == 2 -> signal(0) <= 65))",
+    "[]_[11,20] ((signal(2) == 1 -> signal(0) <= 35) && (signal(2) == 2 -> signal(0) <= 70))",
+    "[]_[11,20] ((signal(2) == 1 -> signal(0) <= 40) && (signal(2) == 2 -> signal(0) <= 65))",
+    "[]_[11,20] ((signal(2) == 1 -> signal(0) <= 40) && (signal(2) == 2 -> signal(0) <= 70))",
+    "[]_[21,30] ((signal(2) == 1 -> signal(0) <= 35) && (signal(2) == 2 -> signal(0) <= 65))",
+    "[]_[21,30] ((signal(2) == 1 -> signal(0) <= 35) && (signal(2) == 2 -> signal(0) <= 70))",
+    "[]_[21,30] ((signal(2) == 1 -> signal(0) <= 40) && (signal(2) == 2 -> signal(0) <= 65))",
+    "[]_[21,30] ((signal(2) == 1 -> signal(0) <= 40) && (signal(2) == 2 -> signal(0) <= 70))"
 ).stream().map { stlString ->
     stlFactory.parse(
         stlString,

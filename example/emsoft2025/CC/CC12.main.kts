@@ -89,10 +89,10 @@ val diffy5y4 = "signal(8)"
 val stlFactory = STLFactory()
 val stlList =
     listOf(
-        "(alw ($diffy2y1 > 40.0 -> $diffy3y2 < 40.0))",
-        "(alw ($diffy3y2 > 40.0 -> ($diffy2y1 < 40.0 || $diffy4y3 < 40.0) ))",
-        "(alw ($diffy4y3 > 40.0 -> ($diffy3y2 < 40.0 || $diffy5y4 < 40.0) ))",
-        "(alw ($diffy5y4 > 40.0 -> $diffy4y3 < 40.0))",
+        "(alw ($diffy2y1 > 40.0 -> $diffy3y2 <= 40.0))",
+        "(alw ($diffy3y2 > 40.0 -> ($diffy2y1 <= 40.0 || $diffy4y3 <= 40.0) ))",
+        "(alw ($diffy4y3 > 40.0 -> ($diffy3y2 <= 40.0 || $diffy5y4 <= 40.0) ))",
+        "(alw ($diffy5y4 > 40.0 -> $diffy4y3 <= 40.0))",
     ).stream().map { stlString ->
         stlFactory.parse(
             stlString,

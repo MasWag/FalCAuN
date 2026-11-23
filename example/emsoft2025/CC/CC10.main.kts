@@ -95,8 +95,8 @@ val diffy5y4Min = "signal(10)"
 val stlFactory = STLFactory()
 val stlList =
     listOf(
-        "(alw ($diffy4y3Max < 50.0))",
-        "(alw ($diffy5y4Max < 50.0))",
+        "(alw ($diffy4y3Max <= 50.0))",
+        "(alw ($diffy5y4Max <= 50.0))",
         "(alw ($diffy4y3Min > 9.0))",
         "(alw ($diffy5y4Min > 9.0))",
     ).stream().map { stlString ->

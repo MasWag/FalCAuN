@@ -72,13 +72,13 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
             return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
         switch (op) {
-            case lt:
+            case LE:
                 return new RoSI(comparator - currentValue.get(sigIndex));
-            case gt:
+            case GT:
                 return new RoSI(currentValue.get(sigIndex) - comparator);
-            case eq:
+            case EQ:
                 return new RoSI(-abs(currentValue.get(sigIndex) - comparator));
-            case ne:
+            case NE:
                 return new RoSI(abs(currentValue.get(sigIndex) - comparator));
             default:
                 return null;
@@ -93,13 +93,13 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
     @Override
     public String toString() {
         switch (op) {
-            case lt:
-                return String.format("%s(%d) < %f", getSignalName(), sigIndex, comparator);
-            case eq:
+            case LE:
+                return String.format("%s(%d) <= %f", getSignalName(), sigIndex, comparator);
+            case EQ:
                 return String.format("%s(%d) == %f", getSignalName(), sigIndex, comparator);
-            case gt:
+            case GT:
                 return String.format("%s(%d) > %f", getSignalName(), sigIndex, comparator);
-            case ne:
+            case NE:
                 return String.format("%s(%d) != %f", getSignalName(), sigIndex, comparator);
         }
         return null;
@@ -117,16 +117,16 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         for (int i = 0; i < signalSize; i++) {
             if (i == sigIndex) {
                 switch (op) {
-                    case lt:
-                        APList.add(constructSmallerAPs(i, comparator));
+                    case LE:
+                        APList.add(constructSmallerOrEqualAPs(i, comparator));
                         break;
-                    case eq:
+                    case EQ:
                         APList.add(constructEqAPs(i, comparator));
                         break;
-                    case gt:
+                    case GT:
                         APList.add(constructLargerAPs(i, comparator));
                         break;
-                    case ne:
+                    case NE:
                         Set<Character> newAPs = constructAllAPs(i);
                         newAPs.removeAll(constructEqAPs(i, comparator));
                         APList.add(newAPs);
@@ -183,12 +183,13 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
 
     /**
      * Constructs a set of characters representing atomic propositions
-     * that are smaller than the given threshold for the specified signal index.
+     * whose values are smaller than or equal to the given threshold for the specified signal index.
+     * This is used for the non-strict comparison {@literal <=} ({@link Operation#LE}).
      *
      * @param index The index of the signal.
      * @return A set of characters representing the atomic propositions.
      */
-    abstract protected Set<Character> constructSmallerAPs(int index, double threshold);
+    abstract protected Set<Character> constructSmallerOrEqualAPs(int index, double threshold);
 
     /**
      * Constructs a set of characters representing atomic propositions
@@ -278,10 +279,15 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         assert keyLists.size() == valueLists.size();
     }
 
+    /**
+     * The comparison operators of STL atomic propositions.
+     * Strict {@literal <} and non-strict {@literal >=} are intentionally not supported.
+     */
     public enum Operation {
-        lt,
-        eq,
-        gt,
-        ne
+        /** Less than or equal to ({@literal <=}). */
+        LE,
+        EQ,
+        GT,
+        NE
     }
 }

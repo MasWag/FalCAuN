@@ -57,8 +57,8 @@ class BlackBoxVerifierTest {
     @BeforeEach
     void setUp() {
         events = new ArrayList<>();
-        events.add(new STLOutputAtomic(0, STLAbstractAtomic.Operation.lt, 1.0));
-        events.add(new STLOutputAtomic(0, STLAbstractAtomic.Operation.gt, 1.0));
+        events.add(new STLOutputAtomic(0, STLAbstractAtomic.Operation.LE, 1.0));
+        events.add(new STLOutputAtomic(0, STLAbstractAtomic.Operation.GT, 1.0));
         events.get(0).setAtomic(Collections.singletonList(Collections.singletonMap('a', 1.0)), Collections.singletonList('b'));
         events.get(1).setAtomic(Collections.singletonList(Collections.singletonMap('a', 1.0)), Collections.singletonList('b'));
 

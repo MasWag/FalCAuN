@@ -151,16 +151,16 @@ public class STLVisitorImpl extends STLBaseVisitor<TemporalLogic.STLCost> {
         STLAbstractAtomic.Operation op;
         switch (ctx.comparisonOperator().getText()) {
             case "==":
-                op = eq;
+                op = EQ;
                 break;
-            case "<":
-                op = lt;
+            case "<=":
+                op = LE;
                 break;
             case ">":
-                op = gt;
+                op = GT;
                 break;
             case "!=":
-                op = ne;
+                op = NE;
                 break;
             default:
                 throw new UnsupportedOperationException();

@@ -78,8 +78,8 @@ class NumericMembershipOracleCachingTest {
             List<Character> largest = Collections.singletonList('b');
             NumericSULMapper mapper = new NumericSULMapper(INPUT_MAPPER, largest, outputMapper, new SimpleSignalMapper());
             fixture = new Fixture(sul, mapper);
-            below3 = new STLFactory().parse("[] (output(0) < 3.0)", INPUT_MAPPER, outputMapper, largest);
-            below4 = new STLFactory().parse("[] (output(0) < 4.0)", INPUT_MAPPER, outputMapper, largest);
+            below3 = new STLFactory().parse("[] (output(0) <= 3.0)", INPUT_MAPPER, outputMapper, largest);
+            below4 = new STLFactory().parse("[] (output(0) <= 4.0)", INPUT_MAPPER, outputMapper, largest);
         }
 
         @Test
@@ -223,8 +223,8 @@ class NumericMembershipOracleCachingTest {
             NumericSULMapper mapper = new NumericSULMapper(INPUT_MAPPER, largest, outputMapper,
                     new SimpleSignalMapper(Collections.singletonList(maxSinceLast)));
             fixture = new Fixture(sul, mapper);
-            derivedBelow15 = new STLFactory().parse("[] (output(1) < 15.0)", INPUT_MAPPER, outputMapper, largest);
-            outputBelow3 = new STLFactory().parse("[] (output(0) < 3.0)", INPUT_MAPPER, outputMapper, largest);
+            derivedBelow15 = new STLFactory().parse("[] (output(1) <= 15.0)", INPUT_MAPPER, outputMapper, largest);
+            outputBelow3 = new STLFactory().parse("[] (output(0) <= 3.0)", INPUT_MAPPER, outputMapper, largest);
         }
 
         @Test

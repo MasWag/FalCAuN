@@ -6,7 +6,7 @@
 #  Make the output mapper for a `M3'-style specification
 #
 # The template of the `M3'-style specification is as follows.
-# > [] (signal(0) < P1 -> []_[0,P3] (signal(0) < P2))
+# > [] (signal(0) <= P1 -> []_[0,P3] (signal(0) <= P2))
 # USAGE
 #  ./makeM3-omap.sh <P1> <P2>
 #

@@ -68,7 +68,7 @@ val diffy4y3 = "signal(6)"
 val stlFactory = STLFactory()
 val stlList =
     listOf(
-        "(alw_[0,${(100 / signalStep).toInt()}] ($diffy5y4 < 40 && $diffy4y3 < 40))",
+        "(alw_[0,${(100 / signalStep).toInt()}] ($diffy5y4 <= 40 && $diffy4y3 <= 40))",
     ).stream().map { stlString ->
         stlFactory.parse(
             stlString,

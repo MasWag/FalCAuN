@@ -31,4 +31,4 @@ readonly TIMEOUT=$((120 * 60)) # 120 min.
 
 ## Actual execution
 
-../falcaun --stl="[] (signal(0) < 120)" --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --ga-crossover-prob=$CROSSOVER_PROB --ga-mutation-prob=$MUTATION_PROB --population-size=$POPULATION_SIZE --ga-selection-kind=$SELECTION_KIND
+../falcaun --stl="[] (signal(0) <= 120)" --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --ga-crossover-prob=$CROSSOVER_PROB --ga-mutation-prob=$MUTATION_PROB --population-size=$POPULATION_SIZE --ga-selection-kind=$SELECTION_KIND
