@@ -37,7 +37,7 @@ You need to install the requirements above. For example, on Ubuntu, you can inst
     ```
 === "macOS"
     ```bash
-    brew install maven openjdk@17
+    brew install maven openjdk@21
     ```
 
 You have to manually install LTSMin 3.1.0, Owl 21.0, and MATLAB/Simulink. For example, you can install LTSMin 3.1.0 and Owl 21.0 with the following commands after installing Maven.
