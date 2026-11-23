@@ -614,7 +614,7 @@ Since Mealy machines receive finite events, real-valued signals are abstracted i
 <li>The output mapper maps a real-valued output signal into discrete observations.</li>
 <li>The signal mapper creates "pseudo output signals" from the input and output signals to handle complicated properties.</li>
 </ul>
-<p>The approximated Mealy machine uses these alphabet-abstracted signals. For instance, in the following example, an input signal consists of two dimensions (throttle and brake), and we create input events for each pair of the following values: (0.0, 0.0), (100.0, 0.0), (0.0, 325.0), and (100.0, 325.0). An output signal consists of three dimensions (velocity, acceleration, and gear value). By specifying <code>previous_max_output(0)</code> in the definition of signal mapper, it creates a pseudo signal of the maximum value of <code>output(0)</code> (velocity in this case) since the latest sampling point. The output mapper ignores the velocity, acceleration, and gear value and assigns a discrete observation for each of the following range of the pseudo signal: $(-\infty, 20.0)$, $[20.0, 40.0)$, $[40.0, 60.0)$, $[60.0, 80.0)$, $[80.0, 100.0)$, $[100.0, 120.0)$, and $[120.0, \infty)$.</p>
+<p>The approximated Mealy machine uses these alphabet-abstracted signals. For instance, in the following example, an input signal consists of two dimensions (throttle and brake), and we create input events for each pair of the following values: (0.0, 0.0), (100.0, 0.0), (0.0, 325.0), and (100.0, 325.0). An output signal consists of three dimensions (velocity, acceleration, and gear value). By specifying <code>previous_max_output(0)</code> in the definition of signal mapper, it creates a pseudo signal of the maximum value of <code>output(0)</code> (velocity in this case) since the latest sampling point. The output mapper ignores the velocity, acceleration, and gear value and assigns a discrete observation for each of the following range of the pseudo signal: $(-\infty, 20.0]$, $(20.0, 40.0]$, $(40.0, 60.0]$, $(60.0, 80.0]$, $(80.0, 100.0]$, $(100.0, 120.0]$, and $(120.0, \infty)$.</p>
 <div class="language-kotlin highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Define the input and output mappers</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kd">val</span><span class="w"> </span><span class="nv">throttleValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="m">0.0</span><span class="p">,</span><span class="w"> </span><span class="m">100.0</span><span class="p">)</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kd">val</span><span class="w"> </span><span class="nv">brakeValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="m">0.0</span><span class="p">,</span><span class="w"> </span><span class="m">325.0</span><span class="p">)</span>
@@ -648,15 +648,15 @@ The syntax of STL in FalCAuN is as follows.</p>
 </span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>     | ( expr )
 </span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
 </span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>atomic : signal(NATURAL) == value
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>       | signal(NATURAL) &lt; value
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>       | signal(NATURAL) &lt;= value
 </span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>       | signal(NATURAL) &gt; value
 </span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>       | signal(NATURAL) != value
 </span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>       | input(NATURAL) == value
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>       | input(NATURAL) &lt; value
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>       | input(NATURAL) &lt;= value
 </span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>       | input(NATURAL) &gt; value
 </span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>       | input(NATURAL) != value
 </span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>       | output(NATURAL) == value
-</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>       | output(NATURAL) &lt; value
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>       | output(NATURAL) &lt;= value
 </span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>       | output(NATURAL) &gt; value
 </span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>       | output(NATURAL) != value
 </span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>
@@ -668,6 +668,7 @@ The syntax of STL in FalCAuN is as follows.</p>
 </span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>
 </span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>INTERVAL : [ NATURAL , NATURAL ]
 </span></code></pre></div>
+<p>The comparison <code>&lt;=</code> is non-strict (less than or equal to). Strict <code>&lt;</code> and non-strict <code>&gt;=</code> are not supported and are rejected by the parser; <code>&lt;&gt;</code> denotes the eventually operator.</p>
 <p><code>GLOBALLY</code> and <code>EVENTUALLY</code> have three alternative notations with the same semantics.
 For STL semantics, see the paper [Waga20].</p>
 <p>In FalCAuN, STL formulas are given as strings.
@@ -676,7 +677,7 @@ For STL semantics, see the paper [Waga20].</p>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1">// Define the STL properties</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kd">val</span><span class="w"> </span><span class="nv">stlFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">STLFactory</span><span class="p">()</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kd">val</span><span class="w"> </span><span class="nv">stlList</span><span class="p">:</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">STLCost</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="s">"[] (signal(3) &lt; 120)"</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="s">"[] (signal(3) &lt;= 120)"</span><span class="p">,</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">).</span><span class="na">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">stlString</span><span class="w"> </span><span class="o">-&gt;</span>
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="n">stlFactory</span><span class="p">.</span><span class="na">parse</span><span class="p">(</span>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">        </span><span class="n">stlString</span><span class="p">,</span>
@@ -751,14 +752,14 @@ You can show the result as follows.
 a counterexample violating the specification is shown as follows.
 <code>concrete input</code> is a list of real values specifying the signal given to the system.
 <code>abstract input</code> is the alphabet-abstracted input by the input mapper.
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>[] ( output(3) &lt; 120.000000 ) is falsified by the following counterexample
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>[] ( output(3) &lt;= 120.000000 ) is falsified by the following counterexample
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>cex concrete input: [0.0 100.0 0.0; 5.0 100.0 0.0; 10.0 100.0 0.0; 15.0 100.0 0.0; 20.0 100.0 0.0]
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>cex abstract input: ba ba ba ba ba
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>cex abstract output: aaaa aaad aaae aaaf aaag
 </span></code></pre></div></p>
 <p>The following input and output traces for the target system reproduce the output shown above.
 <img alt="" src="../timeline.png" /></p>
-<p>Intuitively, the formula <code>[] ( output(3) &lt; 120.000000 )</code> means that
+<p>Intuitively, the formula <code>[] ( output(3) &lt;= 120.000000 )</code> means that
 the velocity does not exceed <code>120</code>, and
 FalCAuN falsified this specification by finding a counterexample.
 This counterexample shows that when the <code>throttle</code> input stays at the maximum value <code>100</code> (full throttle), the velocity exceeds <code>120</code> in <code>20</code> ticks.</p>
