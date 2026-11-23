@@ -380,6 +380,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#simulink-benchmark-models-git-submodules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulink benchmark models (Git submodules)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#2-set-up-the-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -721,6 +732,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#simulink-benchmark-models-git-submodules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulink benchmark models (Git submodules)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#2-set-up-the-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -905,36 +927,44 @@
 </div>
 <h3 id="1-install-the-requirements_1">1. Install the Requirements</h3>
 <p>You need to install MATLAB/Simulink manually. Please follow the instructions on the official website of MathWorks.</p>
+<h3 id="simulink-benchmark-models-git-submodules">Simulink benchmark models (Git submodules)</h3>
+<p>The Simulink models used by the MATLAB tests and most MATLAB examples (automatic transmission, abstract fuel control, and chasing cars) are not part of FalCAuN. They are separate upstream projects, included as Git submodules under <code>./benchmarks/simulink/third_party</code> and pinned to specific commits. The scripts in <code>./benchmarks/simulink</code> set them up for FalCAuN. Clone FalCAuN with the submodules:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>clone<span class="w"> </span>--recurse-submodules<span class="w"> </span>https://github.com/MasWag/FalCAuN.git
+</span></code></pre></div>
+<p>If you have already cloned FalCAuN without them, initialize the submodules as follows:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+</span></code></pre></div>
+<p>Without the submodules, the MATLAB tests and examples using these models stop with an error explaining this command. See <a href="https://github.com/MasWag/FalCAuN/blob/master/benchmarks/simulink/README.md"><code>benchmarks/simulink/README.md</code></a> for the benchmarks and <a href="https://github.com/MasWag/FalCAuN/blob/master/benchmarks/simulink/third_party/README.md"><code>benchmarks/simulink/third_party/README.md</code></a> for the provenance, pinned revisions, and licenses of the models.</p>
 <h3 id="2-set-up-the-environment-variable">2. Set up the environment variable</h3>
 <p>We assume that the environment variable <code>MATLAB_HOME</code> shows where MATLAB is installed. An example is as follows.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MATLAB_HOME</span><span class="o">=</span>&lt;path/to/matlab/home&gt;
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1">## Example:</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># export MATLAB_HOME=/usr/local/MATLAB/R2024b/</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MATLAB_HOME</span><span class="o">=</span>&lt;path/to/matlab/home&gt;
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1">## Example:</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># export MATLAB_HOME=/usr/local/MATLAB/R2024b/</span>
 </span></code></pre></div>
 <h3 id="3-build-and-install-falcaun">3. Build and Install FalCAuN</h3>
 <p>You can build and install FalCAuN using Maven. You have to execute <code>mvn clean</code> to set up the Java API of MATLAB. An example to install the matlab module, as well as the others, is as follows.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>--projects<span class="w"> </span>matlab
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>mvn<span class="w"> </span>install
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mvn<span class="w"> </span>clean<span class="w"> </span>--projects<span class="w"> </span>matlab
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>mvn<span class="w"> </span>install
 </span></code></pre></div>
 <h2 id="installation-of-the-python-binding-module">Installation of the python binding Module</h2>
 <p>Here, we provide the instructions to install the python binding module.</p>
 <h3 id="1-install-the-requirements_2">1. Install the Requirements</h3>
 <p>You need to install <a href="https://github.com/ninia/jep">Jep</a> in the Python environment that Maven should use. For example, create and activate a virtual environment and install Jep there.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>.<span class="w"> </span>venv/bin/activate
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>pip<span class="w"> </span>install<span class="w"> </span>jep
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>.<span class="w"> </span>venv/bin/activate
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>pip<span class="w"> </span>install<span class="w"> </span>jep
 </span></code></pre></div>
 <h3 id="2-set-up-the-environment-variable_1">2. Set up the environment variable</h3>
 <p>Set <code>PYTHONEXECUTABLE</code> to the absolute path of the Python executable that has Jep installed. This is required because Maven runs tests in forked JVMs, and Jep initializes Python from that executable. Do not use a relative path such as <code>./venv/bin/python</code>; use <code>$PWD/venv/bin/python</code> instead.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span>
 </span></code></pre></div>
 <p>The Python binding tests are skipped when <code>PYTHONEXECUTABLE</code> is not set to an absolute executable path.</p>
 <h3 id="3-build-and-install-falcaun_1">3. Build and Install FalCAuN</h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">JAVA_HOME</span><span class="o">=</span>/path/to/jdk21<span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span><span class="w"> </span>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nv">JAVA_HOME</span><span class="o">=</span>/path/to/jdk21<span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span><span class="w"> </span>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python
 </span></code></pre></div>
 <p>If the tests fail with <code>UnsatisfiedLinkError: no jep in java.library.path</code>, pass the directory containing the native library of Jep to <code>java.library.path</code> explicitly. On Linux, you can instead add the directory to <code>LD_LIBRARY_PATH</code>. On macOS, this is necessary because <code>DYLD_LIBRARY_PATH</code> is removed when Maven starts.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nv">JEP_PATH</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>venv/bin/python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import sysconfig; print(sysconfig.get_paths()["purelib"])'</span><span class="k">)</span><span class="s2">/jep"</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nv">JAVA_HOME</span><span class="o">=</span>/path/to/jdk21<span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span><span class="w"> </span>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python<span class="w"> </span>-DargLine<span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$JEP_PATH</span><span class="s2">"</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">JEP_PATH</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>venv/bin/python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import sysconfig; print(sysconfig.get_paths()["purelib"])'</span><span class="k">)</span><span class="s2">/jep"</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nv">JAVA_HOME</span><span class="o">=</span>/path/to/jdk21<span class="w"> </span><span class="nv">PYTHONEXECUTABLE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/venv/bin/python"</span><span class="w"> </span>mvn<span class="w"> </span>install<span class="w"> </span>--also-make<span class="w"> </span>--projects<span class="w"> </span>python<span class="w"> </span>-DargLine<span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$JEP_PATH</span><span class="s2">"</span>
 </span></code></pre></div>
 <h2 id="installation-of-ltsmin-310-on-macos-with-arm-processors">Installation of LTSMin 3.1.0 on macOS with ARM processors</h2>
 <p>FalCAuN works on macOS with ARM processors, but the setup of LTSMin is a bit tricky because it only supports x86_64. One can still run LTSMin using Rosetta and libtool for x86_64. You can also build and install LTSMin using Homebrew (for x86_64) by <code>brew install maswag/scientific/ltsmin-beta</code>.</p>
@@ -948,7 +978,7 @@
 <li>You may have to explicitly specify <code>JAVA_HOME</code>, for example, <code>JAVA_HOME=$(/usr/libexec/java_home -v 21) mvn test -DskipTests=false</code>.</li>
 <li>The automatic transmission model requires parameters defined in an example by MathWorks. To load it, you probably need to set up the example by MathWorks and the path beforehand.<ul>
 <li>The example by MathWorks can be opened with <code>openExample('simulink_automotive/ModelingAnAutomaticTransmissionControllerExample')</code></li>
-<li>See <code>./src/test/resources/MATLAB/initAT.m</code> for an example to set the path.</li>
+<li><code>./benchmarks/simulink/AT/initAT.m</code> sets the path, loads the model from the Breach submodule, and converts the data of R2026b or later to the units the model assumes.</li>
 </ul>
 </li>
 </ul>
