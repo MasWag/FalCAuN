@@ -8,31 +8,29 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Systems under learning with numerical I/O.
- *
- * <h2>Execution lifecycle</h2>
- * <ul>
- *     <li>{@link #pre()} starts an execution session from the initial state of the system.</li>
- *     <li>{@link #step(Object)} executes one step within the current session.</li>
- *     <li>{@link #post()} finalizes the current session. It must be called once for each successful call of
- *     {@link #pre()}, even if a step fails.</li>
- *     <li>{@link #execute(Word)} runs a complete session for the given input word, including the finalization.
- *     Implementations may override it to use a backend-specific batch execution, but it must not leave an
- *     unfinalized session behind, even if the execution fails.</li>
- * </ul>
- * A session started by {@link #pre()} and a session of {@link #execute(Word)} must not be interleaved.
+ * A {@link SUL} with numerical inputs and outputs.
+ * <p>
+ * In addition to the step-wise execution defined by {@link SUL}, this interface supports
+ * full-word execution through {@link #execute(Word)}.
  *
  * @author Masaki Waga {@literal <masakiwaga@gmail.com>}
  */
 public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>>>, AutoCloseable {
     /**
-     * Execute the SUL by feeding the entire input.
+     * Executes an input word from the initial state and returns its input/output signal.
      * <p>
-     * The default implementation calls {@link #pre()}, {@link #step(Object)} for each input, and {@link #post()}.
-     * If {@link #pre()} succeeds, {@link #post()} is called even if a step fails.
+     * The default implementation calls {@link #pre()}, executes each input using {@link #step(Object)},
+     * and calls {@link #post()} in a {@code finally} block. Thus, {@code post()} is called even if
+     * a step fails, provided {@code pre()} completed successfully.
+     * <p>
+     * Implementations may override this method for backend-specific batch execution without individually
+     * calling {@code pre()}, {@code step()}, or {@code post()}. Such implementations are responsible for
+     * equivalent initialization and cleanup, including when execution fails.
+     * <p>
+     * Batch execution must not be interleaved with an active step-wise execution session.
      *
-     * @param inputSignal the input signal
-     * @return the input and output signals. The size of the output signal is the same as that of the input signal.
+     * @param inputSignal the input word
+     * @return the corresponding input/output signal, with one output per input symbol
      */
     default IOSignal<List<Double>> execute(Word<List<Double>> inputSignal) throws InterruptedException, ExecutionException {
         List<List<Double>> outputs = new ArrayList<>();
@@ -66,16 +64,12 @@ public interface NumericSUL extends SUL<List<Double>, IOSignalPiece<List<Double>
      */
     void clear();
 
-    /**
-     * Starts an execution session.
-     */
+    /** {@inheritDoc} */
     default void pre() {
         // do nothing
     }
 
-    /**
-     * Finalizes the current execution session.
-     */
+    /** {@inheritDoc} */
     default void post() {
         // do nothing
     }
