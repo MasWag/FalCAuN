@@ -4,12 +4,12 @@ import de.learnlib.acex.AcexAnalyzers;
 import de.learnlib.exception.SULException;
 import de.learnlib.algorithm.LearningAlgorithm;
 import de.learnlib.algorithm.ttt.mealy.TTTLearnerMealy;
-import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.PropertyOracle;
 import de.learnlib.oracle.equivalence.*;
 import de.learnlib.oracle.equivalence.mealy.RandomWalkEQOracle;
 import de.learnlib.sul.SUL;
+import de.learnlib.util.Experiment;
 import de.learnlib.util.MealyExperiment;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -148,7 +148,7 @@ public class BlackBoxVerifier<I> {
      */
     public EvaluationCountable.MealyEquivalenceOracle<String, String> addCornerCaseEQOracle(int length, int minStep) {
         MealyFixedSetEQOracle cornerCaseEqOracle =
-                new MealyFixedSetEQOracle(this.getProperties().list(), this.memOracle);
+                new MealyFixedSetEQOracle(this.memOracle);
         int step = length;
         while (step >= minStep) {
             List<Word<String>> cornerCase = new ArrayList<>();
@@ -207,16 +207,16 @@ public class BlackBoxVerifier<I> {
         for (TimeoutEQOracle<String, String> timeoutOracle : timeoutOracles) {
             timeoutOracle.start();
         }
-        RoundCountingExperiment experiment = new RoundCountingExperiment(learner, eqOracle, this.inputAlphabet);
+        MealyExperiment<String, String> experiment = new MealyExperiment<>(learner, eqOracle, this.inputAlphabet);
         try {
             this.learnedMealy = experiment.run();
-            return processMealy(experiment.rounds());
+            return processMealy(rounds(experiment));
         } catch (SULException e) {
             log.error("Black-box checking is aborted because the execution of the SUL failed", e);
             properties.reset();
             int states = Objects.isNull(learnedMealy) ? 0 : learnedMealy.size();
             return new VerificationResult<>(List.of(), properties.getSTLProperties(), properties.size(),
-                    TerminationReason.EXECUTION_FAILURE, new Statistics(experiment.rounds(), states), Optional.of(e));
+                    TerminationReason.EXECUTION_FAILURE, new Statistics(rounds(experiment), states), Optional.of(e));
         }
     }
 
@@ -351,17 +351,11 @@ public class BlackBoxVerifier<I> {
     }
 
     /**
-     * A {@link MealyExperiment} exposing the number of the learning rounds.
+     * Returns the number of the learning rounds of an experiment recorded by LearnLib's statistics service.
+     * The experiment records the rounds with itself as the owner, also before a failure of the learning.
      */
-    private static final class RoundCountingExperiment extends MealyExperiment<String, String> {
-        RoundCountingExperiment(LearningAlgorithm.MealyLearner<String, String> learner,
-                                EquivalenceOracle.MealyEquivalenceOracle<String, String> eqOracle,
-                                Alphabet<String> inputs) {
-            super(learner, eqOracle, inputs);
-        }
-
-        int rounds() {
-            return getRound();
-        }
+    private static int rounds(MealyExperiment<String, String> experiment) {
+        return Math.toIntExact(de.learnlib.statistic.Statistics.getService()
+                .getCount(Experiment.KEY_ROUNDS, experiment).orElseThrow());
     }
 }

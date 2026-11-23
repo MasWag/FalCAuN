@@ -57,6 +57,8 @@ class VerificationOutcomeTest {
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
 
         VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(2, result.statistics().learningRounds());
+        assertEquals(2, verifier.getEqEvaluationCount());
         assertEquals(VerificationResult.TerminationReason.ALL_TARGETS_FALSIFIED, result.reason());
         assertTrue(result.allTargetsFalsified());
         assertEquals(properties, result.falsified());
@@ -79,6 +81,9 @@ class VerificationOutcomeTest {
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
 
         VerificationResult<List<Double>> result = verifier.run();
+        assertEquals(3, result.statistics().learningRounds());
+        // The number of the words evaluated by the corner-case equivalence oracle over all the rounds, including cache hits
+        assertEquals(24, verifier.getEqEvaluationCount());
         assertEquals(VerificationResult.TerminationReason.EQUIVALENCE_TESTING_EXHAUSTED, result.reason());
         // Exhausted equivalence testing does not prove the specification
         assertEquals(verifier.getProperties().getSTLProperties(), result.unresolved());
@@ -108,6 +113,8 @@ class VerificationOutcomeTest {
 
         VerificationResult<List<Double>> result = verifier.run();
         assertEquals(VerificationResult.TerminationReason.EXECUTION_FAILURE, result.reason());
+        // The learning rounds are reported even after the failure
+        assertEquals(1, result.statistics().learningRounds());
         assertTrue(result.failure().isPresent());
         assertTrue(result.counterexamples().isEmpty());
         // The session of the failed execution is finalized
@@ -134,6 +141,7 @@ class VerificationOutcomeTest {
         assertEquals(VerificationResult.TerminationReason.EQUIVALENCE_TESTING_EXHAUSTED, result.reason());
         System.out.println("SUL executions: " + verifier.getSutExecutionCount()
                 + ", for equivalence testing: " + verifier.getEqEvaluationCount());
+        assertEquals(3, result.statistics().learningRounds());
         assertEquals(73, verifier.getSutExecutionCount());
         assertEquals(48, verifier.getEqEvaluationCount());
         // The 4 re-executions are of the words executed by the membership oracle (or by the corner-case equivalence

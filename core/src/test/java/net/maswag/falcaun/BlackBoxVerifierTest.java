@@ -243,6 +243,23 @@ class BlackBoxVerifierTest {
         assertFalse(timeoutResult.allTargetsFalsified());
     }
 
+    /**
+     * The corner-case equivalence oracle is not used once all the targets are disproved.
+     * This is ensured by {@link StopDisprovedEQOracle}, which wraps the equivalence oracles added to the verifier.
+     */
+    @Test
+    void cornerCaseOracleStopsAfterAllTargetsDisproved() {
+        StaticSTLList<List<Double>> list = new StaticSTLList<>(Collections.singletonList(properties.get(3)));
+        list.setMemOracle(memOracle);
+        BlackBoxVerifier<List<Double>> cornerVerifier = new BlackBoxVerifier<>(memOracle, sul, list, inputAlphabet);
+        EvaluationCountable cornerCase = cornerVerifier.addCornerCaseEQOracle(4, 2);
+        VerificationResult<List<Double>> result = cornerVerifier.run();
+        assertEquals(VerificationResult.TerminationReason.ALL_TARGETS_FALSIFIED, result.reason());
+        assertEquals(List.of(properties.get(3)), result.falsified());
+        // Without StopDisprovedEQOracle, the corner cases would be evaluated after the property is disproved
+        assertEquals(0, cornerCase.getEvaluateCount());
+    }
+
     @Test
     void executionFailure() {
         MembershipOracle.MealyMembershipOracle<String, String> failingOracle = queries -> {
