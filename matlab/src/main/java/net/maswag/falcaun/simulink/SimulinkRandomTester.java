@@ -5,11 +5,11 @@ import lombok.Getter;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
-import net.maswag.falcaun.IOSignal;
-import net.maswag.falcaun.IOSignalPiece;
-import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.Signal;
-import net.maswag.falcaun.parser.TemporalLogic;
+import net.maswag.falcaun.signal.IOSignal;
+import net.maswag.falcaun.signal.IOSignalPiece;
+import net.maswag.falcaun.abstraction.NumericSULMapper;
+import net.maswag.falcaun.signal.Signal;
+import net.maswag.falcaun.temporal.TemporalLogic;
 
 import org.slf4j.LoggerFactory;
 

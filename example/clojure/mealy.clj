@@ -7,11 +7,11 @@
 (import '(net.automatalib.util.automaton.builder AutomatonBuilders))
 (import '(net.automatalib.visualization Visualization))
 
-(import '(net.maswag.falcaun
+(import '(net.maswag.falcaun.temporal
           AdaptiveSTLList
-          BlackBoxVerifier))
-(import '(net.maswag.falcaun.parser
           LTLFactory))
+(import '(net.maswag.falcaun.verification
+          BlackBoxVerifier))
 
 ;; Define the target Mealy machine
 ;; 1. input alphabet contains strings "a" and "b"

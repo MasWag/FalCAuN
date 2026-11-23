@@ -10,9 +10,13 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
-import net.maswag.falcaun.*
-import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.abstraction.*
+import net.maswag.falcaun.oracle.*
 import net.maswag.falcaun.python.PythonContinuousNumericSUL
+import net.maswag.falcaun.signal.*
+import net.maswag.falcaun.temporal.*
+import net.maswag.falcaun.temporal.STLFactory
+import net.maswag.falcaun.verification.*
 import org.slf4j.LoggerFactory
 import kotlin.streams.toList
 

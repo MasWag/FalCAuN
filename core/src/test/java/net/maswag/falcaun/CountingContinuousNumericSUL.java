@@ -3,6 +3,10 @@ package net.maswag.falcaun;
 import de.learnlib.sul.SUL;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import net.maswag.falcaun.signal.ExtendedIOSignalPiece;
+import net.maswag.falcaun.signal.IOContinuousSignal;
+import net.maswag.falcaun.signal.IOSignalPiece;
+import net.maswag.falcaun.signal.ValueWithTime;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +21,7 @@ import java.util.List;
  * continuous output signal, e.g., to a derived signal using {@link ExtendedIOSignalPiece#getPreviousOutputSignals()}.
  * Like the Simulink and Python backends, {@link #execute} is a batch execution not using {@link #step}.
  */
-class CountingContinuousNumericSUL implements ContinuousNumericSUL {
+public class CountingContinuousNumericSUL implements ContinuousNumericSUL {
     static final double SPIKE = 10.0;
     private final double signalStep;
     private int counter = 0;
@@ -25,7 +29,7 @@ class CountingContinuousNumericSUL implements ContinuousNumericSUL {
     private final List<List<Double>> values = new ArrayList<>();
     private double sum = 0.0;
 
-    CountingContinuousNumericSUL(double signalStep) {
+    public CountingContinuousNumericSUL(double signalStep) {
         this.signalStep = signalStep;
     }
 

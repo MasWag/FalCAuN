@@ -1,11 +1,11 @@
 package org.group_mmm.examples;
 
-import net.maswag.falcaun.STLFactory;
-import net.maswag.falcaun.TemporalLogic.STLCost;
-import net.maswag.falcaun.SimpleSignalMapper;
-import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.StaticSTLList;
-import net.maswag.falcaun.SimulinkSULVerifier;
+import net.maswag.falcaun.temporal.STLFactory;
+import net.maswag.falcaun.temporal.TemporalLogic.STLCost;
+import net.maswag.falcaun.signal.SimpleSignalMapper;
+import net.maswag.falcaun.abstraction.NumericSULMapper;
+import net.maswag.falcaun.temporal.StaticSTLList;
+import net.maswag.falcaun.simulink.SimulinkSULVerifier;
 
 import java.io.FileOutputStream;
 import java.util.*;

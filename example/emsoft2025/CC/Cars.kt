@@ -21,7 +21,7 @@
 
 @file:Import("../Common.kt") // Import the common configuration
 
-import net.maswag.falcaun.*
+import net.maswag.falcaun.abstraction.*
 
 // Define the configuration of the chasing cars model
 val initScript = "mdl = 'cars'; load_system(mdl);"

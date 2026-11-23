@@ -19,9 +19,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import '(java.util Random))
-(import '(net.maswag.falcaun
-          AdaptiveSTLList))
-(import '(net.maswag.falcaun.parser
+(import '(net.maswag.falcaun.temporal
+          AdaptiveSTLList
           STLFactory))
 
 (load-file "common.clj")

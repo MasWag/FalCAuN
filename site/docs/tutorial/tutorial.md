@@ -24,7 +24,11 @@ This example uses a Simulink model of an automatic transmission system. It is lo
 
 First, include FalCAuN and write the `initScript` that MATLAB executes.
 ```kotlin
-import net.maswag.falcaun.*
+import net.maswag.falcaun.abstraction.*
+import net.maswag.falcaun.oracle.*
+import net.maswag.falcaun.signal.*
+import net.maswag.falcaun.temporal.*
+import net.maswag.falcaun.verification.*
 
 // Initializing script for MATLAB
 val initScript = """
@@ -118,7 +122,7 @@ For STL semantics, see the paper [Waga20].
 
 In FalCAuN, STL formulas are given as strings.
 ```kotlin
-import net.maswag.falcaun.TemporalLogic.STLCost;
+import net.maswag.falcaun.temporal.TemporalLogic.STLCost;
 
 // Define the STL properties
 val stlFactory = STLFactory()
@@ -164,7 +168,7 @@ val mutationProb = 0.01
 verifier.addGAEQOracleAll(
     signalLength,
     maxTest,
-    ArgParser.GASelectionKind.Tournament,
+    GASelectionKind.Tournament,
     populationSize,
     crossoverProb,
     mutationProb

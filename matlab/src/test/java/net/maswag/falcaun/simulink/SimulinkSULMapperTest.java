@@ -1,9 +1,9 @@
 package net.maswag.falcaun.simulink;
 
 import net.automatalib.word.Word;
-import net.maswag.falcaun.IOSignalPiece;
-import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.SimpleSignalMapper;
+import net.maswag.falcaun.signal.IOSignalPiece;
+import net.maswag.falcaun.abstraction.NumericSULMapper;
+import net.maswag.falcaun.signal.SimpleSignalMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

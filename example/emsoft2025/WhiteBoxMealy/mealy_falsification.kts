@@ -16,9 +16,12 @@ import de.learnlib.sul.SUL
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
 import net.automatalib.util.automaton.minimizer.HopcroftMinimizer
-import net.maswag.falcaun.*
-import net.maswag.falcaun.parser.LTLFactory
-import net.maswag.falcaun.parser.LTLFormulaHelper
+import net.maswag.falcaun.abstraction.*
+import net.maswag.falcaun.oracle.*
+import net.maswag.falcaun.temporal.*
+import net.maswag.falcaun.verification.*
+import net.maswag.falcaun.temporal.LTLFactory
+import net.maswag.falcaun.temporal.LTLFormulaHelper
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.io.*

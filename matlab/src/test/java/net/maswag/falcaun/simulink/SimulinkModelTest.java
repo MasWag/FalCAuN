@@ -2,7 +2,7 @@ package net.maswag.falcaun.simulink;
 
 import com.mathworks.engine.EngineException;
 import net.automatalib.word.Word;
-import net.maswag.falcaun.ValueWithTime;
+import net.maswag.falcaun.signal.ValueWithTime;
 import net.maswag.falcaun.simulink.SimulinkModel;
 
 import org.junit.jupiter.api.*;

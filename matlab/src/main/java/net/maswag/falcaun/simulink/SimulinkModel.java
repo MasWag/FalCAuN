@@ -8,9 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.automatalib.word.Word;
-import net.maswag.falcaun.Signal;
+import net.maswag.falcaun.signal.Signal;
 import net.maswag.falcaun.TimeMeasure;
-import net.maswag.falcaun.ValueWithTime;
+import net.maswag.falcaun.signal.ValueWithTime;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;

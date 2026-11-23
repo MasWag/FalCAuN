@@ -9,9 +9,13 @@
 // We assume that the MATLAB_HOME environment variable is set
 @file:KotlinOptions("-Djava.library.path=$MATLAB_HOME/bin/maca64/:$MATLAB_HOME/bin/maci64:$MATLAB_HOME/bin/glnxa64")
 
-import net.maswag.falcaun.*
-import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.abstraction.*
+import net.maswag.falcaun.oracle.*
+import net.maswag.falcaun.signal.*
 import net.maswag.falcaun.simulink.SimulinkSUL
+import net.maswag.falcaun.temporal.*
+import net.maswag.falcaun.temporal.STLFactory
+import net.maswag.falcaun.verification.*
 import kotlin.streams.toList
 
 // Define the input and output mappers

@@ -3,6 +3,7 @@ package net.maswag.falcaun;
 import net.automatalib.word.Word;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import net.maswag.falcaun.signal.IOSignal;
 
 import java.util.Collections;
 import java.util.List;

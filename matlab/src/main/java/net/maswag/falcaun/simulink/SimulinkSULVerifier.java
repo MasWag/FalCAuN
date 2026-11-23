@@ -2,15 +2,15 @@ package net.maswag.falcaun.simulink;
 
 import java.util.List;
 
-import net.maswag.falcaun.AdaptiveSTLUpdater;
-import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.NumericSULVerifier;
+import net.maswag.falcaun.temporal.AdaptiveSTLUpdater;
+import net.maswag.falcaun.abstraction.NumericSULMapper;
+import net.maswag.falcaun.verification.NumericSULVerifier;
 
 /**
  * Verifies Simulink models with specified properties.
  *
  * @see net.maswag.falcaun.simulink.SimulinkSUL
- * @see net.maswag.falcaun.NumericSULVerifier
+ * @see net.maswag.falcaun.verification.NumericSULVerifier
  */
 public class SimulinkSULVerifier extends NumericSULVerifier {
     /**

@@ -2,17 +2,17 @@ package net.maswag.falcaun.simulink;
 
 import org.junit.jupiter.api.*;
 
-import net.maswag.falcaun.AdaptiveSTLList;
-import net.maswag.falcaun.AdaptiveSTLUpdater;
-import net.maswag.falcaun.GASelectionKind;
-import net.maswag.falcaun.IOSignalPiece;
-import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.SimpleSignalMapper;
-import net.maswag.falcaun.StaticSTLList;
-import net.maswag.falcaun.parser.STLFactory;
-import net.maswag.falcaun.parser.TemporalLogic;
-import net.maswag.falcaun.StopDisprovedEQOracle;
-import net.maswag.falcaun.VerificationResult;
+import net.maswag.falcaun.temporal.AdaptiveSTLList;
+import net.maswag.falcaun.temporal.AdaptiveSTLUpdater;
+import net.maswag.falcaun.oracle.GASelectionKind;
+import net.maswag.falcaun.signal.IOSignalPiece;
+import net.maswag.falcaun.abstraction.NumericSULMapper;
+import net.maswag.falcaun.signal.SimpleSignalMapper;
+import net.maswag.falcaun.temporal.StaticSTLList;
+import net.maswag.falcaun.temporal.STLFactory;
+import net.maswag.falcaun.temporal.TemporalLogic;
+import net.maswag.falcaun.oracle.StopDisprovedEQOracle;
+import net.maswag.falcaun.verification.VerificationResult;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

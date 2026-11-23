@@ -5,9 +5,9 @@ import de.learnlib.sul.SUL;
 import jep.JepException;
 import lombok.Getter;
 import net.automatalib.word.Word;
-import net.maswag.falcaun.IODiscreteSignal;
-import net.maswag.falcaun.IOSignal;
-import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.signal.IODiscreteSignal;
+import net.maswag.falcaun.signal.IOSignal;
+import net.maswag.falcaun.signal.IOSignalPiece;
 import net.maswag.falcaun.NumericSUL;
 
 import javax.annotation.Nonnull;

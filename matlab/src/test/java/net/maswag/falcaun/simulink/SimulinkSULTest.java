@@ -1,7 +1,7 @@
 package net.maswag.falcaun.simulink;
 
 import net.automatalib.word.Word;
-import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.signal.IOSignalPiece;
 import net.maswag.falcaun.simulink.SimulinkSUL;
 
 import org.junit.Ignore;

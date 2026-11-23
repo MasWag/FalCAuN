@@ -2,19 +2,22 @@
 (import '(org.slf4j LoggerFactory))
 (import '(ch.qos.logback.classic Level Logger))
 (import '(net.automatalib.modelchecker.ltsmin AbstractLTSmin LTSminVersion))
-(import '(net.maswag.falcaun
-          AbstractAdaptiveSTLUpdater
-          AdaptiveSTLList
-          GASelectionKind
-          EQSearchProblem
-          EQSteadyStateGeneticAlgorithm
-          ExtendedSignalMapper
+(import '(net.maswag.falcaun.abstraction
           InputMapperReader
           NumericSULMapper
-          NumericSULVerifier
           OutputMapperReader))
-(import '(net.maswag.falcaun.parser
+(import '(net.maswag.falcaun.oracle
+          GASelectionKind
+          EQSearchProblem
+          EQSteadyStateGeneticAlgorithm))
+(import '(net.maswag.falcaun.signal
+          ExtendedSignalMapper))
+(import '(net.maswag.falcaun.temporal
+          AbstractAdaptiveSTLUpdater
+          AdaptiveSTLList
           STLFactory))
+(import '(net.maswag.falcaun.verification
+          NumericSULVerifier))
 
 (defn make-signal-deriver
   "Construct an ExtendedSignalMapper from mapping expressions.

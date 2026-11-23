@@ -20,11 +20,11 @@
 (import '(net.automatalib.alphabet.impl Alphabets))
 
 (import '(de.learnlib.oracle.membership SULOracle))
-(import '(net.maswag.falcaun
+(import '(net.maswag.falcaun.temporal
           AdaptiveSTLList
-          BlackBoxVerifier))
-(import '(net.maswag.falcaun.parser
           LTLFactory))
+(import '(net.maswag.falcaun.verification
+          BlackBoxVerifier))
 (import '(net.maswag.falcaun.python
           PythonSUL))
 

@@ -9,9 +9,12 @@
 // Import the libraries
 
 import de.learnlib.oracle.membership.SULOracle
-import net.maswag.falcaun.*
+import net.maswag.falcaun.abstraction.*
 import net.maswag.falcaun.example.*
-import net.maswag.falcaun.parser.*
+import net.maswag.falcaun.oracle.*
+import net.maswag.falcaun.signal.*
+import net.maswag.falcaun.temporal.*
+import net.maswag.falcaun.verification.*
 import java.util.Random
 import kotlin.streams.toList
 

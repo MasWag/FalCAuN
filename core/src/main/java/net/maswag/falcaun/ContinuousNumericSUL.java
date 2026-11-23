@@ -1,6 +1,8 @@
 package net.maswag.falcaun;
 
 import net.automatalib.word.Word;
+import net.maswag.falcaun.signal.ExtendedIOSignalPiece;
+import net.maswag.falcaun.signal.IOContinuousSignal;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;

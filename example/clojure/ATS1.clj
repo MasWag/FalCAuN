@@ -21,14 +21,17 @@
 ;;   lein exec -p ATS1.clj
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(import '(net.maswag.falcaun
-          AdaptiveSTLList
-          GASelectionKind
-          BlackBoxVerifier
+(import '(net.maswag.falcaun.abstraction
           InputMapperReader
           NumericSULMapper
-          NumericSULVerifier
           OutputMapperReader))
+(import '(net.maswag.falcaun.oracle
+          GASelectionKind))
+(import '(net.maswag.falcaun.temporal
+          AdaptiveSTLList))
+(import '(net.maswag.falcaun.verification
+          BlackBoxVerifier
+          NumericSULVerifier))
 (import '(net.maswag.falcaun.simulink
           SimulinkSUL))
 
