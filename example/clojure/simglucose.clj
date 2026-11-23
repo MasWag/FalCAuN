@@ -15,7 +15,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import '(java.util Random))
-(import '(net.maswag.falcaun
+(import '(net.maswag.falcaun.abstraction
           InputMapperReader))
 (import '(net.maswag.falcaun.python
           PythonNumericSUL))

@@ -26,7 +26,12 @@
 @file:Import("./Cars.kt") // Import the constants for Chasing Cars
 
 import net.maswag.falcaun.*
-import net.maswag.falcaun.parser.STLFactory
+import net.maswag.falcaun.abstraction.*
+import net.maswag.falcaun.oracle.*
+import net.maswag.falcaun.signal.*
+import net.maswag.falcaun.temporal.*
+import net.maswag.falcaun.verification.*
+import net.maswag.falcaun.temporal.STLFactory
 import net.maswag.falcaun.simulink.SimulinkSUL
 import java.io.BufferedReader
 import java.io.StringReader

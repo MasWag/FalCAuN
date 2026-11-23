@@ -9,6 +9,9 @@ import net.automatalib.modelchecker.ltsmin.LTSminUtil;
 
 import org.apache.commons.cli.*;
 import org.slf4j.LoggerFactory;
+import net.maswag.falcaun.oracle.GASelectionKind;
+import net.maswag.falcaun.signal.SignalMapper;
+import net.maswag.falcaun.signal.SimpleSignalMapper;
 
 import java.io.IOException;
 import java.util.Arrays;

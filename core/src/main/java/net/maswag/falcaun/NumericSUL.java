@@ -2,6 +2,9 @@ package net.maswag.falcaun;
 
 import de.learnlib.sul.SUL;
 import net.automatalib.word.Word;
+import net.maswag.falcaun.signal.IODiscreteSignal;
+import net.maswag.falcaun.signal.IOSignal;
+import net.maswag.falcaun.signal.IOSignalPiece;
 
 import java.util.ArrayList;
 import java.util.List;

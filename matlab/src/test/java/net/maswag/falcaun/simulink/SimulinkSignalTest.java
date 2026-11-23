@@ -1,7 +1,7 @@
 package net.maswag.falcaun.simulink;
 
 import net.automatalib.word.Word;
-import net.maswag.falcaun.Signal;
+import net.maswag.falcaun.signal.Signal;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

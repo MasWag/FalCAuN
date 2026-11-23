@@ -3,8 +3,8 @@ package net.maswag.falcaun.python;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.maswag.falcaun.IOSignal;
-import net.maswag.falcaun.IOSignalPiece;
+import net.maswag.falcaun.signal.IOSignal;
+import net.maswag.falcaun.signal.IOSignalPiece;
 import net.maswag.falcaun.python.PythonNumericSUL;
 
 import java.util.Arrays;

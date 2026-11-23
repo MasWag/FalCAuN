@@ -7,11 +7,11 @@ import lombok.Getter;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 import net.maswag.falcaun.ContinuousNumericSUL;
-import net.maswag.falcaun.ExtendedIOSignalPiece;
-import net.maswag.falcaun.IOContinuousSignal;
-import net.maswag.falcaun.IOSignalPiece;
-import net.maswag.falcaun.Signal;
-import net.maswag.falcaun.ValueWithTime;
+import net.maswag.falcaun.signal.ExtendedIOSignalPiece;
+import net.maswag.falcaun.signal.IOContinuousSignal;
+import net.maswag.falcaun.signal.IOSignalPiece;
+import net.maswag.falcaun.signal.Signal;
+import net.maswag.falcaun.signal.ValueWithTime;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -31,6 +31,13 @@ import ch.qos.logback.classic.Logger
 import org.slf4j.LoggerFactory
 import net.automatalib.modelchecker.ltsmin.AbstractLTSmin
 import net.automatalib.modelchecker.ltsmin.LTSminVersion
+import net.maswag.falcaun.TimeMeasure
+import net.maswag.falcaun.oracle.EQSearchProblem
+import net.maswag.falcaun.oracle.EQSteadyStateGeneticAlgorithm
+import net.maswag.falcaun.oracle.MealyFixedSetEQOracle
+import net.maswag.falcaun.temporal.AbstractAdaptiveSTLUpdater
+import net.maswag.falcaun.temporal.AdaptiveSTLList
+import net.maswag.falcaun.verification.NumericSULVerifier
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.io.OutputStream
 import java.io.FileOutputStream

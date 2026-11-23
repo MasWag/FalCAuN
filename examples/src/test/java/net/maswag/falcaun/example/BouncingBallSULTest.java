@@ -3,7 +3,7 @@ package net.maswag.falcaun.example;
 import static org.junit.jupiter.api.Assertions.*;
 
 import net.automatalib.word.Word;
-import net.maswag.falcaun.IOContinuousSignal;
+import net.maswag.falcaun.signal.IOContinuousSignal;
 import net.maswag.falcaun.example.BouncingBall;
 import net.maswag.falcaun.example.BouncingBallSUL;
 

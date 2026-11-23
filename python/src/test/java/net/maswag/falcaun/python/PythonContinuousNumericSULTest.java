@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import net.automatalib.word.Word;
-import net.maswag.falcaun.ExtendedIOSignalPiece;
-import net.maswag.falcaun.IOContinuousSignal;
+import net.maswag.falcaun.signal.ExtendedIOSignalPiece;
+import net.maswag.falcaun.signal.IOContinuousSignal;
 import net.maswag.falcaun.python.PythonContinuousNumericSUL;
 
 import static org.junit.jupiter.api.Assertions.*;

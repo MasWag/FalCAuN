@@ -4,6 +4,7 @@ import de.learnlib.exception.SULException;
 import de.learnlib.sul.SUL;
 import lombok.Getter;
 import lombok.Setter;
+import net.maswag.falcaun.signal.IOSignalPiece;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +17,7 @@ import java.util.List;
  * counts the sessions (calls of {@link #pre()}) so that tests can check how many times the SUL is actually executed.
  * It does not override {@link NumericSUL#execute}, so the default lifecycle of {@link NumericSUL} is tested.
  */
-class CountingNumericSUL implements NumericSUL {
+public class CountingNumericSUL implements NumericSUL {
     /**
      * The lifecycle events in the order of the calls, e.g., {@code pre}, {@code step}, {@code post}.
      */

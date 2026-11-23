@@ -9,8 +9,12 @@
 // Below is an example path to the JEP library when using pyenv and python 3.10.15
 // @file:KotlinOptions("-Djava.library.path=$PYENV_ROOT/versions/3.10.15/lib/python3.10/site-packages/jep")
 
-import net.maswag.falcaun.*
-import net.maswag.falcaun.ExtendedSignalMapper
+import net.maswag.falcaun.abstraction.*
+import net.maswag.falcaun.oracle.*
+import net.maswag.falcaun.signal.*
+import net.maswag.falcaun.temporal.*
+import net.maswag.falcaun.verification.*
+import net.maswag.falcaun.signal.ExtendedSignalMapper
 
 // Reduce verbose logs
 // surpressesLog()

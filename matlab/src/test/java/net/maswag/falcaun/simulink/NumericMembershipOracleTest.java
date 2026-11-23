@@ -6,10 +6,10 @@ import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.oracle.membership.SULOracle;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
-import net.maswag.falcaun.IOSignalPiece;
-import net.maswag.falcaun.NumericMembershipOracle;
-import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.SimpleSignalMapper;
+import net.maswag.falcaun.signal.IOSignalPiece;
+import net.maswag.falcaun.oracle.NumericMembershipOracle;
+import net.maswag.falcaun.abstraction.NumericSULMapper;
+import net.maswag.falcaun.signal.SimpleSignalMapper;
 import net.maswag.falcaun.simulink.SimulinkSUL;
 
 import org.junit.jupiter.api.AfterEach;

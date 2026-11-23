@@ -1,17 +1,17 @@
 package net.maswag.falcaun.example;
 
 import net.automatalib.word.Word;
-import net.maswag.falcaun.AdaptiveSTLList;
-import net.maswag.falcaun.GASelectionKind;
-import net.maswag.falcaun.IOContinuousSignal;
-import net.maswag.falcaun.InputMapper;
-import net.maswag.falcaun.NumericSULVerifier;
-import net.maswag.falcaun.OutputMapper;
-import net.maswag.falcaun.Signal;
-import net.maswag.falcaun.SignalAdapter;
-import net.maswag.falcaun.VerificationResult;
-import net.maswag.falcaun.parser.STLFactory;
-import net.maswag.falcaun.parser.TemporalLogic;
+import net.maswag.falcaun.temporal.AdaptiveSTLList;
+import net.maswag.falcaun.oracle.GASelectionKind;
+import net.maswag.falcaun.signal.IOContinuousSignal;
+import net.maswag.falcaun.abstraction.InputMapper;
+import net.maswag.falcaun.verification.NumericSULVerifier;
+import net.maswag.falcaun.abstraction.OutputMapper;
+import net.maswag.falcaun.signal.Signal;
+import net.maswag.falcaun.abstraction.SignalAdapter;
+import net.maswag.falcaun.verification.VerificationResult;
+import net.maswag.falcaun.temporal.STLFactory;
+import net.maswag.falcaun.temporal.TemporalLogic;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

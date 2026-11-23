@@ -1,11 +1,11 @@
 package net.maswag.falcaun.simulink;
 
 import lombok.Getter;
-import net.maswag.falcaun.AdaptiveSTLUpdater;
-import net.maswag.falcaun.IOSignalPiece;
-import net.maswag.falcaun.NumericSULMapper;
-import net.maswag.falcaun.NumericSULVerifier;
-import net.maswag.falcaun.SimpleSignalMapper;
+import net.maswag.falcaun.temporal.AdaptiveSTLUpdater;
+import net.maswag.falcaun.signal.IOSignalPiece;
+import net.maswag.falcaun.abstraction.NumericSULMapper;
+import net.maswag.falcaun.verification.NumericSULVerifier;
+import net.maswag.falcaun.signal.SimpleSignalMapper;
 import net.maswag.falcaun.simulink.SimulinkSULVerifier;
 
 import org.apache.commons.collections4.CollectionUtils;

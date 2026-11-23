@@ -1,11 +1,11 @@
 grammar LTL;
 
 @header {
-package net.maswag.falcaun.parser;
+package net.maswag.falcaun.temporal.parser;
 
-import net.maswag.falcaun.parser.LTLListener;
-import net.maswag.falcaun.parser.LTLVisitor;
-import net.maswag.falcaun.parser.LTLParser;
+import net.maswag.falcaun.temporal.parser.LTLListener;
+import net.maswag.falcaun.temporal.parser.LTLVisitor;
+import net.maswag.falcaun.temporal.parser.LTLParser;
 
 }
 

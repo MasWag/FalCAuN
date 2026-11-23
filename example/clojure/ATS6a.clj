@@ -21,17 +21,19 @@
 ;;   lein exec -p ATS6a.clj
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(import '(net.maswag.falcaun
-          AdaptiveSTLList
-          GASelectionKind
+(import '(net.maswag.falcaun.abstraction
           InputMapperReader
           NumericSULMapper
-          NumericSULVerifier
           OutputMapperReader))
+(import '(net.maswag.falcaun.oracle
+          GASelectionKind))
+(import '(net.maswag.falcaun.temporal
+          AdaptiveSTLList
+          STLFactory))
+(import '(net.maswag.falcaun.verification
+          NumericSULVerifier))
 (import '(net.maswag.falcaun.simulink
           SimulinkSUL))
-(import '(net.maswag.falcaun.parser
-          STLFactory))
 
 (load-file "common.clj")
 (load-file "auto_trans.clj")

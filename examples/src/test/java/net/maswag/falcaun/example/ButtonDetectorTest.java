@@ -7,10 +7,10 @@ import de.learnlib.oracle.membership.SULOracle;
 import de.learnlib.sul.SUL;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.word.Word;
-import net.maswag.falcaun.BlackBoxVerifier;
-import net.maswag.falcaun.StopDisprovedEQOracle;
-import net.maswag.falcaun.StopDisprovedEQOracle.StaticLTLList;
-import net.maswag.falcaun.VerificationResult;
+import net.maswag.falcaun.verification.BlackBoxVerifier;
+import net.maswag.falcaun.oracle.StopDisprovedEQOracle;
+import net.maswag.falcaun.oracle.StopDisprovedEQOracle.StaticLTLList;
+import net.maswag.falcaun.verification.VerificationResult;
 import net.maswag.falcaun.example.ButtonDetector;
 import net.maswag.falcaun.example.ButtonDetectorMapper;
 

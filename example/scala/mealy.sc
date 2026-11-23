@@ -12,9 +12,9 @@ import net.automatalib.util.automaton.builder.AutomatonBuilders
 import net.automatalib.visualization.Visualization
 import scala.jdk.CollectionConverters.*
 
-import net.maswag.falcaun.AdaptiveSTLList
-import net.maswag.falcaun.BlackBoxVerifier
-import net.maswag.falcaun.LTLFactory
+import net.maswag.falcaun.temporal.AdaptiveSTLList
+import net.maswag.falcaun.verification.BlackBoxVerifier
+import net.maswag.falcaun.temporal.LTLFactory
 
 // Define the target Mealy machine
 // 1. input alphabet contains strings "a" and "b"

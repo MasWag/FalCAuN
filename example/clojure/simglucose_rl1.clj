@@ -19,7 +19,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import '(java.util Random))
-(import '(net.maswag.falcaun
+(import '(net.maswag.falcaun.temporal
           AdaptiveSTLList
           STLFactory))
 
