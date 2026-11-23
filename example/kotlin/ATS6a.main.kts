@@ -68,11 +68,11 @@ val prevMaxRotation = "output(4)"
 
 // Define the STL properties
 signalStep = 1.0
-// val stlGRotationLt3000 = "$rotation < 3000.0 && []_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation < 3000.0)"
-val stlGRotationLt3000 = "[]_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation < 3000.0)"
+// val stlGRotationLt3000 = "$rotation <= 3000.0 && []_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation <= 3000.0)"
+val stlGRotationLt3000 = "[]_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation <= 3000.0)"
 val stlNotGRotationLt3000 = "<>_[0, ${(30 / signalStep).toInt()}] ($prevMaxRotation > 3000.0)"
-// val STLGVelocityLt35 = "$velocity < 35.0 && []_[0,${(4 / signalStep).toInt()}] ($prevMaxVelocity < 35.0)"
-val STLGVelocityLt35 = "[]_[0,${(4 / signalStep).toInt()}] ($prevMaxVelocity < 35.0)"
+// val STLGVelocityLt35 = "$velocity <= 35.0 && []_[0,${(4 / signalStep).toInt()}] ($prevMaxVelocity <= 35.0)"
+val STLGVelocityLt35 = "[]_[0,${(4 / signalStep).toInt()}] ($prevMaxVelocity <= 35.0)"
 val stlList =
     parseStlList(
         listOf(

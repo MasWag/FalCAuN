@@ -9,7 +9,7 @@ binaryOperator : AND | OR | IMPLY | binaryTemporalOperator ;
 
 binaryTemporalOperator : UNTIL | RELEASE ;
 
-comparisonOperator : EQ | LT | GT | NE ;
+comparisonOperator : EQ | LE | GT | NE ;
 
 value
       : MINUS? NATURAL
@@ -44,7 +44,7 @@ IMPLY :  '->';
 NOT :  '!';
 EQ :  '==';
 NE :  '!=';
-LT :  '<';
+LE :  '<=';
 GT :  '>';
 NATURAL  : [1-9][0-9]* | '0';
 MINUS : '-';

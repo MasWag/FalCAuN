@@ -74,9 +74,9 @@ class SimulinkSULVerifierTest {
             largest = new ArrayList<>(Arrays.asList('c', '0', '0'));
         }
         mapper = new NumericSULMapper(inputMapper, largest, outputMapper, new SimpleSignalMapper(sigMap));
-        // [] (velocity < 10)
+        // [] (velocity <= 10)
         properties = new StaticSTLList<>(Collections.singletonList(
-                factory.parse("[] (signal(0) < 10.0)", inputMapper, outputMapper, largest)));
+                factory.parse("[] (signal(0) <= 10.0)", inputMapper, outputMapper, largest)));
 
         try {
             verifier = new SimulinkSULVerifier(initScript, paramNames, signalStep, 0.0025, properties, mapper);
@@ -319,7 +319,7 @@ class SimulinkSULVerifierTest {
 
             @BeforeEach
             void setUp() {
-                String stlString = "alw_[0, 20] (signal(0) < 120)";
+                String stlString = "alw_[0, 20] (signal(0) <= 120)";
                 stl = factory.parse(stlString, inputMapper, outputMapper, largest);
             }
 
@@ -354,8 +354,8 @@ class SimulinkSULVerifierTest {
             @BeforeEach
             void setUp() {
                 List<String> stlStringList = Arrays.asList(
-                        "alw_[0, 20] (signal(0) < 120)",
-                        "alw_[0, 10] (signal(1) < 4750)");
+                        "alw_[0, 20] (signal(0) <= 120)",
+                        "alw_[0, 10] (signal(1) <= 4750)");
                 stlList = stlStringList.stream().map(stlString ->
                         factory.parse(stlString, inputMapper, outputMapper, largest)).collect(Collectors.toList());
                 expectedStlStringList = stlList.stream().map(Object::toString).collect(Collectors.toList());

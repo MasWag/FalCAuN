@@ -30,7 +30,7 @@ class STLCostTest {
     @BeforeEach
     void setUp() {
         concreteExpected = Arrays.asList(
-                "[] ( output(0) < 120.000000 )",
+                "[] ( output(0) <= 120.000000 )",
                 "[] ( ( output(2) == 3.000000 ) -> ( output(0) > 20.000000 ) )"
         );
         abstractExpected = Arrays.asList(
@@ -47,7 +47,7 @@ class STLCostTest {
         List<Map<Character, Double>> outputMapper = Arrays.asList(velocityMap, rotationMap, gearMap);
         List<Character> largest = Arrays.asList('c', 'a', 'c');
         List<STLOutputAtomic> atomics = new ArrayList<>();
-        atomics.add(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 120.0));
+        atomics.add(new STLOutputAtomic(0, STLOutputAtomic.Operation.le, 120.0));
         atomics.add(new STLOutputAtomic(2, STLOutputAtomic.Operation.eq, 3));
         atomics.add(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 20));
         for (STLOutputAtomic atomic : atomics) {
@@ -80,8 +80,8 @@ class STLCostTest {
     void equalityTest() {
         STLFactory factory = new STLFactory();
         List<STLCost> formulas = new ArrayList<>();
-        formulas.add(factory.parse("[] ( output(0) < 120.000000 )"));
-        formulas.add(factory.parse("[] ( output(0) < 120.000000 )"));
+        formulas.add(factory.parse("[] ( output(0) <= 120.000000 )"));
+        formulas.add(factory.parse("[] ( output(0) <= 120.000000 )"));
         // STL Formulas are considered the same if they have the same string representation
         assertEquals(formulas.get(0), formulas.get(1));
     }
@@ -115,7 +115,7 @@ class STLCostTest {
         @Test
         void ATExampleS4() {
             STLCost costFunc =
-                    new STLOr(new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
+                    new STLOr(new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.le, 100)), 0, 13),
                             new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
             assertNotEquals(POSITIVE_INFINITY, costFunc.apply(input));
         }
@@ -124,9 +124,9 @@ class STLCostTest {
         void ATExampleS4AndTextRepl() {
             STLFactory factory = new STLFactory();
             STLCost costFuncExt =
-                    new STLOr(new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 100)), 0, 13),
+                    new STLOr(new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.le, 100)), 0, 13),
                             new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 65.0)), 14, 14));
-            STLCost costFunc = factory.parse("([]_[0,13] (signal(0) < 100)) || ([]_[14,14] (signal(0) > 65.0))");
+            STLCost costFunc = factory.parse("([]_[0,13] (signal(0) <= 100)) || ([]_[14,14] (signal(0) > 65.0))");
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
     }
@@ -161,13 +161,13 @@ class STLCostTest {
         @Test
         void AT6() {
             STLCost costFunc1Atomic =
-                    new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 3000);
+                    new STLOutputAtomic(1, STLOutputAtomic.Operation.le, 3000);
             TemporalOp<List<Double>> costFunc1Global =
                     new STLGlobally(costFunc1Atomic);
             STLCost costFunc1 =
                     new STLSub(costFunc1Global, 0, 15);
             STLCost costFunc2 =
-                    new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2);
+                    new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.le, 35.0)), 0, 2);
             STLCost costFunc = new STLImply(costFunc1, costFunc2);
 
             RoSI robustness1Atomic = costFunc1Atomic.getRoSI(input);
@@ -195,9 +195,9 @@ class STLCostTest {
         void AT6TextRepl() {
             STLFactory factory = new STLFactory();
             STLCost costFuncExt =
-                    new STLImply(new STLSub(new STLGlobally(new STLOutputAtomic(1, STLOutputAtomic.Operation.lt, 3000)), 0, 15),
-                            new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, 35.0)), 0, 2));
-            STLCost costFunc = factory.parse("((alw_[0, 15] (signal(1) < 3000.0)) -> (alw_[0, 2] (signal(0) < 35.0)))");
+                    new STLImply(new STLSub(new STLGlobally(new STLOutputAtomic(1, STLOutputAtomic.Operation.le, 3000)), 0, 15),
+                            new STLSub(new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.le, 35.0)), 0, 2));
+            STLCost costFunc = factory.parse("((alw_[0, 15] (signal(1) <= 3000.0)) -> (alw_[0, 2] (signal(0) <= 35.0)))");
             assertEquals(costFuncExt.apply(input), costFunc.apply(input));
         }
     }

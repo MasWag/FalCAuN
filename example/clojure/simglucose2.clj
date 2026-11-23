@@ -46,13 +46,13 @@
 (def stl-list
   (parse-stl-list
    [;; BG does not go above 400
-    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s < 400.0)" max-bg)
+    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s <= 400.0)" max-bg)
     ;; Does not fall below the lower 10% for more than 30 minutes
-    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s < 70.0 -> X (%s > 70.0))" bg max-bg)
+    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s <= 70.0 -> X (%s > 70.0))" bg max-bg)
     ;; Hypoglycemia does not last longer than 150 minutes
-    (format "(<> (input(0) == 50.0 && X (input(0) == 50.0))) R ! []_[0,%d] (%s < 70.0)" alpha max-bg)
+    (format "(<> (input(0) == 50.0 && X (input(0) == 50.0))) R ! []_[0,%d] (%s <= 70.0)" alpha max-bg)
     ;; Does not administer insulin when hypoglycemia
-    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s < 70.0) -> (%s < 0.5)" bg insulin)]
+    (format "(input(0) == 50.0 && X (input(0) == 50.0)) R (%s <= 70.0) -> (%s <= 0.5)" bg insulin)]
    input-mapper
    output-mapper-reader))
 

@@ -56,8 +56,8 @@ class StaticSTLListTest {
             void setUp() {
                 STLFactory factory = new STLFactory();
                 List<String> stlStringList = Arrays.asList(
-                        "alw_[0, 20] (signal(0) < 120)",
-                        "alw_[0, 10] (signal(1) < 4750)");
+                        "alw_[0, 20] (signal(0) <= 120)",
+                        "alw_[0, 10] (signal(1) <= 4750)");
                 stlList = stlStringList.stream().map(stlString ->
                         factory.parse(stlString, inputMapper, outputMapper, largest)).collect(Collectors.toList());
                 expectedStlStringList = stlList.stream().map(Object::toString).collect(Collectors.toList());

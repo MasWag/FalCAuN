@@ -36,9 +36,9 @@ val stlList =
             // BG does not go below 55
             "G($min_bg > 55.0)",
             // Does not exceed the upper 10% for more than 30 minutes
-            "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg > 180.0 -> X ($min_bg < 180.0))",
+            "(input(0) == 50.0 && X (input(0) == 50.0)) R ($bg > 180.0 -> X ($min_bg <= 180.0))",
             // Does not exceed the upper 10% for more than 30 minutes after insulin administration
-            "(input(0) == 50.0 && X (input(0) == 50.0)) R ($insulin > 0.5 -> X ($min_bg < 180.0))",
+            "(input(0) == 50.0 && X (input(0) == 50.0)) R ($insulin > 0.5 -> X ($min_bg <= 180.0))",
             // Hyperglycemia does not last longer than 180 minutes
             "(input(0) == 50.0 && X (input(0) == 50.0)) R ! []_[0, ${(180.0 / stepDuration).toInt()}] ($min_bg > 240.0)",
         ),

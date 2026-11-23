@@ -45,9 +45,9 @@ val stlList =
             // BG should not stay below 10th-percentile threshold for more than 120 minutes.
             "G($bg > $tenthBg || F_[0, ${(120 / stepDuration).toInt()}] $max_bg > $tenthBg)",
             // BG should not stay above 90th-percentile threshold for more than 120 minutes.
-            "G($bg < $ninetiethBg || F_[0, ${(120 / stepDuration).toInt()}] $min_bg < $ninetiethBg)",
+            "G($bg <= $ninetiethBg || F_[0, ${(120 / stepDuration).toInt()}] $min_bg <= $ninetiethBg)",
             // BG should not stay above 90th-percentile threshold for more than 150 minutes after an insuline injection.
-            "G($bg < $ninetiethBg || $insulin < 0.5 || F_[0, ${(150 / stepDuration).toInt()}] $min_bg < $ninetiethBg)",
+            "G($bg <= $ninetiethBg || $insulin <= 0.5 || F_[0, ${(150 / stepDuration).toInt()}] $min_bg <= $ninetiethBg)",
         ),
         inputMapper,
         outputMapperReader,

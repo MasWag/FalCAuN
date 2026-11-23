@@ -48,13 +48,13 @@
   (parse-stl-list
    [;; BG must be in a good range
     (format "G(%s > 70.0)" min-bg)
-    (format "G(%s < 180.0)" max-bg)
+    (format "G(%s <= 180.0)" max-bg)
     ;; BG must be below 180 if the meal is not given too much
-    (format "(G_[0,5] %s == 50.0) R (%s < 180.0)" meal-size max-bg)
+    (format "(G_[0,5] %s == 50.0) R (%s <= 180.0)" meal-size max-bg)
     ;; The change in BG is between -5 and 3
-    (format "G(%s > -5.0 && %s < 3.0)" min-delta-bg max-delta-bg)
+    (format "G(%s > -5.0 && %s <= 3.0)" min-delta-bg max-delta-bg)
     ;; The change in BG is between -5 and 3 if the meal is not given too much
-    (format "(G_[0,5] %s == 50.0) R (%s > -5.0 && %s < 3.0)" meal-size min-delta-bg max-delta-bg)]
+    (format "(G_[0,5] %s == 50.0) R (%s > -5.0 && %s <= 3.0)" meal-size min-delta-bg max-delta-bg)]
    input-mapper
    output-mapper-reader))
 

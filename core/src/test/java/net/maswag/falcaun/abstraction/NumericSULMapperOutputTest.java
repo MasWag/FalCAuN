@@ -62,7 +62,7 @@ class NumericSULMapperOutputTest {
         for (var e0 : values) {
             for (var e1 : outputMapper.get(0).values()) {
                 if (e0 <= e1) {
-                    assertTrue(isSatisfiedBy(e0, Operation.lt, e1));
+                    assertTrue(isSatisfiedBy(e0, Operation.le, e1));
                 }
                 if (e0 > e1) {
                     assertTrue(isSatisfiedBy(e0, Operation.gt, e1));
@@ -73,7 +73,7 @@ class NumericSULMapperOutputTest {
             }
         }
 
-        final var ops = List.of(Operation.eq, Operation.gt, Operation.lt, Operation.ne);
+        final var ops = List.of(Operation.eq, Operation.gt, Operation.le, Operation.ne);
         // The inverse of the above
         for (var e0 : values) {
             for (var e1 : outputMapper.get(0).values()) {
@@ -85,7 +85,7 @@ class NumericSULMapperOutputTest {
                             case gt:
                                 assertTrue(e0 > e1);
                                 break;
-                            case lt:
+                            case le:
                                 assertTrue(e0 <= e1);
                                 break;
                             case ne:

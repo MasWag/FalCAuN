@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class STLUntilTest {
     @Property
     public void UntilEventually(@From(IOSignalGenerator.class) IOSignal<List<Double>> signal) {
-        STLCost until = new STLUntil(new STLOutputAtomic(0, STLOutputAtomic.Operation.lt, POSITIVE_INFINITY),
+        STLCost until = new STLUntil(new STLOutputAtomic(0, STLOutputAtomic.Operation.le, POSITIVE_INFINITY),
                 new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
         STLCost eventually = new STLEventually(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
         RoSI untilRoSI = until.getRoSI(signal);

@@ -40,7 +40,7 @@ class LTLFormulaHelperTest {
     void testConvertToLTLFormulasWithSimpleFormulas() {
         // Create STL formulas with proper initialization
         List<STLCost> stlFormulas = Arrays.asList(
-                stlFactory.parse("[] ( output(0) < 120.0 )", inputMapper, outputMapper, largest),
+                stlFactory.parse("[] ( output(0) <= 120.0 )", inputMapper, outputMapper, largest),
                 stlFactory.parse("<> ( output(0) > 20.0 )", inputMapper, outputMapper, largest)
         );
 
@@ -71,7 +71,7 @@ class LTLFormulaHelperTest {
     @Test
     void testConvertToLTLFormulasWithQuotesInFormula() {
         // Create an STL formula that may have quotes in its LTL string representation
-        STLCost stlFormula = stlFactory.parse("[] ( output(0) < 100.0 )", inputMapper, outputMapper, largest);
+        STLCost stlFormula = stlFactory.parse("[] ( output(0) <= 100.0 )", inputMapper, outputMapper, largest);
         List<STLCost> stlFormulas = Collections.singletonList(stlFormula);
 
         // Convert to LTL
@@ -95,8 +95,8 @@ class LTLFormulaHelperTest {
     void testConvertToLTLFormulasWithComplexFormula() {
         // Test with a complex STL formula involving multiple operators
         List<STLCost> stlFormulas = Arrays.asList(
-                stlFactory.parse("[] ( ( output(0) < 100.0 ) -> ( output(1) > -20.0 ) )", inputMapper, outputMapper, largest),
-                stlFactory.parse("( output(0) > 20.0 ) U ( output(1) < 4.2 )", inputMapper, outputMapper, largest)
+                stlFactory.parse("[] ( ( output(0) <= 100.0 ) -> ( output(1) > -20.0 ) )", inputMapper, outputMapper, largest),
+                stlFactory.parse("( output(0) > 20.0 ) U ( output(1) <= 4.2 )", inputMapper, outputMapper, largest)
         );
 
         List<LTLFormula> ltlFormulas = LTLFormulaHelper.convertToLTLFormulas(stlFormulas);
@@ -113,7 +113,7 @@ class LTLFormulaHelperTest {
     @Test
     void testConvertToLTLFormulasWithMultipleGloballyOperators() {
         List<STLCost> stlFormulas = Arrays.asList(
-                stlFactory.parse("[] ( output(0) < 120.0 )", inputMapper, outputMapper, largest),
+                stlFactory.parse("[] ( output(0) <= 120.0 )", inputMapper, outputMapper, largest),
                 stlFactory.parse("[] ( output(1) > -20.0 )", inputMapper, outputMapper, largest),
                 stlFactory.parse("[] ( output(2) == 2.0 )", inputMapper, outputMapper, largest)
         );
@@ -133,7 +133,7 @@ class LTLFormulaHelperTest {
     void testConvertToLTLFormulasWithEventuallyOperator() {
         List<STLCost> stlFormulas = Arrays.asList(
                 stlFactory.parse("<> ( output(0) > 20.0 )", inputMapper, outputMapper, largest),
-                stlFactory.parse("<> ( output(1) < 4.2 )", inputMapper, outputMapper, largest)
+                stlFactory.parse("<> ( output(1) <= 4.2 )", inputMapper, outputMapper, largest)
         );
 
         List<LTLFormula> ltlFormulas = LTLFormulaHelper.convertToLTLFormulas(stlFormulas);
@@ -150,7 +150,7 @@ class LTLFormulaHelperTest {
     @Test
     void testConvertToLTLFormulasWithAndOperator() {
         List<STLCost> stlFormulas = Collections.singletonList(
-                stlFactory.parse("( output(0) > 20.0 ) && ( output(1) < 4.2 )", inputMapper, outputMapper, largest)
+                stlFactory.parse("( output(0) > 20.0 ) && ( output(1) <= 4.2 )", inputMapper, outputMapper, largest)
         );
 
         List<LTLFormula> ltlFormulas = LTLFormulaHelper.convertToLTLFormulas(stlFormulas);
@@ -166,7 +166,7 @@ class LTLFormulaHelperTest {
     @Test
     void testConvertToLTLFormulasWithOrOperator() {
         List<STLCost> stlFormulas = Collections.singletonList(
-                stlFactory.parse("( output(0) > 20.0 ) || ( output(1) < 4.2 )", inputMapper, outputMapper, largest)
+                stlFactory.parse("( output(0) > 20.0 ) || ( output(1) <= 4.2 )", inputMapper, outputMapper, largest)
         );
 
         List<LTLFormula> ltlFormulas = LTLFormulaHelper.convertToLTLFormulas(stlFormulas);
@@ -183,7 +183,7 @@ class LTLFormulaHelperTest {
     void testConvertToLTLFormulasPreservesOrder() {
         // Test that the order of formulas is preserved
         List<STLCost> stlFormulas = Arrays.asList(
-                stlFactory.parse("[] ( output(0) < 120.0 )", inputMapper, outputMapper, largest),
+                stlFactory.parse("[] ( output(0) <= 120.0 )", inputMapper, outputMapper, largest),
                 stlFactory.parse("<> ( output(1) > -20.0 )", inputMapper, outputMapper, largest),
                 stlFactory.parse("[] ( output(2) == 2.0 )", inputMapper, outputMapper, largest)
         );

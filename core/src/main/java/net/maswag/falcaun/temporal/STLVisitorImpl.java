@@ -153,8 +153,8 @@ public class STLVisitorImpl extends STLBaseVisitor<TemporalLogic.STLCost> {
             case "==":
                 op = eq;
                 break;
-            case "<":
-                op = lt;
+            case "<=":
+                op = le;
                 break;
             case ">":
                 op = gt;

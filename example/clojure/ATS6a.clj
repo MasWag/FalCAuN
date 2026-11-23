@@ -74,7 +74,7 @@
         prev-max-velocity "output(3)"
         prev-max-rotation "output(4)"
         stl-not-g-rot-lt3000 (format "<>_[0,%d] (%s > 3000.0)" horizon-rot prev-max-rotation)
-        stl-g-vel-lt35        (format "[]_[0,%d] (%s < 35.0)"  horizon-vel prev-max-velocity)
+        stl-g-vel-lt35        (format "[]_[0,%d] (%s <= 35.0)"  horizon-vel prev-max-velocity)
         stl-str               (format "(%s) || (%s)" stl-not-g-rot-lt3000 stl-g-vel-lt35)]
     (parse-stl-list
      [stl-str]

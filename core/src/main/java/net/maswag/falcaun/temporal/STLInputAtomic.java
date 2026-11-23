@@ -25,8 +25,7 @@ import net.maswag.falcaun.signal.IOSignal;
  * <p>
  * When the 0-th input mapper is {@literal {a: 1.0, b: 2.0, c: 3.0}},
  * <ul>
- * <li> Given {@literal input(0) < 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
- *  Note that {@literal <} ({@literal Operation.lt}) represents a less-than-or-equal-to operator.
+ * <li> Given {@literal input(0) <= 1.0}, the satisfying 0-th alphabets are {@literal {'a'}}.
  * <li> Given {@literal input(0) == 1.5}, {@code getAllAPs()} raises a {@link RuntimeException}.
  * </ul>
  * 
@@ -71,7 +70,7 @@ public class STLInputAtomic extends STLAbstractAtomic {
      * {@inheritDoc}
      */
     @Override
-    protected Set<Character> constructSmallerAPs(int index, double threshold) {
+    protected Set<Character> constructSmallerOrEqualAPs(int index, double threshold) {
         //Each element of concreteValues must be sorted in ascending order.
         var concreteValues = concreteInputs;
         var abstractValues = abstractInputs;

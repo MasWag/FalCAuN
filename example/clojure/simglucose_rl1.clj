@@ -50,9 +50,9 @@
   (parse-stl-list
    [;; If BG is not low, insulin administration accompanies the diet
     ;; We use || instead of -> because specification strengthening does not support -> yet
-    (format "G(%s < 90.0 || %s != 50 || %s > 0.5)" max-bg meal-size insulin)
+    (format "G(%s <= 90.0 || %s != 50 || %s > 0.5)" max-bg meal-size insulin)
     ;; The change in BG is between -5 and 3 with weak-release over two steps of input>0
-    (format "((input(0) > 0.0 && X (input(0) > 0.0))) R (%s > -5.0 && %s < 3.0)" min-dbg max-dbg)]
+    (format "((input(0) > 0.0 && X (input(0) > 0.0))) R (%s > -5.0 && %s <= 3.0)" min-dbg max-dbg)]
    input-mapper
    output-mapper-reader))
 

@@ -45,7 +45,7 @@ val stlFactory = STLFactory()
 val stlFormula =
     stlFactory.parse(
         // output(2) corresponds to previous_max(output(0))
-        "(F_[0,${(10 / signalStep).toInt()}] G output(2) < 45)",
+        "(F_[0,${(10 / signalStep).toInt()}] G output(2) <= 45)",
         inputMapper,
         outputMapper,
     )

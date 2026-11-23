@@ -57,7 +57,7 @@ class VerificationOutcomeTest {
 
     @Test
     void allTargetsFalsified() throws Exception {
-        List<TemporalLogic.STLCost> properties = List.of(parse("[] (output(0) < 3.0)"));
+        List<TemporalLogic.STLCost> properties = List.of(parse("[] (output(0) <= 3.0)"));
         NumericSULVerifier verifier = verifier(properties);
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
 
@@ -82,7 +82,7 @@ class VerificationOutcomeTest {
     @Test
     void equivalenceTestingExhausted() {
         // The running sum never reaches 100 within LENGTH steps
-        NumericSULVerifier verifier = verifier(List.of(parse("[] (output(0) < 100.0)")));
+        NumericSULVerifier verifier = verifier(List.of(parse("[] (output(0) <= 100.0)")));
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
 
         VerificationResult<List<Double>> result = verifier.run();
@@ -98,7 +98,7 @@ class VerificationOutcomeTest {
 
     @Test
     void timeout() {
-        List<TemporalLogic.STLCost> properties = List.of(parse("[] (output(0) < 3.0)"));
+        List<TemporalLogic.STLCost> properties = List.of(parse("[] (output(0) <= 3.0)"));
         NumericSULVerifier verifier = verifier(properties);
         // Equivalence testing is skipped because the timeout (0 seconds) is reached before the first equivalence query.
         verifier.setTimeout(0);
@@ -112,7 +112,7 @@ class VerificationOutcomeTest {
 
     @Test
     void executionFailure() {
-        NumericSULVerifier verifier = verifier(List.of(parse("[] (output(0) < 3.0)")));
+        NumericSULVerifier verifier = verifier(List.of(parse("[] (output(0) <= 3.0)")));
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
         sul.setFailAtStep(2);
 
@@ -133,9 +133,9 @@ class VerificationOutcomeTest {
     @Test
     void executionCounts() {
         List<TemporalLogic.STLCost> properties = List.of(
-                parse("[] (output(0) < 3.0)"),
-                parse("[] (output(0) < 5.0)"),
-                parse("[] (output(0) < 100.0)"));
+                parse("[] (output(0) <= 3.0)"),
+                parse("[] (output(0) <= 5.0)"),
+                parse("[] (output(0) <= 100.0)"));
         NumericSULVerifier verifier = verifier(properties);
         verifier.addCornerCaseEQOracle(LENGTH, LENGTH / 2);
         verifier.addHillClimbingEQOracleAll(LENGTH, new Random(0), 30, 5, 5, false);

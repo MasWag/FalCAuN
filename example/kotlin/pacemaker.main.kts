@@ -84,7 +84,7 @@ val prevMinPaceCount = "output(4)" // We do not use the minimum values show as a
 // Define the STL properties
 // Signal must be long enough
 val stlSignalLength = "alw_[${(10 / signalStep).toInt()},${(10 / signalStep).toInt()}] $LRL > 0"
-val stlGPaceCountLt15 = "($paceCount < 16.0 && alw_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount < 16.0)"
+val stlGPaceCountLt15 = "($paceCount <= 16.0 && alw_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount <= 16.0)"
 val stlFPaceCountGt8 = "($paceCount > 7.0 || ev_[0,${(10 / signalStep).toInt()}] $prevMaxPaceCount > 7.0)"
 val stlList =
     parseStlList(

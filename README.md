@@ -197,15 +197,15 @@ expr : atomic
      | ( expr )
 
 atomic : signal(NATURAL) == value
-       | signal(NATURAL) < value
+       | signal(NATURAL) <= value
        | signal(NATURAL) > value
        | signal(NATURAL) != value
        | input(NATURAL) == value
-       | input(NATURAL) < value
+       | input(NATURAL) <= value
        | input(NATURAL) > value
        | input(NATURAL) != value
        | output(NATURAL) == value
-       | output(NATURAL) < value
+       | output(NATURAL) <= value
        | output(NATURAL) > value
        | output(NATURAL) != value
 
@@ -217,6 +217,8 @@ EVENTUALLY : '<>' | 'ev' | 'F'
 
 INTERVAL : [ NATURAL , NATURAL ]
 ```
+
+The comparison `<=` is non-strict (less than or equal to). Strict `<` and non-strict `>=` are not supported and are rejected by the parser; `<>` denotes the eventually operator.
 
 Javadoc
 --------

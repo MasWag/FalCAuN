@@ -28,4 +28,4 @@ readonly TIMEOUT=$((30 * 60)) # 30 min.
 
 ## Actual execution
 
-../falcaun --stl="alw((signal(1) < 4770) || (X (signal(1) > 600)))" --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --sa-alpha=$ALPHA
+../falcaun --stl="alw((signal(1) <= 4770) || (X (signal(1) > 600)))" --input-mapper=$IMAP --output-mapper=$OMAP --equiv=$KIND -s=$SIGNAL_STEP -l=$LENGTH -i="$INIT" -M=$MAX_TESTS --param-names="$PARAM_NAMES" -t=$TIMEOUT --sa-alpha=$ALPHA

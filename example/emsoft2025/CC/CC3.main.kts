@@ -70,10 +70,10 @@ val diffy5y4 = "signal(6)"
 val stlFactory = STLFactory()
 val stlList =
     listOf(
-        "(alw_[0,${scaleDuration(80)}] ((alw_[0,${scaleDuration(20)}] $diffy2y1 < 20) || (ev_[0,${scaleDuration(20)}] $diffy5y4 > 40)))",
-        "(alw_[0,${scaleDuration(80)}] ((alw_[0,${scaleDuration(20)}] $diffy2y1 < 20) || (ev_[0,${scaleDuration(20)}] $diffy5y4 > 30)))",
-        "(alw_[0,${scaleDuration(80)}] ((alw_[0,${scaleDuration(20)}] $diffy2y1 < 15) || (ev_[0,${scaleDuration(20)}] $diffy5y4 > 40)))",
-        "(alw_[0,${scaleDuration(80)}] ((alw_[0,${scaleDuration(20)}] $diffy2y1 < 15) || (ev_[0,${scaleDuration(20)}] $diffy5y4 > 30)))",
+        "(alw_[0,${scaleDuration(80)}] ((alw_[0,${scaleDuration(20)}] $diffy2y1 <= 20) || (ev_[0,${scaleDuration(20)}] $diffy5y4 > 40)))",
+        "(alw_[0,${scaleDuration(80)}] ((alw_[0,${scaleDuration(20)}] $diffy2y1 <= 20) || (ev_[0,${scaleDuration(20)}] $diffy5y4 > 30)))",
+        "(alw_[0,${scaleDuration(80)}] ((alw_[0,${scaleDuration(20)}] $diffy2y1 <= 15) || (ev_[0,${scaleDuration(20)}] $diffy5y4 > 40)))",
+        "(alw_[0,${scaleDuration(80)}] ((alw_[0,${scaleDuration(20)}] $diffy2y1 <= 15) || (ev_[0,${scaleDuration(20)}] $diffy5y4 > 30)))",
     ).stream().map { stlString ->
         stlFactory.parse(
             stlString,

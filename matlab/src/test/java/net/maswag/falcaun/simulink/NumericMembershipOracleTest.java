@@ -46,7 +46,7 @@ class NumericMembershipOracleTest {
     @BeforeEach
     void setUp() throws Exception {
         SimulinkModel.clearSimulinkBuildArtifacts(MATLAB_RESOURCES);
-        // [] (velocity < 30)
+        // [] (velocity <= 30)
         properties = new ArrayList<>(Collections.singletonList("[] (output == \"a00\")"));
 
         // Construct the mapper

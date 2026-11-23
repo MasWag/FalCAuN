@@ -72,7 +72,7 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
             return new RoSI(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
         switch (op) {
-            case lt:
+            case le:
                 return new RoSI(comparator - currentValue.get(sigIndex));
             case gt:
                 return new RoSI(currentValue.get(sigIndex) - comparator);
@@ -93,8 +93,8 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
     @Override
     public String toString() {
         switch (op) {
-            case lt:
-                return String.format("%s(%d) < %f", getSignalName(), sigIndex, comparator);
+            case le:
+                return String.format("%s(%d) <= %f", getSignalName(), sigIndex, comparator);
             case eq:
                 return String.format("%s(%d) == %f", getSignalName(), sigIndex, comparator);
             case gt:
@@ -117,8 +117,8 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         for (int i = 0; i < signalSize; i++) {
             if (i == sigIndex) {
                 switch (op) {
-                    case lt:
-                        APList.add(constructSmallerAPs(i, comparator));
+                    case le:
+                        APList.add(constructSmallerOrEqualAPs(i, comparator));
                         break;
                     case eq:
                         APList.add(constructEqAPs(i, comparator));
@@ -183,12 +183,13 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
 
     /**
      * Constructs a set of characters representing atomic propositions
-     * that are smaller than the given threshold for the specified signal index.
+     * whose values are smaller than or equal to the given threshold for the specified signal index.
+     * This is used for the non-strict comparison {@literal <=} ({@link Operation#le}).
      *
      * @param index The index of the signal.
      * @return A set of characters representing the atomic propositions.
      */
-    abstract protected Set<Character> constructSmallerAPs(int index, double threshold);
+    abstract protected Set<Character> constructSmallerOrEqualAPs(int index, double threshold);
 
     /**
      * Constructs a set of characters representing atomic propositions
@@ -278,8 +279,13 @@ abstract public class STLAbstractAtomic extends AbstractTemporalLogic<List<Doubl
         assert keyLists.size() == valueLists.size();
     }
 
+    /**
+     * The comparison operators of STL atomic propositions.
+     * Strict {@literal <} and non-strict {@literal >=} are intentionally not supported.
+     */
     public enum Operation {
-        lt,
+        /** Less than or equal to ({@literal <=}). */
+        le,
         eq,
         gt,
         ne

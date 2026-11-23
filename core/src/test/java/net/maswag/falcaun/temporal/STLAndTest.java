@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class STLAndTest {
     private final STLCost formula = new STLAnd(
             new STLOutputAtomic(0, STLAbstractAtomic.Operation.gt, 20.0),
-            new STLOutputAtomic(0, STLAbstractAtomic.Operation.lt, 100.0));
+            new STLOutputAtomic(0, STLAbstractAtomic.Operation.le, 100.0));
 
     @Property
     public void andIsMin(@InRange(min = "0.0", max = "200.0") double value) {

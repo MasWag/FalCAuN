@@ -51,10 +51,10 @@ val signalMapper = ExtendedSignalMapper()
 // Define the STL properties
 val stlFactory = STLFactory()
 val stlList = listOf(
-    "[] ((signal(2) == 1 -> signal(0) < 35) && (signal(2) == 2 -> signal(0) < 65))",
-    "[] ((signal(2) == 1 -> signal(0) < 35) && (signal(2) == 2 -> signal(0) < 70))",
-    "[] ((signal(2) == 1 -> signal(0) < 40) && (signal(2) == 2 -> signal(0) < 65))",
-    "[] ((signal(2) == 1 -> signal(0) < 40) && (signal(2) == 2 -> signal(0) < 70))"
+    "[] ((signal(2) == 1 -> signal(0) <= 35) && (signal(2) == 2 -> signal(0) <= 65))",
+    "[] ((signal(2) == 1 -> signal(0) <= 35) && (signal(2) == 2 -> signal(0) <= 70))",
+    "[] ((signal(2) == 1 -> signal(0) <= 40) && (signal(2) == 2 -> signal(0) <= 65))",
+    "[] ((signal(2) == 1 -> signal(0) <= 40) && (signal(2) == 2 -> signal(0) <= 70))"
 ).stream().map { stlString ->
     stlFactory.parse(
         stlString,

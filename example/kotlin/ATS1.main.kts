@@ -61,12 +61,12 @@ val mapper = NumericSULMapper(inputMapper, outputMapperReader, signalMapper)
 val stlList =
     parseStlList(
         listOf(
-            "[] (signal(0) < 120)",
-            "[] (signal(0) < 100)",
-            "[] (signal(0) < 80)",
-            "[] (signal(0) < 60)",
-            "[] (signal(0) < 40)",
-            "[] (signal(0) < 20)",
+            "[] (signal(0) <= 120)",
+            "[] (signal(0) <= 100)",
+            "[] (signal(0) <= 80)",
+            "[] (signal(0) <= 60)",
+            "[] (signal(0) <= 40)",
+            "[] (signal(0) <= 20)",
         ),
         inputMapper,
         outputMapperReader,

@@ -20,11 +20,11 @@ class SGAMapperTest {
     @Test
     void Mapper(){
         List<String> formulas = Arrays.asList(
-        "signal(0) < 10.0",
+        "signal(0) <= 10.0",
             "signal(1) > 4.2",
             "signal(1) == -20",
-            "(signal(0) < 10.0) || (signal(1) == 2.2)",
-            "(signal(0) < -1.0) -> (signal(1) == 2.2)",
+            "(signal(0) <= 10.0) || (signal(1) == 2.2)",
+            "(signal(0) <= -1.0) -> (signal(1) == 2.2)",
             "X (signal(1) == -20)",
             "[] (signal(1) == -20)",
             "<> (signal(1) == -20)",
@@ -32,10 +32,10 @@ class SGAMapperTest {
             "ev_[10,20] (signal(1) == -20)",
             "[] ((signal(2) != 4 && X (signal(2) == 4)) -> []_[0,1] (signal(2) == 4))",
                 "[] ((signal(2) == 4) -> signal(0) > 10)", // S2
-            "alw((signal(1) < 4.2) || (X (signal(1) > 4.2)))", // S5
-            "(signal(0) > 10) U (signal(1) < 4.2)", // Until
-            "(signal(0) > 10) R (signal(1) < 4.2)", // Release
-            "(!(signal(0) > -1.0)) || (alw_[0,5] signal(1) < 4.2)"
+            "alw((signal(1) <= 4.2) || (X (signal(1) > 4.2)))", // S5
+            "(signal(0) > 10) U (signal(1) <= 4.2)", // Until
+            "(signal(0) > 10) R (signal(1) <= 4.2)", // Release
+            "(!(signal(0) > -1.0)) || (alw_[0,5] signal(1) <= 4.2)"
         );
 
         STLFactory factory = new STLFactory();
