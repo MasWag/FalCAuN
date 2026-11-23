@@ -39,10 +39,10 @@ class STLParserTest {
                 "signal(2) != -0.2",
                 "signal(1) == -20");
         List<STLOutputAtomic> expectedList = Arrays.asList(
-                new STLOutputAtomic(0, le, 10.0),
-                new STLOutputAtomic(10, gt, 4.2),
-                new STLOutputAtomic(2, ne, -0.2),
-                new STLOutputAtomic(1, eq, -20));
+                new STLOutputAtomic(0, LE, 10.0),
+                new STLOutputAtomic(10, GT, 4.2),
+                new STLOutputAtomic(2, NE, -0.2),
+                new STLOutputAtomic(1, EQ, -20));
 
         for (int i = 0; i < inputs.size(); i++) {
             CharStream stream = CharStreams.fromString(inputs.get(i));
@@ -83,39 +83,39 @@ class STLParserTest {
                     "(!(signal(0) > 0)) || (alw_[0,5] signal(1) <= 15)"
             );
             expectedList = Arrays.asList(
-                    new STLOutputAtomic(0, le, 10.0),
-                    new STLOutputAtomic(1, gt, 4.2),
-                    new STLOutputAtomic(1, eq, -20),
-                    new STLOr(new STLOutputAtomic(0, le, 10.0),
-                            new STLOutputAtomic(1, eq, 2.2)),
-                    new STLOr(new STLOutputAtomic(0, le, 10.0),
-                            new STLAnd(new STLOutputAtomic(1, eq, 2.2),
-                                    new STLOutputAtomic(0, gt, 10.0))),
-                    new STLImply(new STLOutputAtomic(0, le, -1.0),
-                            new STLOutputAtomic(1, eq, 2.2)),
-                    new STLNext(new STLOutputAtomic(1, eq, -20), true),
-                    new STLGlobally(new STLOutputAtomic(1, eq, -20)),
-                    new STLEventually(new STLOutputAtomic(1, eq, -20)),
+                    new STLOutputAtomic(0, LE, 10.0),
+                    new STLOutputAtomic(1, GT, 4.2),
+                    new STLOutputAtomic(1, EQ, -20),
+                    new STLOr(new STLOutputAtomic(0, LE, 10.0),
+                            new STLOutputAtomic(1, EQ, 2.2)),
+                    new STLOr(new STLOutputAtomic(0, LE, 10.0),
+                            new STLAnd(new STLOutputAtomic(1, EQ, 2.2),
+                                    new STLOutputAtomic(0, GT, 10.0))),
+                    new STLImply(new STLOutputAtomic(0, LE, -1.0),
+                            new STLOutputAtomic(1, EQ, 2.2)),
+                    new STLNext(new STLOutputAtomic(1, EQ, -20), true),
+                    new STLGlobally(new STLOutputAtomic(1, EQ, -20)),
+                    new STLEventually(new STLOutputAtomic(1, EQ, -20)),
                     new STLSub(
-                            new STLGlobally(new STLOutputAtomic(1, eq, -20)), 0, 2),
+                            new STLGlobally(new STLOutputAtomic(1, EQ, -20)), 0, 2),
                     new STLSub(
-                            new STLEventually(new STLOutputAtomic(1, eq, -20)), 10, 20),
+                            new STLEventually(new STLOutputAtomic(1, EQ, -20)), 10, 20),
                     new STLGlobally(new STLImply(
                             new STLAnd(
-                                    new STLOutputAtomic(2, ne, 4.0),
-                                    new STLNext(new STLOutputAtomic(2, eq, 4.0), false)),
-                            new STLSub(new STLGlobally(new STLOutputAtomic(2, eq, 4.0)), 0, 1))),
+                                    new STLOutputAtomic(2, NE, 4.0),
+                                    new STLNext(new STLOutputAtomic(2, EQ, 4.0), false)),
+                            new STLSub(new STLGlobally(new STLOutputAtomic(2, EQ, 4.0)), 0, 1))),
                     // S2
-                    new STLGlobally(new STLImply(new STLOutputAtomic(2, STLOutputAtomic.Operation.eq, 3),
-                            new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 20))),
+                    new STLGlobally(new STLImply(new STLOutputAtomic(2, STLOutputAtomic.Operation.EQ, 3),
+                            new STLOutputAtomic(0, STLOutputAtomic.Operation.GT, 20))),
                     // S5
                     new STLGlobally(
                             new STLOr(
-                                    new STLOutputAtomic(1, STLOutputAtomic.Operation.le, 4770),
-                                    new STLNext(new STLOutputAtomic(1, STLOutputAtomic.Operation.gt, 600.0), true))),
-                    new STLUntil(new STLOutputAtomic(0, gt, 100), new STLOutputAtomic(1, le, 20)),
-                    new STLRelease(new STLOutputAtomic(0, gt, 100), new STLOutputAtomic(1, le, 20)),
-                    new STLOr(new STLNot(new STLOutputAtomic(0, gt, 0)), new STLSub(new STLGlobally(new STLOutputAtomic(1, le, 15)), 0, 5))
+                                    new STLOutputAtomic(1, STLOutputAtomic.Operation.LE, 4770),
+                                    new STLNext(new STLOutputAtomic(1, STLOutputAtomic.Operation.GT, 600.0), true))),
+                    new STLUntil(new STLOutputAtomic(0, GT, 100), new STLOutputAtomic(1, LE, 20)),
+                    new STLRelease(new STLOutputAtomic(0, GT, 100), new STLOutputAtomic(1, LE, 20)),
+                    new STLOr(new STLNot(new STLOutputAtomic(0, GT, 0)), new STLSub(new STLGlobally(new STLOutputAtomic(1, LE, 15)), 0, 5))
             );
 
             assert inputs.size() == expectedList.size();
@@ -169,14 +169,14 @@ class STLParserTest {
         @Test
         void leParsesForAllSignalKinds() {
             Map<String, STLAbstractAtomic> expected = Map.of(
-                    "input(0) <= 1.5", new STLInputAtomic(0, le, 1.5),
-                    "output(1) <= -2", new STLOutputAtomic(1, le, -2),
-                    "signal(2) <= 3.0", new STLOutputAtomic(2, le, 3.0),
-                    "signal(0)<=4", new STLOutputAtomic(0, le, 4));
+                    "input(0) <= 1.5", new STLInputAtomic(0, LE, 1.5),
+                    "output(1) <= -2", new STLOutputAtomic(1, LE, -2),
+                    "signal(2) <= 3.0", new STLOutputAtomic(2, LE, 3.0),
+                    "signal(0)<=4", new STLOutputAtomic(0, LE, 4));
             expected.forEach((formula, atomic) -> {
                 STLCost result = factory.parse(formula);
                 assertInstanceOf(STLAbstractAtomic.class, result);
-                assertEquals(le, ((STLAbstractAtomic) result).op);
+                assertEquals(LE, ((STLAbstractAtomic) result).op);
                 assertEquals(atomic.toString(), result.toString());
                 Assertions.assertThat(result.toString()).contains(" <= ");
             });
@@ -199,7 +199,7 @@ class STLParserTest {
         void eventuallyStillParses() {
             STLCost result = factory.parse("<> (output(0) <= 1)");
             assertInstanceOf(STLEventually.class, result);
-            assertEquals(new STLEventually(new STLOutputAtomic(0, le, 1)).toString(), result.toString());
+            assertEquals(new STLEventually(new STLOutputAtomic(0, LE, 1)).toString(), result.toString());
         }
 
         @Test

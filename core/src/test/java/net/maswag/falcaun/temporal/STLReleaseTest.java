@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class STLReleaseTest {
     @Property
     public void releaseGlobally(@From(IOSignalGenerator.class) IOSignal<List<Double>> signal) {
-        STLCost release = new STLRelease(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, POSITIVE_INFINITY),
-                new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
-        STLCost globally = new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
+        STLCost release = new STLRelease(new STLOutputAtomic(0, STLOutputAtomic.Operation.GT, POSITIVE_INFINITY),
+                new STLOutputAtomic(0, STLOutputAtomic.Operation.GT, 0));
+        STLCost globally = new STLGlobally(new STLOutputAtomic(0, STLOutputAtomic.Operation.GT, 0));
         RoSI releaseRoSI = release.getRoSI(signal);
         RoSI globallyRoSI = globally.getRoSI(signal);
         assertEquals(globallyRoSI.upperBound, releaseRoSI.upperBound);
@@ -33,11 +33,11 @@ public class STLReleaseTest {
 
     @Property
     public void releaseUntil(@From(IOSignalGenerator.class) IOSignal<List<Double>> signal) {
-        STLCost release = new STLRelease(new STLInputAtomic(0, STLInputAtomic.Operation.le, 0),
-                new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0));
+        STLCost release = new STLRelease(new STLInputAtomic(0, STLInputAtomic.Operation.LE, 0),
+                new STLOutputAtomic(0, STLOutputAtomic.Operation.GT, 0));
         STLCost until = new STLNot(new STLUntil(
-                new STLNot(new STLInputAtomic(0, STLInputAtomic.Operation.le, 0)),
-                new STLNot(new STLOutputAtomic(0, STLOutputAtomic.Operation.gt, 0))));
+                new STLNot(new STLInputAtomic(0, STLInputAtomic.Operation.LE, 0)),
+                new STLNot(new STLOutputAtomic(0, STLOutputAtomic.Operation.GT, 0))));
         RoSI releaseRoSI = release.getRoSI(signal);
         RoSI untilRoSI = until.getRoSI(signal);
         assertEquals(untilRoSI.upperBound, releaseRoSI.upperBound);
