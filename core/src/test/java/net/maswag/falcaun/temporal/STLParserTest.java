@@ -216,5 +216,16 @@ class STLParserTest {
                 assertThrows(IllegalArgumentException.class, () -> factory.parse(formula), formula);
             }
         }
+
+        @Test
+        void trailingInputIsRejected() {
+            for (String formula : List.of(
+                    "output(0) <= 1 output(1) > 2",
+                    "output(0) <= 1 )",
+                    "(output(0) <= 1) (output(1) <= 2)",
+                    "[] (output(0) <= 1) output(1) < 2")) {
+                assertThrows(IllegalArgumentException.class, () -> factory.parse(formula), formula);
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import net.maswag.falcaun.abstraction.OutputMapper;
@@ -84,6 +85,13 @@ public class STLFactory {
         parser.removeErrorListeners();
         parser.addErrorListener(THROWING_ERROR_LISTENER);
         ParseTree tree = parser.expr();
+        // The grammar does not require EOF after expr; reject trailing input instead of ignoring it.
+        Token trailing = parser.getCurrentToken();
+        if (trailing.getType() != Token.EOF) {
+            throw new IllegalArgumentException(String.format(
+                    "Invalid STL formula at %d:%d: unexpected trailing input '%s'",
+                    trailing.getLine(), trailing.getCharPositionInLine(), trailing.getText()));
+        }
         return visitor.visit(tree);
     }
 }
