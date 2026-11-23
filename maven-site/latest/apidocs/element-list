@@ -1,4 +1,10 @@
 unnamed package
 net.maswag.falcaun
+net.maswag.falcaun.abstraction
 net.maswag.falcaun.annotation
-net.maswag.falcaun.parser
+net.maswag.falcaun.oracle
+net.maswag.falcaun.signal
+net.maswag.falcaun.signal.parser
+net.maswag.falcaun.temporal
+net.maswag.falcaun.temporal.parser
+net.maswag.falcaun.verification
